@@ -84,8 +84,8 @@
             IAssembliesResolver assembliesResolver = this.configuration.Services.GetAssembliesResolver();
             IHandlerTypeResolver handlerTypeResolver = this.configuration.Services.GetHandlerTypeResolver();
             ICollection<Type> handlerTypes = handlerTypeResolver.GetHandlerTypes(assembliesResolver);
-            IEnumerable<IGrouping<Type, Type>> source = handlerTypes.SelectMany(t => GetCommandType(t));
-            return source.ToDictionary((IGrouping<Type, Type> g) => g.Key, (IGrouping<Type, Type> g) => g.ToLookup((Type t) => t));
+            IEnumerable<IGrouping<Type, Type>> source = handlerTypes.SelectMany(GetCommandType);
+            return source.ToDictionary(g => g.Key, g => g.ToLookup(t => t));
         }
     }
 }
