@@ -3,13 +3,15 @@
     using System.Diagnostics;
     using CommandProcessing;
 
-    public class SimpleHandler : Handler<SimpleCommand>
+    public class ResultingHandler : Handler<ResultingCommand, string>
     {
-        public override void Handle(SimpleCommand command)
+        public override string Handle(ResultingCommand command)
         {
             Trace.WriteLine("Property1 : " + command.Property1);
 
             Trace.WriteLine("Property2 : " + command.Property2);
+
+            return command.Property1 + " - " + command.Property2;
         }
     }
 }

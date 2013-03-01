@@ -55,6 +55,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandProcessorFixture.cs" />
+    <Compile Include="ResultingCommand.cs" />
+    <Compile Include="ResultingHandler.cs" />
     <Compile Include="SimpleCommand.cs" />
     <Compile Include="Dependencies\EmptyResolverFixture.cs" />
     <Compile Include="Descriptions\DefaultCommandExplorerFixture.cs" />
