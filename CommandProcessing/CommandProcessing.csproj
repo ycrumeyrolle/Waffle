@@ -129,7 +129,6 @@
     <Compile Include="Filters\FilterInfo.cs" />
     <Compile Include="Filters\FilterAttribute.cs" />
     <Compile Include="DepencyResolverExtensions.cs" />
-    <Compile Include="DepencyResolver.cs" />
     <Compile Include="Filters\HandlerDescriptor.cs" />
     <Compile Include="Filters\HandlerFilterProvider.cs" />
     <Compile Include="Filters\IExceptionFilter.cs" />
