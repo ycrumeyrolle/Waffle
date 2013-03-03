@@ -56,6 +56,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandProcessorFixture.cs" />
+    <Compile Include="Interception\BadService.cs" />
+    <Compile Include="Interception\DefaultInterceptionProviderFixture.cs" />
+    <Compile Include="Interception\ProxyBuilderFixture.cs" />
+    <Compile Include="Interception\SimpleService.cs" />
     <Compile Include="ResultingCommand.cs" />
     <Compile Include="ResultingHandler.cs" />
     <Compile Include="SimpleCommand.cs" />

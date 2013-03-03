@@ -6,6 +6,7 @@
     using System.Linq;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
+    using CommandProcessing.Interception;
 
     /// <summary>
     /// This provides a centralized list of type-safe accessors describing where and how we get services.
@@ -79,6 +80,39 @@
         }
 
         /// <summary>
+        /// Gets the <see cref="IProxyBuilder"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IProxyBuilder"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IProxyBuilder"/> service is not registered.</exception>
+        public static IProxyBuilder GetProxyBuilder(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IProxyBuilder>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IInterceptionProvider"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IInterceptionProvider"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IInterceptionProvider"/> service is not registered.</exception>
+        public static IInterceptionProvider GetInterceptorProvider(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IInterceptionProvider>();
+        }
+
+        /// <summary>
+        /// Gets the list of <see cref="IInterceptor"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IInterceptor"/> services.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IInterceptor"/> services are not registered.</exception>
+        public static IEnumerable<IInterceptor> GetInterceptors(this ServicesContainer services)
+        {
+            return services.GetServices<IInterceptor>();
+        }
+
+        /// <summary>
         /// Gets the list of <see cref="IFilterProvider"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
@@ -89,7 +123,7 @@
             return services.GetServices<IFilterProvider>();
         }
 
-        internal static T GetServiceOrThrow<T>(this ServicesContainer services)
+        internal static T GetServiceOrThrow<T>(this ServicesContainer services) where T : class
         {
             T service = services.GetService<T>();
             if (service == null)

@@ -88,7 +88,15 @@
 
         public TService Using<TService>() where TService : class
         {
-            return this.Configuration.Services.GetServiceOrThrow<TService>();
+            var service = this.Configuration.Services.GetServiceOrThrow<TService>();
+
+            if (this.Configuration.ServiceProxyCreationEnabled)
+            {
+                var proxyBuilder = this.Configuration.Services.GetProxyBuilder();
+                service = proxyBuilder.Build(service);
+            }
+
+            return service;
         }
 
         public void Dispose()
@@ -97,7 +105,7 @@
             GC.SuppressFinalize(this);
         }
 
-        internal static HandlerExecutedContext InvokeCommandFilter(IHandlerFilter filter, HandlerExecutingContext preContext, Func<HandlerExecutedContext> continuation)
+        private static HandlerExecutedContext InvokeCommandFilter(IHandlerFilter filter, HandlerExecutingContext preContext, Func<HandlerExecutedContext> continuation)
         {
             filter.OnCommandExecuting(preContext);
             if (preContext.Result != null)

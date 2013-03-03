@@ -11,6 +11,7 @@
     using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
+    using CommandProcessing.Interception;
 
     /// <summary>
     ///     <para>
@@ -27,6 +28,8 @@
     ///         <item><see cref="IFilterProvider"/></item>
     ///         <item><see cref="IAssembliesResolver"/></item>
     ///         <item><see cref="ICommandExplorer"/></item>
+    ///         <item><see cref="IProxyBuilder"/></item>
+    ///         <item><see cref="IInterceptor"/></item>
     ///     </list>
     ///     <para>
     ///         Passing any type which is not on this to any method on this interface will cause
@@ -86,6 +89,9 @@
             this.SetSingle<IAssembliesResolver>(new DefaultAssembliesResolver());
 
             this.SetSingle<ICommandExplorer>(new DefaultCommandExplorer(this.configuration));
+
+            this.SetSingle<IInterceptionProvider>(new DefaultInterceptionProvider(this.configuration));
+            this.SetMultiple<IInterceptor>(Enumerable.Empty<IInterceptor>().ToArray());
 
             this.serviceTypesSingle = new HashSet<Type>(this.defaultServicesSingle.Keys);
             this.serviceTypesMulti = new HashSet<Type>(this.defaultServicesMulti.Keys);

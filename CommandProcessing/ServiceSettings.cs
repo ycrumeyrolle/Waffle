@@ -5,13 +5,13 @@
     using CommandProcessing.Services;
 
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "ServicesContainer is disposed with the configuration")]
-    public sealed class HandlerSettings
+    public sealed class ServiceSettings
     {
         private readonly ProcessorConfiguration configuration;
 
         private ServicesContainer services;
 
-        public HandlerSettings(ProcessorConfiguration configuration)
+        public ServiceSettings(ProcessorConfiguration configuration)
         {
             if (configuration == null)
             {
@@ -22,6 +22,8 @@
         }
 
         public bool AbortOnInvalidCommand { get; set; }
+
+        public bool ServiceProxyCreationEnabled { get; set; }
 
         public ServicesContainer Services
         {

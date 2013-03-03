@@ -84,6 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
+    <Compile Include="Interception\DefaultInterceptorProvider.cs" />
+    <Compile Include="Interception\IInterceptionProvider.cs" />
+    <Compile Include="ServiceSettings.cs" />
     <Compile Include="Descriptions\CommandDescription.cs" />
     <Compile Include="Filters\EmptyResult.cs" />
     <Compile Include="Filters\HandlerContext.cs" />
@@ -92,6 +95,9 @@
     <Compile Include="Descriptions\DefaultCommandExplorer.cs" />
     <Compile Include="HandlerSettings.cs" />
     <Compile Include="Descriptions\ICommandExplorer.cs" />
+    <Compile Include="Interception\IInterceptor.cs" />
+    <Compile Include="Interception\IProxyBuilder.cs" />
+    <Compile Include="Interception\DefaultProxyBuilder.cs" />
     <Compile Include="Services\HandlerServices.cs" />
     <Compile Include="Services\ServicesExtensions.cs" />
     <Compile Include="Dispatcher\DefaultHandlerNameResolver.cs" />
