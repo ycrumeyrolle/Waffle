@@ -10,7 +10,7 @@
     using Moq;
 
     [TestClass]
-    public class DefaultCommandExplorerFixture
+    public class DefaultCommandExplorerFixture : IDisposable
     {
         private readonly ProcessorConfiguration config;
 
@@ -51,6 +51,12 @@
             // Assert
             Assert.IsNotNull(explorer.Descriptions);
             Assert.AreEqual(mapping.Count, explorer.Descriptions.Count);
+        }
+
+        [TestCleanup]
+        public void Dispose()
+        {
+            this.config.Dispose();
         }
     }
 }

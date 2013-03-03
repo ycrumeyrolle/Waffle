@@ -1,5 +1,6 @@
 ﻿namespace CommandProcessing.Tests.Filters
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -10,7 +11,7 @@
     using Moq;
 
     [TestClass]
-    public class HandlerFilterProviderFixture
+    public class HandlerFilterProviderFixture : IDisposable
     {
         private readonly HandlerFilterProvider provider = new HandlerFilterProvider();
 
@@ -62,6 +63,12 @@
             {
                 return obj.GetHashCode();
             }
+        }
+        
+        [TestCleanup]
+        public void Dispose()
+        {
+            this.configuration.Dispose();
         }
     }
 }

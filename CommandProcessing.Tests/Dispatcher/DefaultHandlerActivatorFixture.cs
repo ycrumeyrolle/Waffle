@@ -1,5 +1,7 @@
 ﻿namespace CommandProcessing.Tests.Dispatcher
 {
+    using System;
+
     using CommandProcessing;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Dispatcher;
@@ -9,7 +11,7 @@
     using Moq;
 
     [TestClass]
-    public class DefaultHandlerActivatorFixture
+    public class DefaultHandlerActivatorFixture : IDisposable
     {
         private readonly ProcessorConfiguration config;
 
@@ -138,6 +140,12 @@
             Assert.IsNotNull(handler);
             Assert.IsInstanceOfType(handler, typeof(SimpleHandler));
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleHandler)), Times.Once());
+        }
+        
+        [TestCleanup]
+        public void Dispose()
+        {
+            this.config.Dispose();
         }
     }
 }

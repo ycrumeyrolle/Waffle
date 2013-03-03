@@ -23,14 +23,15 @@
         public void WhenCreatingProcessorWithCustomConfigThenHasCustomConfig()
         {
             // Assign
-            ProcessorConfiguration config = new ProcessorConfiguration();
+            using (ProcessorConfiguration config = new ProcessorConfiguration())
+            {
+                // Act
+                CommandProcessor processor = new CommandProcessor(config);
 
-            // Act
-            CommandProcessor processor = new CommandProcessor(config);
-
-            // Assert
-            Assert.IsNotNull(processor.Configuration);
-            Assert.AreSame(config, processor.Configuration);
+                // Assert
+                Assert.IsNotNull(processor.Configuration);
+                Assert.AreSame(config, processor.Configuration);
+            }
         }
 
         [TestMethod]

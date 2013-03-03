@@ -7,7 +7,7 @@
     using Moq;
 
     [TestClass]
-    public class DefaultInterceptionProviderFixture
+    public class DefaultInterceptionProviderFixture : IDisposable
     {
         private readonly ProcessorConfiguration configuration;
 
@@ -68,6 +68,12 @@
             this.interceptor.Verify(i => i.OnExecuting(), Times.Never());
             this.interceptor.Verify(i => i.OnExecuted(), Times.Never());
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Once());
+        }
+
+        [TestCleanup]
+        public void Dispose()
+        {
+            this.configuration.Dispose();
         }
     }
 }
