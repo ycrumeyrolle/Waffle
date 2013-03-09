@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -49,7 +50,7 @@
 
             Type type = typeof(T);
 
-            string typeName = string.Format("{0}_proxy", type.Name);
+            string typeName = string.Format(CultureInfo.InvariantCulture, "{0}_proxy", type.Name);
             Type result;
             if (this.typeCache.Keys.Contains(typeName))
             {
@@ -129,7 +130,7 @@
             ConstructorInfo ctor = type.GetConstructor(Type.EmptyTypes);
             if (ctor == null)
             {
-                throw new NotSupportedException(string.Format("Unable to create a proxy of the type {0}. It has no parameterless constructor.", type.Name));
+                throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "Unable to create a proxy of the type {0}. It has no parameterless constructor.", type.Name));
             }
 
             FieldBuilder innerFieldBuilder = typeBuilder.DefineField("inner", type, FieldAttributes.Private);

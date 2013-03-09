@@ -1,6 +1,7 @@
 ﻿namespace CommandProcessing.Dispatcher
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using CommandProcessing.Filters;
@@ -24,10 +25,10 @@
         /// </returns>
         public string GetHandlerName(HandlerDescriptor descriptor)
         {
-            DisplayAttribute displayAttribute = descriptor.GetCustomAttributes<DisplayAttribute>().FirstOrDefault();
-            if (displayAttribute != null)
+            DisplayNameAttribute displayNameAttribute = descriptor.GetCustomAttributes<DisplayNameAttribute>().FirstOrDefault();
+            if (displayNameAttribute != null)
             {
-                return displayAttribute.Name;
+                return displayNameAttribute.DisplayName;
             }
 
             return descriptor.HandlerType.Name;

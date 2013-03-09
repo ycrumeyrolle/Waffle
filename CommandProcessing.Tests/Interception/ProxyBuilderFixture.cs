@@ -331,7 +331,7 @@
         }
         
         [TestMethod]
-        public void WhenBuildingWithBadServiceThenNotSupportedException()
+        public void WhenBuildingWithBadServiceThenThrowsNotSupportedException()
         {
             // Assign
             BadService service = new BadService("test");

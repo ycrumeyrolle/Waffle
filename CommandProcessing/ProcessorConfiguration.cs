@@ -146,12 +146,10 @@
         /// <param name="resource">The resource to dispose. Can be <c>null</c>.</param>
         internal void RegisterForDispose(IDisposable resource)
         {
-            if (resource == null)
+            if (resource != null)
             {
-                return;
+                this.resourcesToDispose.Add(resource);
             }
-
-            this.resourcesToDispose.Add(resource);
         }
 
         protected virtual void Dispose(bool disposing)

@@ -74,9 +74,12 @@
             return (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == givenType) || IsAssignableFromGenericType(baseType, givenType);
         }
 
-        private static IEnumerable<IGrouping<Type, Type>> GetCommandType(Type handlerType)
+        private static IEnumerable<Tuple<Type, Type>> GetCommandType(Type handlerType)
         {
-            return handlerType.GetInterfaces().Where(i => i.IsGenericType && IsAssignableFromGenericType(CommandHandlerType, i.GetGenericTypeDefinition())).GroupBy(i => i.GetGenericArguments()[0], i => handlerType);
+            return handlerType
+                .GetInterfaces()
+                .Where(i => i.IsGenericType && IsAssignableFromGenericType(CommandHandlerType, i.GetGenericTypeDefinition()))
+                .Select(i => Tuple.Create(i.GetGenericArguments()[0], handlerType));
         }
 
         private Dictionary<Type, ILookup<Type, Type>> InitializeCache()
@@ -84,7 +87,9 @@
             IAssembliesResolver assembliesResolver = this.configuration.Services.GetAssembliesResolver();
             IHandlerTypeResolver handlerTypeResolver = this.configuration.Services.GetHandlerTypeResolver();
             ICollection<Type> handlerTypes = handlerTypeResolver.GetHandlerTypes(assembliesResolver);
-            IEnumerable<IGrouping<Type, Type>> source = handlerTypes.SelectMany(GetCommandType);
+            
+            var source = handlerTypes.SelectMany(GetCommandType).GroupBy(i => i.Item1, i => i.Item2);
+    
             return source.ToDictionary(g => g.Key, g => g.ToLookup(t => t));
         }
     }

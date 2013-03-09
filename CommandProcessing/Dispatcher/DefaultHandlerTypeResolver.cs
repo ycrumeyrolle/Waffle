@@ -33,20 +33,6 @@
         }
 
         /// <summary>
-        /// Gets the filter for detecting handler types.
-        /// </summary>
-        /// <value>
-        /// The filter for detecting handler types.
-        /// </value>
-        protected Predicate<Type> IsHandlerTypePredicate
-        {
-            get
-            {
-                return this.isHandlerTypePredicate;
-            }
-        }
-
-        /// <summary>
         /// Returns a list of handlers available for the application.
         /// </summary>
         /// <param name="assembliesResolver">

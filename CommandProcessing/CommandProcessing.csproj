@@ -84,13 +84,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Handler`1.cs" />
     <Compile Include="Interception\DefaultInterceptorProvider.cs" />
     <Compile Include="Interception\IInterceptionProvider.cs" />
     <Compile Include="ServiceSettings.cs" />
     <Compile Include="Descriptions\CommandDescription.cs" />
-    <Compile Include="Filters\EmptyResult.cs" />
+    <Compile Include="EmptyResult.cs" />
     <Compile Include="Filters\HandlerContext.cs" />
-    <Compile Include="Handler.cs" />
+    <Compile Include="Handler`2.cs" />
     <Compile Include="HandlerRequest.cs" />
     <Compile Include="Descriptions\DefaultCommandExplorer.cs" />
     <Compile Include="HandlerSettings.cs" />
@@ -122,7 +124,6 @@
     <Compile Include="Filters\HandlerFilterCollection.cs" />
     <Compile Include="Filters\ConfigurationFilterProvider.cs" />
     <Compile Include="Filters\ExceptionContext.cs" />
-    <Compile Include="Filters\FilterCollection.cs" />
     <Compile Include="FilterInfoComparer.cs" />
     <Compile Include="Filters\FilterScope.cs" />
     <Compile Include="Filters\FilterGrouping.cs" />

@@ -1,6 +1,7 @@
 ﻿namespace CommandProcessing.Tests.Dispatcher
 {
     using System;
+    using System.Linq;
 
     using CommandProcessing;
     using CommandProcessing.Dependencies;
@@ -27,10 +28,6 @@
 
             this.dependencyResolver = new Mock<IDependencyResolver>(MockBehavior.Loose);
             this.dependencyResolver.Setup(r => r.BeginScope()).Returns(this.dependencyResolver.Object);
-
-            // this.dependencyResolver
-            // .Setup(resolver => resolver.GetService(It.IsAny<Type>()))
-            // .Returns(null);
             this.config.DependencyResolver = this.dependencyResolver.Object;
         }
 
@@ -41,11 +38,9 @@
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
             HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-            bool exceptionRaised = false;
-
+          
             // Act
             // Assert
-            
             ExceptionAssert.ThrowsArgumentNull(() => activator.Create(null, null), "request");
             ExceptionAssert.ThrowsArgumentNull(() => activator.Create(null, descriptor), "request");
             ExceptionAssert.ThrowsArgumentNull(() => activator.Create(request, null), "descriptor");
@@ -66,6 +61,7 @@
             // Assert
             Assert.IsNotNull(handler);
             Assert.IsInstanceOfType(handler, typeof(SimpleHandler));
+            Assert.AreEqual(0, descriptor.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleHandler)), Times.Once());
         }
 
@@ -85,6 +81,7 @@
             // Assert
             Assert.IsNotNull(handler);
             Assert.IsInstanceOfType(handler, typeof(SimpleHandler));
+            Assert.AreEqual(0, descriptor.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleHandler)), Times.Once());
         }
 
@@ -103,6 +100,7 @@
             // Assert
             Assert.IsNotNull(handler);
             Assert.IsInstanceOfType(handler, typeof(SimpleHandler));
+            Assert.AreEqual(0, descriptor.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleHandler)), Times.Once());
         }
 
@@ -116,32 +114,116 @@
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
 
             // Act
+            activator.Create(request, descriptor);
             ICommandHandler handler = activator.Create(request, descriptor);
 
             // Assert
             Assert.IsNotNull(handler);
             Assert.IsInstanceOfType(handler, typeof(SimpleHandler));
+            Assert.AreEqual(0, descriptor.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleHandler)), Times.Once());
         }
 
         [TestMethod]
-        public void WhenCreatingHandlerFromSameTypeTwiceThenFastCacheIsUsed2()
+        public void WhenCreatingHandlerFromTwoDescriptorsThenFastCacheIsNotUsed()
+        {
+            // Assign
+            IHandlerActivator activator = new DefaultHandlerActivator();
+            HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
+            HandlerDescriptor descriptor1 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor2 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
+
+            // Act
+            activator.Create(request, descriptor1);
+            ICommandHandler handler = activator.Create(request, descriptor2);
+
+            // Assert
+            Assert.IsNotNull(handler);
+            Assert.IsInstanceOfType(handler, typeof(SimpleHandler));
+            Assert.AreEqual(1, descriptor2.Properties.Count);
+            this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleHandler)), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void WhenCreatingHandlerFromTwoDescriptorsThenGetActivatorFromProperties()
+        {
+            // Assign
+            IHandlerActivator activator = new DefaultHandlerActivator();
+            HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
+            HandlerDescriptor descriptor1 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor2 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
+
+            // Act
+            activator.Create(request, descriptor1);
+            activator.Create(request, descriptor2);
+            ICommandHandler handler = activator.Create(request, descriptor2);
+
+            // Assert
+            Assert.IsNotNull(handler);
+            Assert.IsInstanceOfType(handler, typeof(SimpleHandler));
+            Assert.AreEqual(1, descriptor2.Properties.Count);
+            this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleHandler)), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void WhenCreatingHandlerFromTwoDescriptorsAndDependencyResolverThenGetActivatorDepencyResolver()
+        {
+            // Assign
+            IHandlerActivator activator = new DefaultHandlerActivator();
+            HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
+            HandlerDescriptor descriptor1 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor2 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            int[] i = { 0 };
+            this.dependencyResolver
+                .When(() => i[0] < 1)
+                .Setup(resolver => resolver.GetService(typeof(SimpleHandler)))
+                .Returns(null)
+                .Callback(() => i[0]++);
+            this.dependencyResolver
+                .When(() => i[0] >= 1)
+                .Setup(resolver => resolver.GetService(typeof(SimpleHandler)))
+                .Returns(new SimpleHandler());
+
+            // Act
+            activator.Create(request, descriptor1);
+            ICommandHandler handler = activator.Create(request, descriptor2);
+
+            // Assert
+            Assert.IsNotNull(handler);
+            Assert.IsInstanceOfType(handler, typeof(SimpleHandler));
+            Assert.AreEqual(0, descriptor2.Properties.Count);
+            this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleHandler)), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void WhenCreatingHandlerThrowExceptionThenRethowsInvalidOperationException()
         {
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
             HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-            this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
+            
+            this.dependencyResolver
+                .Setup(resolver => resolver.GetService(typeof(SimpleHandler)))
+                .Throws<HandlerNotFoundException>();
+            bool exceptionRaised = false;
 
             // Act
-            ICommandHandler handler = activator.Create(request, descriptor);
+            try
+            {
+                activator.Create(request, descriptor);
+            }
+            catch (InvalidOperationException)
+            {
+                exceptionRaised = true;
+            }
 
             // Assert
-            Assert.IsNotNull(handler);
-            Assert.IsInstanceOfType(handler, typeof(SimpleHandler));
-            this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleHandler)), Times.Once());
-        }
-        
+            Assert.IsTrue(exceptionRaised);
+         }
+
         [TestCleanup]
         public void Dispose()
         {
