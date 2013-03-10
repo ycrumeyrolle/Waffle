@@ -8,4 +8,4 @@
 // "In Project Suppression File".
 // You do not need to add suppressions to this file manually.
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Scope = "member", Target = "CommandProcessing.Dispatcher.DefaultHandlerTypeResolver.#GetHandlerTypes(CommandProcessing.IAssembliesResolver)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Scope = "member", Target = "CommandProcessing.Dispatcher.DefaultHandlerTypeResolver.#GetHandlerTypes(CommandProcessing.IAssembliesResolver)", Justification = "Any exception is volontary ignored.")]

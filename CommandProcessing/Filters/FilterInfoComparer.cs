@@ -1,4 +1,4 @@
-﻿namespace CommandProcessing.Filters
+namespace CommandProcessing.Filters
 {
     using System.Collections.Generic;
 

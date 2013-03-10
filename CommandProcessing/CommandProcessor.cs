@@ -65,7 +65,7 @@
                 FilterGrouping filterGrouping = new FilterGrouping(filterPipeline);
                 try
                 {
-                    HandlerExecutedContext executedContext = this.InvokeHandlerWithFilters(context, filterGrouping.CommandFilters, handler);
+                    HandlerExecutedContext executedContext = this.InvokeHandlerWithFilters(context, filterGrouping.HandlerFilters, handler);
                     return (TResult)executedContext.Result.Value;
                 }
                 catch (ThreadAbortException)

@@ -56,9 +56,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandProcessorFixture.cs" />
+    <Compile Include="Filters\FilterInfoComparerFixture.cs" />
+    <Compile Include="Filters\HandlerFilterProviderFixture.cs" />
+    <Compile Include="Filters\HandlerFilterCollectionFixture.cs" />
+    <Compile Include="Filters\HandlerExecutedContextFixture.cs" />
+    <Compile Include="Filters\HandlerExecutingContextFixture.cs" />
+    <Compile Include="SimpleHandlerFilter.cs" />
     <Compile Include="Dispatcher\DefaultHandlerTypeResolverFixture.cs" />
     <Compile Include="Dispatcher\DefaultHandlerSelectorFixture.cs" />
     <Compile Include="Dispatcher\DefaultHandlerNameResolverFixture.cs" />
+    <Compile Include="Filters\ConfigurationFilterProviderFixture.cs" />
+    <Compile Include="Filters\HandlerDescriptorFixture.cs" />
+    <Compile Include="Filters\HandlerContextFixture.cs" />
+    <Compile Include="Filters\FilterInfoFixture.cs" />
+    <Compile Include="Filters\FilterGroupingFixture.cs" />
+    <Compile Include="Filters\FilterAttributeFixture.cs" />
+    <Compile Include="Filters\ExceptionContextFixture.cs" />
     <Compile Include="Interception\BadService.cs" />
     <Compile Include="Interception\DefaultInterceptionProviderFixture.cs" />
     <Compile Include="Interception\ProxyBuilderFixture.cs" />
@@ -70,7 +83,6 @@
     <Compile Include="Descriptions\DefaultCommandExplorerFixture.cs" />
     <Compile Include="Dispatcher\DefaultHandlerActivatorFixture.cs" />
     <Compile Include="Dispatcher\DefaultAssembliesResolverFixture.cs" />
-    <Compile Include="Filters\ActionDescriptorFilterProviderTest.cs" />
     <Compile Include="SimpleExceptionFilter.cs" />
     <Compile Include="SimpleHandler.cs" />
     <Compile Include="Helpers\ExceptionAssert.cs" />

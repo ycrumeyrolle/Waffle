@@ -1,28 +1,34 @@
 ﻿namespace CommandProcessing.Filters
 {
+    using System;
     using System.Collections.Generic;
 
     internal class FilterGrouping
     {
-        private readonly List<IHandlerFilter> actionFilters = new List<IHandlerFilter>();
+        private readonly List<IHandlerFilter> handlerFilters = new List<IHandlerFilter>();
 
         private readonly List<IExceptionFilter> exceptionFilters = new List<IExceptionFilter>();
 
         public FilterGrouping(IEnumerable<FilterInfo> filters)
         {
+            if (filters == null)
+            {
+                throw new ArgumentNullException("filters");
+            }
+
             foreach (FilterInfo current in filters)
             {
                 IFilter instance = current.Instance;
-                FilterGrouping.Categorize(instance, this.actionFilters);
+                FilterGrouping.Categorize(instance, this.handlerFilters);
                 FilterGrouping.Categorize(instance, this.exceptionFilters);
             }
         }
 
-        public IEnumerable<IHandlerFilter> CommandFilters
+        public IEnumerable<IHandlerFilter> HandlerFilters
         {
             get
             {
-                return this.actionFilters;
+                return this.handlerFilters;
             }
         }
 

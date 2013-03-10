@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
+    <Compile Include="Filters\FilterInfoComparer.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Handler`1.cs" />
     <Compile Include="Interception\DefaultInterceptorProvider.cs" />
@@ -124,7 +125,6 @@
     <Compile Include="Filters\HandlerFilterCollection.cs" />
     <Compile Include="Filters\ConfigurationFilterProvider.cs" />
     <Compile Include="Filters\ExceptionContext.cs" />
-    <Compile Include="FilterInfoComparer.cs" />
     <Compile Include="Filters\FilterScope.cs" />
     <Compile Include="Filters\FilterGrouping.cs" />
     <Compile Include="Filters\FilterInfo.cs" />
