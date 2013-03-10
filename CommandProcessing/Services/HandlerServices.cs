@@ -107,12 +107,10 @@
         /// <inheritdoc/>
         protected override void ClearSingle(Type serviceType)
         {
-            if (this.overrideSingle == null)
+            if (this.overrideSingle != null)
             {
-                return;
+                this.overrideSingle.Remove(serviceType);
             }
-
-            this.overrideSingle.Remove(serviceType);
         }
 
         /// <summary>

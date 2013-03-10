@@ -331,7 +331,7 @@
         }
         
         [TestMethod]
-        public void WhenBuildingWithBadServiceThenThrowsNotSupportedException()
+        public void WhenBuildingWithoutParameterlessCtorServiceThenThrowsNotSupportedException()
         {
             // Assign
             BadService service = new BadService("test");

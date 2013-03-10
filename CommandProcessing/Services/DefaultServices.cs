@@ -101,14 +101,6 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultServices"/> class. 
-        /// This constructor is for unit testing purposes only.
-        /// </summary>
-        protected DefaultServices()
-        {
-        }
-
-        /// <summary>
         /// Determine whether the service type should be fetched with GetService or GetServices. 
         /// </summary>
         /// <param name="serviceType">

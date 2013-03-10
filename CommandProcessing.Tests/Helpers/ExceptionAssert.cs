@@ -26,5 +26,29 @@
             ArgumentNullException exception = Throws<ArgumentNullException>(action);
             Assert.AreEqual(paramName, exception.ParamName);
         }
+
+        internal static void ThrowsArgument(Action action, string paramName)
+        {
+            ArgumentException exception = Throws<ArgumentException>(action);
+            Assert.AreEqual(paramName, exception.ParamName);
+        }    
+        
+        /// <summary>
+        /// Verifies that the code throws an ArgumentOutOfRangeException (or optionally any exception which derives from it).
+        /// </summary>
+        /// <param name="testCode">A delegate to the code to be tested</param>
+        /// <param name="paramName">The name of the parameter that should throw the exception</param>
+          /// <returns>The exception that was thrown, when successful</returns>
+        internal static ArgumentOutOfRangeException ThrowsArgumentOutOfRange(Action testCode, string paramName)
+        {
+            var ex = Throws<ArgumentOutOfRangeException>(testCode);
+
+            if (paramName != null)
+            {
+                Assert.AreEqual(paramName, ex.ParamName);
+            }
+
+            return ex;
+        }
     }
 }

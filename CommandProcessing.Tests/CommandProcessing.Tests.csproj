@@ -61,6 +61,9 @@
     <Compile Include="Filters\HandlerFilterCollectionFixture.cs" />
     <Compile Include="Filters\HandlerExecutedContextFixture.cs" />
     <Compile Include="Filters\HandlerExecutingContextFixture.cs" />
+    <Compile Include="Services\ServicesExtensionsFixture.cs" />
+    <Compile Include="Services\HandlerServicesFixture.cs" />
+    <Compile Include="Services\ServicesContainerFixture.cs" />
     <Compile Include="SimpleHandlerFilter.cs" />
     <Compile Include="Dispatcher\DefaultHandlerTypeResolverFixture.cs" />
     <Compile Include="Dispatcher\DefaultHandlerSelectorFixture.cs" />
@@ -94,9 +97,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\CommandProcessing\CommandProcessing.csproj">
       <Project>{289D3B8B-D8A2-44AF-931C-9B3DF7E319B6}</Project>
