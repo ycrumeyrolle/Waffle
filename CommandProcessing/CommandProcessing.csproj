@@ -151,6 +151,8 @@
     </Compile>
     <Compile Include="TypeActivator.cs" />
     <Compile Include="TypeHelper.cs" />
+    <Compile Include="Validation\DefaultValidator.cs" />
+    <Compile Include="Validation\IValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

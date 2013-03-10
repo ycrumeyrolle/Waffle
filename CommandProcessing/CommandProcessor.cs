@@ -2,12 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Threading;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using CommandProcessing.Services;
+    using CommandProcessing.Validation;
 
     public class CommandProcessor : ICommandProcessor, IDisposable
     {
@@ -33,7 +33,7 @@
         public ProcessorConfiguration Configuration { get; private set; }
 
         public IHandlerSelector HandlerSelector { get; private set; }
-
+        
         public void Process<TCommand>(TCommand command) where TCommand : ICommand
         {
             this.Process<TCommand, EmptyResult>(command);
@@ -41,7 +41,11 @@
         
         public TResult Process<TCommand, TResult>(TCommand command) where TCommand : ICommand
         {
-            bool valid = Validator.TryValidateObject(command, new ValidationContext(command, null, null), command.ValidationResults, true);
+            IEnumerable<ICommandValidator> validators = this.Configuration.Services.GetCommandValidators();
+            bool valid = validators
+                .Select(validator => validator.Validate(command))
+                .Aggregate(true, (current, commandValid) => current & commandValid);
+
             if (!valid && this.Configuration.AbortOnInvalidCommand)
             {
                 return default(TResult);

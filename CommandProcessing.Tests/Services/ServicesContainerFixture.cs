@@ -10,6 +10,7 @@
     using CommandProcessing.Interception;
     using CommandProcessing.Services;
     using CommandProcessing.Tests.Helpers;
+    using CommandProcessing.Validation;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
 
@@ -40,11 +41,15 @@
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(IAssembliesResolver)), typeof(DefaultAssembliesResolver));
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandExplorer)), typeof(DefaultCommandExplorer));
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(IInterceptionProvider)), typeof(DefaultInterceptionProvider));
-            
+
             object[] filterProviders = defaultServices.GetServices(typeof(IFilterProvider)).ToArray();
             Assert.AreEqual(2, filterProviders.Length);
             Assert.IsInstanceOfType(filterProviders[0], typeof(ConfigurationFilterProvider));
             Assert.IsInstanceOfType(filterProviders[1], typeof(HandlerFilterProvider));
+     
+            object[] validators = defaultServices.GetServices(typeof(ICommandValidator)).ToArray();
+            Assert.AreEqual(1, validators.Length);
+            Assert.IsInstanceOfType(validators[0], typeof(DefaultCommandValidator));
        
             object[] interceptors = defaultServices.GetServices(typeof(IInterceptor)).ToArray();
             Assert.AreEqual(0, interceptors.Length);

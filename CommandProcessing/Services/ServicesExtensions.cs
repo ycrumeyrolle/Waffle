@@ -4,9 +4,11 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using CommandProcessing.Interception;
+    using CommandProcessing.Validation;
 
     /// <summary>
     /// This provides a centralized list of type-safe accessors describing where and how we get services.
@@ -102,6 +104,17 @@
         }
 
         /// <summary>
+        /// Gets the list of <see cref="ICommandExplorer"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ICommandExplorer"/> services.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandExplorer"/> services are not registered.</exception>
+        public static ICommandExplorer GetCommandExplorer(this ServicesContainer services)
+        {
+            return services.GetService<ICommandExplorer>();
+        }
+
+        /// <summary>
         /// Gets the list of <see cref="IInterceptor"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
@@ -110,6 +123,17 @@
         public static IEnumerable<IInterceptor> GetInterceptors(this ServicesContainer services)
         {
             return services.GetServices<IInterceptor>();
+        }
+
+        /// <summary>
+        /// Gets the list of <see cref="ICommandValidator"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ICommandValidator"/> services.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandValidator"/> services are not registered.</exception>
+        public static IEnumerable<ICommandValidator> GetCommandValidators(this ServicesContainer services)
+        {
+            return services.GetServices<ICommandValidator>();
         }
 
         /// <summary>
