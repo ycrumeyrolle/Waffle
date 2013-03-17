@@ -91,7 +91,8 @@
             this.SetSingle<IAssembliesResolver>(new DefaultAssembliesResolver());
 
             this.SetSingle<ICommandExplorer>(new DefaultCommandExplorer(this.configuration));
-
+            
+            this.SetSingle<IProxyBuilder>(new DefaultProxyBuilder());
             this.SetSingle<IInterceptionProvider>(new DefaultInterceptionProvider(this.configuration));
             this.SetMultiple<IInterceptor>(Enumerable.Empty<IInterceptor>().ToArray());
             this.SetMultiple<ICommandValidator>(new DefaultCommandValidator());

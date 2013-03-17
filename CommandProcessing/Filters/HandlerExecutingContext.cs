@@ -2,8 +2,6 @@
 {
     public class HandlerExecutingContext
     {
-        private HandlerResult result;
-
         public HandlerExecutingContext(HandlerContext context)
         {
             this.CommandContext = context;
@@ -18,18 +16,7 @@
         /// <value>
         /// The result.
         /// </value>
-        public HandlerResult Result
-        {
-            get
-            {
-                return this.result ?? EmptyResult.Instance;
-            }
-
-            set
-            {
-                this.result = value;
-            }
-        }
+        public object Result { get; set; }
 
         public HandlerContext CommandContext { get; set; }
     }

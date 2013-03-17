@@ -121,7 +121,6 @@
     <Compile Include="Filters\HandlerExecutingContext.cs" />
     <Compile Include="HandlerNotFoundException.cs" />
     <Compile Include="CommandProcessor.cs" />
-    <Compile Include="HandlerResult.cs" />
     <Compile Include="Filters\HandlerFilterCollection.cs" />
     <Compile Include="Filters\ConfigurationFilterProvider.cs" />
     <Compile Include="Filters\ExceptionContext.cs" />

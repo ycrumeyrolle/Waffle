@@ -70,7 +70,7 @@
                 try
                 {
                     HandlerExecutedContext executedContext = this.InvokeHandlerWithFilters(context, filterGrouping.HandlerFilters, handler);
-                    return (TResult)executedContext.Result.Value;
+                    return (TResult)executedContext.Result;
                 }
                 catch (ThreadAbortException)
                 {
@@ -85,19 +85,21 @@
                         throw;
                     }
 
-                    return (TResult)exceptionContext.Result.Value;
+                    return (TResult)exceptionContext.Result;
                 }
             }
         }
 
         public TService Using<TService>() where TService : class
         {
-            var service = this.Configuration.Services.GetServiceOrThrow<TService>();
+            var service = this.Configuration.DependencyResolver.GetServiceOrThrow<TService>();
 
             if (this.Configuration.ServiceProxyCreationEnabled)
             {
                 var proxyBuilder = this.Configuration.Services.GetProxyBuilder();
-                service = proxyBuilder.Build(service);
+                var interceptorProvider = this.Configuration.Services.GetInterceptorProvider();
+
+                service = proxyBuilder.Build(service, interceptorProvider);
             }
 
             return service;
@@ -112,7 +114,7 @@
         private static HandlerExecutedContext InvokeCommandFilter(IHandlerFilter filter, HandlerExecutingContext preContext, Func<HandlerExecutedContext> continuation)
         {
             filter.OnCommandExecuting(preContext);
-            if (preContext.Result != null)
+            if (preContext.Result != null && preContext.Result != null)
             {
                 return new HandlerExecutedContext(preContext, true, null) { Result = preContext.Result };
             }
@@ -167,11 +169,11 @@
             return func();
         }
 
-        protected virtual HandlerResult InvokeHandler(HandlerContext context, ICommandHandler handler)
+        protected virtual object InvokeHandler(HandlerContext context, ICommandHandler handler)
         {
             object result = handler.Handle(context.Command);
 
-            return new HandlerResult(result);
+            return result;
         }
 
         protected virtual void Dispose(bool disposing)

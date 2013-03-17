@@ -14,8 +14,6 @@
     /// </summary>
     public class DefaultProxyBuilder : IProxyBuilder
     {
-        private readonly IInterceptionProvider interceptorProvider;
-
         private readonly Lazy<AssemblyBuilder> assemblyBuilder;
         
         private readonly Lazy<ModuleBuilder> moduleBuilder;
@@ -30,9 +28,8 @@
 
         private FieldBuilder interceptorFieldBuilder;
 
-        public DefaultProxyBuilder(IInterceptionProvider interceptorProvider)
+        public DefaultProxyBuilder()
         {
-            this.interceptorProvider = interceptorProvider;
             this.assemblyBuilder = new Lazy<AssemblyBuilder>(this.InitializeAssemblyBuilder);
             this.moduleBuilder = new Lazy<ModuleBuilder>(this.InitializeModuleBuilder);
             var interceptorType = typeof(IInterceptionProvider);
@@ -41,7 +38,7 @@
             this.exceptionMethod = interceptorType.GetMethod("OnException", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(Exception) }, null);
         }
 
-        public T Build<T>(T source) where T : class
+        public T Build<T>(T source, IInterceptionProvider interceptorProvider) where T : class
         {
             if (source == null)
             {
@@ -58,8 +55,8 @@
             }
             else
             {
-                TypeBuilder typeBuilder = this.moduleBuilder.Value.DefineType(typeName, TypeAttributes.Class | TypeAttributes.Public, type, null);
-                var innerFieldBuilder = this.EmitDefaultCtor(type, typeBuilder);
+                TypeBuilder typeBuilder = this.moduleBuilder.Value.DefineType(typeName, TypeAttributes.Class | TypeAttributes.Public, source.GetType(), null);
+                var innerFieldBuilder = this.EmitDefaultCtor(source.GetType(), typeBuilder);
 
                 foreach (MethodInfo method in type.GetMethods().Where(m => m.IsVirtual))
                 {
@@ -70,7 +67,7 @@
                 this.typeCache.TryAdd(typeName, result);
             }
 
-            object o = Activator.CreateInstance(result, new object[] { source, this.interceptorProvider });
+            object o = Activator.CreateInstance(result, new object[] { source, interceptorProvider });
             return (T)o;
         }
 

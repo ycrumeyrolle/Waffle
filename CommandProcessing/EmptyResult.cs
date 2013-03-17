@@ -1,12 +1,11 @@
 namespace CommandProcessing
 {
     /// <summary>Represents a result that does nothing, such as a handler action method that returns nothing.</summary>
-    public class EmptyResult : HandlerResult
+    public class EmptyResult
     {
-        private static readonly EmptyResult Singleton = new EmptyResult();
+        private static readonly EmptyResult Current = new EmptyResult();
 
-        public EmptyResult()
-            : base(null)
+        private EmptyResult()
         {
         }
 
@@ -14,7 +13,7 @@ namespace CommandProcessing
         {
             get
             {
-                return EmptyResult.Singleton;
+                return EmptyResult.Current;
             }
         }
     }

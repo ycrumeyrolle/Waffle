@@ -4,8 +4,6 @@
 
     public class HandlerExecutedContext
     {
-        private HandlerResult result;
-
         public HandlerExecutedContext(HandlerExecutingContext context, bool canceled, Exception exception)
         {
             this.Context = context;
@@ -57,17 +55,6 @@
         /// <value>
         /// The <see cref="HandlerResult"/>.
         /// </value>
-        public HandlerResult Result
-        {
-            get
-            {
-                return this.result ?? EmptyResult.Instance;
-            }
-
-            set
-            {
-                this.result = value;
-            }
-        }
+        public object Result { get; set; }
     }
 }

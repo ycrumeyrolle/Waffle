@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using CommandProcessing.Dependencies;
     using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
@@ -148,6 +149,17 @@
         }
 
         internal static T GetServiceOrThrow<T>(this ServicesContainer services) where T : class
+        {
+            T service = services.GetService<T>();
+            if (service == null)
+            {
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.DependencyResolverNoService, typeof(T).FullName));
+            }
+
+            return service;
+        }
+
+        internal static T GetServiceOrThrow<T>(this IDependencyResolver services) where T : class
         {
             T service = services.GetService<T>();
             if (service == null)

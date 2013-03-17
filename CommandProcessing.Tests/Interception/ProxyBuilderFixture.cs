@@ -9,7 +9,7 @@
     public class ProxyBuilderFixture
     {
         private readonly Mock<IInterceptionProvider> interceptor;
-
+        
         public ProxyBuilderFixture()
         {
             this.interceptor = new Mock<IInterceptionProvider>(MockBehavior.Loose);
@@ -23,7 +23,7 @@
             DefaultProxyBuilder builder = this.CreateTestableBuilder();
 
             // Act
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
 
             // Assert
             Assert.IsNotNull(proxy);
@@ -38,8 +38,8 @@
             DefaultProxyBuilder builder = this.CreateTestableBuilder();
 
             // Act
-            var proxy = builder.Build(service);
-            proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
+            proxy = builder.Build(service, this.interceptor.Object);
 
             // Assert
             // TODO : How to validate the cache hit? Using a external object?
@@ -57,7 +57,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
             
             // Act
             proxy.Parameterless();
@@ -78,7 +78,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
 
             // Act
             proxy.NonVirtual();
@@ -99,7 +99,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
             var value = 123;
 
             // Act 
@@ -123,7 +123,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
             var value = new Random();
 
             // Act
@@ -145,7 +145,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
             var value = "test123";
 
             // Act
@@ -167,7 +167,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
             var value = StringSplitOptions.None;
 
             // Act
@@ -189,7 +189,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
            
             // Act
             var value1 = proxy.ReturnsValueType();
@@ -212,7 +212,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
            
             // Act
             var value2 = proxy.ReturnsReferenceType();
@@ -235,7 +235,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
 
             // Act
             var value3 = proxy.ReturnsString();
@@ -258,7 +258,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
             
             // Act
             var value4 = proxy.ReturnsEnum();
@@ -281,7 +281,7 @@
             this.interceptor.Setup(i => i.OnExecuting());
             this.interceptor.Setup(i => i.OnExecuted());
             this.interceptor.Setup(i => i.OnException(It.IsAny<Exception>()));
-            var proxy = builder.Build(service);
+            var proxy = builder.Build(service, this.interceptor.Object);
             bool exceptionRaised = false;
 
             // Act
@@ -316,7 +316,7 @@
             // Act
             try
             {
-                builder.Build(service);
+                builder.Build(service, this.interceptor.Object);
             }
             catch (ArgumentNullException)
             {
@@ -345,7 +345,7 @@
             // Act
             try
             {
-                builder.Build(service);
+                builder.Build(service, this.interceptor.Object);
             }
             catch (NotSupportedException)
             {
@@ -361,7 +361,7 @@
 
         private DefaultProxyBuilder CreateTestableBuilder()
         {
-            return new DefaultProxyBuilder(this.interceptor.Object);
+            return new DefaultProxyBuilder();
         }
     }
 }

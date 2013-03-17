@@ -22,6 +22,7 @@
         public ProcessorConfiguration()
         {
             this.Services = new DefaultServices(this);
+            this.AbortOnInvalidCommand = true;
         }
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "We're registering the ValidationCache to be disposed by the HttpConfiguration.")]

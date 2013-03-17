@@ -18,8 +18,7 @@
             HandlerExecutingContext context = new HandlerExecutingContext(preContext);
        
             // Assert
-            Assert.IsNotNull(context.Result);
-            Assert.IsInstanceOfType(context.Result, typeof(EmptyResult));
+            Assert.IsNull(context.Result);
             Assert.IsNotNull(context.CommandContext);
             Assert.AreSame(context.CommandContext, preContext);
         }
@@ -34,11 +33,10 @@
             var value = "test";
 
             // Act
-            context.Result = new HandlerResult("test");
+            context.Result = "test";
 
             // Assert
-            Assert.IsNotNull(context.Result);
-            Assert.AreEqual(context.Result.Value, value);
+            Assert.AreEqual(context.Result, value);
         }
     }
 }

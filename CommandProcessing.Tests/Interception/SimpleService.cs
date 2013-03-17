@@ -71,7 +71,7 @@
 
         public virtual StringSplitOptions ReturnsEnum()
         {
-            return EnumValue;
+            return this.EnumValue;
         }
 
         public virtual void ThrowsException()
