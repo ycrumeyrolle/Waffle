@@ -26,6 +26,7 @@
             <CodeCoverage xmlns="">
               <Regular>
                 <CodeCoverageItem binaryFile="CommandProcessing\bin\Debug\CommandProcessing.dll" pdbFile="CommandProcessing\bin\Debug\CommandProcessing.pdb" instrumentInPlace="true" />
+                <CodeCoverageItem binaryFile="CommandProcessing.Unity\bin\Debug\CommandProcessing.Unity.dll" pdbFile="CommandProcessing.Unity\bin\Debug\CommandProcessing.Unity.pdb" instrumentInPlace="true" />
               </Regular>
             </CodeCoverage>
           </Configuration>

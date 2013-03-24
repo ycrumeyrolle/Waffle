@@ -112,7 +112,7 @@
         /// <exception cref="InvalidOperationException">The <see cref="ICommandExplorer"/> services are not registered.</exception>
         public static ICommandExplorer GetCommandExplorer(this ServicesContainer services)
         {
-            return services.GetService<ICommandExplorer>();
+            return services.GetServiceOrThrow<ICommandExplorer>();
         }
 
         /// <summary>
