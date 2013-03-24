@@ -1,8 +1,7 @@
-﻿namespace CommandProcessing
+﻿namespace CommandProcessing.Dependencies
 {
     using System.Collections.Generic;
     using System.Linq;
-    using CommandProcessing.Dependencies;
 
     /// <summary>Provides a type-safe implementation of <see cref="IDependencyResolver.GetService(System.Type)" /> and <see cref="IDependencyResolver.GetServices(System.Type)" />.</summary>
     public static class DependencyResolverExtensions

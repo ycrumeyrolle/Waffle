@@ -2,9 +2,7 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Reflection;
     using CommandProcessing;
-    using CommandProcessing.Dispatcher;
     using CommandProcessing.Validation;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -23,6 +21,7 @@
 
             // Assert
             Assert.IsTrue(result);
+            Assert.IsTrue(command.IsValid);
         }
 
         [TestMethod]
@@ -37,6 +36,7 @@
 
             // Assert
             Assert.IsTrue(result);
+            Assert.IsTrue(command.IsValid);
             Assert.AreEqual(0, command.ValidationResults.Count);
         }
 
@@ -52,6 +52,7 @@
 
             // Assert
             Assert.IsFalse(result);
+            Assert.IsFalse(command.IsValid);
             Assert.AreEqual(1, command.ValidationResults.Count);
         }
         
@@ -67,6 +68,7 @@
 
             // Assert
             Assert.IsTrue(result);
+            Assert.IsTrue(command.IsValid);
             Assert.AreEqual(0, command.ValidationResults.Count);
         }
 
@@ -82,6 +84,7 @@
 
             // Assert
             Assert.IsFalse(result);
+            Assert.IsFalse(command.IsValid);
             Assert.AreEqual(2, command.ValidationResults.Count);
         }
 
@@ -98,6 +101,7 @@
 
             // Assert
             Assert.IsTrue(result);
+            Assert.IsTrue(command.IsValid);
             Assert.AreEqual(0, command.ValidationResults.Count);
         }
 
@@ -116,6 +120,7 @@
             Assert.IsFalse(result);
 
             // Validator ignore IValidatableObject validation until DataAnnotations succeed.
+            Assert.IsFalse(command.IsValid);
             Assert.AreEqual(1, command.ValidationResults.Count);
         }
 

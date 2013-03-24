@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Reflection;
     using CommandProcessing.Dispatcher;
@@ -13,7 +14,7 @@
     {
         private readonly object[] attributesCached;
 
-        private readonly ProcessorConfiguration configuration;
+        private ProcessorConfiguration configuration;
 
         private readonly Lazy<Collection<FilterInfo>> filterPipeline;
 
@@ -33,10 +34,12 @@
             this.HandlerType = handlerType;
             this.filterPipeline = new Lazy<Collection<FilterInfo>>(this.InitializeFilterPipeline);
             this.attributesCached = handlerType.GetCustomAttributes(true);
-            MethodInfo methodInfo = handlerType.GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance);
+            MethodInfo methodInfo = handlerType.GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             this.attributesCached = this.attributesCached.Concat(methodInfo.GetCustomAttributes(true)).ToArray();
             this.HandlerActivator = this.configuration.Services.GetHandlerActivator();
             this.Name = this.configuration.Services.GetHandlerNameResolver().GetHandlerName(this);
+
+            this.Initialize();
         }
         
         public ConcurrentDictionary<object, object> Properties
@@ -68,7 +71,7 @@
             return this.filterPipeline.Value;
         }
 
-        public ICommandHandler CreateHandler(HandlerRequest request)
+        public Handler CreateHandler(HandlerRequest request)
         {
             return this.HandlerActivator.Create(request, this);
         }
@@ -100,6 +103,41 @@
             IEnumerable<FilterInfo> source = filterProviders.SelectMany(fp => fp.GetFilters(this.configuration, this)).OrderBy(f => f, FilterInfoComparer.Instance);
             source = HandlerDescriptor.RemoveDuplicates(source.Reverse()).Reverse();
             return new Collection<FilterInfo>(source.ToList());
+        }
+
+        // Initialize the Descriptor. This invokes all IHandlerConfiguration attributes
+        // on the handler type (and its base types)
+        private void Initialize()
+        {
+            InvokeAttributesOnHandlerType(this, this.HandlerType);
+        }
+
+        // Helper to invoke any Controller config attributes on this controller type or its base classes.
+        private static void InvokeAttributesOnHandlerType(HandlerDescriptor descriptor, Type type)
+        {
+            Contract.Assert(descriptor != null);
+
+            if (type == null)
+            {
+                return;
+            }
+
+            // Initialize base class before derived classes (same order as ctors).
+            InvokeAttributesOnHandlerType(descriptor, type.BaseType);
+
+            // Check for attribute
+            object[] attrs = type.GetCustomAttributes(inherit: false);
+            foreach (object attr in attrs)
+            {
+                var handlerConfig = attr as IHandlerConfiguration;
+                if (handlerConfig != null)
+                {
+                    var originalConfig = descriptor.configuration;
+                    var settings = new HandlerSettings(originalConfig);
+                    handlerConfig.Initialize(settings, descriptor);
+                    descriptor.configuration = ProcessorConfiguration.ApplyHandlerSettings(settings, originalConfig);
+                }
+            }
         }
     }
 }

@@ -123,7 +123,7 @@
             return new[] 
             { 
                 null,
-                typeof(ICommandHandler),
+                typeof(Handler),
                 typeof(AbstractHandler),
                 typeof(PrivateHandler),
                 typeof(ICommand),
@@ -137,11 +137,8 @@
             return new DefaultHandlerTypeResolver();
         }
 
-        public abstract class AbstractHandler : ICommandHandler
+        public abstract class AbstractHandler : Handler
         {
-            public abstract CommandProcessor Processor { get; }
-
-            public abstract object Handle(ICommand command);
         }
 
         private class PrivateHandler : Handler<SimpleCommand>

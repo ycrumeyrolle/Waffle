@@ -8,7 +8,9 @@
 
     internal sealed class HandlerTypeCache
     {
-        private static readonly Type CommandHandlerType = typeof(ICommandHandler<,>);
+        private static readonly Type CommandHandlerType = typeof(Handler<,>);
+
+        private static readonly Type CommandHandlerInterfaceType = typeof(IHandler<,>);
 
         private readonly ProcessorConfiguration configuration;
 
@@ -60,25 +62,25 @@
                 return false;
             }
 
-            if (genericType.IsGenericType && genericType.GetGenericTypeDefinition() == givenType)
+            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
             {
                 return true;
             }
 
-            Type baseType = genericType.BaseType;
+            Type baseType = givenType.BaseType;
             if (baseType == null)
             {
                 return false;
             }
 
-            return (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == givenType) || IsAssignableFromGenericType(baseType, givenType);
+            return IsAssignableFromGenericType(baseType, genericType);
         }
 
         private static IEnumerable<Tuple<Type, Type>> GetCommandType(Type handlerType)
         {
             return handlerType
                 .GetInterfaces()
-                .Where(i => i.IsGenericType && IsAssignableFromGenericType(CommandHandlerType, i.GetGenericTypeDefinition()))
+                .Where(i => i.IsGenericType && IsAssignableFromGenericType(CommandHandlerInterfaceType, i.GetGenericTypeDefinition()))
                 .Select(i => Tuple.Create(i.GetGenericArguments()[0], handlerType));
         }
 
@@ -88,7 +90,9 @@
             IHandlerTypeResolver handlerTypeResolver = this.configuration.Services.GetHandlerTypeResolver();
             ICollection<Type> handlerTypes = handlerTypeResolver.GetHandlerTypes(assembliesResolver);
             
-            var source = handlerTypes.SelectMany(GetCommandType).GroupBy(i => i.Item1, i => i.Item2);
+            var source = handlerTypes
+                .SelectMany(GetCommandType)
+                .GroupBy(i => i.Item1, i => i.Item2);
     
             return source.ToDictionary(g => g.Key, g => g.ToLookup(t => t));
         }

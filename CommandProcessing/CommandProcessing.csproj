@@ -85,11 +85,13 @@
   <ItemGroup>
     <Compile Include="Command.cs" />
     <Compile Include="Filters\FilterInfoComparer.cs" />
+    <Compile Include="Filters\IHandlerConfiguration.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Handler.cs" />
     <Compile Include="Handler`1.cs" />
+    <Compile Include="IHandler.cs" />
     <Compile Include="Interception\DefaultInterceptorProvider.cs" />
     <Compile Include="Interception\IInterceptionProvider.cs" />
-    <Compile Include="ServiceSettings.cs" />
     <Compile Include="Descriptions\CommandDescription.cs" />
     <Compile Include="EmptyResult.cs" />
     <Compile Include="Filters\HandlerContext.cs" />
@@ -128,14 +130,13 @@
     <Compile Include="Filters\FilterGrouping.cs" />
     <Compile Include="Filters\FilterInfo.cs" />
     <Compile Include="Filters\FilterAttribute.cs" />
-    <Compile Include="DepencyResolverExtensions.cs" />
+    <Compile Include="Dependencies\DepencyResolverExtensions.cs" />
     <Compile Include="Filters\HandlerDescriptor.cs" />
     <Compile Include="Filters\HandlerFilterProvider.cs" />
     <Compile Include="Filters\IExceptionFilter.cs" />
     <Compile Include="Filters\IFilterProvider.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Filters\IHandlerFilter.cs" />
-    <Compile Include="ICommandHandler.cs" />
     <Compile Include="ICommandProcessor.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Dispatcher\IHandlerTypeResolver.cs" />

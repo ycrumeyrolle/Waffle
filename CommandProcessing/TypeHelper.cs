@@ -6,7 +6,7 @@
 
     internal static class TypeHelper
     {
-        internal static readonly Type HandlerType = typeof(ICommandHandler);
+        internal static readonly Type HandlerType = typeof(Handler);
 
         internal static ReadOnlyCollection<T> OfType<T>(object[] objects) where T : class
         {

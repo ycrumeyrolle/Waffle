@@ -56,6 +56,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandProcessorFixture.cs" />
+    <Compile Include="Dependencies\DependencyResolverExtensionsResolverFixture.cs" />
+    <Compile Include="HandlerRequestFixture.cs" />
+    <Compile Include="HandlerTypeCacheFixture.cs" />
+    <Compile Include="ProcessorConfigurationFixture.cs" />
     <Compile Include="Filters\FilterInfoComparerFixture.cs" />
     <Compile Include="Filters\HandlerFilterProviderFixture.cs" />
     <Compile Include="Filters\HandlerFilterCollectionFixture.cs" />

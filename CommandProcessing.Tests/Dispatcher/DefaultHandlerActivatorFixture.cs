@@ -56,7 +56,7 @@
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(new SimpleHandler());
 
             // Act
-            ICommandHandler handler = activator.Create(request, descriptor);
+            Handler handler = activator.Create(request, descriptor);
 
             // Assert
             Assert.IsNotNull(handler);
@@ -76,7 +76,7 @@
 
             // Act
             activator.Create(request, descriptor);
-            ICommandHandler handler = activator.Create(request, descriptor);
+            Handler handler = activator.Create(request, descriptor);
 
             // Assert
             Assert.IsNotNull(handler);
@@ -95,7 +95,7 @@
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
 
             // Act
-            ICommandHandler handler = activator.Create(request, descriptor);
+            Handler handler = activator.Create(request, descriptor);
 
             // Assert
             Assert.IsNotNull(handler);
@@ -115,7 +115,7 @@
 
             // Act
             activator.Create(request, descriptor);
-            ICommandHandler handler = activator.Create(request, descriptor);
+            Handler handler = activator.Create(request, descriptor);
 
             // Assert
             Assert.IsNotNull(handler);
@@ -136,7 +136,7 @@
 
             // Act
             activator.Create(request, descriptor1);
-            ICommandHandler handler = activator.Create(request, descriptor2);
+            Handler handler = activator.Create(request, descriptor2);
 
             // Assert
             Assert.IsNotNull(handler);
@@ -158,7 +158,7 @@
             // Act
             activator.Create(request, descriptor1);
             activator.Create(request, descriptor2);
-            ICommandHandler handler = activator.Create(request, descriptor2);
+            Handler handler = activator.Create(request, descriptor2);
 
             // Assert
             Assert.IsNotNull(handler);
@@ -188,7 +188,7 @@
 
             // Act
             activator.Create(request, descriptor1);
-            ICommandHandler handler = activator.Create(request, descriptor2);
+            Handler handler = activator.Create(request, descriptor2);
 
             // Assert
             Assert.IsNotNull(handler);

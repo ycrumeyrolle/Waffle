@@ -4,6 +4,7 @@
     using System.Linq;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
+    using CommandProcessing.Interception;
     using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
@@ -52,7 +53,7 @@
             Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
             this.config.Services.Replace(typeof(IHandlerActivator), activator.Object);
             HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-            Mock<ICommandHandler> expectedHandler = new Mock<ICommandHandler>();
+            Mock<Handler> expectedHandler = new Mock<Handler>();
             activator
                 .Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()))
                 .Returns(expectedHandler.Object);
@@ -71,6 +72,8 @@
         [SimpleHandlerFilter]
         [SimpleHandlerFilter]
         [SimpleHandlerFilter]
+        [HandlerConfigurationAttribute]
+        [FakeHandlerConfigurationAttribute]
         private class SimpleHandler : Handler<SimpleCommand>
         {
             public override void Handle(SimpleCommand command)
@@ -98,6 +101,21 @@
                 {
                     return false;
                 }
+            }
+        }
+
+        public class FakeHandlerConfigurationAttribute : Attribute, IHandlerConfiguration
+        {
+            public void Initialize(HandlerSettings settings, HandlerDescriptor descriptor)
+            {
+            }
+        }
+
+        public class HandlerConfigurationAttribute : Attribute, IHandlerConfiguration
+        {
+            public void Initialize(HandlerSettings settings, HandlerDescriptor descriptor)
+            {
+                settings.Services.Replace(typeof(IProxyBuilder), new Mock<IProxyBuilder>(MockBehavior.Loose).Object); 
             }
         }
     }

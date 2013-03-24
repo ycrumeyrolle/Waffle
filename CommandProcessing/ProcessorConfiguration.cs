@@ -25,38 +25,21 @@
             this.AbortOnInvalidCommand = true;
         }
 
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "We're registering the ValidationCache to be disposed by the HttpConfiguration.")]
         private ProcessorConfiguration(ProcessorConfiguration configuration, HandlerSettings settings)
         {
             this.filters = configuration.Filters;
             this.dependencyResolver = configuration.DependencyResolver;
 
             // per-handler settings
-            this.Services = settings.IsServiceCollectionInitialized ? settings.Services : configuration.Services;
-            this.AbortOnInvalidCommand = settings.IsServiceCollectionInitialized ? settings.AbortOnInvalidCommand : configuration.AbortOnInvalidCommand;
+            this.Services = settings.Services;
+            this.AbortOnInvalidCommand = settings.AbortOnInvalidCommand;
             this.ServiceProxyCreationEnabled = configuration.ServiceProxyCreationEnabled;
 
             // Use the original configuration's initializer so that its Initialize()
             // will perform the same logic on this clone as on the original.
             this.Initializer = configuration.Initializer;
         }
-
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "We're registering the ValidationCache to be disposed by the HttpConfiguration.")]
-        private ProcessorConfiguration(ProcessorConfiguration configuration, ServiceSettings settings)
-        {
-            this.filters = configuration.Filters;
-            this.dependencyResolver = configuration.DependencyResolver;
-
-            // per-handler settings
-            this.Services = settings.IsServiceCollectionInitialized ? settings.Services : configuration.Services;
-            this.AbortOnInvalidCommand = settings.IsServiceCollectionInitialized ? settings.AbortOnInvalidCommand : configuration.AbortOnInvalidCommand;
-            this.ServiceProxyCreationEnabled = settings.IsServiceCollectionInitialized ? settings.ServiceProxyCreationEnabled : configuration.ServiceProxyCreationEnabled;
-
-            // Use the original configuration's initializer so that its Initialize()
-            // will perform the same logic on this clone as on the original.
-            this.Initializer = configuration.Initializer;
-        }
-
+        
         public bool AbortOnInvalidCommand { get; set; }
 
         public bool ServiceProxyCreationEnabled { get; set; }
@@ -130,7 +113,7 @@
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-        
+
         internal static ProcessorConfiguration ApplyHandlerSettings(HandlerSettings settings, ProcessorConfiguration configuration)
         {
             if (!settings.IsServiceCollectionInitialized)
@@ -140,7 +123,7 @@
 
             return new ProcessorConfiguration(configuration, settings);
         }
-
+        
         /// <summary>
         /// Adds the given <paramref name="resource"/> to a list of resources that will be disposed once the configuration is disposed.
         /// </summary>

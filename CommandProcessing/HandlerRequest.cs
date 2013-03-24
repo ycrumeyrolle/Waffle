@@ -14,6 +14,16 @@
 
         public HandlerRequest(ProcessorConfiguration configuration, ICommand command)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
+
+            if (command == null)
+            {
+                throw new ArgumentNullException("command");
+            }
+
             this.Configuration = configuration;
             this.Command = command;
             this.CommandType = command.GetType();
@@ -59,12 +69,10 @@
 
         private void RegisterForDispose(IDisposable resource)
         {
-            if (resource == null)
+            if (resource != null)
             {
-                return;
+                this.disposableResources.Add(resource);
             }
-
-            this.disposableResources.Add(resource);
         }
     }
 }

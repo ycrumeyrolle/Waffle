@@ -1,23 +1,19 @@
 ﻿namespace CommandProcessing
 {
-    public abstract class Handler<TCommand> : ICommandHandler<TCommand, EmptyResult>
+    public abstract class Handler<TCommand> : Handler, IHandler<TCommand, EmptyResult>
         where TCommand : ICommand
     {
-        public CommandProcessor Processor { get; internal set; }
-
-        public abstract void Handle(TCommand command);
-
-        EmptyResult ICommandHandler<TCommand, EmptyResult>.Handle(TCommand command)
+        EmptyResult IHandler<TCommand, EmptyResult>.Handle(TCommand command)
         {
             this.Handle(command);
             return EmptyResult.Instance;
         }
+        
+        public abstract void Handle(TCommand command);
 
-        object ICommandHandler.Handle(ICommand command)
+        public override object Handle(ICommand command)
         {
-            this.Handle((TCommand)command);
-
-            return EmptyResult.Instance;
+            return ((IHandler<TCommand, EmptyResult>)this).Handle((TCommand)command);
         }
     }
 }

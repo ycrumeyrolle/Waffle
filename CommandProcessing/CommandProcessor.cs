@@ -55,7 +55,7 @@
             {
                 HandlerDescriptor descriptor = this.HandlerSelector.SelectHandler(request);
 
-                ICommandHandler handler = descriptor.CreateHandler(request);
+                Handler handler = descriptor.CreateHandler(request);
 
                 if (handler == null)
                 {
@@ -161,7 +161,7 @@
             return exceptionContext;
         }
 
-        protected virtual HandlerExecutedContext InvokeHandlerWithFilters(HandlerContext context, IEnumerable<IHandlerFilter> filters, ICommandHandler handler)
+        protected virtual HandlerExecutedContext InvokeHandlerWithFilters(HandlerContext context, IEnumerable<IHandlerFilter> filters, Handler handler)
         {
             HandlerExecutingContext preContext = new HandlerExecutingContext(context);
             Func<HandlerExecutedContext> seed = () => new HandlerExecutedContext(preContext, false, null) { Result = this.InvokeHandler(context, handler) };
@@ -169,7 +169,7 @@
             return func();
         }
 
-        protected virtual object InvokeHandler(HandlerContext context, ICommandHandler handler)
+        protected virtual object InvokeHandler(HandlerContext context, Handler handler)
         {
             object result = handler.Handle(context.Command);
 

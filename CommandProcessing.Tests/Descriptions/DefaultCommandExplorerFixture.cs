@@ -42,7 +42,7 @@
         {
             // Assign
             // TODO : Try to use AutoFixture instead
-            Dictionary<Type, HandlerDescriptor> mapping = new Dictionary<Type, HandlerDescriptor> { { typeof(string), new HandlerDescriptor(this.config, typeof(ICommandHandler)) } };
+            Dictionary<Type, HandlerDescriptor> mapping = new Dictionary<Type, HandlerDescriptor> { { typeof(string), new HandlerDescriptor(this.config, typeof(Handler)) } };
             this.handlerSelector.Setup(selector => selector.GetHandlerMapping()).Returns(mapping);
 
             // Act

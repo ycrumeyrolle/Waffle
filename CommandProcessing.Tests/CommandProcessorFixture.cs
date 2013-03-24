@@ -20,7 +20,7 @@
 
         private readonly ProcessorConfiguration configuration = new ProcessorConfiguration();
 
-        private readonly Mock<ICommandHandler> handler = new Mock<ICommandHandler>();
+        private readonly Mock<Handler> handler = new Mock<Handler>();
 
         private readonly Mock<IDependencyResolver> dependencyResolver = new Mock<IDependencyResolver>(MockBehavior.Loose);
         
@@ -374,7 +374,7 @@
             Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
             activator
                 .Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()))
-                .Returns<ICommandHandler>(null);
+                .Returns<Handler>(null);
             this.configuration.Services.Replace(typeof(IHandlerActivator), activator.Object);
 
             Mock<IHandlerSelector> selector = new Mock<IHandlerSelector>(MockBehavior.Strict);
@@ -514,6 +514,7 @@
         {
             public override void Handle(ValidCommand command)
             {
+                return;
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿namespace CommandProcessing.Tests
 {
+    using System;
     using System.Diagnostics;
     using CommandProcessing;
 

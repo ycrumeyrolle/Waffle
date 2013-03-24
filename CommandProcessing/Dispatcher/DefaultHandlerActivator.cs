@@ -14,7 +14,7 @@
     {
         private readonly object cacheKey = new object();
 
-        private Tuple<HandlerDescriptor, Func<ICommandHandler>> fastCache;
+        private Tuple<HandlerDescriptor, Func<Handler>> fastCache;
 
         /// <summary>
         /// Creates the <see cref="ICommandHandler"/> specified by <paramref name="descriptor"/> using the given <paramref name="request"/>.
@@ -28,7 +28,7 @@
         /// <returns>
         /// The <see cref="ICommandHandler"/>.
         /// </returns>
-        public ICommandHandler Create(HandlerRequest request, HandlerDescriptor descriptor)
+        public Handler Create(HandlerRequest request, HandlerDescriptor descriptor)
         {
             if (request == null)
             {
@@ -64,15 +64,15 @@
         /// The activator.
         /// </param>
         /// <returns>
-        /// The <see cref="ICommandHandler"/>.
+        /// The <see cref="Handler"/>.
         /// </returns>
-        private static ICommandHandler GetInstanceOrActivator(HandlerRequest request, Type handlerType, out Func<ICommandHandler> activator)
+        private static Handler GetInstanceOrActivator(HandlerRequest request, Type handlerType, out Func<Handler> activator)
         {
             Contract.Assert(request != null);
             Contract.Assert(handlerType != null);
 
             // If dependency resolver returns handler object then use it.
-            ICommandHandler instance = (ICommandHandler)request.GetDependencyScope().GetService(handlerType);
+            Handler instance = (Handler)request.GetDependencyScope().GetService(handlerType);
             if (instance != null)
             {
                 activator = null;
@@ -80,29 +80,29 @@
             }
 
             // Otherwise create a delegate for creating a new instance of the type
-            activator = TypeActivator.Create<ICommandHandler>(handlerType);
+            activator = TypeActivator.Create<Handler>(handlerType);
             return null;
         }
 
-        private ICommandHandler TryCreate(HandlerRequest request, HandlerDescriptor descriptor)
+        private Handler TryCreate(HandlerRequest request, HandlerDescriptor descriptor)
         {
             Contract.Assert(request != null);
             Contract.Assert(descriptor != null);
 
-            Func<ICommandHandler> activator;
+            Func<Handler> activator;
 
             // First check in the local fast cache and if not a match then look in the broader 
             // HandlerDescriptor.Properties cache
             if (this.fastCache == null)
             {
-                ICommandHandler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
+                Handler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
                 if (handler != null)
                 {
                     // we have a handler registered with the dependency resolver for this handler type                      
                     return handler;
                 }
 
-                Tuple<HandlerDescriptor, Func<ICommandHandler>> cacheItem = Tuple.Create(descriptor, activator);
+                Tuple<HandlerDescriptor, Func<Handler>> cacheItem = Tuple.Create(descriptor, activator);
                 Interlocked.CompareExchange(ref this.fastCache, cacheItem, null);
             }
             else if (this.fastCache.Item1 == descriptor)
@@ -117,11 +117,11 @@
                 object result;
                 if (descriptor.Properties.TryGetValue(this.cacheKey, out result))
                 {
-                    activator = (Func<ICommandHandler>)result;
+                    activator = (Func<Handler>)result;
                 }
                 else
                 {
-                    ICommandHandler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
+                    Handler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
                     if (handler != null)
                     {
                         // we have a handler registered with the dependency resolver for this handler type

@@ -43,27 +43,18 @@
         }
 
         [DisplayName("Name from DisplayAttribute")]
-        private class HandlerWithDisplayAttribute : ICommandHandler
+        private class HandlerWithDisplayAttribute : Handler
         {
-            public CommandProcessor Processor
-            {
-                get { throw new System.NotImplementedException(); }
-            }
 
-            public object Handle(ICommand command)
+            public override object Handle(ICommand command)
             {
                 throw new System.NotImplementedException();
             }
         }
 
-        private class HandlerWithoutDisplayAttribute : ICommandHandler
+        private class HandlerWithoutDisplayAttribute : Handler
         {
-            public CommandProcessor Processor
-            {
-                get { throw new System.NotImplementedException(); }
-            }
-
-            public object Handle(ICommand command)
+            public override object Handle(ICommand command)
             {
                 throw new System.NotImplementedException();
             }
