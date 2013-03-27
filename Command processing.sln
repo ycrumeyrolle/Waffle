@@ -24,9 +24,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Unity", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Unity.Tests", "CommandProcessing.Unity.Tests\CommandProcessing.Unity.Tests.csproj", "{09400EB8-573D-46A5-94E1-1E2F8CC52B0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.MiniProfiler", "CommandProcessing.MiniProfiler\CommandProcessing.MiniProfiler.csproj", "{AE6E76B2-4DFD-467B-B296-B388270ECB25}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://yanncrumeyrolle.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -42,6 +44,9 @@ Global
 		SccProjectUniqueName4 = CommandProcessing.Unity.Tests\\CommandProcessing.Unity.Tests.csproj
 		SccProjectName4 = CommandProcessing.Unity.Tests
 		SccLocalPath4 = CommandProcessing.Unity.Tests
+		SccProjectUniqueName5 = CommandProcessing.MiniProfiler\\CommandProcessing.MiniProfiler.csproj
+		SccProjectName5 = CommandProcessing.MiniProfiler
+		SccLocalPath5 = CommandProcessing.MiniProfiler
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Command processing.vsmdi
@@ -67,6 +72,10 @@ Global
 		{09400EB8-573D-46A5-94E1-1E2F8CC52B0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09400EB8-573D-46A5-94E1-1E2F8CC52B0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09400EB8-573D-46A5-94E1-1E2F8CC52B0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE6E76B2-4DFD-467B-B296-B388270ECB25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE6E76B2-4DFD-467B-B296-B388270ECB25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE6E76B2-4DFD-467B-B296-B388270ECB25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE6E76B2-4DFD-467B-B296-B388270ECB25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
