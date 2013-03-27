@@ -50,6 +50,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -57,6 +58,7 @@
   <ItemGroup>
     <Compile Include="CommandProcessorFixture.cs" />
     <Compile Include="Dependencies\DependencyResolverExtensionsResolverFixture.cs" />
+    <Compile Include="Filters\TransactionAttributeFixture.cs" />
     <Compile Include="HandlerRequestFixture.cs" />
     <Compile Include="HandlerTypeCacheFixture.cs" />
     <Compile Include="ProcessorConfigurationFixture.cs" />
