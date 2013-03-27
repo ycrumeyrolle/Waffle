@@ -33,13 +33,23 @@
         public ProcessorConfiguration Configuration { get; private set; }
 
         public IHandlerSelector HandlerSelector { get; private set; }
-        
+
         public void Process<TCommand>(TCommand command) where TCommand : ICommand
         {
             this.Process<TCommand, EmptyResult>(command);
         }
-        
+
+        public void Process<TCommand>(TCommand command, HandlerRequest currentRequest) where TCommand : ICommand
+        {
+            this.Process<TCommand, EmptyResult>(command, currentRequest);
+        }
+
         public TResult Process<TCommand, TResult>(TCommand command) where TCommand : ICommand
+        {
+            return this.Process<TCommand, TResult>(command, null);
+        }
+
+        public TResult Process<TCommand, TResult>(TCommand command, HandlerRequest currentRequest) where TCommand : ICommand
         {
             IEnumerable<ICommandValidator> validators = this.Configuration.Services.GetCommandValidators();
             bool valid = validators
@@ -51,7 +61,7 @@
                 return default(TResult);
             }
 
-            using (HandlerRequest request = new HandlerRequest(this.Configuration, command))
+            using (HandlerRequest request = new HandlerRequest(this.Configuration, command, currentRequest))
             {
                 HandlerDescriptor descriptor = this.HandlerSelector.SelectHandler(request);
 
@@ -62,7 +72,7 @@
                     throw new HandlerNotFoundException(typeof(TCommand));
                 }
 
-                HandlerContext context = new HandlerContext(request, descriptor);
+                HandlerContext context = new HandlerContext(this, request, descriptor);
 
                 IEnumerable<FilterInfo> filterPipeline = descriptor.GetFilterPipeline();
 

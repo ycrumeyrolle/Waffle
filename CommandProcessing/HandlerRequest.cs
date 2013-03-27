@@ -9,10 +9,15 @@
         private readonly Guid id = Guid.NewGuid();
 
         private readonly IList<IDisposable> disposableResources = new List<IDisposable>();
-        
+
         private IDependencyScope dependencyScope;
 
         public HandlerRequest(ProcessorConfiguration configuration, ICommand command)
+            : this(configuration, command, null)
+        {
+        }
+
+        public HandlerRequest(ProcessorConfiguration configuration, ICommand command, HandlerRequest parentRequest)
         {
             if (configuration == null)
             {
@@ -28,8 +33,7 @@
             this.Command = command;
             this.CommandType = command.GetType();
 
-            // TODO : To implements
-            this.ParentRequest = null;
+            this.ParentRequest = parentRequest;
         }
 
         public HandlerRequest ParentRequest { get; private set; }
@@ -50,13 +54,20 @@
 
         public IDependencyScope GetDependencyScope()
         {
-            if (this.dependencyScope == null)
+            return this.GetDependencyScope(true);
+        }
+
+        public IDependencyScope GetDependencyScope(bool useDeepestRequest)
+        {
+            HandlerRequest request = this.GetRootRequest(useDeepestRequest);
+
+            if (request.dependencyScope == null)
             {
-                this.dependencyScope = this.Configuration.DependencyResolver.BeginScope();
-                this.RegisterForDispose(this.dependencyScope);
+                request.dependencyScope = this.Configuration.DependencyResolver.BeginScope();
+                request.RegisterForDispose(this.dependencyScope);
             }
 
-            return this.dependencyScope;
+            return request.dependencyScope;
         }
 
         public void Dispose()
@@ -65,6 +76,22 @@
             {
                 item.Dispose();
             }
+        }
+
+        private HandlerRequest GetRootRequest(bool useDeepestRequest)
+        {
+            if (!useDeepestRequest)
+            {
+                return this;
+            }
+
+            HandlerRequest request = this;
+            while (request.ParentRequest != null)
+            {
+                request = request.ParentRequest;
+            }
+
+            return request;
         }
 
         private void RegisterForDispose(IDisposable resource)

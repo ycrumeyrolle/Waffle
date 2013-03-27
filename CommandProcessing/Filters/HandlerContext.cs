@@ -10,9 +10,10 @@ namespace CommandProcessing.Filters
             this.Items = new Dictionary<string, object>();
         }
 
-        public HandlerContext(HandlerRequest request, HandlerDescriptor descriptor)
+        public HandlerContext(ICommandProcessor processor, HandlerRequest request, HandlerDescriptor descriptor)
             : this()
         {
+            this.Processor = processor;
             this.Configuration = request.Configuration;
             this.Request = request;
             this.Command = request.Command;
@@ -27,11 +28,14 @@ namespace CommandProcessing.Filters
                 throw new ArgumentNullException("context");
             }
 
+            this.Processor = context.Processor; 
             this.Configuration = context.Configuration;
             this.Request = context.Request;
             this.Command = context.Command;
             this.Descriptor = context.Descriptor;
         }
+
+        public ICommandProcessor Processor { get; set; }
 
         public ProcessorConfiguration Configuration { get; private set; }
 

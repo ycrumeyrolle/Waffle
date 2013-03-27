@@ -79,6 +79,39 @@
         }
 
         [TestMethod]
+        public void WhenGettingDependencyScopeFromDeepestRequestThenDelegatesToDeepestDependencyResolver()
+        {
+            // Arrange
+            Mock<ICommand> command = new Mock<ICommand>();
+            HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
+            HandlerRequest innerRequest = new HandlerRequest(this.defaultConfig, command.Object, request);
+          
+            Mock<IDependencyResolver> resolver = new Mock<IDependencyResolver>(MockBehavior.Strict);
+            resolver
+                .Setup(r => r.BeginScope())
+                .Returns(CreateScopeMock);
+            resolver
+                .Setup(r => r.Dispose());
+            this.defaultConfig.DependencyResolver = resolver.Object;
+
+            // Act
+            var scope1 = request.GetDependencyScope();
+            var scope2 = request.GetDependencyScope(false);
+            var scope3 = innerRequest.GetDependencyScope();
+            var scope4 = innerRequest.GetDependencyScope(false);
+
+            // Assert
+            Assert.IsNotNull(scope1);
+            Assert.IsNotNull(scope2);
+            Assert.IsNotNull(scope3);
+            Assert.IsNotNull(scope4);
+            Assert.AreSame(scope1, scope2);
+            Assert.AreSame(scope1, scope3);
+            Assert.AreNotSame(scope1, scope4);
+            resolver.Verify(r => r.BeginScope(), Times.Exactly(2));
+        }
+        
+        [TestMethod]
         public void WhenDisposingThenScopeIsDisposed()
         {
             // Arrange
@@ -103,6 +136,62 @@
             scope.Verify(s => s.Dispose(), Times.Once());
         }
 
+        [TestMethod]
+        public void WhenDisposingScopeFromDifferentsDeepsThenScopesAreDisposed()
+        {
+            // Arrange
+            Mock<ICommand> command = new Mock<ICommand>();
+            HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
+            HandlerRequest innerRequest = new HandlerRequest(this.defaultConfig, command.Object, request);
+
+            Mock<IDependencyResolver> resolver = new Mock<IDependencyResolver>(MockBehavior.Strict);
+            int disposedCount = 0;
+            resolver
+                .Setup(r => r.BeginScope())
+                .Returns(() => CreateVerifiableScopeMock(() => disposedCount++));
+            resolver
+                .Setup(r => r.Dispose());
+            this.defaultConfig.DependencyResolver = resolver.Object;
+
+            request.GetDependencyScope();
+            innerRequest.GetDependencyScope();
+
+            // Act & Assert
+            Assert.AreEqual(0, disposedCount);
+            innerRequest.Dispose();
+            Assert.AreEqual(0, disposedCount);
+            request.Dispose();
+            Assert.AreEqual(1, disposedCount);
+        }
+
+        [TestMethod]
+        public void WhenDisposingScopeFromDeepestRequestThenScopesAreDisposed()
+        {
+            // Arrange
+            Mock<ICommand> command = new Mock<ICommand>();
+            HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
+            HandlerRequest innerRequest = new HandlerRequest(this.defaultConfig, command.Object, request);
+
+            Mock<IDependencyResolver> resolver = new Mock<IDependencyResolver>(MockBehavior.Strict);
+            int disposedCount = 0;
+            resolver
+                .Setup(r => r.BeginScope())
+                .Returns(() => CreateVerifiableScopeMock(() => disposedCount++));
+            resolver
+                .Setup(r => r.Dispose());
+            this.defaultConfig.DependencyResolver = resolver.Object;
+
+            request.GetDependencyScope();
+            innerRequest.GetDependencyScope(false);
+
+            // Act & Assert
+            Assert.AreEqual(0, disposedCount);
+            innerRequest.Dispose();
+            Assert.AreEqual(1, disposedCount);
+            request.Dispose();
+            Assert.AreEqual(2, disposedCount);
+        }
+
         [TestCleanup]
         public void Dispose()
         {
@@ -110,6 +199,20 @@
             {
                 disposable.Dispose();
             }
+        }
+
+        private static IDependencyScope CreateScopeMock()
+        {
+            Mock<IDependencyScope> scope = new Mock<IDependencyScope>(MockBehavior.Strict);
+            scope.Setup(s => s.Dispose());
+            return scope.Object;
+        }
+
+        private static IDependencyScope CreateVerifiableScopeMock(Action action)
+        {
+            Mock<IDependencyScope> scope = new Mock<IDependencyScope>(MockBehavior.Strict);
+            scope.Setup(s => s.Dispose()).Callback(() => action());
+            return scope.Object;
         }
     }
 }
