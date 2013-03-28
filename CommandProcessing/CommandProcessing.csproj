@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
+    <Compile Include="CommandProcessorExtensions.cs" />
     <Compile Include="Filters\FilterInfoComparer.cs" />
     <Compile Include="Filters\IHandlerConfiguration.cs" />
     <Compile Include="Filters\TransactionFilter.cs" />
