@@ -1,6 +1,5 @@
 namespace CommandProcessing.Filters
 {
-    using System;
     using System.Collections.Generic;
 
     public class HandlerContext
@@ -20,20 +19,16 @@ namespace CommandProcessing.Filters
             this.Descriptor = descriptor;
         }
 
-        protected HandlerContext(HandlerContext context)
-            : this()
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
-
-            this.Processor = context.Processor; 
-            this.Configuration = context.Configuration;
-            this.Request = context.Request;
-            this.Command = context.Command;
-            this.Descriptor = context.Descriptor;
-        }
+        /// <summary>
+        /// Gets or sets the result returned by the action method.
+        /// </summary>
+        /// <returns>
+        /// The result returned by the action method.
+        /// </returns>
+        /// <value>
+        /// The result.
+        /// </value>
+        public object Result { get; set; }
 
         public ICommandProcessor Processor { get; set; }
 

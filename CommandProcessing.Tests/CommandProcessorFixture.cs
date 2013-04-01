@@ -107,44 +107,11 @@
         }
 
         [TestMethod]
-        public void WhenProcessingThrowThreadAbortExceptionThenThrowsThreadAbortException()
-        {
-            // Arrange
-            var filter1 = this.SetupFilter("X");
-
-            this.SetupValidHandler<ValidCommand>();
-            this.handler
-                .Setup(h => h.Handle(It.IsAny<ValidCommand>()))
-                .Callback(this.ThrowThreadAbortException);
-            
-            CommandProcessor processor = this.CreatTestableProcessor();
-            ValidCommand command = new ValidCommand();
-
-            // Act
-            ExceptionAssert.Throws<ThreadAbortException>(() => processor.Process<ValidCommand, string>(command));
-            filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()), Times.Once());
-            filter1.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Once());
-            this.handler.Verify(h => h.Handle(It.IsAny<ICommand>()), Times.Once());
-        }
-
-        private void ThrowThreadAbortException()
-        {
-            try
-            {
-                Thread.CurrentThread.Abort();
-            }
-            finally
-            {
-                Thread.ResetAbort();
-            }
-        }
-
-        [TestMethod]
         public void WhenProcessingThrowExceptionWithUselessFilterThenThrowsException()
         {
             // Arrange
-            Mock<IExceptionFilter> exceptionFilter = new Mock<IExceptionFilter>(MockBehavior.Strict);
-            exceptionFilter.Setup(f => f.OnException(It.IsAny<ExceptionContext>()));
+            Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
+            exceptionFilter.Setup(f => f.OnException(It.IsAny<HandlerExecutedContext>()));
             this.configuration.Filters.Add(exceptionFilter.Object);
             this.SetupValidHandler<ValidCommand>();
             this.handler
@@ -155,7 +122,7 @@
 
             // Act
             ExceptionAssert.Throws<Exception>(() => processor.Process<ValidCommand, string>(command));
-            exceptionFilter.Verify(f => f.OnException(It.IsAny<ExceptionContext>()), Times.Once());
+            exceptionFilter.Verify(f => f.OnException(It.IsAny<HandlerExecutedContext>()), Times.Once());
             this.handler.Verify(h => h.Handle(It.IsAny<ICommand>()), Times.Once());
         }
 
@@ -163,10 +130,10 @@
         public void WhenProcessingThrowExceptionWithHandlingFilterThenReturnsExceptionValue()
         {
             // Arrange
-            Mock<IExceptionFilter> exceptionFilter = new Mock<IExceptionFilter>(MockBehavior.Strict);
+            Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter
-                .Setup(f => f.OnException(It.IsAny<ExceptionContext>()))
-                .Callback<ExceptionContext>(c => c.ExceptionHandled = true);
+                .Setup(f => f.OnException(It.IsAny<HandlerExecutedContext>()))
+                .Callback<HandlerExecutedContext>(c => c.Result = "Exception !!");
             ProcessorConfiguration config = new ProcessorConfiguration();
             config.Filters.Add(exceptionFilter.Object);
 
@@ -180,9 +147,8 @@
             // Act
             var result = processor.Process<ValidCommand, string>(command);
 
-            exceptionFilter.Verify(f => f.OnException(It.IsAny<ExceptionContext>()), Times.Once());
-            Assert.AreEqual(null, result);
-            Assert.IsNull(result);
+            exceptionFilter.Verify(f => f.OnException(It.IsAny<HandlerExecutedContext>()), Times.Once());
+            Assert.AreEqual("Exception !!", result);
 
             this.handler.Verify(h => h.Handle(It.IsAny<ICommand>()), Times.Once());
         }
@@ -191,10 +157,10 @@
         public void WhenProcessingThrowExceptionWithHandlingFilterAndResultThenReturnsExceptionValue()
         {
             // Arrange
-            Mock<IExceptionFilter> exceptionFilter = new Mock<IExceptionFilter>(MockBehavior.Strict);
+            Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter
-                .Setup(f => f.OnException(It.IsAny<ExceptionContext>()))
-                .Callback<ExceptionContext>(c => { c.ExceptionHandled = true; c.Result = "Exception !!"; });
+                .Setup(f => f.OnException(It.IsAny<HandlerExecutedContext>()))
+                .Callback<HandlerExecutedContext>(c => c.Result = "Exception !!");
             this.configuration.Filters.Add(exceptionFilter.Object);
             this.SetupValidHandler<ValidCommand>();
             this.handler
@@ -207,7 +173,7 @@
             var result = processor.Process<ValidCommand, string>(command);
 
             Assert.AreEqual("Exception !!", result);
-            exceptionFilter.Verify(f => f.OnException(It.IsAny<ExceptionContext>()), Times.Once());
+            exceptionFilter.Verify(f => f.OnException(It.IsAny<HandlerExecutedContext>()), Times.Once());
 
             this.handler.Verify(h => h.Handle(It.IsAny<ICommand>()), Times.Once());
         }
@@ -227,10 +193,10 @@
             var result = processor.Process<ValidCommand, string>(command);
 
             Assert.AreEqual("OK" + "Y" + "X", result);
-            filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()), Times.Once());
+            filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
             filter1.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Once());
 
-            filter2.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()), Times.Once());
+            filter2.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
             filter2.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Once());
 
             this.handler.Verify(h => h.Handle(It.IsAny<ICommand>()), Times.Once());
@@ -250,7 +216,7 @@
             var result = processor.Process<ValidCommand, string>(command);
 
             Assert.AreEqual("OK from filter", result);
-            filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()), Times.Once());
+            filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
             filter1.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Never());
 
             this.handler.Verify(h => h.Handle(It.IsAny<ICommand>()), Times.Never());
@@ -261,10 +227,13 @@
         {
             // Arrange
             this.configuration.Filters.Clear(); 
-            Mock<IExceptionFilter> exceptionFilter = new Mock<IExceptionFilter>(MockBehavior.Strict);
+            Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter
-                .Setup(f => f.OnException(It.IsAny<ExceptionContext>()))
-                .Callback<ExceptionContext>(c => { c.ExceptionHandled = true; c.Result = "Exception !!"; });
+                .Setup(f => f.OnException(It.IsAny<HandlerExecutedContext>()))
+                .Callback<HandlerExecutedContext>(
+                c => {
+                    c.Result = "Exception !!"; 
+                });
             this.configuration.Filters.Add(exceptionFilter.Object);
 
             var filter1 = this.SetupFilter("X");
@@ -281,10 +250,10 @@
             var result = processor.Process<ValidCommand, string>(command);
 
             Assert.AreEqual("Exception !!", result);
-            filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()), Times.Once());
+            filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
             filter1.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Once());
 
-            filter2.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()), Times.Once());
+            filter2.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
             filter2.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Once());
 
             this.handler.Verify(h => h.Handle(It.IsAny<ICommand>()), Times.Once());
@@ -294,14 +263,14 @@
         public void WhenProcessingWithFiltersThrowExceptionThenHandlesExceptionByHandlerFilter()
         {
             // Arrange
-            Mock<IExceptionFilter> exceptionFilter = new Mock<IExceptionFilter>(MockBehavior.Strict);
+            Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter
-                .Setup(f => f.OnException(It.IsAny<ExceptionContext>()))
-                .Callback<ExceptionContext>(c => { c.ExceptionHandled = true; c.Result = "Exception !!"; });
+                .Setup(f => f.OnException(It.IsAny<HandlerExecutedContext>()))
+                .Callback<HandlerExecutedContext>(c => c.Result = "Exception !!");
             this.configuration.Filters.Add(exceptionFilter.Object);
             
             var filter1 = this.SetupFilter("X");
-            var filter2 = this.SetupFilter("Y", null, c => c.ExceptionHandled = true);
+            var filter2 = this.SetupFilter("Y");
             var filter3 = this.SetupFilter("Z");
 
             this.SetupValidHandler<ValidCommand>();
@@ -315,32 +284,36 @@
             var result = processor.Process<ValidCommand, string>(command);
 
             // Assert
-            // Only the filter which handle exception and after can update the result.
-            Assert.AreEqual("YX", result);
-            filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()), Times.Once());
+            // Exception filter overrides result of handler filters
+            Assert.AreEqual("Exception !!", result);
+            filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
             filter1.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Once());
 
-            filter2.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()), Times.Once());
+            filter2.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
             filter2.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Once());
 
-            filter3.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()), Times.Once());
+            filter3.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
             filter3.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Once());
 
             this.handler.Verify(h => h.Handle(It.IsAny<ICommand>()), Times.Once());
         }
 
-        private Mock<IHandlerFilter> SetupFilter(string value, Action<HandlerExecutingContext> executingCallback = null, Action<HandlerExecutedContext> executedCallback = null)
+        private Mock<HandlerFilterAttribute> SetupFilter(string value, Action<HandlerContext> executingCallback = null, Action<HandlerExecutedContext> executedCallback = null)
         {
-            executingCallback = executingCallback ?? new Action<HandlerExecutingContext>(_ => { });
+            executingCallback = executingCallback ?? new Action<HandlerContext>(_ => { });
             executedCallback = executedCallback ?? new Action<HandlerExecutedContext>(_ => { });
-            Mock<IHandlerFilter> filter = new Mock<IHandlerFilter>(MockBehavior.Strict);
+            Mock<HandlerFilterAttribute> filter = new Mock<HandlerFilterAttribute>(MockBehavior.Strict);
             filter.Setup(f => f.AllowMultiple).Returns(true);
             filter
-                .Setup(f => f.OnCommandExecuting(It.IsAny<HandlerExecutingContext>()))
-                .Callback<HandlerExecutingContext>(c => executingCallback(c));
+                .Setup(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()))
+                .Callback<HandlerContext>(c => executingCallback(c));
             filter
                 .Setup(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()))
-                .Callback<HandlerExecutedContext>(c => { c.Result += value; executedCallback(c); });
+                .Callback<HandlerExecutedContext>(c => {
+                    if(c.Exception == null) 
+                        c.Result += value; 
+                    executedCallback(c); 
+                });
             this.configuration.Filters.Add(filter.Object);
             return filter;
         }
@@ -403,6 +376,8 @@
             InvalidCommand command = new InvalidCommand();
             activator.Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()));
             this.configuration.Services.Replace(typeof(IHandlerActivator), activator.Object);
+
+            this.SetupValidHandler<InvalidCommand>();
 
             CommandProcessor processor = this.CreatTestableProcessor();
 

@@ -61,6 +61,33 @@ namespace CommandProcessing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value must be greater than or equal to {0}..
+        /// </summary>
+        internal static string ArgumentMustBeGreaterThanOrEqualTo {
+            get {
+                return ResourceManager.GetString("ArgumentMustBeGreaterThanOrEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value must be less than or equal to {0}..
+        /// </summary>
+        internal static string ArgumentMustBeLessThanOrEqualTo {
+            get {
+                return ResourceManager.GetString("ArgumentMustBeLessThanOrEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The argument &apos;{0}&apos; is null or empty..
+        /// </summary>
+        internal static string ArgumentNullOrEmpty {
+            get {
+                return ResourceManager.GetString("ArgumentNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  The type {0} must derive from {1}.
         /// </summary>
         internal static string Common_TypeMustDeriveFromType {
@@ -112,6 +139,24 @@ namespace CommandProcessing {
         internal static string DependencyResolverNoService {
             get {
                 return ResourceManager.GetString("DependencyResolverNoService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After calling {0}.OnHandlerExecuted, the HandlerExecutedContext properties Result and Exception were both null. At least one of these values must be non-null. To provide a new response, please set the Result object; to indicate an error, please throw an exception..
+        /// </summary>
+        internal static string HandlerFilterAttribute_MustSupplyResponseOrException {
+            get {
+                return ResourceManager.GetString("HandlerFilterAttribute_MustSupplyResponseOrException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of argument &apos;{0}&apos; ({1}) is invalid for Enum type &apos;{2}&apos;..
+        /// </summary>
+        internal static string InvalidEnumArgument {
+            get {
+                return ResourceManager.GetString("InvalidEnumArgument", resourceCulture);
             }
         }
     }

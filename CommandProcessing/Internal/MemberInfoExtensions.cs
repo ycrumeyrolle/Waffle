@@ -1,4 +1,4 @@
-﻿namespace CommandProcessing
+﻿namespace CommandProcessing.Internal
 {
     using System;
     using System.Reflection;

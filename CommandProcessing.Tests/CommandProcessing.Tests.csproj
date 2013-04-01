@@ -61,12 +61,15 @@
     <Compile Include="Filters\TransactionAttributeFixture.cs" />
     <Compile Include="HandlerRequestFixture.cs" />
     <Compile Include="HandlerTypeCacheFixture.cs" />
+    <Compile Include="Helpers\EnumerableAssert.cs" />
+    <Compile Include="Internal\CollectionExtensionsFixture.cs" />
+    <Compile Include="Internal\ErrorFixture.cs" />
+    <Compile Include="Internal\ListWrapperCollectionFixture.cs" />
     <Compile Include="ProcessorConfigurationFixture.cs" />
     <Compile Include="Filters\FilterInfoComparerFixture.cs" />
     <Compile Include="Filters\HandlerFilterProviderFixture.cs" />
     <Compile Include="Filters\HandlerFilterCollectionFixture.cs" />
     <Compile Include="Filters\HandlerExecutedContextFixture.cs" />
-    <Compile Include="Filters\HandlerExecutingContextFixture.cs" />
     <Compile Include="Services\ServicesExtensionsFixture.cs" />
     <Compile Include="Services\HandlerServicesFixture.cs" />
     <Compile Include="Services\ServicesContainerFixture.cs" />
@@ -80,7 +83,6 @@
     <Compile Include="Filters\FilterInfoFixture.cs" />
     <Compile Include="Filters\FilterGroupingFixture.cs" />
     <Compile Include="Filters\FilterAttributeFixture.cs" />
-    <Compile Include="Filters\ExceptionContextFixture.cs" />
     <Compile Include="Interception\BadService.cs" />
     <Compile Include="Interception\DefaultInterceptionProviderFixture.cs" />
     <Compile Include="Interception\ProxyBuilderFixture.cs" />

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using CommandProcessing.Internal;
 
     internal class FilterGrouping
     {
@@ -9,18 +10,24 @@
 
         private readonly List<IExceptionFilter> exceptionFilters = new List<IExceptionFilter>();
 
-        public FilterGrouping(IEnumerable<FilterInfo> filters)
+        public FilterGrouping(ICollection<FilterInfo> filters)
         {
             if (filters == null)
             {
                 throw new ArgumentNullException("filters");
             }
 
-            foreach (FilterInfo current in filters)
+            var list = filters.AsList();
+            for (int i = 0; i < list.Count; i++)
             {
+                FilterInfo current = list[i];
                 IFilter instance = current.Instance;
                 FilterGrouping.Categorize(instance, this.handlerFilters);
                 FilterGrouping.Categorize(instance, this.exceptionFilters);
+            }
+            foreach (FilterInfo current in filters)
+            {
+               
             }
         }
 

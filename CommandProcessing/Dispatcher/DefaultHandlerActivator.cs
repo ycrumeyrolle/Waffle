@@ -5,6 +5,7 @@
     using System.Globalization;
     using System.Threading;
     using CommandProcessing.Filters;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Default implementation of an <see cref="IHandlerActivator"/>.

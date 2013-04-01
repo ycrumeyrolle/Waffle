@@ -5,7 +5,7 @@ namespace CommandProcessing.Tests
     using CommandProcessing.Filters;
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-    public class SimpleExceptionFilter : FilterAttribute, IExceptionFilter
+    public class SimpleExceptionFilter : ExceptionFilterAttribute
     {
         private readonly bool handle;
 
@@ -22,10 +22,14 @@ namespace CommandProcessing.Tests
             this.handle = handle;
         }
 
-        public void OnException(ExceptionContext exceptionContext)
+        public override void OnException(HandlerExecutedContext handlerExecutedContext)
         {
-            exceptionContext.ExceptionHandled = exceptionContext.ExceptionHandled || this.handle;
-            Trace.WriteLine("Exception handled by  " + this.name + " : " + this.handle);
+            base.OnException(handlerExecutedContext);
+            if (this.handle)
+            {
+                handlerExecutedContext.Result = true;
+                Trace.WriteLine("Exception handled by  " + this.name);
+            }
         }
     }
 }

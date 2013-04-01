@@ -2,6 +2,11 @@
 {
     public static class CommandProcessorExtensions
     {
+        public static void Process<TCommand>(this ICommandProcessor processor, TCommand command, HandlerRequest currentRequest) where TCommand : ICommand
+        {
+            processor.Process<TCommand, EmptyResult>(command, currentRequest);
+        }
+
         public static void Process<TCommand>(this ICommandProcessor processor, TCommand command) where TCommand : ICommand
         {
             processor.Process<TCommand, EmptyResult>(command, null);

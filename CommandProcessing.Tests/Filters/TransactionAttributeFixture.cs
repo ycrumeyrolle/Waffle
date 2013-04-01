@@ -27,8 +27,9 @@
         {
             // Arrange
             TransactionFilter filter = new TransactionFilter();
-            HandlerExecutingContext executingContext = new HandlerExecutingContext(new HandlerContext());
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, false, null);
+            HandlerContext executingContext = new HandlerContext();
+            executingContext.Result = "OK";
+            HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, null);
 
             // Act
             filter.OnCommandExecuting(executingContext);
@@ -44,8 +45,8 @@
         {
             // Arrange
             TransactionFilter filter = new TransactionFilter();
-            HandlerExecutingContext executingContext = new HandlerExecutingContext(new HandlerContext());
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, false, new Exception());
+            HandlerContext executingContext = new HandlerContext();
+            HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, new Exception());
 
             // Act
             filter.OnCommandExecuting(executingContext);
@@ -61,9 +62,9 @@
         {
             // Arrange
             TransactionFilter filter = new TransactionFilter();
-            HandlerExecutingContext executingContext = new HandlerExecutingContext(new HandlerContext());
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, false, new Exception());
-            executedContext.ExceptionHandled = true;
+            HandlerContext executingContext = new HandlerContext();
+            HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, new Exception());
+            executedContext.Result = "Exception handled";
 
             // Act
             filter.OnCommandExecuting(executingContext);

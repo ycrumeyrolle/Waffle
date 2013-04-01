@@ -13,29 +13,25 @@
         public void WhenCreatingInstanceThenPropertiesAreDefined()
         {
             // Arrange
-            HandlerContext initialContext = new HandlerContext();
-            HandlerExecutingContext preContext = new HandlerExecutingContext(initialContext);
+            HandlerContext preContext = new HandlerContext();
             Exception exception = new Exception();
 
             // Act
-            HandlerExecutedContext context = new HandlerExecutedContext(preContext, false, exception);
+            HandlerExecutedContext context = new HandlerExecutedContext(preContext, exception);
 
             // Assert
             Assert.IsNull(context.Result);
             Assert.IsNotNull(context.Exception);
             Assert.AreSame(context.Exception, exception);
-            Assert.IsFalse(context.ExceptionHandled);
-            Assert.IsFalse(context.Canceled);
         }
 
         [TestMethod]
         public void WhenSettingResultThenResultIsDefined()
         {
             // Arrange
-            HandlerContext initialContext = new HandlerContext();
-            HandlerExecutingContext preContext = new HandlerExecutingContext(initialContext);
+            HandlerContext preContext = new HandlerContext();
             Exception exception = new Exception();
-            HandlerExecutedContext context = new HandlerExecutedContext(preContext, false, exception);
+            HandlerExecutedContext context = new HandlerExecutedContext(preContext, exception);
             var value = "test";
 
             // Act

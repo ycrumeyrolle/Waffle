@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Linq;
+    using CommandProcessing.Internal;
 
     /// <summary>Represents the base class for action-filter attributes.</summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]

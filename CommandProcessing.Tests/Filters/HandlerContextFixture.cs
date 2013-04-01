@@ -1,10 +1,7 @@
 ﻿namespace CommandProcessing.Tests.Filters
 {
-    using System;
-
     using CommandProcessing;
     using CommandProcessing.Filters;
-    using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
 
@@ -52,44 +49,6 @@
             Assert.IsNotNull(context.Request);
             Assert.IsNotNull(context.Items);
             Assert.AreEqual(0, context.Items.Count);
-        }
-
-        [TestMethod]
-        public void WhenCreatingInstanceWithCopyCtorThenPropertiesAreDefined()
-        {
-            // Arrange
-            HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-            var processor = new Mock<ICommandProcessor>();
-            HandlerContext preContext = new HandlerContext(processor.Object, request, descriptor);
-
-            // Act
-            HandlerContext context = new SubHandlerContext(preContext);
-
-            // Assert
-            Assert.AreSame(this.config, context.Configuration);
-            Assert.AreSame(request, context.Request);
-            Assert.AreSame(request.Command, context.Command);
-            Assert.AreSame(descriptor, context.Descriptor);
-            Assert.IsNotNull(context.Processor);
-            Assert.IsNotNull(context.Request);
-            Assert.IsNotNull(context.Items);
-            Assert.AreEqual(0, context.Items.Count);
-        }
-
-        [TestMethod]
-        public void WhenCreatingFilterInfoWithNullParameterThenThrowsException()
-        {
-            // Assert
-            ExceptionAssert.ThrowsArgumentNull(() => new SubHandlerContext(null), "context");
-        }
-
-        private class SubHandlerContext : HandlerContext
-        {
-            public SubHandlerContext(HandlerContext context)
-                : base(context)
-            {
-            }
         }
     }
 }

@@ -76,6 +76,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -84,9 +86,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\CacheAttribute.cs" />
+    <Compile Include="Internal\CollectionExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Command.cs" />
     <Compile Include="CommandProcessorExtensions.cs" />
+    <Compile Include="Internal\Error.cs" />
+    <Compile Include="Eventing\EventAttribute.cs" />
+    <Compile Include="Filters\ExceptionFilterAttribute.cs" />
     <Compile Include="Filters\FilterInfoComparer.cs" />
+    <Compile Include="Filters\HandlerFilterAttribute.cs" />
     <Compile Include="Filters\IHandlerConfiguration.cs" />
     <Compile Include="Filters\TransactionFilter.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -106,6 +116,9 @@
     <Compile Include="Interception\IInterceptor.cs" />
     <Compile Include="Interception\IProxyBuilder.cs" />
     <Compile Include="Interception\DefaultProxyBuilder.cs" />
+    <Compile Include="Internal\ListWrapperCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Services\HandlerServices.cs" />
     <Compile Include="Services\ServicesExtensions.cs" />
     <Compile Include="Dispatcher\DefaultHandlerNameResolver.cs" />
@@ -123,12 +136,10 @@
     <Compile Include="Dependencies\EmptyResolver.cs" />
     <Compile Include="Dependencies\IDependencyScope.cs" />
     <Compile Include="Filters\HandlerExecutedContext.cs" />
-    <Compile Include="Filters\HandlerExecutingContext.cs" />
     <Compile Include="HandlerNotFoundException.cs" />
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="Filters\HandlerFilterCollection.cs" />
     <Compile Include="Filters\ConfigurationFilterProvider.cs" />
-    <Compile Include="Filters\ExceptionContext.cs" />
     <Compile Include="Filters\FilterScope.cs" />
     <Compile Include="Filters\FilterGrouping.cs" />
     <Compile Include="Filters\FilterInfo.cs" />
@@ -143,7 +154,7 @@
     <Compile Include="ICommandProcessor.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Dispatcher\IHandlerTypeResolver.cs" />
-    <Compile Include="MemberInfoExtensions.cs" />
+    <Compile Include="Internal\MemberInfoExtensions.cs" />
     <Compile Include="ProcessorConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ServicesContainer.cs" />
@@ -152,8 +163,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TypeActivator.cs" />
-    <Compile Include="TypeHelper.cs" />
+    <Compile Include="Internal\TypeActivator.cs" />
+    <Compile Include="Internal\TypeHelper.cs" />
     <Compile Include="Validation\DefaultValidator.cs" />
     <Compile Include="Validation\IValidator.cs" />
   </ItemGroup>
@@ -165,6 +176,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommandProcessing.Tasks\CommandProcessing.Tasks.csproj">
+      <Project>{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}</Project>
+      <Name>CommandProcessing.Tasks</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

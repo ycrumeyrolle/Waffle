@@ -7,7 +7,7 @@
     /// <summary>
     /// Represents a filter for encapsulate a transaction on handlers.
     /// </summary>
-    public class TransactionFilter : FilterAttribute, IHandlerFilter
+    public class TransactionFilter : HandlerFilterAttribute
     {
         private const string Key = "__TransactionFilterKey";
 
@@ -24,13 +24,13 @@
 
         public IsolationLevel IsolationLevel { get; set; }
 
-        public void OnCommandExecuting(HandlerExecutingContext context)
+        public override void OnCommandExecuting(HandlerContext context)
         {
-            var stack = GetStack(context.CommandContext);
+            var stack = GetStack(context);
             if (stack == null)
             {
                 stack = new Stack<TransactionScope>();
-                context.CommandContext.Items[Key] = stack;
+                context.Items[Key] = stack;
             }
 
             var options = new TransactionOptions { Timeout = this.Timeout, IsolationLevel = this.IsolationLevel };
@@ -38,14 +38,14 @@
             stack.Push(transactionScope);
         }
 
-        public void OnCommandExecuted(HandlerExecutedContext context)
+        public override void OnCommandExecuted(HandlerExecutedContext context)
         {
-            var stack = GetStack(context.Context.CommandContext);
+            var stack = GetStack(context.HandlerContext);
             if (stack != null && stack.Count > 0)
             {
                 using (var scope = stack.Pop())
                 {
-                    if (null != scope && (context.Exception == null || context.ExceptionHandled))
+                    if (null != scope && context.Result != null)
                     {
                         scope.Complete();
                     }

@@ -1,60 +1,70 @@
 ﻿namespace CommandProcessing.Filters
 {
     using System;
+    using CommandProcessing.Internal;
 
     public class HandlerExecutedContext
     {
-        public HandlerExecutedContext(HandlerExecutingContext context, bool canceled, Exception exception)
+        private HandlerContext handlerContext;
+
+        public HandlerExecutedContext(HandlerContext handlerContext, Exception exception)
         {
-            this.Context = context;
-            this.Canceled = canceled;
+            if (handlerContext == null)
+            {
+                throw new ArgumentNullException("handlerContext");
+            }
+
             this.Exception = exception;
+            this.handlerContext = handlerContext;
         }
 
-        public HandlerExecutingContext Context { get; private set; }
+        public HandlerContext HandlerContext
+        {
+            get
+            {
+                return this.handlerContext;
+            }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="T:CommandProcessing.Filters.HandlerExecutedContext"/> object is canceled.
-        /// </summary>
-        /// <returns>
-        /// true if the context canceled; otherwise, false.
-        /// </returns>
-        /// <value>
-        /// The canceled value.
-        /// </value>
-        public bool Canceled { get; set; }
+            set
+            {
+                if (value == null)
+                {
+                    throw Error.PropertyNull();
+                }
 
-        /// <summary>
-        /// Gets or sets the exception that occurred during the execution of the action method, if any.
-        /// </summary>
-        /// <returns>
-        /// The exception that occurred during the execution of the action method.
-        /// </returns>
-        /// <value>
-        /// The exception.
-        /// </value>
+                this.handlerContext = value;
+            }
+        }
+
         public Exception Exception { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the exception is handled.
-        /// </summary>
-        /// <returns>
-        /// True if the exception is handled; otherwise, false.
-        /// </returns>
-        /// <value>
-        /// The exception handled value.
-        /// </value>
-        public bool ExceptionHandled { get; set; }
+        public object Result
+        {
+            get
+            {
+                return this.HandlerContext != null ? this.HandlerContext.Result : null;
+            }
+
+            set
+            {
+                this.HandlerContext.Result = value;
+            }
+        }
 
         /// <summary>
-        /// Gets or sets the result returned by the action method.
+        /// Gets the current <see cref="ICommand"/>.
         /// </summary>
-        /// <returns>
-        /// The result returned by the action method.
-        /// </returns>
         /// <value>
-        /// The <see cref="HandlerResult"/>.
+        /// The <see cref="ICommand"/>.
         /// </value>
-        public object Result { get; set; }
+        public ICommand Command
+        {
+            get
+            {
+                return (HandlerContext != null && HandlerContext.Request != null)
+                           ? HandlerContext.Request.Command
+                           : null;
+            }
+        }
     }
 }

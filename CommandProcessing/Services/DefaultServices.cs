@@ -12,6 +12,7 @@
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using CommandProcessing.Interception;
+    using CommandProcessing.Internal;
     using CommandProcessing.Validation;
 
     /// <summary>
@@ -117,7 +118,7 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             return this.serviceTypesSingle.Contains(serviceType);
@@ -278,7 +279,7 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             this.defaultServicesSingle[serviceType] = service;

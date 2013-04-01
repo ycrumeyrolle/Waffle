@@ -5,30 +5,30 @@
     using CommandProcessing.Filters;
     using StackExchange.Profiling;
 
-    public class ProfileFilter : FilterAttribute, IHandlerFilter
+    public class ProfileFilter : HandlerFilterAttribute
     {
         private const string Key = "__ProfileFilterKey";
-        
-        public void OnCommandExecuting(HandlerExecutingContext context)
+
+        public override void OnCommandExecuting(HandlerContext context)
         {
-            var stack = GetStack(context.CommandContext); 
+            var stack = GetStack(context); 
             if (stack == null)
             {
                 stack = new Stack<IDisposable>();
-                context.CommandContext.Items[Key] = stack;
+                context.Items[Key] = stack;
             }
 
             var profiler = MiniProfiler.Current;
             if (profiler != null)
             {
-                var step = profiler.Step(context.CommandContext.Descriptor.Name);
+                var step = profiler.Step(context.Descriptor.Name);
                 stack.Push(step);
             }
         }
 
-        public void OnCommandExecuted(HandlerExecutedContext context)
+        public override void OnCommandExecuted(HandlerExecutedContext context)
         {
-            var stack = GetStack(context.Context.CommandContext);
+            var stack = GetStack(context.HandlerContext);
             if (stack != null && stack.Count > 0)
             {
                 var disposable = stack.Pop();

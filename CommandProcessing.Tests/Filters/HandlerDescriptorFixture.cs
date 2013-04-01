@@ -83,18 +83,8 @@
         }
         
         [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-        public class SimpleHandlerFilter : FilterAttribute, IHandlerFilter
+        public class SimpleHandlerFilter : HandlerFilterAttribute
         {
-            public void OnCommandExecuting(HandlerExecutingContext context)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void OnCommandExecuted(HandlerExecutedContext context)
-            {
-                throw new NotImplementedException();
-            }
-
             public override bool AllowMultiple
             {
                 get

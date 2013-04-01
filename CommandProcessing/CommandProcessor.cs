@@ -2,11 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using CommandProcessing.Services;
+    using CommandProcessing.Tasks;
     using CommandProcessing.Validation;
 
     public class CommandProcessor : ICommandProcessor, IDisposable
@@ -33,24 +36,9 @@
         public ProcessorConfiguration Configuration { get; private set; }
 
         public IHandlerSelector HandlerSelector { get; private set; }
-
-        public void Process<TCommand>(TCommand command, HandlerRequest currentRequest) where TCommand : ICommand
-        {
-            this.Process<TCommand, EmptyResult>(command, currentRequest);
-        }
-
+        
         public TResult Process<TCommand, TResult>(TCommand command, HandlerRequest currentRequest) where TCommand : ICommand
         {
-            IEnumerable<ICommandValidator> validators = this.Configuration.Services.GetCommandValidators();
-            bool valid = validators
-                .Select(validator => validator.Validate(command))
-                .Aggregate(true, (current, commandValid) => current & commandValid);
-
-            if (!valid && this.Configuration.AbortOnInvalidCommand)
-            {
-                return default(TResult);
-            }
-
             using (HandlerRequest request = new HandlerRequest(this.Configuration, command, currentRequest))
             {
                 HandlerDescriptor descriptor = this.HandlerSelector.SelectHandler(request);
@@ -62,32 +50,41 @@
                     throw new HandlerNotFoundException(typeof(TCommand));
                 }
 
+                if (!this.ValidateCommand(command) && this.Configuration.AbortOnInvalidCommand)
+                {
+                    return default(TResult);
+                }
+
                 HandlerContext context = new HandlerContext(this, request, descriptor);
 
-                IEnumerable<FilterInfo> filterPipeline = descriptor.GetFilterPipeline();
+                ICollection<FilterInfo> filterPipeline = descriptor.GetFilterPipeline();
 
                 FilterGrouping filterGrouping = new FilterGrouping(filterPipeline);
-                try
-                {
-                    HandlerExecutedContext executedContext = this.InvokeHandlerWithFilters(context, filterGrouping.HandlerFilters, handler);
-                    return (TResult)executedContext.Result;
-                }
-                catch (ThreadAbortException)
-                {
-                    throw;
-                }
-                catch (Exception exception)
-                {
-                    ExceptionContext exceptionContext = this.InvokeExceptionFilters(context, filterGrouping.ExceptionFilters, exception);
+                CancellationToken cancellationToken = new CancellationToken();
 
-                    if (!exceptionContext.ExceptionHandled)
+                Task<TResult> result = TaskHelpers.RunSynchronously(() =>
+                {
+                    Func<Task<TResult>> invokeFunc = InvokeHandlerWithHandlerFiltersAsync(context, cancellationToken, filterGrouping.HandlerFilters, () =>
                     {
-                        throw;
-                    }
+                        return InvokeHandlerAsync<TResult>(context, handler, cancellationToken);
+                    });
+                    return invokeFunc();
+                });
 
-                    return (TResult)exceptionContext.Result;
-                }
+                result = InvokeActionWithExceptionFiltersAsync(result, context, cancellationToken, filterGrouping.ExceptionFilters);
+
+                return result.Result;
             }
+        }
+
+        private bool ValidateCommand(ICommand command)
+        {
+            IEnumerable<ICommandValidator> validators = this.Configuration.Services.GetCommandValidators();
+            bool valid = validators
+                .Select(validator => validator.Validate(command))
+                .Aggregate(true, (current, commandValid) => current & commandValid);
+
+            return valid;
         }
 
         public TService Using<TService>() where TService : class
@@ -111,69 +108,68 @@
             GC.SuppressFinalize(this);
         }
 
-        private static HandlerExecutedContext InvokeCommandFilter(IHandlerFilter filter, HandlerExecutingContext preContext, Func<HandlerExecutedContext> continuation)
+        internal static Task<TResult> InvokeActionWithExceptionFiltersAsync<TResult>(Task<TResult> actionTask, HandlerContext context, CancellationToken cancellationToken, IEnumerable<IExceptionFilter> filters)
         {
-            filter.OnCommandExecuting(preContext);
-            if (preContext.Result != null && preContext.Result != null)
-            {
-                return new HandlerExecutedContext(preContext, true, null) { Result = preContext.Result };
-            }
+            Contract.Assert(actionTask != null);
+            Contract.Assert(context != null);
+            Contract.Assert(filters != null);
 
-            bool exceptionOccured = false;
-            HandlerExecutedContext actionExecutedContext;
-            try
-            {
-                actionExecutedContext = continuation();
-            }
-            catch (ThreadAbortException)
-            {
-                actionExecutedContext = new HandlerExecutedContext(preContext, false, null);
-                filter.OnCommandExecuted(actionExecutedContext);
-                throw;
-            }
-            catch (Exception exception)
-            {
-                exceptionOccured = true;
-                actionExecutedContext = new HandlerExecutedContext(preContext, false, exception);
-                filter.OnCommandExecuted(actionExecutedContext);
-                if (!actionExecutedContext.ExceptionHandled)
+            return actionTask.Catch(
+                info =>
                 {
-                    throw;
-                }
-            }
+                    HandlerExecutedContext executedContext = new HandlerExecutedContext(context, info.Exception);
 
-            if (!exceptionOccured)
+                    // Note: exception filters need to be scheduled in the reverse order so that
+                    // the more specific filter (e.g. Action) executes before the less specific ones (e.g. Global)
+                    filters = filters.Reverse();
+
+                    // Note: in order to work correctly with the TaskHelpers.Iterate method, the lazyTaskEnumeration
+                    // must be lazily evaluated. Otherwise all the tasks might start executing even though we want to run them
+                    // sequentially and not invoke any of the following ones if an earlier fails.
+                    IEnumerable<Task> lazyTaskEnumeration = filters.Select(filter => filter.ExecuteExceptionFilterAsync(executedContext, cancellationToken));
+                    Task<TResult> resultTask =
+                        TaskHelpers.Iterate(lazyTaskEnumeration, cancellationToken)
+                                   .Then(() =>
+                                       {
+                                           if (executedContext.Result != null)
+                                           {
+                                               return TaskHelpers.FromResult((TResult)executedContext.Result);
+                                           }
+
+                                           return TaskHelpers.FromError<TResult>(executedContext.Exception);
+                                       }, runSynchronously: true);
+
+                    return info.Task(resultTask);
+                });
+        }
+        
+        internal static Func<Task<TResult>> InvokeHandlerWithHandlerFiltersAsync<TResult>(HandlerContext context, CancellationToken cancellationToken, IEnumerable<IHandlerFilter> filters, Func<Task<TResult>> innerAction)
+        {
+            Contract.Assert(context != null);
+            Contract.Assert(filters != null);
+            Contract.Assert(innerAction != null);
+
+            // Because the continuation gets built from the inside out we need to reverse the filter list
+            // so that least specific filters (Global) get run first and the most specific filters (Action) get run last.
+            filters = filters.Reverse();
+
+            Func<Task<TResult>> result = filters.Aggregate(innerAction, (continuation, filter) =>
             {
-                filter.OnCommandExecuted(actionExecutedContext);
-            }
-
-            return actionExecutedContext;
-        }
-
-        protected virtual ExceptionContext InvokeExceptionFilters(HandlerContext context, IEnumerable<IExceptionFilter> filters, Exception exception)
-        {
-            ExceptionContext exceptionContext = new ExceptionContext(context, exception);
-            foreach (IExceptionFilter current in filters.Reverse())
-            {
-                current.OnException(exceptionContext);
-            }
-
-            return exceptionContext;
-        }
-
-        protected virtual HandlerExecutedContext InvokeHandlerWithFilters(HandlerContext context, IEnumerable<IHandlerFilter> filters, Handler handler)
-        {
-            HandlerExecutingContext preContext = new HandlerExecutingContext(context);
-            Func<HandlerExecutedContext> seed = () => new HandlerExecutedContext(preContext, false, null) { Result = this.InvokeHandler(context, handler) };
-            Func<HandlerExecutedContext> func = filters.Reverse().Aggregate(seed, (next, filter) => () => CommandProcessor.InvokeCommandFilter(filter, preContext, next));
-            return func();
-        }
-
-        protected virtual object InvokeHandler(HandlerContext context, Handler handler)
-        {
-            object result = handler.Handle(context.Command);
+                return () => filter.ExecuteHandlerFilterAsync(context, cancellationToken, continuation);
+            });
 
             return result;
+        }
+        
+        internal static Task<TResult> InvokeHandlerAsync<TResult>(HandlerContext context, Handler handler, CancellationToken cancellationToken)
+        {
+            return TaskHelpers.RunSynchronously(
+                () =>
+                    {
+                        TResult result = (TResult)handler.Handle(context.Command);
+                        return TaskHelpers.FromResult(result);
+                    },
+                cancellationToken);
         }
 
         protected virtual void Dispose(bool disposing)

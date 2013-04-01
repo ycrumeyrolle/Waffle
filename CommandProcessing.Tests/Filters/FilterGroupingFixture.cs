@@ -40,16 +40,16 @@
             var filters = new[]
                 {
                     new FilterInfo(new Mock<IHandlerFilter>().Object, FilterScope.Global),
-                    new FilterInfo(new Mock<IExceptionFilter>().Object, FilterScope.Global),
+                    new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<IFilter>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<IHandlerFilter>().Object, FilterScope.Global),
-                    new FilterInfo(new Mock<IExceptionFilter>().Object, FilterScope.Global),
+                    new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<IHandlerFilter>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<IFilter>().Object, FilterScope.Global),
-                    new FilterInfo(new Mock<IExceptionFilter>().Object, FilterScope.Global),
+                    new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<IHandlerFilter>().Object, FilterScope.Global),
-                    new FilterInfo(new Mock<IExceptionFilter>().Object, FilterScope.Global),
-                    new FilterInfo(new Mock<IExceptionFilter>().Object, FilterScope.Global)
+                    new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global),
+                    new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global)
                 };
             FilterGrouping group = new FilterGrouping(filters);
             return group;

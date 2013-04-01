@@ -1,9 +1,11 @@
 ﻿namespace CommandProcessing.Filters
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public interface IHandlerFilter : IFilter
     {
-        void OnCommandExecuting(HandlerExecutingContext context);
-
-        void OnCommandExecuted(HandlerExecutedContext context);
+        Task<TResult> ExecuteHandlerFilterAsync<TResult>(HandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<TResult>> continuation);
     }
 }

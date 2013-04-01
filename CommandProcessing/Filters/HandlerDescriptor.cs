@@ -8,6 +8,7 @@
     using System.Linq;
     using System.Reflection;
     using CommandProcessing.Dispatcher;
+    using CommandProcessing.Internal;
     using CommandProcessing.Services;
 
     public class HandlerDescriptor
@@ -16,7 +17,7 @@
 
         private ProcessorConfiguration configuration;
 
-        private readonly Lazy<Collection<FilterInfo>> filterPipeline;
+        private readonly Lazy<ICollection<FilterInfo>> filterPipeline;
 
         private readonly ConcurrentDictionary<object, object> properties = new ConcurrentDictionary<object, object>();
 
@@ -32,7 +33,7 @@
         {
             this.configuration = configuration;
             this.HandlerType = handlerType;
-            this.filterPipeline = new Lazy<Collection<FilterInfo>>(this.InitializeFilterPipeline);
+            this.filterPipeline = new Lazy<ICollection<FilterInfo>>(this.InitializeFilterPipeline);
             this.attributesCached = handlerType.GetCustomAttributes(true);
             MethodInfo methodInfo = handlerType.GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             this.attributesCached = this.attributesCached.Concat(methodInfo.GetCustomAttributes(true)).ToArray();
@@ -66,7 +67,7 @@
             return new Collection<T>(TypeHelper.OfType<T>(this.attributesCached));
         }
 
-        public Collection<FilterInfo> GetFilterPipeline()
+        public ICollection<FilterInfo> GetFilterPipeline()
         {
             return this.filterPipeline.Value;
         }
@@ -97,12 +98,12 @@
             return filter == null || filter.AllowMultiple;
         }
 
-        private Collection<FilterInfo> InitializeFilterPipeline()
+        private ICollection<FilterInfo> InitializeFilterPipeline()
         {
             IEnumerable<IFilterProvider> filterProviders = this.configuration.Services.GetFilterProviders();
             IEnumerable<FilterInfo> source = filterProviders.SelectMany(fp => fp.GetFilters(this.configuration, this)).OrderBy(f => f, FilterInfoComparer.Instance);
             source = HandlerDescriptor.RemoveDuplicates(source.Reverse()).Reverse();
-            return new Collection<FilterInfo>(source.ToList());
+            return source.ToArray();
         }
 
         // Initialize the Descriptor. This invokes all IHandlerConfiguration attributes
@@ -127,8 +128,9 @@
 
             // Check for attribute
             object[] attrs = type.GetCustomAttributes(inherit: false);
-            foreach (object attr in attrs)
+            for (int i = 0; i < attrs.Length; i++)
             {
+                object attr = attrs[i];
                 var handlerConfig = attr as IHandlerConfiguration;
                 if (handlerConfig != null)
                 {

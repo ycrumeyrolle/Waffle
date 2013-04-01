@@ -94,7 +94,7 @@
             return request;
         }
 
-        private void RegisterForDispose(IDisposable resource)
+        public void RegisterForDispose(IDisposable resource)
         {
             if (resource != null)
             {

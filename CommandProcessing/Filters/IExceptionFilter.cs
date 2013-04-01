@@ -1,7 +1,10 @@
 ﻿namespace CommandProcessing.Filters
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public interface IExceptionFilter : IFilter
     {
-        void OnException(ExceptionContext exceptionContext);
+        Task ExecuteExceptionFilterAsync(HandlerExecutedContext handlerExecutedContext, CancellationToken cancellationToken);
     }
 }
