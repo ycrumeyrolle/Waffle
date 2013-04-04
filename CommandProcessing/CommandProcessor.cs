@@ -56,6 +56,8 @@
                 }
 
                 HandlerContext context = new HandlerContext(this, request, descriptor);
+                handler.Context = context;
+                handler.Processor = this;
 
                 ICollection<FilterInfo> filterPipeline = descriptor.GetFilterPipeline();
 
