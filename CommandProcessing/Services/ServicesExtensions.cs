@@ -7,6 +7,7 @@
     using CommandProcessing.Dependencies;
     using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
+    using CommandProcessing.Eventing;
     using CommandProcessing.Filters;
     using CommandProcessing.Interception;
     using CommandProcessing.Validation;
@@ -102,6 +103,17 @@
         public static IInterceptionProvider GetInterceptorProvider(this ServicesContainer services)
         {
             return services.GetServiceOrThrow<IInterceptionProvider>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IMessageHub"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IMessageHub"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IMessageHub"/> service is not registered.</exception>
+        public static IMessageHub GetMessageHub(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IMessageHub>();
         }
 
         /// <summary>

@@ -87,6 +87,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Caching\CacheAttribute.cs" />
+    <Compile Include="Eventing\IMessageHub.cs" />
+    <Compile Include="Eventing\MessageHub.cs" />
     <Compile Include="Internal\CollectionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
