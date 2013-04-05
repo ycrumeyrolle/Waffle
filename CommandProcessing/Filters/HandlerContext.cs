@@ -9,10 +9,9 @@ namespace CommandProcessing.Filters
             this.Items = new Dictionary<string, object>();
         }
 
-        public HandlerContext(ICommandProcessor processor, HandlerRequest request, HandlerDescriptor descriptor)
+        public HandlerContext(HandlerRequest request, HandlerDescriptor descriptor)
             : this()
         {
-            this.Processor = processor;
             this.Configuration = request.Configuration;
             this.Request = request;
             this.Command = request.Command;
@@ -29,8 +28,6 @@ namespace CommandProcessing.Filters
         /// The result.
         /// </value>
         public object Result { get; set; }
-
-        public ICommandProcessor Processor { get; set; }
 
         public ProcessorConfiguration Configuration { get; private set; }
 

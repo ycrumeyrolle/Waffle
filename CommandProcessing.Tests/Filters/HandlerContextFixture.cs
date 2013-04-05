@@ -35,17 +35,15 @@
             // Arrange
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
             HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-            var processor = new Mock<ICommandProcessor>();
-
+         
             // Act
-            HandlerContext context = new HandlerContext(processor.Object, request, descriptor);
+            HandlerContext context = new HandlerContext(request, descriptor);
 
             // Assert
             Assert.AreSame(this.config, context.Configuration);
             Assert.AreSame(request, context.Request);
             Assert.AreSame(request.Command, context.Command);
             Assert.AreSame(descriptor, context.Descriptor);
-            Assert.IsNotNull(context.Processor);
             Assert.IsNotNull(context.Request);
             Assert.IsNotNull(context.Items);
             Assert.AreEqual(0, context.Items.Count);

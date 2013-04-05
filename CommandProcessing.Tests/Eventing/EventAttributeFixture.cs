@@ -24,7 +24,7 @@
             // Arrange
             Mock<IMessageHub> messageHub = new Mock<IMessageHub>(MockBehavior.Strict);
             HandlerRequest request = new HandlerRequest(new ProcessorConfiguration(), new Mock<ICommand>().Object);
-            HandlerContext context = new HandlerContext(null, request, null);
+            HandlerContext context = new HandlerContext(request, null);
             context.Configuration.Services.Replace(typeof(IMessageHub), messageHub.Object);
             HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
             messageHub.Setup(h => h.Publish("test", It.IsAny<object>()));

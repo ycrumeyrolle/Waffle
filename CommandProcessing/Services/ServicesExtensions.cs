@@ -128,6 +128,17 @@
         }
 
         /// <summary>
+        /// Gets the <see cref="ICommandProcessor"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ICommandProcessor"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandProcessor"/> service is not registered.</exception>
+        public static ICommandProcessor GetProcessor(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<ICommandProcessor>();
+        }
+
+        /// <summary>
         /// Gets the list of <see cref="IInterceptor"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
