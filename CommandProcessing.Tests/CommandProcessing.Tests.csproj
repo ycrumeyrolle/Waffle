@@ -58,14 +58,18 @@
   <ItemGroup>
     <Compile Include="CommandProcessorFixture.cs" />
     <Compile Include="Dependencies\DependencyResolverExtensionsResolverFixture.cs" />
+    <Compile Include="Eventing\EventAttributeFixture.cs" />
     <Compile Include="Eventing\MessageHubFixture.cs" />
     <Compile Include="Filters\TransactionAttributeFixture.cs" />
     <Compile Include="HandlerRequestFixture.cs" />
     <Compile Include="HandlerTypeCacheFixture.cs" />
     <Compile Include="Helpers\EnumerableAssert.cs" />
+    <Compile Include="Helpers\TaskExtensions.cs" />
+    <Compile Include="Helpers\ThreadPoolSyncContext.cs" />
     <Compile Include="Internal\CollectionExtensionsFixture.cs" />
     <Compile Include="Internal\ErrorFixture.cs" />
     <Compile Include="Internal\ListWrapperCollectionFixture.cs" />
+    <Compile Include="Internal\TaskHelperFixture.cs" />
     <Compile Include="ProcessorConfigurationFixture.cs" />
     <Compile Include="Filters\FilterInfoComparerFixture.cs" />
     <Compile Include="Filters\HandlerFilterProviderFixture.cs" />
@@ -109,6 +113,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\CommandProcessing.Tasks\CommandProcessing.Tasks.csproj">
+      <Project>{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}</Project>
+      <Name>CommandProcessing.Tasks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CommandProcessing\CommandProcessing.csproj">
       <Project>{289D3B8B-D8A2-44AF-931C-9B3DF7E319B6}</Project>
       <Name>CommandProcessing</Name>

@@ -14,7 +14,7 @@
         
         public override void OnCommandExecuted(HandlerExecutedContext context)
         {
-            var hub = context.HandlerContext.Processor.Configuration.Services.GetMessageHub();
+            var hub = context.HandlerContext.Configuration.Services.GetMessageHub();
             hub.Publish(this.EventName, context.Command);
         }
     }

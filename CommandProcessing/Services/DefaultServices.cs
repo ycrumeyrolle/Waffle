@@ -10,6 +10,7 @@
     using CommandProcessing.Dependencies;
     using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
+    using CommandProcessing.Eventing;
     using CommandProcessing.Filters;
     using CommandProcessing.Interception;
     using CommandProcessing.Internal;
@@ -97,6 +98,10 @@
             this.SetSingle<IInterceptionProvider>(new DefaultInterceptionProvider(this.configuration));
             this.SetMultiple<IInterceptor>(Enumerable.Empty<IInterceptor>().ToArray());
             this.SetMultiple<ICommandValidator>(new DefaultCommandValidator());
+
+            this.SetSingle<IMessageHub>(new MessageHub());
+            
+            this.SetSingle<ICommandProcessor>(null);
 
             this.serviceTypesSingle = new HashSet<Type>(this.defaultServicesSingle.Keys);
             this.serviceTypesMulti = new HashSet<Type>(this.defaultServicesMulti.Keys);

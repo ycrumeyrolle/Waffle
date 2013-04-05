@@ -52,7 +52,7 @@
                 response =>
                 {
                     calledOnActionExecuted = true;
-                    Tuple<TResult, Exception> tuple = this.CallOnHandlerExecuted<TResult>(handlerContext, response);
+                    Tuple<object, Exception> tuple = this.CallOnHandlerExecuted<TResult>(handlerContext, response);
                     
                     // TODO : encaspulates result into reference type (Result for example)
                     if (tuple.Item1 == null)
@@ -60,7 +60,7 @@
                         return TaskHelpers.FromError<TResult>(tuple.Item2);
                     }
 
-                    return TaskHelpers.FromResult(tuple.Item1);
+                    return TaskHelpers.FromResult((TResult)tuple.Item1);
                 }, 
                 cancellationToken).Catch(
                 info =>
@@ -76,13 +76,13 @@
                     }
 
                     // TODO : encaspulates result into reference type (Result for example)
-                    Tuple<TResult, Exception> result = CallOnHandlerExecuted<TResult>(handlerContext, null, info.Exception);
-                    return result.Item1 != null ? info.Handled(result.Item1) : info.Throw(result.Item2);
+                    Tuple<object, Exception> result = CallOnHandlerExecuted<TResult>(handlerContext, null, info.Exception);
+                    return result.Item1 != null ? info.Handled((TResult)result.Item1) : info.Throw(result.Item2);
                  }, 
                 cancellationToken);
         }
 
-        private Tuple<TResult, Exception> CallOnHandlerExecuted<TResult>(HandlerContext handlerContext, object response = null, Exception exception = null)
+        private Tuple<object, Exception> CallOnHandlerExecuted<TResult>(HandlerContext handlerContext, object response = null, Exception exception = null)
         {
             Contract.Assert(handlerContext != null);
             Contract.Assert(response != null || exception != null);
@@ -95,12 +95,12 @@
             this.OnCommandExecuted(httpActionExecutedContext);
             if (httpActionExecutedContext.Result != null)
             {
-                return new Tuple<TResult, Exception>((TResult)httpActionExecutedContext.Result, null);
+                return new Tuple<object, Exception>(httpActionExecutedContext.Result, null);
             }
 
             if (httpActionExecutedContext.Exception != null)
             {
-                return new Tuple<TResult, Exception>(default(TResult), httpActionExecutedContext.Exception);
+                return new Tuple<object, Exception>(default(TResult), httpActionExecutedContext.Exception);
             }
 
             throw new InvalidOperationException(string.Format(Resources.HandlerFilterAttribute_MustSupplyResponseOrException, this.GetType().Name));

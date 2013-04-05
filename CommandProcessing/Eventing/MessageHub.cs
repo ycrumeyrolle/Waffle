@@ -10,7 +10,7 @@ namespace CommandProcessing.Eventing
     public class MessageHub : IMessageHub
     {
         private readonly ConcurrentDictionary<string, List<Tuple<object, Action<object>>>> store = new ConcurrentDictionary<string, List<Tuple<object, Action<object>>>>();
-
+        
         public void Subscribe(string eventName, object subscriber, Action<object> callback)
         {
             var queue = this.store.GetOrAdd(eventName, _ => new List<Tuple<object, Action<object>>>());

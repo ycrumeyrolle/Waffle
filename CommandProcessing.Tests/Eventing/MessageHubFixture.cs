@@ -21,7 +21,6 @@
             callback3.Setup(c => c.Callback(It.IsAny<object>()));
             MessageHub hub = new MessageHub();
             hub.Subscribe("event1", this, callback1.Object.Callback);
-            hub.Subscribe("event1", this, callback1.Object.Callback);
             hub.Subscribe("event2", this, callback2.Object.Callback);
             hub.Subscribe("event3", this, callback3.Object.Callback);
             
@@ -29,7 +28,7 @@
             hub.Publish("event1", command);
 
             // Assert
-            callback1.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(2));
+            callback1.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(1));
             callback2.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(0));
             callback3.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(0));
         }
@@ -57,6 +56,40 @@
             callback1.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(1));
             callback2.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(0));
             callback3.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(0));
+        }
+        
+        [TestMethod]
+        public void WhenUnsubscribingEventThenCallbackAreNotCalled()
+        {
+            // Arrange
+            Mock<ICallback> callback1 = new Mock<ICallback>();
+            callback1.Setup(c => c.Callback(It.IsAny<object>()));
+            MessageHub hub = new MessageHub();
+            hub.Subscribe("event1", this, callback1.Object.Callback);
+            hub.Unsubscribe("event1", this);
+
+            SimpleCommand command = new SimpleCommand();
+            hub.Publish("event1", command);
+
+            // Assert
+            callback1.Verify(c => c.Callback(It.IsAny<object>()), Times.Never());
+        }
+        
+        [TestMethod]
+        public void WhenUnsubscribingAllEventsThenCallbackAreNotCalled()
+        {
+            // Arrange
+            Mock<ICallback> callback1 = new Mock<ICallback>();
+            callback1.Setup(c => c.Callback(It.IsAny<object>()));
+            MessageHub hub = new MessageHub();
+            hub.Subscribe("event1", this, callback1.Object.Callback);
+            hub.UnsubscribeAll(this);
+
+            SimpleCommand command = new SimpleCommand();
+            hub.Publish("event1", command);
+
+            // Assert
+            callback1.Verify(c => c.Callback(It.IsAny<object>()), Times.Never());
         }
 
         [TestMethod]

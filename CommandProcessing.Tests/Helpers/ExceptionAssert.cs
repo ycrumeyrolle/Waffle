@@ -14,12 +14,24 @@
             }
             catch (Exception e)
             {
-                exception = e as TException;
+                exception = UnwrapException(e) as TException;
             }
 
             Assert.IsNotNull(exception);
             return exception;
         }
+
+        private static Exception UnwrapException(Exception exception)
+        {
+            AggregateException aggEx;
+            while ((aggEx = exception as AggregateException) != null)
+            {
+                exception = aggEx.GetBaseException();
+            }
+
+            return exception;
+        }
+
 
         internal static void ThrowsArgumentNull(Action action, string paramName)
         {
