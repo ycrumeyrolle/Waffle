@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Represents a container for services that can be specific to a handler. 
@@ -34,7 +35,7 @@
         {
             if (parent == null)
             {
-                throw new ArgumentNullException("parent");
+                throw Error.ArgumentNull("parent");
             }
 
             this.parent = parent;

@@ -4,12 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using CommandProcessing.Dispatcher;
+    using CommandProcessing.Internal;
     using CommandProcessing.Services;
 
     internal sealed class HandlerTypeCache
     {
-        private static readonly Type CommandHandlerType = typeof(Handler<,>);
-
         private static readonly Type CommandHandlerInterfaceType = typeof(IHandler<,>);
 
         private readonly ProcessorConfiguration configuration;
@@ -20,7 +19,7 @@
         {
             if (configuration == null)
             {
-                throw new ArgumentNullException("configuration");
+                throw Error.ArgumentNull("configuration");
             }
 
             this.configuration = configuration;
@@ -39,7 +38,7 @@
         {
             if (commandType == null)
             {
-                throw new ArgumentNullException("commandType");
+                throw Error.ArgumentNull("commandType");
             }
 
             HashSet<Type> matchingTypes = new HashSet<Type>();

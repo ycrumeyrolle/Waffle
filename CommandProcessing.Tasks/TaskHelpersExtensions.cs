@@ -284,10 +284,12 @@
                 {
                     return TaskHelpers.FromErrors<object>(task.Exception.InnerExceptions);
                 }
+
                 if (task.IsCanceled)
                 {
                     return TaskHelpers.Canceled<object>();
                 }
+
                 if (task.Status == TaskStatus.RanToCompletion)
                 {
                     return TaskHelpers.FromResult<object>((object)task.Result);
@@ -330,15 +332,17 @@
                 {
                     return TaskHelpers.FromErrors<TOuterResult>(task.Exception.InnerExceptions);
                 }
+
                 if (task.IsCanceled)
                 {
                     return TaskHelpers.Canceled<TOuterResult>();
                 }
+
                 if (task.Status == TaskStatus.RanToCompletion)
                 {
                     try
                     {
-                        return TaskHelpers.FromResult<TOuterResult>((TOuterResult)task.Result);
+                        return TaskHelpers.FromResult((TOuterResult)task.Result);
                     }
                     catch (Exception exception)
                     {
@@ -771,10 +775,12 @@
                 {
                     return TaskHelpers.FromErrors<TResult>(task.Exception.InnerExceptions);
                 }
+
                 if (task.IsCanceled || cancellationToken.IsCancellationRequested)
                 {
                     return TaskHelpers.Canceled<TResult>();
                 }
+
                 if (task.Status == TaskStatus.RanToCompletion)
                 {
                     return TaskHelpers.FromResult(result);
@@ -828,124 +834,6 @@
         /// </summary>
         private struct AsyncVoid
         {
-        }
-    }
-
-    internal abstract class CatchInfoBase<TTask>
-        where TTask : Task
-    {
-        private readonly Exception exception;
-        private readonly TTask task;
-
-        protected CatchInfoBase(TTask task)
-        {
-            Contract.Assert(task != null);
-            this.task = task;
-            this.exception = this.task.Exception.GetBaseException();  // Observe the exception early, to prevent tasks tearing down the app domain
-        }
-
-        /// <summary>
-        /// The exception that was thrown to cause the Catch block to execute.
-        /// </summary>
-        public Exception Exception
-        {
-            get { return this.exception; }
-        }
-
-        /// <summary>
-        /// Returns a CatchResult that re-throws the original exception.
-        /// </summary>
-        public CatchResult Throw()
-        {
-            return new CatchResult { Task = this.task };
-        }
-
-        /// <summary>
-        /// Represents a result to be returned from a Catch handler.
-        /// </summary>
-        internal struct CatchResult
-        {
-            /// <summary>
-            /// Gets or sets the task to be returned to the caller.
-            /// </summary>
-            internal TTask Task { get; set; }
-        }
-    }
-
-    internal class CatchInfo : CatchInfoBase<Task>
-    {
-        private static readonly CatchResult Completed = new CatchResult { Task = TaskHelpers.Completed() };
-
-        public CatchInfo(Task task)
-            : base(task)
-        {
-        }
-
-        /// <summary>
-        /// Returns a CatchResult that returns a completed (non-faulted) task.
-        /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "This would result in poor usability.")]
-        public CatchResult Handled()
-        {
-            return Completed;
-        }
-
-        /// <summary>
-        /// Returns a CatchResult that executes the given task and returns it, in whatever state it finishes.
-        /// </summary>
-        /// <param name="task">The task to return.</param>
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "This would result in poor usability.")]
-        public CatchResult Task(Task task)
-        {
-            return new CatchResult { Task = task };
-        }
-
-        /// <summary>
-        /// Returns a CatchResult that throws the given exception.
-        /// </summary>
-        /// <param name="ex">The exception to throw.</param>
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "This would result in poor usability.")]
-        public CatchResult Throw(Exception ex)
-        {
-            return new CatchResult { Task = TaskHelpers.FromError<object>(ex) };
-        }
-    }
-
-    internal class CatchInfo<T> : CatchInfoBase<Task<T>>
-    {
-        public CatchInfo(Task<T> task)
-            : base(task)
-        {
-        }
-
-        /// <summary>
-        /// Returns a CatchResult that returns a completed (non-faulted) task.
-        /// </summary>
-        /// <param name="returnValue">The return value of the task.</param>
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "This would result in poor usability.")]
-        public CatchResult Handled(T returnValue)
-        {
-            return new CatchResult { Task = TaskHelpers.FromResult(returnValue) };
-        }
-
-        /// <summary>
-        /// Returns a CatchResult that executes the given task and returns it, in whatever state it finishes.
-        /// </summary>
-        /// <param name="task">The task to return.</param>
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "This would result in poor usability.")]
-        public CatchResult Task(Task<T> task)
-        {
-            return new CatchResult { Task = task };
-        }
-
-        /// <summary>
-        /// Returns a CatchResult that throws the given exception.
-        /// </summary>
-        /// <param name="ex">The exception to throw.</param>
-        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "This would result in poor usability.")]
-        public CatchResult Throw(Exception ex)
-        {
-            return new CatchResult { Task = TaskHelpers.FromError<T>(ex) };
         }
     }
 }

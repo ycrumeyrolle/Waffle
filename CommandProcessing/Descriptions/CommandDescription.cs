@@ -24,7 +24,7 @@
         public Type CommandType { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="T:System.Type"/> of the <see cref="T:CommandProcessing.ICommandHandler"/>.
+        /// Gets or sets the <see cref="T:System.Type"/> of the <see cref="T:CommandProcessing.Handler"/>.
         /// </summary>
         /// <value>
         /// The type of the handler.

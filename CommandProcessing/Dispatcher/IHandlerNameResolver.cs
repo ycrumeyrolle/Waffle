@@ -3,7 +3,7 @@
     using CommandProcessing.Filters;
 
     /// <summary>
-    /// Provides an abstraction for managing the name of an handler. 
+    /// Provides an abstraction for getting the name of an handler. 
     /// </summary>
     public interface IHandlerNameResolver
     { 

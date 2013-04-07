@@ -63,6 +63,8 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>2</CodeContractsAnalysisWarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -71,6 +73,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\CommandProcessing.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -100,7 +104,7 @@
     <Compile Include="Filters\FilterInfoComparer.cs" />
     <Compile Include="Filters\HandlerFilterAttribute.cs" />
     <Compile Include="Filters\IHandlerConfiguration.cs" />
-    <Compile Include="Filters\TransactionFilter.cs" />
+    <Compile Include="Filters\TransactionFilterAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Handler`1.cs" />
@@ -168,7 +172,7 @@
     <Compile Include="Internal\TypeActivator.cs" />
     <Compile Include="Internal\TypeHelper.cs" />
     <Compile Include="Validation\DefaultValidator.cs" />
-    <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\ICommandValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

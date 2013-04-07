@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Default <see cref="IProxyBuilder"/> instance for proxying an service.
@@ -42,7 +43,7 @@
         {
             if (source == null)
             {
-                throw new ArgumentNullException("source");
+                throw Error.ArgumentNull("source");
             }
 
             Type type = typeof(T);
@@ -127,7 +128,7 @@
             ConstructorInfo ctor = type.GetConstructor(Type.EmptyTypes);
             if (ctor == null)
             {
-                throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "Unable to create a proxy of the type {0}. It has no parameterless constructor.", type.Name));
+                throw Error.NotSupported("Unable to create a proxy of the type {0}. It has no parameterless constructor.", type.Name);
             }
 
             FieldBuilder innerFieldBuilder = typeBuilder.DefineField("inner", type, FieldAttributes.Private);

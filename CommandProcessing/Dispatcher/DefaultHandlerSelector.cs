@@ -8,6 +8,7 @@
     using System.Linq;
     using System.Text;
     using CommandProcessing.Filters;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Default <see cref="IHandlerSelector"/> instance for choosing a <see cref="HandlerDescriptor"/> given a <see cref="HandlerRequest"/>
@@ -27,6 +28,11 @@
         /// <param name="configuration">The configuration.</param>
         public DefaultHandlerSelector(ProcessorConfiguration configuration)
         {
+            if (configuration == null)
+            {
+                throw Error.ArgumentNull("configuration");
+            }
+            
             this.handlerInfoCache = new Lazy<ConcurrentDictionary<Type, HandlerDescriptor>>(this.InitializeHandlerInfoCache);
             this.configuration = configuration;
             this.handlerTypeCache = new HandlerTypeCache(this.configuration);
@@ -41,7 +47,7 @@
         {
             if (request == null)
             {
-                throw new ArgumentNullException("request");
+                throw Error.ArgumentNull("request");
             }
 
             HandlerDescriptor result;
@@ -53,7 +59,7 @@
             ICollection<Type> handlerTypes = this.handlerTypeCache.GetHandlerTypes(request.CommandType);
             if (handlerTypes.Count == 0)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.DefaultHandlerSelector_HandlerNotFound, request.CommandType.Name));
+                throw Error.InvalidOperation(Resources.DefaultHandlerSelector_HandlerNotFound, request.CommandType.Name);
             }
 
             throw CreateAmbiguousHandlerException(request.CommandType.Name, handlerTypes);
@@ -81,8 +87,7 @@
                 typeList.Append(matchedType.FullName);
             }
 
-            string errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.DefaultHandlerSelector_CommandTypeAmbiguous, commandName, typeList, Environment.NewLine);
-            return new InvalidOperationException(errorMessage);
+            return Error.InvalidOperation(Resources.DefaultHandlerSelector_CommandTypeAmbiguous, commandName, typeList, Environment.NewLine);
         }
 
         private ConcurrentDictionary<Type, HandlerDescriptor> InitializeHandlerInfoCache()

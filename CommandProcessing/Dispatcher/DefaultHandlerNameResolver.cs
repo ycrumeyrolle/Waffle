@@ -1,10 +1,10 @@
 ﻿namespace CommandProcessing.Dispatcher
 {
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using CommandProcessing.Filters;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Provides an implementation of <see cref="IHandlerNameResolver"/> with no external dependencies.
@@ -25,6 +25,11 @@
         /// </returns>
         public string GetHandlerName(HandlerDescriptor descriptor)
         {
+            if (descriptor == null)
+            {
+                throw Error.ArgumentNull("descriptor");
+            }
+
             DisplayNameAttribute displayNameAttribute = descriptor.GetCustomAttributes<DisplayNameAttribute>().FirstOrDefault();
             if (displayNameAttribute != null)
             {

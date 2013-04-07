@@ -5,30 +5,50 @@
     using System.Diagnostics.Contracts;
     using System.Threading;
     using System.Threading.Tasks;
+    using CommandProcessing.Internal;
     using CommandProcessing.Tasks;
 
+    /// <summary>
+    /// Represents the base class for all handler-filter attributes.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public abstract class HandlerFilterAttribute : FilterAttribute, IHandlerFilter
     {
+        /// <summary>
+        /// Occurs before the action method is invoked.
+        /// </summary>
+        /// <param name="handlerContext">The handler context.</param>
         public virtual void OnCommandExecuting(HandlerContext handlerContext)
         {
         }
 
+        /// <summary>
+        /// Occurs after the action method is invoked.
+        /// </summary>
+        /// <param name="handlerExecutedContext">The handler executed context.</param>
         public virtual void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)
         {
         }
 
+        /// <summary>
+        /// Executes the filter action asynchronously.
+        /// </summary>
+        /// <typeparam name="TResult">The handler result type.</typeparam>
+        /// <param name="handlerContext">The handler context.</param>
+        /// <param name="cancellationToken">The cancellation token assigned for this task.</param>
+        /// <param name="continuation">The delegate function to continue after the action method is invoked.</param>
+        /// <returns>The newly created task for this operation.</returns>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We want to intercept all exceptions")]
         Task<TResult> IHandlerFilter.ExecuteHandlerFilterAsync<TResult>(HandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<TResult>> continuation)
         {
             if (handlerContext == null)
             {
-                throw new ArgumentNullException("handlerContext");
+                throw Error.ArgumentNull("handlerContext");
             }
 
             if (continuation == null)
             {
-                throw new ArgumentNullException("continuation");
+                throw Error.ArgumentNull("continuation");
             }
 
             try
@@ -54,7 +74,6 @@
                     calledOnActionExecuted = true;
                     Tuple<object, Exception> tuple = this.CallOnHandlerExecuted<TResult>(handlerContext, response);
                     
-                    // TODO : encaspulates result into reference type (Result for example)
                     if (tuple.Item1 == null)
                     {
                         return TaskHelpers.FromError<TResult>(tuple.Item2);
@@ -75,7 +94,6 @@
                         return info.Throw();
                     }
 
-                    // TODO : encaspulates result into reference type (Result for example)
                     Tuple<object, Exception> result = CallOnHandlerExecuted<TResult>(handlerContext, null, info.Exception);
                     return result.Item1 != null ? info.Handled((TResult)result.Item1) : info.Throw(result.Item2);
                  }, 
@@ -103,7 +121,7 @@
                 return new Tuple<object, Exception>(default(TResult), httpActionExecutedContext.Exception);
             }
 
-            throw new InvalidOperationException(string.Format(Resources.HandlerFilterAttribute_MustSupplyResponseOrException, this.GetType().Name));
+            throw Error.InvalidOperation(Resources.HandlerFilterAttribute_MustSupplyResponseOrException, this.GetType().Name);
         }
     }
 }

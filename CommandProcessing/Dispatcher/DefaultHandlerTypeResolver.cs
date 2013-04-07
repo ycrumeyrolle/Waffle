@@ -30,6 +30,11 @@
         /// </param>
         public DefaultHandlerTypeResolver(Predicate<Type> predicate)
         {
+            if (predicate == null)
+            {
+                throw Error.ArgumentNull("predicate");
+            }
+
             this.isHandlerTypePredicate = predicate;
         }
 
@@ -46,7 +51,7 @@
         {
             if (assembliesResolver == null)
             {
-                throw new ArgumentNullException("assembliesResolver");
+                throw Error.ArgumentNull("assembliesResolver");
             }
 
             List<Type> result = new List<Type>();
@@ -79,7 +84,7 @@
 
                 if (exportedTypes != null)
                 {
-                    result.AddRange(exportedTypes.Where(IsHandlerType));
+                    result.AddRange(exportedTypes.Where(type => this.isHandlerTypePredicate(type)));
                 }
             }
 

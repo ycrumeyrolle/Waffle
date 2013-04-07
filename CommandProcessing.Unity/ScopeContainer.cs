@@ -9,7 +9,7 @@
 
     public class ScopeContainer : IDependencyScope
     {
-        protected readonly IUnityContainer Container;
+        private readonly IUnityContainer container;
 
         public ScopeContainer(IUnityContainer container)
         {
@@ -18,14 +18,22 @@
                 throw new ArgumentNullException("container");
             }
 
-            this.Container = container;
+            this.container = container;
+        }
+
+        protected IUnityContainer Container
+        {
+            get
+            {
+                return this.container;
+            }
         }
 
         public object GetService(Type serviceType)
         {
-            if (this.Container.IsRegistered(serviceType))
+            if (this.container.IsRegistered(serviceType))
             {
-                return this.Container.Resolve(serviceType);
+                return this.container.Resolve(serviceType);
             }
 
             return null;
@@ -33,9 +41,9 @@
 
         public IEnumerable<object> GetServices(Type serviceType)
         {
-            if (this.Container.IsRegistered(serviceType))
+            if (this.container.IsRegistered(serviceType))
             {
-                return this.Container.ResolveAll(serviceType);
+                return this.container.ResolveAll(serviceType);
             }
 
             return Enumerable.Empty<object>();
@@ -43,15 +51,32 @@
 
         public void Dispose()
         {
-            this.Container.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (this.container != null)
+                {
+                    this.container.Dispose();
+                }
+            }
         }
 
         public void RegisterHandlers(ProcessorConfiguration configuration)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
+
             var explorer = configuration.Services.GetCommandExplorer();
             foreach (var description in explorer.Descriptions)
             {
-                this.Container.RegisterType(description.HandlerType);
+                this.container.RegisterType(description.HandlerType);
             }
         }
     }

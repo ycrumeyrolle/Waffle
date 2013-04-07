@@ -6,6 +6,7 @@
     using System.Linq;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
+    using CommandProcessing.Internal;
     using CommandProcessing.Services;
 
     /// <summary>
@@ -23,6 +24,11 @@
         /// <param name="configuration">The configuration.</param>
         public DefaultCommandExplorer(ProcessorConfiguration configuration)
         {
+            if (configuration == null)
+            {
+                throw Error.ArgumentNull("configuration");
+            }
+
             this.config = configuration;
             this.descriptions = new Lazy<Collection<CommandDescription>>(this.InitializeDescriptions);
         }

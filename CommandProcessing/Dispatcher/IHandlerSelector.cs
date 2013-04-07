@@ -5,7 +5,7 @@ namespace CommandProcessing.Dispatcher
     using CommandProcessing.Filters;
 
     /// <summary>
-    /// Defines the methods that are required for an <see cref="ICommandHandler"/> factory.
+    /// Defines the methods that are required for an <see cref="Handler"/> factory.
     /// </summary>
     public interface IHandlerSelector
     { 

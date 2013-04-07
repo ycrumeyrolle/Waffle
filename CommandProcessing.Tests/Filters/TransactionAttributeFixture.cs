@@ -14,7 +14,7 @@
         public void WhenCreatingInstanceThenPropertiesAreDefined()
         {
             // Arrange & Act
-            TransactionFilter filter = new TransactionFilter();
+            TransactionFilterAttribute filter = new TransactionFilterAttribute();
 
             // Assert
             Assert.AreEqual(TransactionScopeOption.Required, filter.ScopeOption);
@@ -26,7 +26,7 @@
         public void WhenInvokingFilterWithoutExceptionThenTransactionCompletes()
         {
             // Arrange
-            TransactionFilter filter = new TransactionFilter();
+            TransactionFilterAttribute filter = new TransactionFilterAttribute();
             HandlerContext executingContext = new HandlerContext();
             executingContext.Result = "OK";
             HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, null);
@@ -44,7 +44,7 @@
         public void WhenInvokingFilterWithExceptionThenTransactionRollbacks()
         {
             // Arrange
-            TransactionFilter filter = new TransactionFilter();
+            TransactionFilterAttribute filter = new TransactionFilterAttribute();
             HandlerContext executingContext = new HandlerContext();
             HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, new Exception());
 
@@ -61,7 +61,7 @@
         public void WhenInvokingFilterWithHandledExceptionThenTransactionCompletes()
         {
             // Arrange
-            TransactionFilter filter = new TransactionFilter();
+            TransactionFilterAttribute filter = new TransactionFilterAttribute();
             HandlerContext executingContext = new HandlerContext();
             HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, new Exception());
             executedContext.Result = "Exception handled";

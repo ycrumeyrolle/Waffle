@@ -1,6 +1,5 @@
 ﻿namespace CommandProcessing.Filters
 {
-    using System;
     using System.Collections.Generic;
     using CommandProcessing.Internal;
 
@@ -10,11 +9,11 @@
 
         private readonly List<IExceptionFilter> exceptionFilters = new List<IExceptionFilter>();
 
-        public FilterGrouping(ICollection<FilterInfo> filters)
+        public FilterGrouping(IEnumerable<FilterInfo> filters)
         {
             if (filters == null)
             {
-                throw new ArgumentNullException("filters");
+                throw Error.ArgumentNull("filters");
             }
 
             var list = filters.AsList();
@@ -24,10 +23,6 @@
                 IFilter instance = current.Instance;
                 FilterGrouping.Categorize(instance, this.handlerFilters);
                 FilterGrouping.Categorize(instance, this.exceptionFilters);
-            }
-            foreach (FilterInfo current in filters)
-            {
-               
             }
         }
 

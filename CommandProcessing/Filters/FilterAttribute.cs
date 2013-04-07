@@ -5,7 +5,7 @@
     using System.Linq;
     using CommandProcessing.Internal;
 
-    /// <summary>Represents the base class for action-filter attributes.</summary>
+    /// <summary>Represents the base class for handler-filter attributes.</summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public abstract class FilterAttribute : Attribute, IFilter
     {

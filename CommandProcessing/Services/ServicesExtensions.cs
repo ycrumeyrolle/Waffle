@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
     using CommandProcessing.Dependencies;
@@ -10,6 +11,7 @@
     using CommandProcessing.Eventing;
     using CommandProcessing.Filters;
     using CommandProcessing.Interception;
+    using CommandProcessing.Internal;
     using CommandProcessing.Validation;
 
     /// <summary>
@@ -155,6 +157,7 @@
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
         /// <returns>The <see cref="ICommandValidator"/> services.</returns>
         /// <exception cref="InvalidOperationException">The <see cref="ICommandValidator"/> services are not registered.</exception>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Validators", Justification = "False positive.")]
         public static IEnumerable<ICommandValidator> GetCommandValidators(this ServicesContainer services)
         {
             return services.GetServices<ICommandValidator>();
@@ -176,7 +179,7 @@
             T service = services.GetService<T>();
             if (service == null)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.DependencyResolverNoService, typeof(T).FullName));
+                throw Error.InvalidOperation(Resources.DependencyResolverNoService, typeof(T).FullName);
             }
 
             return service;
@@ -187,7 +190,7 @@
             T service = services.GetService<T>();
             if (service == null)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.DependencyResolverNoService, typeof(T).FullName));
+                throw Error.InvalidOperation(Resources.DependencyResolverNoService, typeof(T).FullName);
             }
 
             return service;

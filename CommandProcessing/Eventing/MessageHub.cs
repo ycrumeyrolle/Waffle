@@ -7,16 +7,30 @@ namespace CommandProcessing.Eventing
     using CommandProcessing.Internal;
     using CommandProcessing.Tasks;
 
+    /// <summary>
+    /// Provides a default implementation of the <see cref="IMessageHub"/>.
+    /// </summary>
     public class MessageHub : IMessageHub
     {
         private readonly ConcurrentDictionary<string, List<Tuple<object, Action<object>>>> store = new ConcurrentDictionary<string, List<Tuple<object, Action<object>>>>();
-        
+
+        /// <summary>
+        /// Subscribes for an event specified by <paramref name="eventName"/>.
+        /// </summary>
+        /// <param name="eventName">The name of the event to subscribe.</param>
+        /// <param name="subscriber">The subscriber.</param>
+        /// <param name="callback">THe action callback that will be called when the event will be triggered.</param>
         public void Subscribe(string eventName, object subscriber, Action<object> callback)
         {
             var queue = this.store.GetOrAdd(eventName, _ => new List<Tuple<object, Action<object>>>());
             queue.Add(Tuple.Create(subscriber, callback));
         }
 
+        /// <summary>
+        /// Unsubscribes for an event specified by <paramref name="eventName"/>.
+        /// </summary>
+        /// <param name="eventName">The name of the event to unsubscribe.</param>
+        /// <param name="subscriber">The subscriber.</param>
         public void Unsubscribe(string eventName, object subscriber)
         {
             List<Tuple<object, Action<object>>> queue;
@@ -26,6 +40,10 @@ namespace CommandProcessing.Eventing
             }
         }
 
+        /// <summary>
+        /// Unsubscribes for all events by a given <paramref name="subscriber"/>.
+        /// </summary>
+        /// <param name="subscriber">The subscriber.</param>
         public void UnsubscribeAll(object subscriber)
         {
             foreach (var queue in this.store.Values)
@@ -34,6 +52,11 @@ namespace CommandProcessing.Eventing
             }
         }
 
+        /// <summary>
+        /// Trigger an event specified by <paramref name="eventName"/>.
+        /// </summary>
+        /// <param name="eventName">The name of the triggerered event.</param>
+        /// <param name="context">The context of the event. This object will be supplied to the subscription callback.</param>
         public void Publish(string eventName, object context)
         {
             List<Tuple<object, Action<object>>> queue;

@@ -6,6 +6,7 @@
     using System.Globalization;
     using System.Linq;
     using CommandProcessing.Dependencies;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Represents a container for service instances used by the <see cref="ProcessorConfiguration"/>. Note that
@@ -70,7 +71,7 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             if (this.IsSingleService(serviceType))
@@ -97,12 +98,12 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             if (match == null)
             {
-                throw new ArgumentNullException("match");
+                throw Error.ArgumentNull("match");
             }
 
             List<object> instances = this.GetServiceInstances(serviceType);
@@ -120,17 +121,17 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             if (service == null)
             {
-                throw new ArgumentNullException("service");
+                throw Error.ArgumentNull("service");
             }
 
             if (!serviceType.IsInstanceOfType(service))
             {
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, Resources.Common_TypeMustDeriveFromType, service.GetType().Name, serviceType.Name), "service");
+                throw Error.Argument("service", Resources.Common_TypeMustDeriveFromType, service.GetType().Name, serviceType.Name);
             }
 
             List<object> instances = this.GetServiceInstances(serviceType);
@@ -155,19 +156,19 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             if (services == null)
             {
-                throw new ArgumentNullException("services");
+                throw Error.ArgumentNull("services");
             }
 
             object[] filteredServices = services.Where(svc => svc != null).ToArray();
             object incorrectlyTypedService = filteredServices.FirstOrDefault(svc => !serviceType.IsAssignableFrom(svc.GetType()));
             if (incorrectlyTypedService != null)
             {
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, Resources.Common_TypeMustDeriveFromType, serviceType.Name, serviceType.Name), "services");
+                throw Error.Argument("services", Resources.Common_TypeMustDeriveFromType, serviceType.Name, serviceType.Name);
             }
 
             List<object> instances = this.GetServiceInstances(serviceType);
@@ -191,12 +192,12 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             if (service == null)
             {
-                throw new ArgumentNullException("service");
+                throw Error.ArgumentNull("service");
             }
 
             List<object> instances = this.GetServiceInstances(serviceType);
@@ -217,12 +218,12 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             if (match == null)
             {
-                throw new ArgumentNullException("match");
+                throw Error.ArgumentNull("match");
             }
 
             List<object> instances = this.GetServiceInstances(serviceType);
@@ -242,7 +243,7 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             List<object> instances = this.GetServiceInstances(serviceType);
@@ -263,12 +264,12 @@
             // Check this early, so we don't call RemoveAll before Insert would catch the null service.
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             if ((service != null) && (!serviceType.IsInstanceOfType(service)))
             {
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, Resources.Common_TypeMustDeriveFromType, service.GetType().Name, serviceType.Name), "service");
+                throw Error.Argument("service", Resources.Common_TypeMustDeriveFromType, service.GetType().Name, serviceType.Name);
             }
 
             if (this.IsSingleService(serviceType))
@@ -294,7 +295,7 @@
             // Check this early, so we don't call RemoveAll before InsertRange would catch the null services.
             if (services == null)
             {
-                throw new ArgumentNullException("services");
+                throw Error.ArgumentNull("services");
             }
 
             this.RemoveAll(serviceType, _ => true);

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using CommandProcessing.Internal;
     using CommandProcessing.Services;
 
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "ServicesContainer is disposed with the configuration")]
@@ -15,7 +16,7 @@
         {
             if (configuration == null)
             {
-                throw new ArgumentNullException("configuration");
+                throw Error.ArgumentNull("configuration");
             }
 
             this.configuration = configuration;

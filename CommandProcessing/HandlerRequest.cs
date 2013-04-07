@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using CommandProcessing.Dependencies;
+    using CommandProcessing.Internal;
 
     public sealed class HandlerRequest : IDisposable
     {
@@ -21,12 +22,12 @@
         {
             if (configuration == null)
             {
-                throw new ArgumentNullException("configuration");
+                throw Error.ArgumentNull("configuration");
             }
 
             if (command == null)
             {
-                throw new ArgumentNullException("command");
+                throw Error.ArgumentNull("command");
             }
 
             this.Configuration = configuration;

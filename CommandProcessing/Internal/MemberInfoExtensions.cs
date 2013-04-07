@@ -9,7 +9,7 @@
         {
             if (member == null)
             {
-                throw new ArgumentNullException("member");
+                throw Error.ArgumentNull("member");
             }
 
             return (TAttribute[])member.GetCustomAttributes(typeof(TAttribute), inherit);

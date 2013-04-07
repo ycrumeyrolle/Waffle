@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Filters;
+    using CommandProcessing.Internal;
     using CommandProcessing.Services;
 
     public class ProcessorConfiguration : IDisposable
@@ -63,7 +63,7 @@
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value");
+                    throw Error.PropertyNull();
                 }
 
                 this.dependencyResolver = value;
@@ -101,7 +101,7 @@
             {
                 if (value == null)
                 {
-                    throw new ArgumentNullException("value");
+                    throw Error.PropertyNull();
                 }
 
                 this.initializer = value;

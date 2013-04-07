@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.Globalization;
     using System.Linq;
     using System.Threading;
@@ -34,6 +33,8 @@
     ///         <item><see cref="IProxyBuilder"/></item>
     ///         <item><see cref="IInterceptor"/></item>
     ///         <item><see cref="ICommandValidator"/></item>
+    ///         <item><see cref="IMessageHub"/></item>
+    ///         <item><see cref="ICommandProcessor"/></item>
     ///     </list>
     ///     <para>
     ///         Passing any type which is not on this to any method on this interface will cause
@@ -72,11 +73,12 @@
         /// <exception cref="ArgumentNullException">
         /// The <paramref name="configuration"/> is null.
         /// </exception>
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Class needs references to large number of types.")]
         public DefaultServices(ProcessorConfiguration configuration)
         {
             if (configuration == null)
             {
-                throw new ArgumentNullException("configuration");
+                throw Error.ArgumentNull("configuration");
             }
 
             this.configuration = configuration;
@@ -146,12 +148,12 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             if (!this.serviceTypesSingle.Contains(serviceType))
             {
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, Resources.DefaultServices_InvalidServiceType, serviceType.Name), "serviceType");
+                throw Error.Argument("serviceType", Resources.DefaultServices_InvalidServiceType, serviceType.Name);
             }
 
             // Invalidate the cache if the dependency scope has switched
@@ -206,12 +208,12 @@
         {
             if (serviceType == null)
             {
-                throw new ArgumentNullException("serviceType");
+                throw Error.ArgumentNull("serviceType");
             }
 
             if (!this.serviceTypesMulti.Contains(serviceType))
             {
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, Resources.DefaultServices_InvalidServiceType, serviceType.Name), "serviceType");
+                throw Error.Argument("serviceType", Resources.DefaultServices_InvalidServiceType, serviceType.Name);
             }
 
             // Invalidate the cache if the dependency scope has switched
@@ -264,12 +266,15 @@
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "inherits from base")]
         protected override List<object> GetServiceInstances(Type serviceType)
         {
-            Contract.Assert(serviceType != null);
+            if (serviceType == null)
+            {
+                throw Error.ArgumentNull("serviceType");
+            }
 
             List<object> result;
             if (!this.defaultServicesMulti.TryGetValue(serviceType, out result))
             {
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, Resources.DefaultServices_InvalidServiceType, serviceType.Name), "serviceType");
+                throw Error.Argument("serviceType", Resources.DefaultServices_InvalidServiceType, serviceType.Name);
             }
 
             return result;

@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
+    using CommandProcessing.Internal;
     using CommandProcessing.Services;
     using CommandProcessing.Tasks;
     using CommandProcessing.Validation;
@@ -25,7 +26,7 @@
         {
             if (configuration == null)
             {
-                throw new ArgumentNullException("configuration");
+                throw Error.ArgumentNull("configuration");
             }
 
             this.Configuration = configuration;
@@ -188,6 +189,7 @@
         private void Initialize()
         {
             this.Configuration.Initializer(this.Configuration);
+            this.Configuration.Services.Replace(typeof(ICommandProcessor), this);
             this.HandlerSelector = this.Configuration.Services.GetHandlerSelector();
         }
     }

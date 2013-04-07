@@ -18,7 +18,7 @@
         private Tuple<HandlerDescriptor, Func<Handler>> fastCache;
 
         /// <summary>
-        /// Creates the <see cref="ICommandHandler"/> specified by <paramref name="descriptor"/> using the given <paramref name="request"/>.
+        /// Creates the <see cref="Handler"/> specified by <paramref name="descriptor"/> using the given <paramref name="request"/>.
         /// </summary>
         /// <param name="request">
         /// The request.
@@ -27,18 +27,18 @@
         /// The controller descriptor.
         /// </param>
         /// <returns>
-        /// The <see cref="ICommandHandler"/>.
+        /// The <see cref="Handler"/>.
         /// </returns>
         public Handler Create(HandlerRequest request, HandlerDescriptor descriptor)
         {
             if (request == null)
             {
-                throw new ArgumentNullException("request");
+                throw Error.ArgumentNull("request");
             }
 
             if (descriptor == null)
             {
-                throw new ArgumentNullException("descriptor");
+                throw Error.ArgumentNull("descriptor");
             }
 
             try
@@ -47,7 +47,7 @@
             }
             catch (Exception innerException)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Resources.DefaultHandlerActivator_ErrorCreatingHandler, descriptor.HandlerType.Name), innerException);
+                throw Error.InvalidOperation(innerException, Resources.DefaultHandlerActivator_ErrorCreatingHandler, descriptor.HandlerType.Name);
             }
         }
 

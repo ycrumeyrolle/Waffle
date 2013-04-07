@@ -3,7 +3,7 @@ namespace CommandProcessing.Dispatcher
     using CommandProcessing.Filters;
 
     /// <summary>
-    /// Defines the methods that are required to create the <see cref="IHandler`2"/>.
+    /// Defines the methods that are required to create the <see cref="Handler"/>.
     /// </summary>
     public interface IHandlerActivator
     {

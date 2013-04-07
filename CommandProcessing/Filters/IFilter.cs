@@ -1,6 +1,8 @@
 ﻿namespace CommandProcessing.Filters
 {
-    /// <summary>Définit des membres qui spécifient l'ordre des filtres et si plusieurs filtres sont autorisés.</summary>
+    /// <summary>
+    /// Defines members for a filter.
+    /// </summary>
     public interface IFilter
     {
         /// <summary>

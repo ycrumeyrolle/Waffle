@@ -1,6 +1,7 @@
 ﻿namespace CommandProcessing.Filters
 {
     using System;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Provides information about the available action filters.
@@ -14,7 +15,7 @@
         {
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw Error.ArgumentNull("instance");
             }
 
             this.Instance = instance;
