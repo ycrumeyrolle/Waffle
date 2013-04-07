@@ -5,11 +5,18 @@
     using CommandProcessing.Filters;
     using StackExchange.Profiling;
 
+    /// <summary>
+    /// Represents a filter to profile handlers execution.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public sealed class ProfileFilterAttribute : HandlerFilterAttribute
     {
         private const string Key = "__ProfileFilterKey";
 
+        /// <summary>
+        /// Occurs before the handle method is invoked.
+        /// </summary>
+        /// <param name="handlerContext">The handler context.</param>
         public override void OnCommandExecuting(HandlerContext handlerContext)
         {
             if (handlerContext == null)
@@ -32,6 +39,10 @@
             }
         }
 
+        /// <summary>
+        /// Occurs after the handle method is invoked.
+        /// </summary>
+        /// <param name="handlerExecutedContext">The handler executed context.</param>
         public override void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)
         {
             if (handlerExecutedContext == null)
