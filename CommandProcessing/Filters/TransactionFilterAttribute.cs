@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Transactions;
     using CommandProcessing.Internal;
 
@@ -10,8 +9,7 @@
     /// Represents a filter to make handlers transactional.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    [SuppressMessage("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes", Justification = "This attribute could be inherited.")]
-    public class TransactionFilterAttribute : HandlerFilterAttribute
+    public sealed class TransactionFilterAttribute : HandlerFilterAttribute
     {
         private const string Key = "__TransactionFilterKey";
 
@@ -26,9 +24,9 @@
         }
 
         /// <summary>
-        /// Gets or sets options for creating the transaction scope.
+        /// Gets or sets the <see cref="TransactionScopeOption"/> for creating the transaction scope.
         /// </summary>
-        /// <value>Options for creating the transaction scope.</value>
+        /// <value>The <see cref="TransactionScopeOption"/> for creating the transaction scope.</value>
         public TransactionScopeOption ScopeOption { get; set; }
 
         /// <summary>
@@ -43,6 +41,10 @@
         /// <value>A <see cref="System.Transactions.IsolationLevel"/> enumeration that specifies the isolation level of the transaction.</value>
         public IsolationLevel IsolationLevel { get; set; }
 
+        /// <summary>
+        /// Occurs before the handle method is invoked.
+        /// </summary>
+        /// <param name="handlerContext">The handler context.</param>
         public override void OnCommandExecuting(HandlerContext handlerContext)
         {
             if (handlerContext == null)
@@ -74,6 +76,10 @@
             }
         }
 
+        /// <summary>
+        /// Occurs after the handle method is invoked.
+        /// </summary>
+        /// <param name="handlerExecutedContext">The handler executed context.</param>
         public override void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)
         {
             if (handlerExecutedContext == null)

@@ -328,16 +328,34 @@
         {
         }
 
+        /// <summary>
+        /// Removes a single-instance service from the default services.
+        /// </summary>
+        /// <param name="serviceType">The type of service.</param>
         protected abstract void ClearSingle(Type serviceType);
 
+        /// <summary>
+        /// Removes a multi-instance service from the default services.
+        /// </summary>
+        /// <param name="serviceType">The type of service.</param>
         protected virtual void ClearMultiple(Type serviceType)
         {
             List<object> instances = this.GetServiceInstances(serviceType);
             instances.Clear();
         }
 
+        /// <summary>
+        /// Replaces a single-instance service object.
+        /// </summary>
+        /// <param name="serviceType">The service type.</param>
+        /// <param name="service">The service object that replaces the previous instance.</param>
         protected abstract void ReplaceSingle(Type serviceType, object service);
 
+        /// <summary>
+        /// Replaces a multi-instance service object.
+        /// </summary>
+        /// <param name="serviceType">The service type.</param>
+        /// <param name="service">The service object that replaces all the previous instances.</param>
         protected virtual void ReplaceMultiple(Type serviceType, object service)
         {
             this.RemoveAll(serviceType, _ => true);

@@ -113,13 +113,13 @@
         }
 
         /// <summary>
-        /// Determine whether the service type should be fetched with GetService or GetServices. 
+        /// Queries whether a service type is single-instance.
         /// </summary>
         /// <param name="serviceType">
         /// Type of service to query.
         /// </param>
         /// <returns>
-        /// True if the service is singular. 
+        /// <c>true</c> if the service type has at most one instance, or <c>false</c> if the service type supports multiple instances.
         /// </returns>
         public override bool IsSingleService(Type serviceType)
         {
@@ -280,11 +280,20 @@
             return result;
         }
 
+        /// <summary>
+        /// Removes a single-instance service from the default services.
+        /// </summary>
+        /// <param name="serviceType">The type of service.</param>
         protected override void ClearSingle(Type serviceType)
         {
             this.defaultServicesSingle[serviceType] = null;
         }
 
+        /// <summary>
+        /// Replaces a single-instance service object.
+        /// </summary>
+        /// <param name="serviceType">The service type.</param>
+        /// <param name="service">The service object that replaces the previous instance.</param>
         protected override void ReplaceSingle(Type serviceType, object service)
         {
             if (serviceType == null)

@@ -1,22 +1,35 @@
 ﻿namespace CommandProcessing.Eventing
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using CommandProcessing.Filters;
     using CommandProcessing.Internal;
     using CommandProcessing.Services;
 
+    /// <summary>
+    /// Represents an <see cref="HandlerFilterAttribute"/> to trigger event on command handling.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    [SuppressMessage("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes", Justification = "This attribute could be inherited.")]
-    public class EventAttribute : HandlerFilterAttribute
+    public sealed class EventAttribute : HandlerFilterAttribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventAttribute"/> class.
+        /// </summary>
+        /// <param name="eventName">The name of the event to trigger.</param>
         public EventAttribute(string eventName)
         {
             this.EventName = eventName;
         }
 
+        /// <summary>
+        /// Gets the name of the event to trigger.
+        /// </summary>
+        /// <value>The name of the event to trigger.</value>
         public string EventName { get; private set; }
 
+        /// <summary>
+        /// Occurs after the handle method is invoked.
+        /// </summary>
+        /// <param name="handlerExecutedContext">The handler executed context.</param>
         public override void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)
         {
             if (handlerExecutedContext == null)

@@ -29,6 +29,9 @@
 
         private FieldBuilder interceptorFieldBuilder;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultProxyBuilder"/> class. 
+        /// </summary>
         public DefaultProxyBuilder()
         {
             this.assemblyBuilder = new Lazy<AssemblyBuilder>(this.InitializeAssemblyBuilder);
@@ -39,6 +42,13 @@
             this.exceptionMethod = interceptorType.GetMethod("OnException", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(Exception) }, null);
         }
 
+        /// <summary>
+        /// Build a proxy from a <paramref name="source"/> object.
+        /// </summary>
+        /// <typeparam name="T">The type of the proxy to build.</typeparam>
+        /// <param name="source">The object who will be proxied.</param>
+        /// <param name="interceptorProvider">The interceptor provider.</param>
+        /// <returns>A proxy of the source object. Only the virtual method/properties will be proxied.</returns>   
         public T Build<T>(T source, IInterceptionProvider interceptorProvider) where T : class
         {
             if (source == null)

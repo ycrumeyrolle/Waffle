@@ -16,9 +16,7 @@
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
 
         private readonly ProcessorConfiguration configuration = new ProcessorConfiguration();
-
-        private readonly Mock<Handler> handler = new Mock<Handler>();
-
+        
         private readonly IUnityContainer container = new UnityContainer();
 
         private readonly Mock<IHandlerTypeResolver> resolver = new Mock<IHandlerTypeResolver>();
@@ -71,7 +69,7 @@
             try
             {
                 config = config ?? this.configuration;
-                var iocContainer = new IocContainer(this.container);
+                var iocContainer = new DependencyResolver(this.container);
                 iocContainer.RegisterHandlers(this.configuration);
                 config.DependencyResolver = iocContainer;
                 CommandProcessor processor = new CommandProcessor(config);

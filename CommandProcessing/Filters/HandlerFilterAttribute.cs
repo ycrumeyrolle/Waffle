@@ -15,7 +15,7 @@
     public abstract class HandlerFilterAttribute : FilterAttribute, IHandlerFilter
     {
         /// <summary>
-        /// Occurs before the action method is invoked.
+        /// Occurs before the handle method is invoked.
         /// </summary>
         /// <param name="handlerContext">The handler context.</param>
         public virtual void OnCommandExecuting(HandlerContext handlerContext)
@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Occurs after the action method is invoked.
+        /// Occurs after the handle method is invoked.
         /// </summary>
         /// <param name="handlerExecutedContext">The handler executed context.</param>
         public virtual void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)

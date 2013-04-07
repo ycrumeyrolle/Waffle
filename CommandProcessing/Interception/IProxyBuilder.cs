@@ -6,7 +6,7 @@ namespace CommandProcessing.Interception
     public interface IProxyBuilder
     {
         /// <summary>
-        /// Build a proxy from a source object.
+        /// Build a proxy from a <paramref name="source"/> object.
         /// </summary>
         /// <typeparam name="T">The type of the proxy to build.</typeparam>
         /// <param name="source">The object who will be proxied.</param>

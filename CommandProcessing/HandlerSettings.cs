@@ -1,10 +1,12 @@
 ﻿namespace CommandProcessing
 {
-    using System;
     using System.Diagnostics.CodeAnalysis;
     using CommandProcessing.Internal;
     using CommandProcessing.Services;
 
+    /// <summary>
+    /// Contains settings for an handler. 
+    /// </summary>
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "ServicesContainer is disposed with the configuration")]
     public sealed class HandlerSettings
     {
@@ -12,6 +14,10 @@
 
         private ServicesContainer services;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerSettings"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
         public HandlerSettings(ProcessorConfiguration configuration)
         {
             if (configuration == null)
@@ -22,8 +28,16 @@
             this.configuration = configuration;
         }
 
+        /// <summary>
+        /// Gets or sets whether the command should be aborted on invalid command.
+        /// </summary>
+        /// <value><c>true</c> if the command should be aborted on invalid command ; false otherwise.</value>
         public bool AbortOnInvalidCommand { get; set; }
 
+        /// <summary>
+        /// Gets the collection of service instances for the handler.
+        /// </summary>
+        /// <value>The collection of service instances for the handler.</value>
         public ServicesContainer Services
         {
             get

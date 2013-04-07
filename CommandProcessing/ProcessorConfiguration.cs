@@ -7,6 +7,9 @@
     using CommandProcessing.Internal;
     using CommandProcessing.Services;
 
+    /// <summary>
+    /// Represents the configuration for a processor.
+    /// </summary>
     public class ProcessorConfiguration : IDisposable
     {
         private readonly List<IDisposable> resourcesToDispose = new List<IDisposable>();
@@ -19,6 +22,9 @@
 
         private IDependencyResolver dependencyResolver = EmptyResolver.Instance;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProcessorConfiguration"/> class.
+        /// </summary>
         public ProcessorConfiguration()
         {
             this.Services = new DefaultServices(this);
@@ -39,11 +45,24 @@
             // will perform the same logic on this clone as on the original.
             this.Initializer = configuration.Initializer;
         }
-        
-        public bool AbortOnInvalidCommand { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether the command should be aborted on invalid command.
+        /// </summary>
+        /// <value><c>true</c> if the command should be aborted on invalid command;  false otherwise.</value>
+        public bool AbortOnInvalidCommand { get; set; }
+     
+        /// <summary>
+        /// Gets or sets whether the services created with the Using method of the <see cref="CommandProcessor"/> 
+        /// shoud be a proxy.
+        /// </summary>
+        /// <value><c>true</c> if the service should be a proxy ; false otherwise.</value>
         public bool ServiceProxyCreationEnabled { get; set; }
 
+        /// <summary>
+        /// Gets the global <see cref="HandlerFilterCollection"/>.
+        /// </summary>
+        /// <value>The global <see cref="HandlerFilterCollection"/>.</value>
         public HandlerFilterCollection Filters
         {
             get
@@ -52,6 +71,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="IDependencyResolver"/>.
+        /// </summary>
+        /// <value>The <see cref="IDependencyResolver"/>.</value>
         public IDependencyResolver DependencyResolver
         {
             get
@@ -70,6 +93,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets the <see cref="ServicesContainer"/>.
+        /// </summary>
+        /// <value>The <see cref="ServicesContainer"/>.</value>
         public ServicesContainer Services { get; private set; }
         
         /// <summary>
@@ -108,6 +135,9 @@
             }
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources that are used by the object and releases the managed resources.
+        /// </summary>
         public void Dispose()
         {
             this.Dispose(true);
@@ -136,6 +166,10 @@
             }
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources that are used by the object and, optionally, releases the managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)

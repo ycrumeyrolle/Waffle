@@ -70,6 +70,10 @@ namespace CommandProcessing.Filters
         /// <value>The descriptor for the handler context.</value>
         public HandlerDescriptor Descriptor { get; private set; }
 
+        /// <summary>
+        /// Gets a <see cref="IDictionary{K, V}"/> of <see cref="string" />, <see cref="object" /> that can be used share data.
+        /// </summary>
+        /// <value>The <see cref="IDictionary{K, V}"/> of <see cref="string" />, <see cref="object" />.</value>
         public IDictionary<string, object> Items { get; private set; }
     }
 }
