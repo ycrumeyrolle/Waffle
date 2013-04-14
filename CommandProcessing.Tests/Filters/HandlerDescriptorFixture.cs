@@ -44,6 +44,9 @@
             Assert.AreEqual(2, filters.Count());
             Assert.AreEqual(1, filters.Select(f => f.Instance).OfType<IExceptionFilter>().Count());
             Assert.AreEqual(1, filters.Select(f => f.Instance).OfType<IHandlerFilter>().Count());
+
+            Assert.IsInstanceOfType(filters.ToArray()[0].Instance, typeof(SimpleHandlerFilter));
+            Assert.IsInstanceOfType(filters.ToArray()[1].Instance, typeof(SimpleExceptionFilter));
         }
 
         [TestMethod]

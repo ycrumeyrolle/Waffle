@@ -117,17 +117,21 @@
             return this.HandlerActivator.Create(request, this);
         }
 
-        private static IEnumerable<FilterInfo> RemoveDuplicates(IEnumerable<FilterInfo> filters)
+        private static void RemoveDuplicates(List<FilterInfo> filters)
         {
             HashSet<Type> hashSet = new HashSet<Type>();
-            foreach (FilterInfo current in filters)
+            for (int i = filters.Count - 1; i >= 0; i--)
             {
+                FilterInfo current = filters[i];
                 object instance = current.Instance;
                 Type type = instance.GetType();
                 if (!hashSet.Contains(type) || HandlerDescriptor.AllowMultiple(instance))
                 {
-                    yield return current;
                     hashSet.Add(type);
+                }
+                else
+                {
+                    filters.RemoveAt(i);
                 }
             }
         }
@@ -141,9 +145,26 @@
         private ICollection<FilterInfo> InitializeFilterPipeline()
         {
             IEnumerable<IFilterProvider> filterProviders = this.configuration.Services.GetFilterProviders();
-            IEnumerable<FilterInfo> source = filterProviders.SelectMany(fp => fp.GetFilters(this.configuration, this)).OrderBy(f => f, FilterInfoComparer.Instance);
-            source = HandlerDescriptor.RemoveDuplicates(source.Reverse()).Reverse();
-            return source.ToArray();
+            
+            IFilterProvider[] providers = filterProviders.AsArray();
+            List<FilterInfo> filters = new List<FilterInfo>();
+            for (int i = 0; i < providers.Length; i++)
+            {
+                IFilterProvider provider = providers[i];
+                foreach (FilterInfo filter in provider.GetFilters(this.configuration, this))
+                {
+                    filters.Add(filter);
+                }
+            }
+
+            filters.Sort(FilterInfoComparer.Instance);
+
+            if (filters.Count > 1)
+            {
+              RemoveDuplicates(filters);
+            }
+
+            return filters;
         }
 
         // Initialize the Descriptor. This invokes all IHandlerConfiguration attributes
