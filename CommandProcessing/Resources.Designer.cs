@@ -88,6 +88,15 @@ namespace CommandProcessing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The property {0}.{1} could not be found..
+        /// </summary>
+        internal static string Common_PropertyNotFound {
+            get {
+                return ResourceManager.GetString("Common_PropertyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  The type {0} must derive from {1}.
         /// </summary>
         internal static string Common_TypeMustDeriveFromType {

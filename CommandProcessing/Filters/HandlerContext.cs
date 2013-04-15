@@ -1,6 +1,7 @@
 namespace CommandProcessing.Filters
 {
     using System.Collections.Generic;
+    using System.Security.Principal;
     using CommandProcessing.Internal;
 
     /// <summary>
@@ -75,5 +76,11 @@ namespace CommandProcessing.Filters
         /// </summary>
         /// <value>The <see cref="IDictionary{K, V}"/> of <see cref="string" />, <see cref="object" />.</value>
         public IDictionary<string, object> Items { get; private set; }
+        
+        /// <summary>
+        /// Gets the <see cref="IPrincipal"/>.
+        /// </summary>
+        /// <value>The <see cref="IPrincipal"/>.</value>
+        public IPrincipal User { get; internal set; }
     }
 }

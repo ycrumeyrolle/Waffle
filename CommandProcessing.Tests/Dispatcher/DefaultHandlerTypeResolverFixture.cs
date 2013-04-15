@@ -2,12 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Linq;
     using System.Reflection;
     using CommandProcessing;
     using CommandProcessing.Dispatcher;
-    using CommandProcessing.Filters;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -17,9 +15,7 @@
     public class DefaultHandlerTypeResolverFixture
     {
         private readonly Mock<IAssembliesResolver> assembliesResolver = new Mock<IAssembliesResolver>(MockBehavior.Strict);
-
-        private readonly Mock<Assembly> assembly = new Mock<Assembly>(MockBehavior.Strict);
-
+        
         [TestMethod]
         public void WhenGettingHandlerTypesThenReturnsCollection()
         {
@@ -41,7 +37,7 @@
         {
             // Assign
             DefaultHandlerTypeResolver resolver = this.CreateTestableService();
-            bool exceptionRaised = true;
+            bool exceptionRaised = false;
 
             // Act
             try

@@ -4,8 +4,10 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
+    using System.Runtime.Caching;
     using System.Threading;
     using CommandProcessing;
+    using CommandProcessing.Caching;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
@@ -309,26 +311,31 @@
                 .Callback<HandlerContext>(c => executingCallback(c));
             filter
                 .Setup(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()))
-                .Callback<HandlerExecutedContext>(c => {
-                    if(c.Exception == null) 
-                        c.Result += value; 
-                    executedCallback(c); 
-                });
+                .Callback<HandlerExecutedContext>(c =>
+                    {
+                        if (c.Exception == null)
+                        {
+                            c.Result += value;
+                        }
+
+                        executedCallback(c);
+                    });
             this.configuration.Filters.Add(filter.Object);
             return filter;
         }
 
-        private void SetupValidHandler<TCommand>(ProcessorConfiguration config = null) where TCommand : ICommand
+        private void SetupValidHandler<TCommand>(ProcessorConfiguration config = null, Handler validHandler = null) where TCommand : ICommand
         {
             config = config ?? this.configuration;
+            validHandler = validHandler ?? this.handler.Object;
             Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
             activator
                 .Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()))
-                .Returns(this.handler.Object);
+                .Returns(validHandler);
             config.Services.Replace(typeof(IHandlerActivator), activator.Object);
 
             Mock<IHandlerSelector> selector = new Mock<IHandlerSelector>(MockBehavior.Strict);
-            HandlerDescriptor descriptor = new HandlerDescriptor(config, this.handler.Object.GetType());
+            HandlerDescriptor descriptor = new HandlerDescriptor(config, validHandler.GetType());
             selector
                 .Setup(s => s.SelectHandler(It.IsAny<HandlerRequest>()))
                 .Returns(descriptor);
@@ -391,6 +398,35 @@
             this.handler.Verify(h => h.Handle(It.IsAny<ICommand>()), Times.Never());
         }
 
+        [TestMethod]
+        public void WhenProcessingCommandWithCacheThenReturnValueInCache()
+        {
+            Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
+            ValidCommand command1 = new ValidCommand();
+            command1.Property = "test1";
+            ValidCommand command2 = new ValidCommand();
+            command2.Property = "test2";
+            activator.Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()));
+            this.configuration.Services.Replace(typeof(IHandlerActivator), activator.Object);
+
+            this.SetupValidHandler<ValidCommand>(null, new ValidHandler());
+
+            CommandProcessor processor = this.CreatTestableProcessor();
+            
+            CacheAttribute attribute = new CacheAttribute();
+            attribute.Duration = 10;
+            attribute.VaryByParams = "none";
+            this.configuration.Filters.Add(attribute);
+
+            // Act
+            var result1 = processor.Process<ValidCommand, string>(command1);
+            var result2 = processor.Process<ValidCommand, string>(command2);
+
+            // Without result 1 would be different from result2
+            // With the cache results are the same
+            Assert.AreEqual(result1, result2);
+        }
+        
         [TestMethod]
         public void WhenUsingUnknowServiceThenThrowsArgumentException()
         {
@@ -481,7 +517,7 @@
         {
             public override string Handle(ValidCommand command)
             {
-                return "OK";
+                return command.Property;
             }
         }
 

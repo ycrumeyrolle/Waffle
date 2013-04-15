@@ -12,6 +12,7 @@
     using CommandProcessing.Filters;
     using CommandProcessing.Interception;
     using CommandProcessing.Internal;
+    using CommandProcessing.Metadata;
     using CommandProcessing.Validation;
 
     /// <summary>
@@ -117,6 +118,28 @@
         {
             return services.GetServiceOrThrow<IMessageHub>();
         }
+        
+        /// <summary>
+        /// Gets the <see cref="ModelMetadataProvider"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ModelMetadataProvider"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ModelMetadataProvider"/> service is not registered.</exception>
+        public static ModelMetadataProvider GetModelMetadataProvider(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<ModelMetadataProvider>();
+        }
+
+        /// <summary>
+        /// Gets the list of <see cref="IModelFlattener"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IModelFlattener"/> services.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IModelFlattener"/> services are not registered.</exception>
+        public static IModelFlattener GetModelFlattener(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IModelFlattener>();
+        }
 
         /// <summary>
         /// Gets the list of <see cref="ICommandExplorer"/> service.
@@ -127,6 +150,17 @@
         public static ICommandExplorer GetCommandExplorer(this ServicesContainer services)
         {
             return services.GetServiceOrThrow<ICommandExplorer>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IPrincipalProvider"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IPrincipalProvider"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IPrincipalProvider"/> service is not registered.</exception>
+        public static IPrincipalProvider GetPrincipalProvider(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IPrincipalProvider>();
         }
 
         /// <summary>

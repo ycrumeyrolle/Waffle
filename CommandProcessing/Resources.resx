@@ -126,6 +126,9 @@
   <data name="ArgumentNullOrEmpty" xml:space="preserve">
     <value>The argument '{0}' is null or empty.</value>
   </data>
+  <data name="Common_PropertyNotFound" xml:space="preserve">
+    <value>The property {0}.{1} could not be found.</value>
+  </data>
   <data name="Common_TypeMustDeriveFromType" xml:space="preserve">
     <value> The type {0} must derive from {1}</value>
   </data>

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.ComponentModel;
 
     internal static class TypeHelper
     {
@@ -25,6 +26,27 @@
 
             list.Capacity = count;
             return new ReadOnlyCollection<T>(list);
+        }
+
+        internal static bool HasStringConverter(Type type)
+        {
+            return TypeDescriptor.GetConverter(type).CanConvertFrom(typeof(string));
+        }
+
+        internal static bool IsNullableValueType(Type type)
+        {
+            return Nullable.GetUnderlyingType(type) != null;
+        }
+
+        internal static bool IsSimpleType(Type type)
+        {
+            return type.IsPrimitive ||
+                   type == typeof(string) ||
+                   type == typeof(DateTime) ||
+                   type == typeof(decimal) ||
+                   type == typeof(Guid) ||
+                   type == typeof(DateTimeOffset) ||
+                   type == typeof(TimeSpan);
         }
     }
 }

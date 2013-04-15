@@ -23,6 +23,8 @@
     {
         private bool disposed;
 
+        private IPrincipalProvider principalProvider;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandProcessor"/> class. 
         /// </summary>
@@ -86,6 +88,7 @@
                 }
 
                 HandlerContext context = new HandlerContext(request, descriptor);
+                context.User = this.principalProvider.Principal;
                 handler.Context = context;
                 handler.Processor = this;
 
@@ -235,6 +238,7 @@
             this.Configuration.Initializer(this.Configuration);
             this.Configuration.Services.Replace(typeof(ICommandProcessor), this);
             this.HandlerSelector = this.Configuration.Services.GetHandlerSelector();
+            this.principalProvider = this.Configuration.Services.GetPrincipalProvider();
         }
     }
 }

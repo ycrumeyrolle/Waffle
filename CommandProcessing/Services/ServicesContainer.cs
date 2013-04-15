@@ -165,7 +165,7 @@
             }
 
             object[] filteredServices = services.Where(svc => svc != null).ToArray();
-            object incorrectlyTypedService = filteredServices.FirstOrDefault(svc => !serviceType.IsAssignableFrom(svc.GetType()));
+            object incorrectlyTypedService = filteredServices.FirstOrDefault(svc => !serviceType.IsInstanceOfType(svc));
             if (incorrectlyTypedService != null)
             {
                 throw Error.Argument("services", Resources.Common_TypeMustDeriveFromType, serviceType.Name, serviceType.Name);

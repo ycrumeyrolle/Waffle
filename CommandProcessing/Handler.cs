@@ -1,5 +1,6 @@
 namespace CommandProcessing
 {
+    using System.Security.Principal;
     using CommandProcessing.Filters;
 
     /// <summary>
@@ -26,5 +27,17 @@ namespace CommandProcessing
         /// <param name="command">The <see cref="ICommand"/> to process.</param>
         /// <returns>The result object.</returns>
         public abstract object Handle(ICommand command);
+
+        /// <summary>
+        /// Gets the <see cref="IPrincipal"/>.
+        /// </summary>
+        /// <value>The <see cref="IPrincipal"/>.</value>
+        public IPrincipal User
+        {
+            get
+            {
+                return this.Context.User;
+            }
+        }
     }
 }

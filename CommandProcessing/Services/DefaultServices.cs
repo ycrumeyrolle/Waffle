@@ -13,6 +13,7 @@
     using CommandProcessing.Filters;
     using CommandProcessing.Interception;
     using CommandProcessing.Internal;
+    using CommandProcessing.Metadata;
     using CommandProcessing.Validation;
 
     /// <summary>
@@ -35,6 +36,7 @@
     ///         <item><see cref="ICommandValidator"/></item>
     ///         <item><see cref="IMessageHub"/></item>
     ///         <item><see cref="ICommandProcessor"/></item>
+    ///         <item><see cref="IPrincipalProvider"/></item>
     ///     </list>
     ///     <para>
     ///         Passing any type which is not on this to any method on this interface will cause
@@ -102,7 +104,12 @@
             this.SetMultiple<ICommandValidator>(new DefaultCommandValidator());
 
             this.SetSingle<IMessageHub>(new MessageHub());
-            
+
+            this.SetSingle<ModelMetadataProvider>(new DataAnnotationsModelMetadataProvider());
+            this.SetSingle<IModelFlattener>(new DefaultModelFlattener());
+
+            this.SetSingle<IPrincipalProvider>(new DefaultPrincipalProvider());
+
             this.SetSingle<ICommandProcessor>(null);
 
             this.serviceTypesSingle = new HashSet<Type>(this.defaultServicesSingle.Keys);

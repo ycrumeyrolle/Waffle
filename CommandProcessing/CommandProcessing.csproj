@@ -80,10 +80,13 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Caching\CacheAttribute.cs" />
+    <Compile Include="Caching\NoCacheAttribute.cs" />
+    <Compile Include="IPrincipalProvider.cs" />
     <Compile Include="Eventing\IMessageHub.cs" />
     <Compile Include="Eventing\MessageHub.cs" />
     <Compile Include="Internal\CollectionExtensions.cs">
@@ -118,6 +121,18 @@
     <Compile Include="Internal\ListWrapperCollection.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Internal\TypeDescriptorHelper.cs" />
+    <Compile Include="Metadata\AssociatedMetadataProvider.cs" />
+    <Compile Include="Metadata\CachedDataAnnotationsMetadataAttributes.cs" />
+    <Compile Include="Metadata\CachedDataAnnotationsModelMetadata.cs" />
+    <Compile Include="Metadata\CachedModelMetadata.cs" />
+    <Compile Include="Metadata\DataAnnotationsModelMetadataProvider.cs" />
+    <Compile Include="Metadata\ModelMetadata.cs" />
+    <Compile Include="Metadata\DefaultModelFlattener.cs" />
+    <Compile Include="Metadata\IModelFlattener.cs" />
+    <Compile Include="Metadata\ModelDictionary.cs" />
+    <Compile Include="Metadata\ModelMetadataProvider.cs" />
+    <Compile Include="DefaultPrincipalProvider.cs" />
     <Compile Include="Services\HandlerServices.cs" />
     <Compile Include="Services\ServicesExtensions.cs" />
     <Compile Include="Dispatcher\DefaultHandlerNameResolver.cs" />

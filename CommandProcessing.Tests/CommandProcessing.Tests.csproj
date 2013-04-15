@@ -47,9 +47,11 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\CacheAttributeFixture.cs" />
     <Compile Include="CommandProcessorFixture.cs" />
     <Compile Include="Dependencies\DependencyResolverExtensionsResolverFixture.cs" />
     <Compile Include="Eventing\EventAttributeFixture.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="Internal\ErrorFixture.cs" />
     <Compile Include="Internal\ListWrapperCollectionFixture.cs" />
     <Compile Include="Internal\TaskHelperFixture.cs" />
+    <Compile Include="Metadata\DataAnnotationsModelMetadataProvider.cs" />
     <Compile Include="ProcessorConfigurationFixture.cs" />
     <Compile Include="Filters\FilterInfoComparerFixture.cs" />
     <Compile Include="Filters\HandlerFilterProviderFixture.cs" />
