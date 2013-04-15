@@ -4,7 +4,6 @@ namespace CommandProcessing.Metadata
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
-    using System.Security;
 
     /// <summary>
     /// Provides prototype cache data for <see cref="CachedModelMetadata{TPrototypeCache}"/>.
@@ -24,10 +23,8 @@ namespace CommandProcessing.Metadata
         /// Gets or sets the metadata display attribute. 
         /// </summary>
         /// <value>The metadata display attribute.</value>
-        public DisplayAttribute Display { [SecuritySafeCritical] get; [SecuritySafeCritical] protected set; }
+        public DisplayAttribute Display { get; protected set; }
 
-        // [SecuritySafeCritical] because it uses several DataAnnotations attribute types
-        [SecuritySafeCritical]
         private void CacheAttributes(IEnumerable<Attribute> attributes)
         {
             this.Display = attributes.OfType<DisplayAttribute>().FirstOrDefault();

@@ -19,6 +19,11 @@
         private readonly object[] attributesCached;
 
         private ProcessorConfiguration configuration;
+        
+        /// <summary>
+        /// Gets the <see cref="IHandlerActivator"/> associated with this instance.
+        /// </summary>
+        private readonly IHandlerActivator handlerActivator;
 
         private readonly Lazy<ICollection<FilterInfo>> filterPipeline;
 
@@ -43,7 +48,7 @@
             this.attributesCached = handlerType.GetCustomAttributes(true);
             MethodInfo methodInfo = handlerType.GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             this.attributesCached = this.attributesCached.Concat(methodInfo.GetCustomAttributes(true)).ToArray();
-            this.HandlerActivator = this.configuration.Services.GetHandlerActivator();
+            this.handlerActivator = this.configuration.Services.GetHandlerActivator();
             this.Name = this.configuration.Services.GetHandlerNameResolver().GetHandlerName(this);
 
             this.Initialize();
@@ -60,12 +65,6 @@
                 return this.properties;
             }
         }
-
-        /// <summary>
-        /// Gets the <see cref="IHandlerActivator"/> associated with this instance.
-        /// </summary>
-        /// <value>The <see cref="IHandlerActivator"/> associated with this instance.</value>
-        public IHandlerActivator HandlerActivator { get; private set; }
 
         /// <summary>
         /// Gets the handler name.
@@ -114,7 +113,7 @@
         /// <returns>The created handler instance.</returns>
         public Handler CreateHandler(HandlerRequest request)
         {
-            return this.HandlerActivator.Create(request, this);
+            return this.handlerActivator.Create(request, this);
         }
 
         private static void RemoveDuplicates(List<FilterInfo> filters)

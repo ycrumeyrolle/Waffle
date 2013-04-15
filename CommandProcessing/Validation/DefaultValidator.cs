@@ -1,6 +1,5 @@
 ﻿namespace CommandProcessing.Validation
 {
-    using System;
     using System.ComponentModel.DataAnnotations;
     using CommandProcessing.Internal;
 

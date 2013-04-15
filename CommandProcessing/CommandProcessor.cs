@@ -19,11 +19,19 @@
     /// Its role is to take a command from a client, validate it, and delegate the processing to an handler.
     /// Then it returns the result to the client.
     /// </summary>
-    public class CommandProcessor : ICommandProcessor, IDisposable
+    public sealed class CommandProcessor : ICommandProcessor, IDisposable
     {
         private bool disposed;
 
+        /// <summary>
+        /// The principal provider.
+        /// </summary>
         private IPrincipalProvider principalProvider;
+
+        /// <summary>
+        /// Gets the handler selector.
+        /// </summary>
+        private IHandlerSelector handlerSelector;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandProcessor"/> class. 
@@ -54,12 +62,6 @@
         /// </summary>
         /// <value>The configuration.</value>
         public ProcessorConfiguration Configuration { get; private set; }
-
-        /// <summary>
-        /// Gets the handler selector.
-        /// </summary>
-        /// <value>The configuration.</value>
-        public IHandlerSelector HandlerSelector { get; private set; }
         
         /// <summary>
         /// Process the command. 
@@ -73,7 +75,7 @@
         {
             using (HandlerRequest request = new HandlerRequest(this.Configuration, command, currentRequest))
             {
-                HandlerDescriptor descriptor = this.HandlerSelector.SelectHandler(request);
+                HandlerDescriptor descriptor = this.handlerSelector.SelectHandler(request);
 
                 Handler handler = descriptor.CreateHandler(request);
 
@@ -149,11 +151,14 @@
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
+            if (!this.disposed)
+            {
+                this.disposed = true;
+                this.Configuration.Dispose();
+            }
         }
 
-        internal static Task<TResult> InvokeActionWithExceptionFiltersAsync<TResult>(Task<TResult> actionTask, HandlerContext context, CancellationToken cancellationToken, IEnumerable<IExceptionFilter> filters)
+        private static Task<TResult> InvokeActionWithExceptionFiltersAsync<TResult>(Task<TResult> actionTask, HandlerContext context, CancellationToken cancellationToken, IEnumerable<IExceptionFilter> filters)
         {
             Contract.Assert(actionTask != null);
             Contract.Assert(context != null);
@@ -187,8 +192,8 @@
                     return info.Task(resultTask);
                 });
         }
-        
-        internal static Func<Task<TResult>> InvokeHandlerWithHandlerFiltersAsync<TResult>(HandlerContext context, CancellationToken cancellationToken, IEnumerable<IHandlerFilter> filters, Func<Task<TResult>> innerAction)
+
+        private static Func<Task<TResult>> InvokeHandlerWithHandlerFiltersAsync<TResult>(HandlerContext context, CancellationToken cancellationToken, IEnumerable<IHandlerFilter> filters, Func<Task<TResult>> innerAction)
         {
             Contract.Assert(context != null);
             Contract.Assert(filters != null);
@@ -205,8 +210,8 @@
 
             return result;
         }
-        
-        internal static Task<TResult> InvokeHandlerAsync<TResult>(HandlerContext context, Handler handler, CancellationToken cancellationToken)
+
+        private static Task<TResult> InvokeHandlerAsync<TResult>(HandlerContext context, Handler handler, CancellationToken cancellationToken)
         {
             return TaskHelpers.RunSynchronously(
                 () =>
@@ -217,27 +222,11 @@
                 cancellationToken);
         }
         
-        /// <summary>
-        /// Releases the unmanaged resources that are used by the object and, optionally, releases the managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                this.disposed = true;
-                if (disposing)
-                {
-                    this.Configuration.Dispose();
-                }
-            }
-        }
-
         private void Initialize()
         {
             this.Configuration.Initializer(this.Configuration);
             this.Configuration.Services.Replace(typeof(ICommandProcessor), this);
-            this.HandlerSelector = this.Configuration.Services.GetHandlerSelector();
+            this.handlerSelector = this.Configuration.Services.GetHandlerSelector();
             this.principalProvider = this.Configuration.Services.GetPrincipalProvider();
         }
     }

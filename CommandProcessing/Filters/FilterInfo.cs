@@ -1,6 +1,5 @@
 ﻿namespace CommandProcessing.Filters
 {
-    using System;
     using CommandProcessing.Internal;
 
     /// <summary>

@@ -8,7 +8,7 @@
     /// </summary>
     public class HandlerExecutedContext
     {
-        private HandlerContext handlerContext;
+        private readonly HandlerContext handlerContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerExecutedContext"/> class.
@@ -35,16 +35,6 @@
             get
             {
                 return this.handlerContext;
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    throw Error.PropertyNull();
-                }
-
-                this.handlerContext = value;
             }
         }
 

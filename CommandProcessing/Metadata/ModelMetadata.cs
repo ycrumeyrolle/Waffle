@@ -108,7 +108,7 @@
         /// Gets a collection of model metadata objects that describe the properties of the model.
         /// </summary>
         /// <value>A collection of model metadata objects that describe the properties of the model.</value>
-        public virtual IEnumerable<ModelMetadata> Properties
+        public IEnumerable<ModelMetadata> Properties
         {
             get
             {
@@ -132,7 +132,7 @@
 
         protected ModelMetadataProvider Provider { get; set; }
 
-        internal Type RealModelType
+        private Type RealModelType
         {
             get
             {

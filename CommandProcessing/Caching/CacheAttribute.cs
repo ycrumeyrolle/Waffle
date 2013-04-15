@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.Caching;
     using System.Security.Cryptography;
     using System.Text;
@@ -17,12 +17,15 @@
     /// Represents a filter to cache command result.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [SuppressMessage("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes", Justification = "NoCacheAttri")]
     public class CacheAttribute : HandlerFilterAttribute
     {
         private const string CacheKey = "__CacheAttribute";
 
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Params", Justification = "Params is in analogy with \"VaryByParams\" from HTTP.")]
         public const string VaryByParamsAll = "*";
 
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Params", Justification = "Params is in analogy with \"VaryByParams\" from HTTP.")]
         public const string VaryByParamsNone = "none";
 
         private string varyByParams = VaryByParamsAll;
@@ -66,6 +69,7 @@
         /// Default value is '*'.
         /// If a param is not found, it is ignored.
         /// </remarks>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Params", Justification = "Params is in analogy with \"VaryByParams\" from HTTP.")]
         public string VaryByParams
         {
             get
@@ -97,6 +101,11 @@
                 throw Error.ArgumentNull("handlerContext");
             }
 
+            if (handlerContext.Descriptor.GetCustomAttributes<NoCacheAttribute>().Count > 0)
+            {
+                return;
+            }
+
             string key = this.GetUniqueId(handlerContext);
             CacheEntry entry = this.cache.Get(key) as CacheEntry;
             if (entry != null)
@@ -120,6 +129,11 @@
                 return;
             }
 
+            if (handlerExecutedContext.HandlerContext.Descriptor.GetCustomAttributes<NoCacheAttribute>().Count > 0)
+            {
+                return;
+            }
+            
             if (!handlerExecutedContext.HandlerContext.Items.ContainsKey(CacheKey))
             {
                 return;
@@ -131,7 +145,19 @@
                 return;
             }
 
-            this.cache.Add(key, new CacheEntry(handlerExecutedContext.Result), DateTimeOffset.UtcNow.AddSeconds(this.Duration)); 
+            DateTimeOffset expiration = this.CreateExpiration();
+
+            this.cache.Add(key, new CacheEntry(handlerExecutedContext.Result), expiration); 
+        }
+
+        private DateTimeOffset CreateExpiration()
+        {
+            if (this.Duration == 0)
+            {
+                return DateTimeOffset.MaxValue;
+            }
+
+            return DateTimeOffset.UtcNow.AddSeconds(this.Duration);
         }
 
         private string GetUniqueId(HandlerContext filterContext)

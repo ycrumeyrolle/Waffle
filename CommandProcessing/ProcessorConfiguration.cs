@@ -10,7 +10,7 @@
     /// <summary>
     /// Represents the configuration for a processor.
     /// </summary>
-    public class ProcessorConfiguration : IDisposable
+    public sealed class ProcessorConfiguration : IDisposable
     {
         private readonly List<IDisposable> resourcesToDispose = new List<IDisposable>();
         
@@ -140,8 +140,17 @@
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
+            if (!this.disposed)
+            {
+                this.disposed = true;
+                this.Services.Dispose();
+                this.DependencyResolver.Dispose();
+
+                foreach (IDisposable resource in this.resourcesToDispose)
+                {
+                    resource.Dispose();
+                }
+            }
         }
 
         internal static ProcessorConfiguration ApplyHandlerSettings(HandlerSettings settings, ProcessorConfiguration configuration)
@@ -163,28 +172,6 @@
             if (resource != null)
             {
                 this.resourcesToDispose.Add(resource);
-            }
-        }
-
-        /// <summary>
-        /// Releases the unmanaged resources that are used by the object and, optionally, releases the managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                this.disposed = true;
-                if (disposing)
-                {
-                    this.Services.Dispose();
-                    this.DependencyResolver.Dispose();
-
-                    foreach (IDisposable resource in this.resourcesToDispose)
-                    {
-                        resource.Dispose();
-                    }
-                }
             }
         }
 

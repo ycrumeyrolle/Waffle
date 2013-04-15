@@ -1,6 +1,5 @@
 ﻿namespace CommandProcessing.Internal
 {
-    using System;
     using System.Reflection;
 
     internal static class MemberInfoExtensions

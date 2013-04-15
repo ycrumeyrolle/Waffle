@@ -15,7 +15,7 @@
         /// Returns a list of assemblies available for the application.
         /// </summary>
         /// <returns>A <see cref="Collection{T}"/> of assemblies.</returns>
-        public virtual ICollection<Assembly> GetAssemblies()
+        public ICollection<Assembly> GetAssemblies()
         {
             return AppDomain.CurrentDomain.GetAssemblies().ToList();
         }

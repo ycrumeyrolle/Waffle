@@ -2,7 +2,6 @@ namespace CommandProcessing.Metadata
 {
     using System;
     using System.Collections.Generic;
-    using System.Security;
 
     /// <summary>
     /// Provides a container for common metadata, for the <see cref="DataAnnotationsModelMetadataProvider"/> class, for a data model.
@@ -36,7 +35,6 @@ namespace CommandProcessing.Metadata
         /// Retrieves the description of the model.
         /// </summary>
         /// <returns>The description of the model.</returns>
-        [SecuritySafeCritical]
         protected override string ComputeDescription()
         {
             return this.PrototypeCache.Display != null

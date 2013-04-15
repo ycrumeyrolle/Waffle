@@ -100,7 +100,7 @@ namespace CommandProcessing.Metadata
             return base.Description;
         }
 
-        protected virtual bool ComputeIsComplexType()
+        private bool ComputeIsComplexType()
         {
             return base.IsComplexType;
         }

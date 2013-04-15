@@ -11,6 +11,12 @@ namespace CommandProcessing
     public interface ICommandProcessor
     {
         /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
+        ProcessorConfiguration Configuration { get; }
+
+        /// <summary>
         /// Process the command. 
         /// </summary>
         /// <typeparam name="TCommand">The type of command to process.</typeparam>

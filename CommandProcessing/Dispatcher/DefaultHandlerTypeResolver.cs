@@ -47,7 +47,7 @@
         /// <returns>
         /// An <see cref="ICollection{Type}"/> of handlers.
         /// </returns>
-        public virtual ICollection<Type> GetHandlerTypes(IAssembliesResolver assembliesResolver)
+        public ICollection<Type> GetHandlerTypes(IAssembliesResolver assembliesResolver)
         {
             if (assembliesResolver == null)
             {
