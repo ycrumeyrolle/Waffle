@@ -1,4 +1,4 @@
-﻿namespace CommandProcessing.Services
+﻿namespace CommandProcessing
 {
     using System;
     using System.Collections.Generic;
@@ -12,6 +12,7 @@
     using CommandProcessing.Interception;
     using CommandProcessing.Internal;
     using CommandProcessing.Metadata;
+    using CommandProcessing.Services;
     using CommandProcessing.Validation;
 
     /// <summary>

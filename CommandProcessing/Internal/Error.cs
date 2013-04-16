@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Globalization;
 
     /// <summary>
@@ -19,6 +20,8 @@
         /// <returns>The formatted string.</returns>
         internal static string Format(string format, params object[] args)
         {
+            Contract.Requires(format != null);
+            Contract.Requires(args != null);
             return string.Format(CultureInfo.CurrentCulture, format, args);
         }
 
@@ -30,6 +33,8 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static ArgumentException Argument(string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
             return new ArgumentException(Error.Format(messageFormat, messageArgs));
         }
 
@@ -42,6 +47,8 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static ArgumentException Argument(string parameterName, string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
             return new ArgumentException(Error.Format(messageFormat, messageArgs), parameterName);
         }
 
@@ -74,6 +81,9 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static ArgumentNullException ArgumentNull(string parameterName, string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
+
             return new ArgumentNullException(parameterName, Error.Format(messageFormat, messageArgs));
         }
 
@@ -97,6 +107,9 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static ArgumentOutOfRangeException ArgumentOutOfRange(string parameterName, object actualValue, string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
+
             return new ArgumentOutOfRangeException(parameterName, actualValue, Error.Format(messageFormat, messageArgs));
         }
 
@@ -141,6 +154,9 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static KeyNotFoundException KeyNotFound(string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
+
             return new KeyNotFoundException(Error.Format(messageFormat, messageArgs));
         }
 
@@ -152,6 +168,9 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static ObjectDisposedException ObjectDisposed(string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
+
             // Pass in null, not disposedObject.GetType().FullName as per the above guideline
             return new ObjectDisposedException(null, Error.Format(messageFormat, messageArgs));
         }
@@ -173,6 +192,9 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static OperationCanceledException OperationCanceled(string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
+
             return new OperationCanceledException(Error.Format(messageFormat, messageArgs));
         }
 
@@ -200,6 +222,9 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static InvalidOperationException InvalidOperation(string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
+
             return new InvalidOperationException(Error.Format(messageFormat, messageArgs));
         }
 
@@ -212,6 +237,9 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static InvalidOperationException InvalidOperation(Exception innerException, string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
+
             return new InvalidOperationException(Error.Format(messageFormat, messageArgs), innerException);
         }
 
@@ -223,6 +251,9 @@
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static NotSupportedException NotSupported(string messageFormat, params object[] messageArgs)
         {
+            Contract.Requires(messageFormat != null);
+            Contract.Requires(messageArgs != null);
+
             return new NotSupportedException(Error.Format(messageFormat, messageArgs));
         }
     }

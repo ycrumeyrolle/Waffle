@@ -22,9 +22,15 @@
     {
         private const string CacheKey = "__CacheAttribute";
 
+        /// <summary>
+        /// Vary by everything.
+        /// </summary>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Params", Justification = "Params is in analogy with \"VaryByParams\" from HTTP.")]
         public const string VaryByParamsAll = "*";
 
+        /// <summary>
+        /// Vary by nothing.
+        /// </summary>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Params", Justification = "Params is in analogy with \"VaryByParams\" from HTTP.")]
         public const string VaryByParamsNone = "none";
 
@@ -94,6 +100,10 @@
         /// <value><c>true</c> if the cache is specific for each user ; <c>false</c> if the cache is shared among users.</value>
         public bool VaryByUser { get; set; }
 
+        /// <summary>
+        /// Occurs before the handle method is invoked.
+        /// </summary>
+        /// <param name="handlerContext">The handler context.</param>
         public override void OnCommandExecuting(HandlerContext handlerContext)
         {
             if (handlerContext == null)
@@ -117,6 +127,10 @@
             handlerContext.Items[CacheKey] = key;
         }
 
+        /// <summary>
+        /// Occurs after the handle method is invoked.
+        /// </summary>
+        /// <param name="handlerExecutedContext">The handler executed context.</param>
         public override void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)
         {
             if (handlerExecutedContext == null)

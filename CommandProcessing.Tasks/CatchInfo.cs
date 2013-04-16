@@ -2,6 +2,7 @@ namespace CommandProcessing.Tasks
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
 
     internal class CatchInfo<T> : CatchInfoBase<Task<T>>

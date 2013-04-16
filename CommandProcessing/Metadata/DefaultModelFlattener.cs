@@ -133,6 +133,7 @@ namespace CommandProcessing.Metadata
         // Visits a single node (not including children)
         private static void ShallowVisit(ModelMetadata metadata, VisitContext visitContext)
         {
+            Contract.Requires(visitContext.KeyBuilders != null);
             string key = visitContext.RootPrefix;
             foreach (IKeyBuilder keyBuilder in visitContext.KeyBuilders.Reverse())
             {

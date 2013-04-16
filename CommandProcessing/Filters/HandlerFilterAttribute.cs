@@ -102,8 +102,8 @@
 
         private Tuple<object, Exception> CallOnHandlerExecuted<TResult>(HandlerContext handlerContext, object response = null, Exception exception = null)
         {
-            Contract.Assert(handlerContext != null);
-            Contract.Assert(response != null || exception != null);
+            Contract.Requires(handlerContext != null);
+            Contract.Requires(response != null || exception != null);
 
             HandlerExecutedContext httpActionExecutedContext = new HandlerExecutedContext(handlerContext, exception)
             {

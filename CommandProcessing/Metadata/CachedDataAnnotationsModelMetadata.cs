@@ -2,6 +2,7 @@ namespace CommandProcessing.Metadata
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// Provides a container for common metadata, for the <see cref="DataAnnotationsModelMetadataProvider"/> class, for a data model.
@@ -29,6 +30,7 @@ namespace CommandProcessing.Metadata
         public CachedDataAnnotationsModelMetadata(DataAnnotationsModelMetadataProvider provider, Type containerType, Type modelType, string propertyName, IEnumerable<Attribute> attributes)
             : base(provider, containerType, modelType, propertyName, new CachedDataAnnotationsMetadataAttributes(attributes))
         {
+            Contract.Requires(attributes != null);
         }
         
         /// <summary>

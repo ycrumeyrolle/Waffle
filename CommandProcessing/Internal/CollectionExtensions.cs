@@ -17,7 +17,7 @@
         /// </summary>
         public static T[] AsArray<T>(this IEnumerable<T> values)
         {
-            Contract.Assert(values != null);
+            Contract.Requires(values != null);
 
             T[] array = values as T[];
             if (array == null)
@@ -34,7 +34,7 @@
         /// </summary>
         public static Collection<T> AsCollection<T>(this IEnumerable<T> enumerable)
         {
-            Contract.Assert(enumerable != null);
+            Contract.Requires(enumerable != null); 
 
             Collection<T> collection = enumerable as Collection<T>;
             if (collection != null)
@@ -57,7 +57,7 @@
         /// </summary>
         public static IList<T> AsIList<T>(this IEnumerable<T> enumerable)
         {
-            Contract.Assert(enumerable != null);
+            Contract.Requires(enumerable != null);
 
             IList<T> list = enumerable as IList<T>;
             if (list != null)
@@ -74,7 +74,7 @@
         /// </summary>
         public static List<T> AsList<T>(this IEnumerable<T> enumerable)
         {
-            Contract.Assert(enumerable != null);
+            Contract.Requires(enumerable != null);
 
             List<T> list = enumerable as List<T>;
             if (list != null)
@@ -96,8 +96,8 @@
         /// </summary>
         public static T SingleDefaultOrError<T, TArg1>(this IList<T> list, Action<TArg1> errorAction, TArg1 errorArg1)
         {
-            Contract.Assert(list != null);
-            Contract.Assert(errorAction != null);
+            Contract.Requires(list != null);
+            Contract.Requires(errorAction != null);
 
             switch (list.Count)
             {
@@ -120,8 +120,8 @@
         /// </summary>
         public static TMatch SingleOfTypeDefaultOrError<TInput, TMatch, TArg1>(this IList<TInput> list, Action<TArg1> errorAction, TArg1 errorArg1) where TMatch : class
         {
-            Contract.Assert(list != null);
-            Contract.Assert(errorAction != null);
+            Contract.Requires(list != null);
+            Contract.Requires(errorAction != null);
 
             TMatch result = null;
             for (int i = 0; i < list.Count; i++)

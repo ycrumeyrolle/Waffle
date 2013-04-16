@@ -3,6 +3,7 @@ namespace CommandProcessing.Metadata
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics.Contracts;
     using System.Linq;
 
     /// <summary>
@@ -16,6 +17,7 @@ namespace CommandProcessing.Metadata
         /// <param name="attributes">The attributes that provides data for the initialization.</param>
         public CachedDataAnnotationsMetadataAttributes(IEnumerable<Attribute> attributes)
         {
+            Contract.Requires(attributes != null);
             this.CacheAttributes(attributes);
         }
 
@@ -27,6 +29,7 @@ namespace CommandProcessing.Metadata
 
         private void CacheAttributes(IEnumerable<Attribute> attributes)
         {
+            Contract.Requires(attributes != null); 
             this.Display = attributes.OfType<DisplayAttribute>().FirstOrDefault();
         }
     }

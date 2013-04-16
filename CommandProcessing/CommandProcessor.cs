@@ -62,7 +62,7 @@
         /// </summary>
         /// <value>The configuration.</value>
         public ProcessorConfiguration Configuration { get; private set; }
-        
+
         /// <summary>
         /// Process the command. 
         /// </summary>
@@ -100,13 +100,14 @@
                 CancellationToken cancellationToken = new CancellationToken();
 
                 Task<TResult> result = TaskHelpers.RunSynchronously(() =>
-                {
-                    Func<Task<TResult>> invokeFunc = InvokeHandlerWithHandlerFiltersAsync(context, cancellationToken, filterGrouping.HandlerFilters, () =>
                     {
-                        return InvokeHandlerAsync<TResult>(context, handler, cancellationToken);
+                        Func<Task<TResult>> invokeFunc = InvokeHandlerWithHandlerFiltersAsync(
+                            context,
+                            cancellationToken,
+                            filterGrouping.HandlerFilters,
+                            () => InvokeHandlerAsync<TResult>(context, handler, cancellationToken));
+                        return invokeFunc();
                     });
-                    return invokeFunc();
-                });
 
                 result = InvokeActionWithExceptionFiltersAsync(result, context, cancellationToken, filterGrouping.ExceptionFilters);
 
@@ -160,9 +161,9 @@
 
         private static Task<TResult> InvokeActionWithExceptionFiltersAsync<TResult>(Task<TResult> actionTask, HandlerContext context, CancellationToken cancellationToken, IEnumerable<IExceptionFilter> filters)
         {
-            Contract.Assert(actionTask != null);
-            Contract.Assert(context != null);
-            Contract.Assert(filters != null);
+            Contract.Requires(actionTask != null);
+            Contract.Requires(context != null);
+            Contract.Requires(filters != null);
 
             return actionTask.Catch(
                 info =>
@@ -179,15 +180,17 @@
                     IEnumerable<Task> lazyTaskEnumeration = filters.Select(filter => filter.ExecuteExceptionFilterAsync(executedContext, cancellationToken));
                     Task<TResult> resultTask =
                         TaskHelpers.Iterate(lazyTaskEnumeration, cancellationToken)
-                                   .Then(() =>
+                                   .Then(
+                                   () =>
+                                   {
+                                       if (executedContext.Result != null)
                                        {
-                                           if (executedContext.Result != null)
-                                           {
-                                               return TaskHelpers.FromResult((TResult)executedContext.Result);
-                                           }
+                                           return TaskHelpers.FromResult((TResult)executedContext.Result);
+                                       }
 
-                                           return TaskHelpers.FromError<TResult>(executedContext.Exception);
-                                       }, runSynchronously: true);
+                                       return TaskHelpers.FromError<TResult>(executedContext.Exception);
+                                   },
+                                    runSynchronously: true);
 
                     return info.Task(resultTask);
                 });
@@ -195,18 +198,17 @@
 
         private static Func<Task<TResult>> InvokeHandlerWithHandlerFiltersAsync<TResult>(HandlerContext context, CancellationToken cancellationToken, IEnumerable<IHandlerFilter> filters, Func<Task<TResult>> innerAction)
         {
-            Contract.Assert(context != null);
-            Contract.Assert(filters != null);
-            Contract.Assert(innerAction != null);
+            Contract.Requires(context != null);
+            Contract.Requires(filters != null);
+            Contract.Requires(innerAction != null);
 
             // Because the continuation gets built from the inside out we need to reverse the filter list
             // so that least specific filters (Global) get run first and the most specific filters (Handler) get run last.
             filters = filters.Reverse();
 
-            Func<Task<TResult>> result = filters.Aggregate(innerAction, (continuation, filter) =>
-            {
-                return () => filter.ExecuteHandlerFilterAsync(context, cancellationToken, continuation);
-            });
+            Func<Task<TResult>> result = filters.Aggregate(
+                innerAction, 
+                (continuation, filter) => () => filter.ExecuteHandlerFilterAsync(context, cancellationToken, continuation));
 
             return result;
         }
@@ -215,13 +217,13 @@
         {
             return TaskHelpers.RunSynchronously(
                 () =>
-                    {
-                        TResult result = (TResult)handler.Handle(context.Command);
-                        return TaskHelpers.FromResult(result);
-                    },
+                {
+                    TResult result = (TResult)handler.Handle(context.Command);
+                    return TaskHelpers.FromResult(result);
+                },
                 cancellationToken);
         }
-        
+
         private void Initialize()
         {
             this.Configuration.Initializer(this.Configuration);

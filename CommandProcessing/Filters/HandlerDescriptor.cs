@@ -176,7 +176,7 @@
         // Helper to invoke any handler config attributes on this controller type or its base classes.
         private static void InvokeAttributesOnHandlerType(HandlerDescriptor descriptor, Type type)
         {
-            Contract.Assert(descriptor != null);
+            Contract.Requires(descriptor != null);
 
             if (type == null)
             {

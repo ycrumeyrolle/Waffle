@@ -5,7 +5,7 @@
     using CommandProcessing.Internal;
 
     /// <summary>
-    /// Provides a type-safe implementation of <see cref="IDependencyResolver.GetService(System.Type)" /> and <see cref="IDependencyResolver.GetServices(System.Type)" />.
+    /// Provides a type-safe implementation of <see cref="IDependencyScope.GetService(System.Type)" /> and <see cref="IDependencyScope.GetServices(System.Type)" />.
     /// </summary>
     public static class DependencyResolverExtensions
     {

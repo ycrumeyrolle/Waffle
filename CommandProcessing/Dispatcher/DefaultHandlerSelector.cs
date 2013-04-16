@@ -75,8 +75,8 @@
 
         private static Exception CreateAmbiguousHandlerException(string commandName, IEnumerable<Type> matchingTypes)
         {
-            Contract.Assert(commandName != null);
-            Contract.Assert(matchingTypes != null);
+            Contract.Requires(commandName != null);
+            Contract.Requires(matchingTypes != null);
 
             // Generate an exception containing all the handler types
             StringBuilder typeList = new StringBuilder();

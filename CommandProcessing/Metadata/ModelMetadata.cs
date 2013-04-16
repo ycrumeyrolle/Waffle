@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using CommandProcessing.Internal;
 
     /// <summary>
@@ -20,10 +21,15 @@
         private Func<object> modelAccessor;
         private IEnumerable<ModelMetadata> properties;
         private Type realModelType;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelMetadata"/> class. 
         /// </summary>
+        /// <param name="provider">The provider.</param>
+        /// <param name="containerType">The type of the container.</param>
+        /// <param name="modelAccessor">The model accessor.</param>
+        /// <param name="modelType">The type of the model.</param>
+        /// <param name="propertyName">The name of the property.</param>
         public ModelMetadata(ModelMetadataProvider provider, Type containerType, Func<object> modelAccessor, Type modelType, string propertyName)
         {
             if (provider == null)
@@ -65,7 +71,12 @@
         /// <value>A value that indicates whether the model is considered a complex.</value>
         public virtual bool IsComplexType
         {
-            get { return !TypeHelper.HasStringConverter(this.ModelType); }
+            get 
+            {
+                Contract.Requires(this.ModelType != null);
+
+                return !TypeHelper.HasStringConverter(this.ModelType); 
+            }
         }
         
         /// <summary>
@@ -130,6 +141,10 @@
             get { return this.propertyName; }
         }
 
+        /// <summary>
+        /// Gets or sets the provider.
+        /// </summary>
+        /// /<value>The provider.</value>
         protected ModelMetadataProvider Provider { get; set; }
 
         private Type RealModelType

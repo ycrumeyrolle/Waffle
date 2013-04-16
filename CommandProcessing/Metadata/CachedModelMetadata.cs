@@ -1,6 +1,7 @@
 namespace CommandProcessing.Metadata
 {
     using System;
+    using System.Diagnostics.Contracts;
     using CommandProcessing.Internal;
 
     /// <summary> 
@@ -13,7 +14,7 @@ namespace CommandProcessing.Metadata
     /// instances or caching of the actual information itself, depending on what the developer
     /// decides to put into the prototype cache.
     /// </summary>
-    /// <typeparam name="TPrototypeCache"></typeparam>
+    /// <typeparam name="TPrototypeCache">The type of the prototype.</typeparam>
     public abstract class CachedModelMetadata<TPrototypeCache> : ModelMetadata
     {
         private string description;
@@ -59,6 +60,10 @@ namespace CommandProcessing.Metadata
             this.PrototypeCache = prototypeCache;
         }
         
+        /// <summary>
+        /// Gets or sets the description of the model.
+        /// </summary>
+        /// <value>The description of the model. The default value is null.</value>
         public sealed override string Description
         {
             get
@@ -79,6 +84,10 @@ namespace CommandProcessing.Metadata
             }
         }
         
+        /// <summary>
+        /// Gets or sets a value that indicates whether the model is a complex type.
+        /// </summary>
+        /// <value>A value that indicates whether the model is considered a complex.</value>
         public sealed override bool IsComplexType
         {
             get
@@ -93,15 +102,28 @@ namespace CommandProcessing.Metadata
             }
         }
 
+        /// <summary>
+        /// Gets or sets the prototype cache.
+        /// </summary>
+        /// <value>The prototype cache.</value>
         protected TPrototypeCache PrototypeCache { get; set; }
 
+        /// <summary>
+        /// Computes the property Description.
+        /// </summary>
+        /// <returns>The property Description.</returns>
         protected virtual string ComputeDescription()
         {
             return base.Description;
         }
 
+        /// <summary>
+        /// Computes the property IsComplexType.
+        /// </summary>
+        /// <returns>The property IsComplexType.</returns>
         private bool ComputeIsComplexType()
         {
+            Contract.Requires(this.ModelType != null);
             return base.IsComplexType;
         }
     }

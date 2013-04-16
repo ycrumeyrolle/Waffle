@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Diagnostics.Contracts;
 
     internal static class TypeHelper
     {
@@ -30,11 +31,13 @@
 
         internal static bool HasStringConverter(Type type)
         {
+            Contract.Requires(type != null);
             return TypeDescriptor.GetConverter(type).CanConvertFrom(typeof(string));
         }
 
         internal static bool IsNullableValueType(Type type)
         {
+            Contract.Requires(type != null); 
             return Nullable.GetUnderlyingType(type) != null;
         }
 

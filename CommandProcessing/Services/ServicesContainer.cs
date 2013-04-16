@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Internal;
@@ -123,6 +124,11 @@
                 throw Error.ArgumentNull("serviceType");
             }
 
+            if (index < 0)
+            {
+                throw Error.ArgumentMustBeGreaterThanOrEqualTo("index", index, 0);
+            }
+
             if (service == null)
             {
                 throw Error.ArgumentNull("service");
@@ -156,6 +162,11 @@
             if (serviceType == null)
             {
                 throw Error.ArgumentNull("serviceType");
+            }
+
+            if (index < 0)
+            {
+                throw Error.ArgumentMustBeGreaterThanOrEqualTo("index", index, 0);
             }
 
             if (services == null)
@@ -240,6 +251,7 @@
         /// <param name="index">The zero-based index of the service to remove.</param>
         public void RemoveAt(Type serviceType, int index)
         {
+            Contract.Requires(index >= 0);
             if (serviceType == null)
             {
                 throw Error.ArgumentNull("serviceType");

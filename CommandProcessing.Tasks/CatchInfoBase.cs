@@ -12,7 +12,7 @@ namespace CommandProcessing.Tasks
 
         protected CatchInfoBase(TTask task)
         {
-            Contract.Assert(task != null);
+            Contract.Requires(task != null);
             this.task = task;
             this.exception = this.task.Exception.GetBaseException();  // Observe the exception early, to prevent tasks tearing down the app domain
         }

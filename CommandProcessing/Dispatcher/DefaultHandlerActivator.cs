@@ -68,8 +68,8 @@
         /// </returns>
         private static Handler GetInstanceOrActivator(HandlerRequest request, Type handlerType, out Func<Handler> activator)
         {
-            Contract.Assert(request != null);
-            Contract.Assert(handlerType != null);
+            Contract.Requires(request != null);
+            Contract.Requires(handlerType != null);
 
             // If dependency resolver returns handler object then use it.
             Handler instance = (Handler)request.GetDependencyScope().GetService(handlerType);
@@ -86,8 +86,8 @@
 
         private Handler TryCreate(HandlerRequest request, HandlerDescriptor descriptor)
         {
-            Contract.Assert(request != null);
-            Contract.Assert(descriptor != null);
+            Contract.Requires(request != null);
+            Contract.Requires(descriptor != null);
 
             Func<Handler> activator;
 

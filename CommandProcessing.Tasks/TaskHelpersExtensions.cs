@@ -569,7 +569,7 @@
         [SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "unused", Justification = "We only call the property getter for its side effect; we don't care about the value.")]
         private static void MarkExceptionsObserved(this Task task)
         {
-            Contract.Assert(task.IsCompleted);
+            Contract.Requires(task.IsCompleted);
 
             Exception unused = task.Exception;
         }
