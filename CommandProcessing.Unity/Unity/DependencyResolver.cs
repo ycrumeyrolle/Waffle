@@ -18,10 +18,17 @@ namespace CommandProcessing.Unity
         {
         }
 
+        /// <summary>
+        /// Starts a resolution scope. Objects which are resolved in the given scope will belong to
+        /// that scope, and when the scope is disposed, those objects are returned to the container.
+        /// Returns a new instance of <see cref="IDependencyScope"/> every time this
+        /// method is called.
+        /// </summary>
+        /// <returns>The dependency scope.</returns>
         public IDependencyScope BeginScope()
         {
             IUnityContainer child = this.Container.CreateChildContainer();
-            return new DependencyScope(child);
+            return DependencyScope.CreateScope(child);
         }
     }
 }

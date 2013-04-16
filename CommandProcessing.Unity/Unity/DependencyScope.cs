@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using CommandProcessing.Dependencies;
-    using CommandProcessing.Services;
+    using CommandProcessing.Descriptions;
     using Microsoft.Practices.Unity;
     
     /// <summary>
@@ -19,7 +19,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="DependencyScope"/> class. 
         /// </summary>
-        public DependencyScope(IUnityContainer container)
+        protected DependencyScope(IUnityContainer container)
         {
             if (container == null)
             {
@@ -29,6 +29,10 @@
             this.container = container;
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="IUnityContainer"/>.
+        /// </summary>
+        /// <value>The <see cref="IUnityContainer"/>.</value>
         protected IUnityContainer Container
         {
             get
@@ -70,12 +74,19 @@
             return Enumerable.Empty<object>();
         }
 
+        /// <summary>
+        /// Releases unmanaged resources used by the <see cref="DependencyScope"/>.
+        /// </summary>
         public void Dispose()
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="DependencyScope"/> and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources. </param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -98,11 +109,21 @@
                 throw new ArgumentNullException("configuration");
             }
 
-            var explorer = configuration.Services.GetCommandExplorer();
+            ICommandExplorer explorer = configuration.Services.GetCommandExplorer();
             foreach (var description in explorer.Descriptions)
             {
                 this.container.RegisterType(description.HandlerType);
             }
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="DependencyScope"/>.
+        /// </summary>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        protected static DependencyScope CreateScope(IUnityContainer container)
+        {
+            return new DependencyScope(container);
         }
     }
 }

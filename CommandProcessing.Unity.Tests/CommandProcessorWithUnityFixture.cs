@@ -69,9 +69,7 @@
             try
             {
                 config = config ?? this.configuration;
-                var iocContainer = new DependencyResolver(this.container);
-                iocContainer.RegisterHandlers(this.configuration);
-                config.DependencyResolver = iocContainer;
+                config.RegisterContainer(this.container);
                 CommandProcessor processor = new CommandProcessor(config);
                 this.disposableResources.Add(processor);
                 config = null;
