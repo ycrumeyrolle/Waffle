@@ -119,6 +119,7 @@
   <ItemGroup>
     <Compile Include="Caching\CacheAttribute.cs" />
     <Compile Include="Caching\NoCacheAttribute.cs" />
+    <Compile Include="Descriptions\IHandlerDescriptorProvider.cs" />
     <Compile Include="IPrincipalProvider.cs" />
     <Compile Include="Eventing\IMessageHub.cs" />
     <Compile Include="Eventing\MessageHub.cs" />

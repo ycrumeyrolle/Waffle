@@ -76,6 +76,17 @@
         }
 
         /// <summary>
+        /// Gets the <see cref="IHandlerDescriptorProvider"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IHandlerDescriptorProvider"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IHandlerDescriptorProvider"/> service is not registered.</exception>
+        public static IHandlerDescriptorProvider GetHandlerDescriptorProvider(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IHandlerDescriptorProvider>();
+        }
+
+        /// <summary>
         /// Gets the <see cref="IHandlerTypeResolver"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>

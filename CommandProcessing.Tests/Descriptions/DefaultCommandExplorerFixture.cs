@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using CommandProcessing;
     using CommandProcessing.Descriptions;
-    using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
@@ -14,21 +13,21 @@
     {
         private readonly ProcessorConfiguration config;
 
-        private readonly Mock<IHandlerSelector> handlerSelector;
+        private readonly Mock<IHandlerDescriptorProvider> descriptorProvider;
 
         public DefaultCommandExplorerFixture()
         {
-            this.handlerSelector = new Mock<IHandlerSelector>(MockBehavior.Strict);
+            this.descriptorProvider = new Mock<IHandlerDescriptorProvider>(MockBehavior.Strict);
 
             this.config = new ProcessorConfiguration();
-            this.config.Services.Replace(typeof(IHandlerSelector), this.handlerSelector.Object);
+            this.config.Services.Replace(typeof(IHandlerDescriptorProvider), this.descriptorProvider.Object);
         }
 
         [TestMethod]
         public void WhenCreatingInstanceWithoutKnowMappingThenDescriptionIsEmpty()
         {
             // Assign
-            this.handlerSelector.Setup(selector => selector.GetHandlerMapping()).Returns(new Dictionary<Type, HandlerDescriptor>());
+            this.descriptorProvider.Setup(selector => selector.GetHandlerMapping()).Returns(new Dictionary<Type, HandlerDescriptor>());
 
             // Act
             DefaultCommandExplorer explorer = new DefaultCommandExplorer(this.config);
@@ -43,7 +42,7 @@
             // Assign
             // TODO : Try to use AutoFixture instead
             Dictionary<Type, HandlerDescriptor> mapping = new Dictionary<Type, HandlerDescriptor> { { typeof(string), new HandlerDescriptor(this.config, typeof(Handler<ICommand, string>)) } };
-            this.handlerSelector.Setup(selector => selector.GetHandlerMapping()).Returns(mapping);
+            this.descriptorProvider.Setup(selector => selector.GetHandlerMapping()).Returns(mapping);
 
             // Act
             DefaultCommandExplorer explorer = new DefaultCommandExplorer(this.config);

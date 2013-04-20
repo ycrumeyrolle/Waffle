@@ -6,6 +6,7 @@
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Text;
+    using CommandProcessing.Descriptions;
     using CommandProcessing.Filters;
     using CommandProcessing.Internal;
 
@@ -13,7 +14,7 @@
     /// Default <see cref="IHandlerSelector"/> instance for choosing a <see cref="HandlerDescriptor"/> given a <see cref="HandlerRequest"/>
     /// A different implementation can be registered via the <see cref="ProcessorConfiguration.Services"/>.
     /// </summary>
-    public class DefaultHandlerSelector : IHandlerSelector
+    public class DefaultHandlerSelector : IHandlerSelector, IHandlerDescriptorProvider
     {
         private readonly Lazy<ConcurrentDictionary<Type, HandlerDescriptor>> handlerInfoCache;
 

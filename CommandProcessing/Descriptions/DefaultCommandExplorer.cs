@@ -48,8 +48,8 @@
 
         private Collection<CommandDescription> InitializeDescriptions()
         {
-            IHandlerSelector handlerSelector = this.config.Services.GetHandlerSelector();
-            IDictionary<Type, HandlerDescriptor> handlerMappings = handlerSelector.GetHandlerMapping();
+            IHandlerDescriptorProvider descriptorProvider = this.config.Services.GetHandlerDescriptorProvider();
+            IDictionary<Type, HandlerDescriptor> handlerMappings = descriptorProvider.GetHandlerMapping();
 
             return new Collection<CommandDescription>(handlerMappings.Select(m => new CommandDescription { Name = m.Value.Name, HandlerType = m.Value.HandlerType, CommandType = m.Key }).ToList());
         }

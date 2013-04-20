@@ -24,6 +24,7 @@
     ///     </para>
     ///     <list type="bullet">
     ///         <item><see cref="IHandlerSelector"/></item>
+    ///         <item><see cref="IHandlerDescriptorProvider"/></item>
     ///         <item><see cref="IHandlerActivator"/></item>
     ///         <item><see cref="IHandlerTypeResolver"/></item>
     ///         <item><see cref="IHandlerNameResolver"/></item>
@@ -86,7 +87,9 @@
 
             // Initialize the dictionary with all known service types, even if the list for that service type is
             // empty, because we will throw if the developer tries to read or write unsupported types.
-            this.SetSingle<IHandlerSelector>(new DefaultHandlerSelector(this.configuration));
+            DefaultHandlerSelector handlerSelector = new DefaultHandlerSelector(this.configuration);
+            this.SetSingle<IHandlerSelector>(handlerSelector);
+            this.SetSingle<IHandlerDescriptorProvider>(handlerSelector);
             this.SetSingle<IHandlerActivator>(new DefaultHandlerActivator());
             this.SetSingle<IHandlerTypeResolver>(new DefaultHandlerTypeResolver());
             this.SetSingle<IHandlerNameResolver>(new DefaultHandlerNameResolver());
