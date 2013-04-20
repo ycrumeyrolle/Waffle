@@ -6,7 +6,7 @@ The command processor aims to implement the command pattern in an extensible way
 Features
 ========
 * Command validation, based on DataAnnotations and IValidatableObject
-* Command handling, with children handler possiblity
+* Command handling, with children handlers possiblity
 * Dependency scope management
 * Asynchronous execution
 * Handler filtering to wrap generic behaviour
