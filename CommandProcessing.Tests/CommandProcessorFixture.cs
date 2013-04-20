@@ -180,7 +180,11 @@
             // Act
             var result = processor.Process<ValidCommand, string>(command);
 
-            Assert.AreEqual("OK" + "X" + "Y", result);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Contains("OK"));
+            Assert.IsTrue(result.Contains("X"));
+            Assert.IsTrue(result.Contains("Y"));
+
             filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
             filter1.Verify(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()), Times.Once());
 
