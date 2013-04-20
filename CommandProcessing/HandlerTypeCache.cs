@@ -5,7 +5,6 @@
     using System.Linq;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Internal;
-    using CommandProcessing.Services;
 
     internal sealed class HandlerTypeCache
     {

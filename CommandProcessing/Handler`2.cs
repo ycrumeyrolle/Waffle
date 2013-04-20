@@ -17,16 +17,5 @@
         /// <param name="command">The <see cref="ICommand"/> to process.</param>
         /// <returns>The result object.</returns>
         public abstract TResult Handle(TCommand command);
-
-        /// <summary>
-        /// Handle the command.
-        /// </summary>
-        /// <remarks>You should prefer the result-typed method.</remarks>
-        /// <param name="command">The <see cref="ICommand"/> to process.</param>
-        /// <returns>The result object.</returns>
-        public override object Handle(ICommand command)
-        {
-            return this.Handle((TCommand)command);
-        }
     }
 }

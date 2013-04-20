@@ -7,7 +7,6 @@
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using CommandProcessing.Internal;
-    using CommandProcessing.Services;
 
     /// <summary>
     /// Explores the commands available in the system.

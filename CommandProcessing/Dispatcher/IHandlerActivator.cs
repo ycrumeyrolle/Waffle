@@ -19,6 +19,6 @@ namespace CommandProcessing.Dispatcher
         /// <returns>
         /// The <see cref="Handler"/>.
         /// </returns>
-        Handler Create(HandlerRequest request, HandlerDescriptor descriptor);
+        IHandler Create(HandlerRequest request, HandlerDescriptor descriptor);
     }
 }

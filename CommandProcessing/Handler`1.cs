@@ -22,16 +22,5 @@
         /// </summary>
         /// <param name="command">The <see cref="ICommand"/> to process.</param>
         public abstract void Handle(TCommand command);
-
-        /// <summary>
-        /// Handle the command.
-        /// </summary>
-        /// <remarks>You should prefer the result-less method.</remarks>
-        /// <param name="command">The <see cref="ICommand"/> to process.</param>
-        /// <returns>The result object.</returns>
-        public override object Handle(ICommand command)
-        {
-            return ((IHandler<TCommand, EmptyResult>)this).Handle((TCommand)command);
-        }
     }
 }

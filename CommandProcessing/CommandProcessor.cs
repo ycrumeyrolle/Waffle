@@ -10,7 +10,6 @@
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using CommandProcessing.Internal;
-    using CommandProcessing.Services;
     using CommandProcessing.Tasks;
     using CommandProcessing.Validation;
 
@@ -77,7 +76,7 @@
             {
                 HandlerDescriptor descriptor = this.handlerSelector.SelectHandler(request);
 
-                Handler handler = descriptor.CreateHandler(request);
+                IHandler<TCommand, TResult> handler = (IHandler<TCommand, TResult>)descriptor.CreateHandler(request);
 
                 if (handler == null)
                 {
@@ -105,7 +104,7 @@
                             context,
                             cancellationToken,
                             filterGrouping.HandlerFilters,
-                            () => InvokeHandlerAsync<TResult>(context, handler, cancellationToken));
+                            () => InvokeHandlerAsync(context, handler, cancellationToken));
                         return invokeFunc();
                     });
 
@@ -213,12 +212,12 @@
             return result;
         }
 
-        private static Task<TResult> InvokeHandlerAsync<TResult>(HandlerContext context, Handler handler, CancellationToken cancellationToken)
+        private static Task<TResult> InvokeHandlerAsync<TCommand, TResult>(HandlerContext context, IHandler<TCommand, TResult> handler, CancellationToken cancellationToken) where TCommand : ICommand
         {
             return TaskHelpers.RunSynchronously(
                 () =>
                 {
-                    TResult result = (TResult)handler.Handle(context.Command);
+                    TResult result = handler.Handle((TCommand)context.Command);
                     return TaskHelpers.FromResult(result);
                 },
                 cancellationToken);

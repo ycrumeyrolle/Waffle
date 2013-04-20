@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using CommandProcessing.Internal;
-    using CommandProcessing.Services;
 
     /// <summary>
     /// Provides a default implementation of the <see cref="IInterceptionProvider"/> service.

@@ -3,7 +3,6 @@
     using System;
     using CommandProcessing.Filters;
     using CommandProcessing.Internal;
-    using CommandProcessing.Services;
 
     /// <summary>
     /// Represents an <see cref="HandlerFilterAttribute"/> to trigger event on command handling.

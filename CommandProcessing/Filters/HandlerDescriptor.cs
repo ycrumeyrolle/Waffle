@@ -9,7 +9,6 @@
     using System.Reflection;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Internal;
-    using CommandProcessing.Services;
 
     /// <summary>
     /// Provides information about the handler method.
@@ -111,7 +110,7 @@
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>The created handler instance.</returns>
-        public Handler CreateHandler(HandlerRequest request)
+        public IHandler CreateHandler(HandlerRequest request)
         {
             return this.handlerActivator.Create(request, this);
         }

@@ -14,7 +14,7 @@
     {
         private readonly object cacheKey = new object();
 
-        private Tuple<HandlerDescriptor, Func<Handler>> fastCache;
+        private Tuple<HandlerDescriptor, Func<IHandler>> fastCache;
 
         /// <summary>
         /// Creates the <see cref="Handler"/> specified by <paramref name="descriptor"/> using the given <paramref name="request"/>.
@@ -28,7 +28,7 @@
         /// <returns>
         /// The <see cref="Handler"/>.
         /// </returns>
-        public Handler Create(HandlerRequest request, HandlerDescriptor descriptor)
+        public IHandler Create(HandlerRequest request, HandlerDescriptor descriptor)
         {
             if (request == null)
             {
@@ -66,13 +66,13 @@
         /// <returns>
         /// The <see cref="Handler"/>.
         /// </returns>
-        private static Handler GetInstanceOrActivator(HandlerRequest request, Type handlerType, out Func<Handler> activator)
+        private static IHandler GetInstanceOrActivator(HandlerRequest request, Type handlerType, out Func<IHandler> activator)
         {
             Contract.Requires(request != null);
             Contract.Requires(handlerType != null);
 
             // If dependency resolver returns handler object then use it.
-            Handler instance = (Handler)request.GetDependencyScope().GetService(handlerType);
+            IHandler instance = (IHandler)request.GetDependencyScope().GetService(handlerType);
             if (instance != null)
             {
                 activator = null;
@@ -80,29 +80,29 @@
             }
 
             // Otherwise create a delegate for creating a new instance of the type
-            activator = TypeActivator.Create<Handler>(handlerType);
+            activator = TypeActivator.Create<IHandler>(handlerType);
             return null;
         }
 
-        private Handler TryCreate(HandlerRequest request, HandlerDescriptor descriptor)
+        private IHandler TryCreate(HandlerRequest request, HandlerDescriptor descriptor)
         {
             Contract.Requires(request != null);
             Contract.Requires(descriptor != null);
 
-            Func<Handler> activator;
+            Func<IHandler> activator;
 
             // First check in the local fast cache and if not a match then look in the broader 
             // HandlerDescriptor.Properties cache
             if (this.fastCache == null)
             {
-                Handler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
+                IHandler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
                 if (handler != null)
                 {
                     // we have a handler registered with the dependency resolver for this handler type                      
                     return handler;
                 }
 
-                Tuple<HandlerDescriptor, Func<Handler>> cacheItem = Tuple.Create(descriptor, activator);
+                Tuple<HandlerDescriptor, Func<IHandler>> cacheItem = Tuple.Create(descriptor, activator);
                 Interlocked.CompareExchange(ref this.fastCache, cacheItem, null);
             }
             else if (this.fastCache.Item1 == descriptor)
@@ -117,11 +117,11 @@
                 object result;
                 if (descriptor.Properties.TryGetValue(this.cacheKey, out result))
                 {
-                    activator = (Func<Handler>)result;
+                    activator = (Func<IHandler>)result;
                 }
                 else
                 {
-                    Handler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
+                    IHandler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
                     if (handler != null)
                     {
                         // we have a handler registered with the dependency resolver for this handler type

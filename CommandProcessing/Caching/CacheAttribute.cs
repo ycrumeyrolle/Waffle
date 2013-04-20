@@ -11,7 +11,6 @@
     using CommandProcessing.Filters;
     using CommandProcessing.Internal;
     using CommandProcessing.Metadata;
-    using CommandProcessing.Services;
 
     /// <summary>
     /// Represents a filter to cache command result.

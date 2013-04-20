@@ -1,6 +1,7 @@
 ﻿namespace CommandProcessing.Tests.Eventing
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using CommandProcessing.Eventing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -107,7 +108,12 @@
             hub.Subscribe("event2", this, callback2.Object.Callback);
             hub.Subscribe("event3", this, callback3.Object.Callback);
 
-            Parallel.For(0, 1000, i => hub.Publish("event1", i));
+            var result = Parallel.For(0, 1000, i => hub.Publish("event1", i));
+
+            while (!result.IsCompleted)
+            {
+                Thread.Sleep(10);
+            }
 
             // Assert
             Assert.AreEqual(1000, this.value);
