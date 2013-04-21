@@ -1,10 +1,10 @@
 ﻿namespace CommandProcessing.Services
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Threading;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
@@ -46,12 +46,9 @@
     [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Although this class is not sealed, end users cannot set instances of it so in practice it is sealed.")]
     public class DefaultServices : ServicesContainer
     {
-        // This lock protects both caches (and _lastKnownDependencyResolver is updated under it as well)
-        private readonly ReaderWriterLockSlim cacheLock = new ReaderWriterLockSlim();
+        private ConcurrentDictionary<Type, object[]> cacheMulti = new ConcurrentDictionary<Type, object[]>();
 
-        private readonly Dictionary<Type, object[]> cacheMulti = new Dictionary<Type, object[]>();
-
-        private readonly Dictionary<Type, object> cacheSingle = new Dictionary<Type, object>();
+        private ConcurrentDictionary<Type, object> cacheSingle = new ConcurrentDictionary<Type, object>();
 
         private readonly ProcessorConfiguration configuration;
 
@@ -99,7 +96,7 @@
             this.SetSingle<IAssembliesResolver>(new DefaultAssembliesResolver());
 
             this.SetSingle<ICommandExplorer>(new DefaultCommandExplorer(this.configuration));
-            
+
             this.SetSingle<IProxyBuilder>(new DefaultProxyBuilder());
             this.SetSingle<IInterceptionProvider>(new DefaultInterceptionProvider(this.configuration));
             this.SetMultiple<IInterceptor>(Enumerable.Empty<IInterceptor>().ToArray());
@@ -140,14 +137,6 @@
             return this.serviceTypesSingle.Contains(serviceType);
         }
 
-        /// <inheritdoc/>
-        [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Although this class is not sealed, end users cannot set instances of it so in practice it is sealed.")]
-        [SuppressMessage("Microsoft.Usage", "CA1816:CallGCSuppressFinalizeCorrectly", Justification = "Although this class is not sealed, end users cannot set instances of it so in practice it is sealed.")]
-        public override void Dispose()
-        {
-            this.cacheLock.Dispose();
-        }
-
         /// <summary>
         /// Try to get a service of the given type.
         /// </summary>
@@ -160,11 +149,6 @@
                 throw Error.ArgumentNull("serviceType");
             }
 
-            if (!this.serviceTypesSingle.Contains(serviceType))
-            {
-                throw Error.Argument("serviceType", Resources.DefaultServices_InvalidServiceType, serviceType.Name);
-            }
-
             // Invalidate the cache if the dependency scope has switched
             if (this.lastKnownDependencyResolver != this.configuration.DependencyResolver)
             {
@@ -173,38 +157,27 @@
 
             object result;
 
-            this.cacheLock.EnterReadLock();
-            try
+            if (this.cacheSingle.TryGetValue(serviceType, out result))
             {
-                if (this.cacheSingle.TryGetValue(serviceType, out result))
-                {
-                    return result;
-                }
-            }
-            finally
-            {
-                this.cacheLock.ExitReadLock();
-            }
-
-            // Get the service from DI, outside of the lock. If we're coming up hot, this might
-            // mean we end up creating the service more than once.
-            object dependencyService = this.configuration.DependencyResolver.GetService(serviceType);
-
-            this.cacheLock.EnterWriteLock();
-            try
-            {
-                if (!this.cacheSingle.TryGetValue(serviceType, out result))
-                {
-                    result = dependencyService ?? this.defaultServicesSingle[serviceType];
-                    this.cacheSingle[serviceType] = result;
-                }
-
                 return result;
             }
-            finally
+
+            // Check input after initial read attempt for performance. 
+            if (!this.serviceTypesSingle.Contains(serviceType))
             {
-                this.cacheLock.ExitWriteLock();
+                throw Error.Argument("serviceType", Resources.DefaultServices_InvalidServiceType, serviceType.Name);
             }
+
+            // Get the service from DI. If we're coming up hot, this might 
+            // mean we end up creating the service more than once.
+            object dependencyService = this.lastKnownDependencyResolver.GetService(serviceType);
+            if (!this.cacheSingle.TryGetValue(serviceType, out result))
+            {
+                result = dependencyService ?? this.defaultServicesSingle[serviceType];
+                this.cacheSingle.TryAdd(serviceType, result); 
+            }
+            
+            return result; 
         }
 
         /// <summary>
@@ -220,11 +193,6 @@
                 throw Error.ArgumentNull("serviceType");
             }
 
-            if (!this.serviceTypesMulti.Contains(serviceType))
-            {
-                throw Error.Argument("serviceType", Resources.DefaultServices_InvalidServiceType, serviceType.Name);
-            }
-
             // Invalidate the cache if the dependency scope has switched
             if (this.lastKnownDependencyResolver != this.configuration.DependencyResolver)
             {
@@ -232,39 +200,27 @@
             }
 
             object[] result;
-
-            this.cacheLock.EnterReadLock();
-            try
+            if (this.cacheMulti.TryGetValue(serviceType, out result))
             {
-                if (this.cacheMulti.TryGetValue(serviceType, out result))
-                {
-                    return result;
-                }
-            }
-            finally
-            {
-                this.cacheLock.ExitReadLock();
-            }
-
-            // Get the service from DI, outside of the lock. If we're coming up hot, this might
-            // mean we end up creating the service more than once.
-            IEnumerable<object> dependencyServices = this.configuration.DependencyResolver.GetServices(serviceType);
-
-            this.cacheLock.EnterWriteLock();
-            try
-            {
-                if (!this.cacheMulti.TryGetValue(serviceType, out result))
-                {
-                    result = dependencyServices.Where(s => s != null).Concat(this.defaultServicesMulti[serviceType]).ToArray();
-                    this.cacheMulti[serviceType] = result;
-                }
-
                 return result;
             }
-            finally
+
+            if (!this.serviceTypesMulti.Contains(serviceType))
             {
-                this.cacheLock.ExitWriteLock();
+                throw Error.Argument("serviceType", Resources.DefaultServices_InvalidServiceType, serviceType.Name);
             }
+
+            // Get the service from DI If we're coming up hot, this might
+            // mean we end up creating the service more than once.
+            IEnumerable<object> dependencyServices = this.lastKnownDependencyResolver.GetServices(serviceType);
+
+            if (!this.cacheMulti.TryGetValue(serviceType, out result))
+            {
+                result = dependencyServices.Where(s => s != null).Concat(this.defaultServicesMulti[serviceType]).ToArray();
+                this.cacheMulti.TryAdd(serviceType, result);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -320,16 +276,10 @@
         /// <param name="serviceType">The service type.</param>
         protected override void ResetCache(Type serviceType)
         {
-            this.cacheLock.EnterWriteLock();
-            try
-            {
-                this.cacheSingle.Remove(serviceType);
-                this.cacheMulti.Remove(serviceType);
-            }
-            finally
-            {
-                this.cacheLock.ExitWriteLock();
-            }
+            object single;
+            this.cacheSingle.TryRemove(serviceType, out single);
+            object[] multiple;
+            this.cacheMulti.TryRemove(serviceType, out multiple);
         }
 
         private void SetSingle<T>(T instance) where T : class
@@ -349,17 +299,9 @@
         /// </summary>
         private void ResetCache()
         {
-            this.cacheLock.EnterWriteLock();
-            try
-            {
-                this.cacheSingle.Clear();
-                this.cacheMulti.Clear();
-                this.lastKnownDependencyResolver = this.configuration.DependencyResolver;
-            }
-            finally
-            {
-                this.cacheLock.ExitWriteLock();
-            }
+            this.cacheSingle = new ConcurrentDictionary<Type, object>();
+            this.cacheMulti = new ConcurrentDictionary<Type, object[]>();
+            this.lastKnownDependencyResolver = this.configuration.DependencyResolver;
         }
     }
 }
