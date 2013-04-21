@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
+    using System.Globalization;
     using System.Runtime.Caching;
     using System.Threading;
     using CommandProcessing;
@@ -92,7 +93,7 @@
         public void WhenProcessingThrowExceptionWithoutFilterThenThrowsException()
         {
             // Arrange
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null, "ok");
+            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null);
             CommandProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
@@ -108,7 +109,7 @@
             Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter.Setup(f => f.OnException(It.IsAny<HandlerExecutedContext>()));
             this.configuration.Filters.Add(exceptionFilter.Object);
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null, "ok");
+            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null);
             CommandProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
@@ -129,7 +130,7 @@
             ProcessorConfiguration config = new ProcessorConfiguration();
             config.Filters.Add(exceptionFilter.Object);
 
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(config, "ok");
+            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(config);
            
             CommandProcessor processor = this.CreatTestableProcessor(config);
             ValidCommand command = new ValidCommand();
@@ -153,7 +154,7 @@
                 .Callback<HandlerExecutedContext>(c => c.Result = "Exception !!");
             this.configuration.Filters.Add(exceptionFilter.Object);
 
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null, "ok");
+            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null);
             CommandProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
@@ -229,7 +230,7 @@
             var filter1 = this.SetupFilter("X");
             var filter2 = this.SetupFilter("Y");
 
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null, "ok");
+            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null);
           
             CommandProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
@@ -262,7 +263,7 @@
             var filter3 = this.SetupFilter("Z");
 
 
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null, "ok");
+            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>();
             CommandProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
@@ -341,7 +342,7 @@
             return handler;
         }
 
-        private Mock<Handler<TCommand, TResult>> SetupThrowingHandler<TCommand, TResult, TException>(ProcessorConfiguration config = null, TResult result = null)
+        private Mock<Handler<TCommand, TResult>> SetupThrowingHandler<TCommand, TResult, TException>(ProcessorConfiguration config = null)
             where TCommand : ICommand
             where TException : Exception, new()
             where TResult : class
@@ -364,11 +365,22 @@
             return handler;
         }
 
+        private Mock<Handler<TCommand, TResult>> SetupHandler<TCommand, TResult>(ProcessorConfiguration config = null, Func<TResult> funcResult = null)
+            where TCommand : ICommand
+            where TResult : class
+        {
+            Mock<Handler<TCommand, TResult>> handler = this.SetupHandlerImpl<TCommand, TResult>(config);
+            handler
+                .Setup(h => h.Handle(It.IsAny<TCommand>()))
+                .Returns(funcResult);
+            return handler;
+        }
+
         private Mock<Handler<TCommand, EmptyResult>> SetupHandler<TCommand>(ProcessorConfiguration config = null)
             where TCommand : ICommand
         {
             Mock<Handler<TCommand, EmptyResult>> handler = this.SetupHandlerImpl<TCommand, EmptyResult>(config);
-         
+
             return handler;
         }
 
@@ -422,7 +434,7 @@
         }
 
         [TestMethod]
-        public void WhenProcessingCommandWithCacheThenReturnValueInCache()
+        public void WhenProcessingDifferentsCommandsWithCacheVaryByAllThenReturnNewValue()
         {
             Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
             ValidCommand command1 = new ValidCommand();
@@ -431,25 +443,110 @@
             command2.Property = "test2";
             activator.Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()));
             this.configuration.Services.Replace(typeof(IHandlerActivator), activator.Object);
-
-            this.SetupHandler<ValidCommand, string>(null, "OK");
+            int i = 0;
+            this.SetupHandler<ValidCommand, string>(null, () => (i++).ToString(CultureInfo.InvariantCulture));
 
             CommandProcessor processor = this.CreatTestableProcessor();
             
             CacheAttribute attribute = new CacheAttribute();
             attribute.Duration = 10;
-            attribute.VaryByParams = "none";
+            attribute.VaryByParams = CacheAttribute.VaryByParamsAll;
+            this.configuration.Filters.Add(attribute);
+
+            // Act
+            var result1 = processor.Process<ValidCommand, string>(command1);
+            var result2 = processor.Process<ValidCommand, string>(command2);
+            
+            Assert.AreNotEqual(result1, result2);
+        }
+
+        [TestMethod]
+        public void WhenProcessingDifferentsCommandsWithCacheVaryByNoneThenReturnValueInCache()
+        {
+            Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
+            ValidCommand command1 = new ValidCommand();
+            command1.Property = "test1";
+            ValidCommand command2 = new ValidCommand();
+            command2.Property = "test2";
+            activator.Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()));
+            this.configuration.Services.Replace(typeof(IHandlerActivator), activator.Object);
+            int i = 0;
+            this.SetupHandler<ValidCommand, string>(null, () => (i++).ToString(CultureInfo.InvariantCulture));
+
+            CommandProcessor processor = this.CreatTestableProcessor();
+
+            CacheAttribute attribute = new CacheAttribute();
+            attribute.Duration = 10;
+            attribute.VaryByParams = CacheAttribute.VaryByParamsNone;
             this.configuration.Filters.Add(attribute);
 
             // Act
             var result1 = processor.Process<ValidCommand, string>(command1);
             var result2 = processor.Process<ValidCommand, string>(command2);
 
-            // Without result 1 would be different from result2
+            // Without cache result1 would be different from result2
             // With the cache results are the same
             Assert.AreEqual(result1, result2);
         }
-        
+
+        [TestMethod]
+        public void WhenProcessingCyclicCommandWithCacheThenReturnValueInCache()
+        {
+            Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
+            ComplexCyclicCommand command1 = new ComplexCyclicCommand();
+            ComplexCyclicCommand command2 = new ComplexCyclicCommand();
+            activator.Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()));
+            this.configuration.Services.Replace(typeof(IHandlerActivator), activator.Object);
+
+            int i = 0;
+            this.SetupHandler<ComplexCyclicCommand, string>(null, () => (i++).ToString(CultureInfo.InvariantCulture));
+
+            CommandProcessor processor = this.CreatTestableProcessor();
+
+            CacheAttribute attribute = new CacheAttribute();
+            attribute.Duration = 10;
+            attribute.VaryByParams = CacheAttribute.VaryByParamsAll;
+            this.configuration.Filters.Add(attribute);
+
+            // Act
+            var result1 = processor.Process<ComplexCyclicCommand, string>(command1);
+            var result2 = processor.Process<ComplexCyclicCommand, string>(command2);
+
+            // Without cache result 1 would be different from result2
+            // With the cache results are the same
+            Assert.AreEqual(result1, result2);
+        }
+
+
+        [TestMethod]
+        public void WhenProcessingDifferentCyclicCommandsWithCacheThenReturnValueInCacheBecauseItIsNotManaged()
+        {
+            Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
+            ComplexCyclicCommand command1 = new ComplexCyclicCommand();
+            ComplexCyclicCommand command2 = new ComplexCyclicCommand();
+            command2.Property2 = command1.Property2;
+            activator.Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()));
+            this.configuration.Services.Replace(typeof(IHandlerActivator), activator.Object);
+
+            int i = 0;
+            this.SetupHandler<ComplexCyclicCommand, string>(null, () => (i++).ToString(CultureInfo.InvariantCulture));
+
+            CommandProcessor processor = this.CreatTestableProcessor();
+
+            CacheAttribute attribute = new CacheAttribute();
+            attribute.Duration = 10;
+            attribute.VaryByParams = CacheAttribute.VaryByParamsAll;
+            this.configuration.Filters.Add(attribute);
+
+            // Act
+            var result1 = processor.Process<ComplexCyclicCommand, string>(command1);
+            var result2 = processor.Process<ComplexCyclicCommand, string>(command2);
+
+            // Without cache result 1 would be different from result2
+            // With the cache results are the same
+            Assert.AreEqual(result1, result2);
+        }
+
         [TestMethod]
         public void WhenUsingUnknowServiceThenThrowsArgumentException()
         {
@@ -561,6 +658,71 @@
         {
             public void Execute()
             {
+            }
+        }
+        
+        public class CyclicCommand : Command
+        {
+            public CyclicCommand()
+            {
+                this.Property1 = "test";
+                this.Property2 = this;
+            }
+
+            [Required]
+            public string Property1 { get; set; }
+            
+            [Required]
+            public CyclicCommand Property2 { get; set; }
+        }
+        
+        public class ComplexCyclicCommand : Command
+        {
+            public ComplexCyclicCommand()
+            {
+                this.Property1 = "test";
+                this.Property2 = new InnerCommand(this);
+            }
+
+            [Required]
+            public string Property1 { get; set; }
+
+            [Required]
+            public InnerCommand Property2 { get; set; }
+
+            public class InnerCommand
+            {
+                public InnerCommand()
+                {
+                    this.Property1 = "test";
+                }
+
+                public InnerCommand(ComplexCyclicCommand complexCyclicCommand)
+                {
+                    this.Property1 = "test";
+                    this.Property2 = new InnerInnerCommand(complexCyclicCommand);
+                }
+
+                  [Required]
+                public string Property1 { get; set; }
+
+                [Required]
+                public InnerInnerCommand Property2 { get; set; }
+
+                public class InnerInnerCommand
+                {
+                    public InnerInnerCommand(ComplexCyclicCommand complexCyclicCommand)
+                    {
+                        this.Property1 = "test"; 
+                        this.Property2 = complexCyclicCommand;
+                    }
+
+                    [Required]
+                    public string Property1 { get; set; }
+                    
+                    [Required]
+                    public ComplexCyclicCommand Property2 { get; set; }
+                }
             }
         }
 

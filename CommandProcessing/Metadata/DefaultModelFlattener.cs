@@ -65,6 +65,12 @@ namespace CommandProcessing.Metadata
 
         private void VisitNodeAndChildren(ModelMetadata metadata, VisitContext visitContext)
         {
+            // Do not traverse the model if caching must be ignored
+            if (metadata.IgnoreCaching)
+            {
+                return;
+            }
+
             object model = metadata.Model;
 
             // Optimization: we don't need to recursively traverse the graph for null and primitive types

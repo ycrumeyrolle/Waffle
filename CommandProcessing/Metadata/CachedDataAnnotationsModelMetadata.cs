@@ -32,7 +32,7 @@ namespace CommandProcessing.Metadata
         {
             Contract.Requires(attributes != null);
         }
-        
+
         /// <summary>
         /// Retrieves the description of the model.
         /// </summary>
@@ -42,6 +42,15 @@ namespace CommandProcessing.Metadata
             return this.PrototypeCache.Display != null
                        ? this.PrototypeCache.Display.GetDescription()
                        : base.ComputeDescription();
+        }
+        
+        /// <summary>
+        /// Retrieves the description of the model.
+        /// </summary>
+        /// <returns>The description of the model.</returns>
+        protected override bool ComputeIgnoreCaching()
+        {
+            return this.PrototypeCache.IgnoreCaching != null || base.ComputeIgnoreCaching();
         }
     }
 }

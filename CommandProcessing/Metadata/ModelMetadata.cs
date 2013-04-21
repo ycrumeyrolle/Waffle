@@ -78,6 +78,12 @@
                 return !TypeHelper.HasStringConverter(this.ModelType); 
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value that indicates whether the model is ignored in caching mecanism. 
+        /// </summary>
+        /// <value>A value that indicates whether the model is ignored in caching mecanism.</value>
+        public virtual bool IgnoreCaching { get; set; }
         
         /// <summary>
         /// Gets the value of the model.

@@ -2,6 +2,7 @@ namespace CommandProcessing
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using CommandProcessing.Caching;
 
     /// <summary>
     /// Represents a command to transmit to the processor.
@@ -15,6 +16,7 @@ namespace CommandProcessing
         /// Gets whether the command is valid.
         /// </summary>
         /// <value><c>true</c> id the command is valid ; <c>false</c> otherwise.</value>
+        [IgnoreCaching]
         public virtual bool IsValid
         {
             get
@@ -27,6 +29,7 @@ namespace CommandProcessing
         /// Gets the validation results collection.
         /// </summary>
         /// <value>The validation results collection.</value>
+        [IgnoreCaching]
         public virtual ICollection<ValidationResult> ValidationResults
         {
             get

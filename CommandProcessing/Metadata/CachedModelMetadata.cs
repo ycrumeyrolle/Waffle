@@ -19,11 +19,15 @@ namespace CommandProcessing.Metadata
     {
         private string description;
 
-        private bool isComplexType;
-
         private bool descriptionComputed;
 
+        private bool isComplexType;
+
         private bool isComplexTypeComputed;
+
+        private bool ignoreCaching;
+
+        private bool ignoreCachingComputed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CachedDataAnnotationsMetadataAttributes"/> class.
@@ -103,6 +107,30 @@ namespace CommandProcessing.Metadata
         }
 
         /// <summary>
+        /// Gets or sets the description of the model.
+        /// </summary>
+        /// <value>The description of the model. The default value is null.</value>
+        public sealed override bool IgnoreCaching
+        {
+            get
+            {
+                if (!this.ignoreCachingComputed)
+                {
+                    this.ignoreCaching = this.ComputeIgnoreCaching();
+                    this.ignoreCachingComputed = true;
+                }
+
+                return this.ignoreCaching;
+            }
+
+            set
+            {
+                this.ignoreCaching = value;
+                this.ignoreCachingComputed = true;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the prototype cache.
         /// </summary>
         /// <value>The prototype cache.</value>
@@ -125,6 +153,15 @@ namespace CommandProcessing.Metadata
         {
             Contract.Requires(this.ModelType != null);
             return base.IsComplexType;
+        }
+
+        /// <summary>
+        /// Computes the property IgnoreCaching.
+        /// </summary>
+        /// <returns>The property IgnoreCaching.</returns>
+        protected virtual bool ComputeIgnoreCaching()
+        {
+            return base.IgnoreCaching;
         }
     }
 }
