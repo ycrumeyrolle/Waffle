@@ -3,19 +3,19 @@ namespace CommandProcessing
     /// <summary>
     /// Represents a result that does nothing, such as an handler method that returns nothing.
     /// </summary>
-    public sealed class EmptyResult
+    public sealed class VoidResult
     {
-        private static readonly EmptyResult Current = new EmptyResult();
+        private static readonly VoidResult Current = new VoidResult();
 
-        private EmptyResult()
+        private VoidResult()
         {
         }
 
-        internal static EmptyResult Instance
+        public static VoidResult Instance
         {
             get
             {
-                return EmptyResult.Current;
+                return VoidResult.Current;
             }
         }
     }

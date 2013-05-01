@@ -13,6 +13,7 @@
     using CommandProcessing.Internal;
     using CommandProcessing.Metadata;
     using CommandProcessing.Services;
+    using CommandProcessing.Tracing;
     using CommandProcessing.Validation;
 
     /// <summary>
@@ -175,6 +176,17 @@
         }
 
         /// <summary>
+        /// Gets the <see cref="ICommandWorker"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ICommandWorker"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandWorker"/> service is not registered.</exception>
+        public static ICommandWorker GetCommandWorker(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<ICommandWorker>();
+        }
+
+        /// <summary>
         /// Gets the <see cref="ICommandProcessor"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
@@ -184,6 +196,27 @@
         {
             return services.GetServiceOrThrow<ICommandProcessor>();
         }
+
+        /// <summary>
+        /// Gets the <see cref="ITraceManager"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ITraceManager"/> service.</returns>
+        public static ITraceManager GetTraceManager(this ServicesContainer services)
+        {
+            return services.GetService<ITraceManager>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="ITraceWriter"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ITraceWriter"/> service.</returns>
+        public static ITraceWriter GetTraceWriter(this ServicesContainer services)
+        {
+            return services.GetService<ITraceWriter>();
+        }
+
 
         /// <summary>
         /// Gets the list of <see cref="IInterceptor"/> service.
@@ -197,15 +230,15 @@
         }
 
         /// <summary>
-        /// Gets the list of <see cref="ICommandValidator"/> service.
+        /// Gets the <see cref="ICommandValidator"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="ICommandValidator"/> services.</returns>
-        /// <exception cref="InvalidOperationException">The <see cref="ICommandValidator"/> services are not registered.</exception>
+        /// <returns>The <see cref="ICommandValidator"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandValidator"/> servic is not registered.</exception>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Validators", Justification = "False positive.")]
-        public static IEnumerable<ICommandValidator> GetCommandValidators(this ServicesContainer services)
+        public static ICommandValidator GetCommandValidator(this ServicesContainer services)
         {
-            return services.GetServices<ICommandValidator>();
+            return services.GetServiceOrThrow<ICommandValidator>();
         }
 
         /// <summary>

@@ -37,22 +37,22 @@
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-          
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+
             // Act
             // Assert
             ExceptionAssert.ThrowsArgumentNull(() => activator.Create(null, null), "request");
             ExceptionAssert.ThrowsArgumentNull(() => activator.Create(null, descriptor), "request");
             ExceptionAssert.ThrowsArgumentNull(() => activator.Create(request, null), "descriptor");
         }
-        
+
         [TestMethod]
         public void WhenCreatingHandlerFromDependencyResolverThenReturnsHandler()
         {
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(new SimpleHandler());
 
             // Act
@@ -71,7 +71,7 @@
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
 
             // Act
@@ -91,7 +91,7 @@
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
 
             // Act
@@ -110,7 +110,7 @@
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
 
             // Act
@@ -130,8 +130,8 @@
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor1 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-            HandlerDescriptor descriptor2 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor1 = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+            HandlerDescriptor descriptor2 = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
 
             // Act
@@ -151,8 +151,8 @@
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor1 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-            HandlerDescriptor descriptor2 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor1 = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+            HandlerDescriptor descriptor2 = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleHandler))).Returns(null);
 
             // Act
@@ -173,8 +173,8 @@
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor1 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-            HandlerDescriptor descriptor2 = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor1 = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+            HandlerDescriptor descriptor2 = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
             int[] i = { 0 };
             this.dependencyResolver
                 .When(() => i[0] < 1)
@@ -203,8 +203,8 @@
             // Assign
             IHandlerActivator activator = new DefaultHandlerActivator();
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
-            
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+
             this.dependencyResolver
                 .Setup(resolver => resolver.GetService(typeof(SimpleHandler)))
                 .Throws<HandlerNotFoundException>();
@@ -222,7 +222,7 @@
 
             // Assert
             Assert.IsTrue(exceptionRaised);
-         }
+        }
 
         [TestCleanup]
         public void Dispose()

@@ -8,8 +8,8 @@
         /// <summary>
         /// Determines whether the command is valid and adds any validation errors to the command's ValidationResults.
         /// </summary>
-        /// <param name="command">The command to be validated.</param>
+        /// <param name="request">The <see cref="HandlerRequest"/> to be validated.</param>
         /// <returns>true if command is valid, false otherwise.</returns>
-        bool Validate(ICommand command);
+        bool Validate(HandlerRequest request);
     }
 }

@@ -22,7 +22,7 @@
                 throw Error.ArgumentNull("processor");
             }
 
-            processor.Process<TCommand, EmptyResult>(command, currentRequest);
+            processor.Process<TCommand, VoidResult>(command, currentRequest);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@
                 throw Error.ArgumentNull("processor");
             }
 
-            processor.Process<TCommand, EmptyResult>(command, null);
+            processor.Process<TCommand, VoidResult>(command, null);
         }
 
         /// <summary>

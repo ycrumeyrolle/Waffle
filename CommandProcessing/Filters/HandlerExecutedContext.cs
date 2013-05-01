@@ -76,5 +76,21 @@
                            : null;
             }
         }
+
+        /// <summary>
+        /// Gets the current <see cref="HandlerRequest"/>.
+        /// </summary>
+        /// <value>
+        /// The <see cref="HandlerRequest"/>.
+        /// </value>
+        public HandlerRequest Request
+        {
+            get
+            {
+                return (HandlerContext != null && HandlerContext.Request != null)
+                           ? HandlerContext.Request
+                           : null;
+            }
+        }
     }
 }

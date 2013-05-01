@@ -110,6 +110,7 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -120,7 +121,9 @@
     <Compile Include="Caching\CacheAttribute.cs" />
     <Compile Include="Caching\IgnoreCachingAttribute.cs" />
     <Compile Include="Caching\NoCacheAttribute.cs" />
+    <Compile Include="DefaultCommandWorker.cs" />
     <Compile Include="Descriptions\IHandlerDescriptorProvider.cs" />
+    <Compile Include="ICommandWorker.cs" />
     <Compile Include="IPrincipalProvider.cs" />
     <Compile Include="Eventing\IMessageHub.cs" />
     <Compile Include="Eventing\MessageHub.cs" />
@@ -143,7 +146,7 @@
     <Compile Include="Interception\DefaultInterceptorProvider.cs" />
     <Compile Include="Interception\IInterceptionProvider.cs" />
     <Compile Include="Descriptions\CommandDescription.cs" />
-    <Compile Include="EmptyResult.cs" />
+    <Compile Include="VoidResult.cs" />
     <Compile Include="Filters\HandlerContext.cs" />
     <Compile Include="Handler`2.cs" />
     <Compile Include="HandlerRequest.cs" />
@@ -214,6 +217,31 @@
     </Compile>
     <Compile Include="Internal\TypeActivator.cs" />
     <Compile Include="Internal\TypeHelper.cs" />
+    <Compile Include="Tracing\CommandValidatorTracer.cs" />
+    <Compile Include="Tracing\CommandWorkerTracer.cs" />
+    <Compile Include="Tracing\FormattingUtilities.cs" />
+    <Compile Include="Tracing\HandlerActivatorTracer.cs" />
+    <Compile Include="Tracing\HandlerFilterTracer.cs" />
+    <Compile Include="Tracing\ExceptionFilterAttributeTracer.cs" />
+    <Compile Include="Tracing\ExceptionFilterTracer.cs" />
+    <Compile Include="Tracing\FilterTracer.cs" />
+    <Compile Include="Tracing\HandlerFilterAttributeTracer.cs" />
+    <Compile Include="Tracing\HandlerDescriptorTracer.cs" />
+    <Compile Include="Tracing\HandlerSelectorTracer.cs" />
+    <Compile Include="Tracing\HandlerTracer.cs" />
+    <Compile Include="ProcessorConfigurationTracingExtensions.cs" />
+    <Compile Include="Tracing\IDecorator.cs" />
+    <Compile Include="Tracing\ITraceManager.cs" />
+    <Compile Include="Tracing\ITraceWriter.cs" />
+    <Compile Include="Tracing\ITraceWriterExtensions.cs" />
+    <Compile Include="Tracing\DefaultTraceWriter.cs" />
+    <Compile Include="Tracing\TraceCategories.cs" />
+    <Compile Include="Tracing\TraceKind.cs" />
+    <Compile Include="Tracing\TraceKindHelper.cs" />
+    <Compile Include="Tracing\TraceLevel.cs" />
+    <Compile Include="Tracing\TraceLevelHelper.cs" />
+    <Compile Include="Tracing\TraceManager.cs" />
+    <Compile Include="Tracing\TraceRecord.cs" />
     <Compile Include="Validation\DefaultValidator.cs" />
     <Compile Include="Validation\ICommandValidator.cs" />
   </ItemGroup>
@@ -221,6 +249,7 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

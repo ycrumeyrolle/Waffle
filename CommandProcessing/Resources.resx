@@ -154,4 +154,58 @@ The request for '{0}' has found the following matching handlers : {1}</value>
   <data name="InvalidEnumArgument" xml:space="preserve">
     <value>The value of argument '{0}' ({1}) is invalid for Enum type '{2}'.</value>
   </data>
+  <data name="TraceActionFilterMessage" xml:space="preserve">
+    <value>Handler filter for '{0}'</value>
+  </data>
+  <data name="TraceCancelledMessage" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="TraceHandlerSelectedMessage" xml:space="preserve">
+    <value>Selected handler '{0}'</value>
+  </data>
+  <data name="TraceNoneObjectMessage" xml:space="preserve">
+    <value>none</value>
+  </data>
+  <data name="TraceRequestValidatedMessage" xml:space="preserve">
+    <value>Validated request for command '{0}'</value>
+  </data>
+  <data name="CategoryFormat" xml:space="preserve">
+    <value>Category='{0}'</value>
+  </data>
+  <data name="ExceptionFormat" xml:space="preserve">
+    <value>Exception={0}</value>
+  </data>
+  <data name="IdFormat" xml:space="preserve">
+    <value>Id={0}</value>
+  </data>
+  <data name="MessageFormat" xml:space="preserve">
+    <value>Message='{0}'</value>
+  </data>
+  <data name="OperationFormat" xml:space="preserve">
+    <value>Operation={0}.{1}</value>
+  </data>
+  <data name="ShortRequestFormat" xml:space="preserve">
+    <value>Request</value>
+  </data>
+  <data name="ShortResponseFormat" xml:space="preserve">
+    <value>Response</value>
+  </data>
+  <data name="TimeLevelKindFormat" xml:space="preserve">
+    <value>[{0}] Level={1}, Kind={2}</value>
+  </data>
+  <data name="TimeRequestFormat" xml:space="preserve">
+    <value>[{0}] Request received</value>
+  </data>
+  <data name="TimeResponseFormat" xml:space="preserve">
+    <value>[{0}] Sending response</value>
+  </data>
+  <data name="TraceLevelOutOfRange" xml:space="preserve">
+    <value>The TraceLevel property must be a value between TraceLevel.Off and TraceLevel.Fatal, inclusive.</value>
+  </data>
+  <data name="TraceHandlerExecutedMessage" xml:space="preserve">
+    <value>Executed handler for command '{0}'</value>
+  </data>
+  <data name="ElapsedFormat" xml:space="preserve">
+    <value>Elapsed='{0} ms'</value>
+  </data>
 </root>

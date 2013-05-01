@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultHandlerTypeResolver"/> class using a predicate to filter controller types.
+        /// Initializes a new instance of the <see cref="DefaultHandlerTypeResolver"/> class using a predicate to filter handler types.
         /// </summary>
         /// <param name="predicate">
         /// The predicate.

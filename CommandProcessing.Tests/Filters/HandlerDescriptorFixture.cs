@@ -18,7 +18,7 @@
         public void WhenGettingFiltersThenReturnsValues()
         {
             // Arrange
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
 
             // Act
             var filters = descriptor.GetFilters();
@@ -34,7 +34,7 @@
         public void WhenGettingFilterPipelineThenReturnsDistinctValues()
         {
             // Arrange
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
 
             // Act
             var filters = descriptor.GetFilterPipeline();
@@ -52,7 +52,7 @@
             // Arrange
             Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
             this.config.Services.Replace(typeof(IHandlerActivator), activator.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
             Mock<Handler> expectedHandler = new Mock<Handler>();
             activator
                 .Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()))

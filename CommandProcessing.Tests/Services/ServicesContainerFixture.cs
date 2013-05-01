@@ -47,10 +47,8 @@
             Assert.IsInstanceOfType(filterProviders[0], typeof(ConfigurationFilterProvider));
             Assert.IsInstanceOfType(filterProviders[1], typeof(HandlerFilterProvider));
      
-            object[] validators = defaultServices.GetServices(typeof(ICommandValidator)).ToArray();
-            Assert.AreEqual(1, validators.Length);
-            Assert.IsInstanceOfType(validators[0], typeof(DefaultCommandValidator));
-       
+            Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandValidator)), typeof(DefaultCommandValidator));
+      
             object[] interceptors = defaultServices.GetServices(typeof(IInterceptor)).ToArray();
             Assert.AreEqual(0, interceptors.Length);
          }

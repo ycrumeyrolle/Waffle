@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing", "CommandProcessing\CommandProcessing.csproj", "{289D3B8B-D8A2-44AF-931C-9B3DF7E319B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Tests", "CommandProcessing.Tests\CommandProcessing.Tests.csproj", "{302CA73F-4D47-4DEC-BE2C-803B210A8B46}"
@@ -30,9 +30,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.MiniProfi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Tasks", "CommandProcessing.Tasks\CommandProcessing.Tasks.csproj", "{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Console", "CommandProcessing.Console\CommandProcessing.Console.csproj", "{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
+		SccNumberOfProjects = 8
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://yanncrumeyrolle.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -54,6 +56,9 @@ Global
 		SccProjectUniqueName6 = CommandProcessing.Tasks\\CommandProcessing.Tasks.csproj
 		SccProjectName6 = CommandProcessing.Tasks
 		SccLocalPath6 = CommandProcessing.Tasks
+		SccProjectUniqueName7 = CommandProcessing.Console\\CommandProcessing.Console.csproj
+		SccProjectName7 = CommandProcessing.Console
+		SccLocalPath7 = CommandProcessing.Console
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Command processing.vsmdi
@@ -127,11 +132,24 @@ Global
 		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Release|x86.ActiveCfg = Release|Any CPU
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Debug|x86.ActiveCfg = Debug|x86
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Debug|x86.Build.0 = Debug|x86
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Release|Any CPU.ActiveCfg = Release|x86
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Release|Mixed Platforms.Build.0 = Release|x86
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Release|x86.ActiveCfg = Release|x86
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

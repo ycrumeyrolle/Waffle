@@ -14,7 +14,7 @@ namespace CommandProcessing.Dispatcher
         /// The request.
         /// </param>
         /// <param name="descriptor">
-        /// The controller descriptor.
+        /// The handler descriptor.
         /// </param>
         /// <returns>
         /// The <see cref="Handler"/>.

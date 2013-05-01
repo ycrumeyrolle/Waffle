@@ -16,13 +16,17 @@
     /// </summary>
     public class DefaultHandlerSelector : IHandlerSelector, IHandlerDescriptorProvider
     {
+        private static readonly Type VoidType = typeof(void);
+
+        private static readonly Type VoidResultType = typeof(VoidResult);
+
         private readonly Lazy<ConcurrentDictionary<Type, HandlerDescriptor>> handlerInfoCache;
 
         private readonly HandlerTypeCache handlerTypeCache;
 
         private readonly ProcessorConfiguration configuration;
 
-         /// <summary>
+        /// <summary>
         /// Initializes a new instance of the <see cref="DefaultHandlerSelector"/> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
@@ -32,12 +36,12 @@
             {
                 throw Error.ArgumentNull("configuration");
             }
-            
+
             this.handlerInfoCache = new Lazy<ConcurrentDictionary<Type, HandlerDescriptor>>(this.InitializeHandlerInfoCache);
             this.configuration = configuration;
             this.handlerTypeCache = new HandlerTypeCache(this.configuration);
         }
-        
+
         /// <summary>
         /// Selects a <see cref="HandlerDescriptor"/> for the given <see cref="HandlerRequest"/>.
         /// </summary>
@@ -53,6 +57,11 @@
             HandlerDescriptor result;
             if (this.handlerInfoCache.Value.TryGetValue(request.CommandType, out result))
             {
+                if (!request.ResultType.IsAssignableFrom(result.ResultType) && !(request.ResultType == VoidResultType && result.ResultType == VoidType))
+                {
+                    throw Error.InvalidOperation(Resources.DefaultHandlerSelector_HandlerNotFound, request.CommandType.Name);
+                }
+
                 return result;
             }
 
@@ -61,7 +70,7 @@
             {
                 throw Error.InvalidOperation(Resources.DefaultHandlerSelector_HandlerNotFound, request.CommandType.Name);
             }
-
+            
             throw CreateAmbiguousHandlerException(request.CommandType.Name, handlerTypes);
         }
 
@@ -97,18 +106,18 @@
             Dictionary<Type, ILookup<Type, Type>> cache = this.handlerTypeCache.Cache;
             foreach (KeyValuePair<Type, ILookup<Type, Type>> current in cache)
             {
-                Type key = current.Key;
+                Type commandType = current.Key;
                 foreach (IGrouping<Type, Type> group in current.Value)
                 {
                     foreach (Type handlerType in group)
                     {
-                        if (concurrentDictionary.Keys.Contains(key))
+                        if (concurrentDictionary.Keys.Contains(commandType))
                         {
-                            duplicateHandlers.Add(key);
+                            duplicateHandlers.Add(commandType);
                             break;
                         }
 
-                        concurrentDictionary.TryAdd(key, new HandlerDescriptor(this.configuration, handlerType));
+                        concurrentDictionary.TryAdd(commandType, new HandlerDescriptor(this.configuration, commandType, handlerType));
                     }
                 }
             }

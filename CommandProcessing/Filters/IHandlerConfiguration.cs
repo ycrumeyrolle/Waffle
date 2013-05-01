@@ -9,7 +9,7 @@
         /// Callback invoked to set per-handler overrides for this <paramref name="descriptor"/>. 
         /// </summary>
         /// <param name="settings">The handler settings to initialize.</param>
-        /// <param name="descriptor">The handler descriptor. Note that the <see cref="HandlerDescriptor"/> can be associated with the derived handler type given that IControllerConfiguration is inherited.</param>
+        /// <param name="descriptor">The handler descriptor. Note that the <see cref="HandlerDescriptor"/> can be associated with the derived handler type given that IHandlerConfiguration is inherited.</param>
         void Initialize(HandlerSettings settings, HandlerDescriptor descriptor);
     }
 }

@@ -36,7 +36,7 @@
         {
         }
 
-        internal HandlerDescriptor(ProcessorConfiguration configuration, Type handlerType)
+        internal HandlerDescriptor(ProcessorConfiguration configuration, Type commandType, Type handlerType)
         {
             Contract.Requires(configuration != null);
             Contract.Requires(handlerType != null);
@@ -45,7 +45,8 @@
             this.HandlerType = handlerType;
             this.filterPipeline = new Lazy<ICollection<FilterInfo>>(this.InitializeFilterPipeline);
             this.attributesCached = handlerType.GetCustomAttributes(true);
-            MethodInfo methodInfo = handlerType.GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            MethodInfo methodInfo = handlerType.GetMethod("Handle", new[] { commandType });
+            this.ResultType = methodInfo.ReturnType;
             this.attributesCached = this.attributesCached.Concat(methodInfo.GetCustomAttributes(true)).ToArray();
             this.handlerActivator = this.configuration.Services.GetHandlerActivator();
             this.Name = this.configuration.Services.GetHandlerNameResolver().GetHandlerName(this);
@@ -57,7 +58,7 @@
         /// Gets the properties associated with this instance.
         /// </summary>
         /// <value>The properties associated with this instance.</value>
-        public ConcurrentDictionary<object, object> Properties
+        public virtual ConcurrentDictionary<object, object> Properties
         {
             get
             {
@@ -78,6 +79,12 @@
         public Type HandlerType { get; private set; }
 
         /// <summary>
+        /// Gets the handler result type.
+        /// </summary>
+        /// <value>The handler result type.</value>
+        public Type ResultType { get; private set; }
+
+        /// <summary>
         /// Retrieves the filters for the handler descriptor.
         /// </summary>
         /// <returns>The filters for the handler descriptor.</returns>
@@ -91,7 +98,7 @@
         /// </summary>
         /// <typeparam name="T">The attribute type.</typeparam>
         /// <returns>The custom attributes associated with the handler descriptor.</returns>
-        public Collection<T> GetCustomAttributes<T>() where T : class
+        public virtual Collection<T> GetCustomAttributes<T>() where T : class
         {
             return new Collection<T>(TypeHelper.OfType<T>(this.attributesCached));
         }
@@ -100,7 +107,7 @@
         /// Retrieves the filters for the given configuration and handler.
         /// </summary>
         /// <returns>The filters for the given configuration and handler.</returns>
-        public ICollection<FilterInfo> GetFilterPipeline()
+        public virtual ICollection<FilterInfo> GetFilterPipeline()
         {
             return this.filterPipeline.Value;
         }
@@ -110,7 +117,7 @@
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>The created handler instance.</returns>
-        public IHandler CreateHandler(HandlerRequest request)
+        public virtual IHandler CreateHandler(HandlerRequest request)
         {
             return this.handlerActivator.Create(request, this);
         }
@@ -172,7 +179,7 @@
             InvokeAttributesOnHandlerType(this, this.HandlerType);
         }
 
-        // Helper to invoke any handler config attributes on this controller type or its base classes.
+        // Helper to invoke any handler config attributes on this handler type or its base classes.
         private static void InvokeAttributesOnHandlerType(HandlerDescriptor descriptor, Type type)
         {
             Contract.Requires(descriptor != null);

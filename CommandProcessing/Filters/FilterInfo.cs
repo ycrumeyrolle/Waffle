@@ -3,7 +3,7 @@
     using CommandProcessing.Internal;
 
     /// <summary>
-    /// Provides information about the available action filters.
+    /// Provides information about the available handler filters.
     /// </summary>
     public sealed class FilterInfo
     {

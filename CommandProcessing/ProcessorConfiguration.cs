@@ -2,10 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Filters;
     using CommandProcessing.Internal;
     using CommandProcessing.Services;
+    using CommandProcessing.Tracing;
 
     /// <summary>
     /// Represents the configuration for a processor.
@@ -177,6 +179,14 @@
 
         private static void DefaultInitializer(ProcessorConfiguration configuration)
         {
+            // Initialize the tracing layer.
+            // This must be the last initialization code to execute
+            // because it alters the configuration and expects no
+            // further changes.  As a default service, we know it
+            // must be present.
+            ITraceManager traceManager = configuration.Services.GetTraceManager();
+            Contract.Assert(traceManager != null);
+            traceManager.Initialize(configuration);
         }
     }
 }

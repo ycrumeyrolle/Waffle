@@ -12,7 +12,7 @@ namespace CommandProcessing.Eventing
         /// </summary>
         /// <param name="eventName">The name of the event to subscribe.</param>
         /// <param name="subscriber">The subscriber.</param>
-        /// <param name="callback">THe action callback that will be called when the event will be triggered.</param>
+        /// <param name="callback">The action callback that will be called when the event will be triggered.</param>
         void Subscribe(string eventName, object subscriber, Action<object> callback);
 
         /// <summary>

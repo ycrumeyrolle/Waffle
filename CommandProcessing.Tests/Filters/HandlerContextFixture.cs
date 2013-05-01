@@ -34,7 +34,7 @@
         {
             // Arrange
             HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleHandler));
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
          
             // Act
             HandlerContext context = new HandlerContext(request, descriptor);

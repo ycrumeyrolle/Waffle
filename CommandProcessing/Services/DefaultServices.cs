@@ -13,6 +13,7 @@
     using CommandProcessing.Interception;
     using CommandProcessing.Internal;
     using CommandProcessing.Metadata;
+    using CommandProcessing.Tracing;
     using CommandProcessing.Validation;
 
     /// <summary>
@@ -99,8 +100,8 @@
 
             this.SetSingle<IProxyBuilder>(new DefaultProxyBuilder());
             this.SetSingle<IInterceptionProvider>(new DefaultInterceptionProvider(this.configuration));
-            this.SetMultiple<IInterceptor>(Enumerable.Empty<IInterceptor>().ToArray());
-            this.SetMultiple<ICommandValidator>(new DefaultCommandValidator());
+            this.SetMultiple<IInterceptor>(new IInterceptor[0]);
+            this.SetSingle<ICommandValidator>(new DefaultCommandValidator());
 
             this.SetSingle<IMessageHub>(new MessageHub());
 
@@ -108,7 +109,12 @@
             this.SetSingle<IModelFlattener>(new DefaultModelFlattener());
 
             this.SetSingle<IPrincipalProvider>(new DefaultPrincipalProvider());
+            
+            // Tracing
+            this.SetSingle<ITraceManager>(new TraceManager());
+            this.SetSingle<ITraceWriter>(null);
 
+            this.SetSingle<ICommandWorker>(new DefaultCommandWorker(configuration));
             this.SetSingle<ICommandProcessor>(null);
 
             this.serviceTypesSingle = new HashSet<Type>(this.defaultServicesSingle.Keys);

@@ -23,7 +23,7 @@
         /// The request.
         /// </param>
         /// <param name="descriptor">
-        /// The controller descriptor.
+        /// The andler descriptor.
         /// </param>
         /// <returns>
         /// The <see cref="Handler"/>.

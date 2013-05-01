@@ -22,9 +22,9 @@
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
 
         private readonly ProcessorConfiguration configuration = new ProcessorConfiguration();
-        
+
         private readonly Mock<IDependencyResolver> dependencyResolver = new Mock<IDependencyResolver>(MockBehavior.Loose);
-        
+
         [TestMethod]
         public void WhenCreatingProcessorWithoutConfigThenHasDefaultConfig()
         {
@@ -73,7 +73,7 @@
             Assert.AreEqual("OK", result);
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
-        
+
         [TestMethod]
         public void WhenProcessingCommandWithoutResultThenCommandIsProcessed()
         {
@@ -88,7 +88,31 @@
             // Assert
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
+        
+        [TestMethod]
+        public void WhenProcessingMultipleCommandThenCommandsAreProcessed()
+        {
+            // Arrange
+            Mock<ISpy> spy = new Mock<ISpy>(MockBehavior.Strict);
+            spy.Setup(s => s.Spy("MultipleCommand1"));
+            spy.Setup(s => s.Spy("MultipleCommand2"));
+            MultipleHandler handler = new MultipleHandler(spy.Object);
+            this.SetupHandler<MultipleCommand1, string>(handler);
+            this.SetupHandler<MultipleCommand2, string>(handler);
+            CommandProcessor processor = this.CreatTestableProcessor();
+            MultipleCommand1 command1 = new MultipleCommand1();
+            MultipleCommand2 command2 = new MultipleCommand2();
 
+            // Act & assert
+            processor.Process<MultipleCommand1, string>(command1);
+            spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
+            spy.Verify(h => h.Spy("MultipleCommand2"), Times.Never());
+            processor.Process<MultipleCommand2, string>(command2);
+
+            spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
+            spy.Verify(h => h.Spy("MultipleCommand2"), Times.Once());
+        }
+        
         [TestMethod]
         public void WhenProcessingThrowExceptionWithoutFilterThenThrowsException()
         {
@@ -131,7 +155,7 @@
             config.Filters.Add(exceptionFilter.Object);
 
             var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(config);
-           
+
             CommandProcessor processor = this.CreatTestableProcessor(config);
             ValidCommand command = new ValidCommand();
 
@@ -173,7 +197,7 @@
             // Arrange
             var filter1 = this.SetupFilter("X");
             var filter2 = this.SetupFilter("Y");
-            
+
             var handler = this.SetupHandler<ValidCommand, string>(null, "OK");
             CommandProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
@@ -194,13 +218,13 @@
 
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
-        
+
         [TestMethod]
         public void WhenProcessingWithFilterSettingValueThenReturnsValueFromFilter()
         {
             // Arrange
             var filter1 = this.SetupFilter("X", c => c.Result = "OK from filter");
-            
+
             var handler = this.SetupHandler<ValidCommand, string>(null, "OK");
             CommandProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
@@ -219,7 +243,7 @@
         public void WhenProcessingWithFiltersThrowExceptionThenHandlesExceptionByExceptionFilter()
         {
             // Arrange
-            this.configuration.Filters.Clear(); 
+            this.configuration.Filters.Clear();
             Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter
                 .Setup(f => f.OnException(It.IsAny<HandlerExecutedContext>()))
@@ -231,7 +255,7 @@
             var filter2 = this.SetupFilter("Y");
 
             var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(null);
-          
+
             CommandProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
@@ -257,7 +281,7 @@
                 .Setup(f => f.OnException(It.IsAny<HandlerExecutedContext>()))
                 .Callback<HandlerExecutedContext>(c => c.Result = "Exception !!");
             this.configuration.Filters.Add(exceptionFilter.Object);
-            
+
             var filter1 = this.SetupFilter("X");
             var filter2 = this.SetupFilter("Y");
             var filter3 = this.SetupFilter("Z");
@@ -297,14 +321,14 @@
             filter
                 .Setup(f => f.OnCommandExecuted(It.IsAny<HandlerExecutedContext>()))
                 .Callback<HandlerExecutedContext>(c =>
+                {
+                    if (c.Exception == null)
                     {
-                        if (c.Exception == null)
-                        {
-                            c.Result += value;
-                        }
+                        c.Result += value;
+                    }
 
-                        executedCallback(c);
-                    });
+                    executedCallback(c);
+                });
             this.configuration.Filters.Add(filter.Object);
             return filter;
         }
@@ -320,7 +344,7 @@
             config.Services.Replace(typeof(IHandlerActivator), activator.Object);
 
             Mock<IHandlerSelector> selector = new Mock<IHandlerSelector>(MockBehavior.Strict);
-            HandlerDescriptor descriptor = new HandlerDescriptor(config, handler.Object.GetType());
+            HandlerDescriptor descriptor = new HandlerDescriptor(config, typeof(TCommand), handler.Object.GetType());
             selector
                 .Setup(s => s.SelectHandler(It.IsAny<HandlerRequest>()))
                 .Returns(descriptor);
@@ -331,8 +355,28 @@
             return handler;
         }
 
-        private Mock<Handler<TCommand, object>> SetupThrowingHandler<TCommand, TException>(ProcessorConfiguration config = null) 
-            where TCommand : ICommand 
+        private Handler SetupHandlerImpl<TCommand, TResult>(Handler handler) where TCommand : ICommand
+        {
+            ProcessorConfiguration config = this.configuration;
+            Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
+            activator
+                .Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()))
+                .Returns(handler);
+            config.Services.Replace(typeof(IHandlerActivator), activator.Object);
+
+            Mock<IHandlerSelector> selector = new Mock<IHandlerSelector>(MockBehavior.Strict);
+            HandlerDescriptor descriptor = new HandlerDescriptor(config, typeof(TCommand), handler.GetType());
+            selector
+                .Setup(s => s.SelectHandler(It.IsAny<HandlerRequest>()))
+                .Returns(descriptor);
+
+            config.Services.Replace(typeof(IHandlerSelector), selector.Object);
+            
+            return handler;
+        }
+
+        private Mock<Handler<TCommand, object>> SetupThrowingHandler<TCommand, TException>(ProcessorConfiguration config = null)
+            where TCommand : ICommand
             where TException : Exception, new()
         {
             Mock<Handler<TCommand, object>> handler = this.SetupHandlerImpl<TCommand, object>(config);
@@ -376,12 +420,18 @@
             return handler;
         }
 
-        private Mock<Handler<TCommand, EmptyResult>> SetupHandler<TCommand>(ProcessorConfiguration config = null)
+        private Mock<Handler<TCommand, VoidResult>> SetupHandler<TCommand>(ProcessorConfiguration config = null)
             where TCommand : ICommand
         {
-            Mock<Handler<TCommand, EmptyResult>> handler = this.SetupHandlerImpl<TCommand, EmptyResult>(config);
-
+            Mock<Handler<TCommand, VoidResult>> handler = this.SetupHandlerImpl<TCommand, VoidResult>(config);
+            handler.Setup(h => h.Handle(It.IsAny<TCommand>()));
             return handler;
+        }
+        
+        private IHandler<TCommand, TResult> SetupHandler<TCommand, TResult>(Handler handler)
+            where TCommand : ICommand
+        {
+            return (IHandler<TCommand, TResult>)this.SetupHandlerImpl<TCommand, TResult>(handler);
         }
 
         [TestMethod]
@@ -395,7 +445,7 @@
             this.configuration.Services.Replace(typeof(IHandlerActivator), activator.Object);
 
             Mock<IHandlerSelector> selector = new Mock<IHandlerSelector>(MockBehavior.Strict);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.configuration, typeof(ValidHandler));
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.configuration, typeof(ValidCommand), typeof(ValidHandler));
             selector.Setup(s => s.SelectHandler(It.IsAny<HandlerRequest>())).Returns(descriptor);
 
             this.configuration.Services.Replace(typeof(IHandlerSelector), selector.Object);
@@ -418,7 +468,7 @@
             InvalidCommand command = new InvalidCommand();
             activator.Setup(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()));
             this.configuration.Services.Replace(typeof(IHandlerActivator), activator.Object);
-            
+
             var handler = this.SetupHandler<InvalidCommand, string>(null, "OK");
 
             CommandProcessor processor = this.CreatTestableProcessor();
@@ -447,7 +497,7 @@
             this.SetupHandler<ValidCommand, string>(null, () => (i++).ToString(CultureInfo.InvariantCulture));
 
             CommandProcessor processor = this.CreatTestableProcessor();
-            
+
             CacheAttribute attribute = new CacheAttribute();
             attribute.Duration = 10;
             attribute.VaryByParams = CacheAttribute.VaryByParamsAll;
@@ -456,7 +506,7 @@
             // Act
             var result1 = processor.Process<ValidCommand, string>(command1);
             var result2 = processor.Process<ValidCommand, string>(command2);
-            
+
             Assert.AreNotEqual(result1, result2);
         }
 
@@ -581,7 +631,7 @@
         {
             // Arrange
             SimpleService service = new SimpleService();
-            this.dependencyResolver.Setup(d => d.GetService(typeof(ISimpleService))).Returns(service); 
+            this.dependencyResolver.Setup(d => d.GetService(typeof(ISimpleService))).Returns(service);
             this.configuration.ServiceProxyCreationEnabled = false;
 
             CommandProcessor processor = this.CreatTestableProcessor();
@@ -660,7 +710,7 @@
             {
             }
         }
-        
+
         public class CyclicCommand : Command
         {
             public CyclicCommand()
@@ -671,11 +721,11 @@
 
             [Required]
             public string Property1 { get; set; }
-            
+
             [Required]
             public CyclicCommand Property2 { get; set; }
         }
-        
+
         public class ComplexCyclicCommand : Command
         {
             public ComplexCyclicCommand()
@@ -703,7 +753,7 @@
                     this.Property2 = new InnerInnerCommand(complexCyclicCommand);
                 }
 
-                  [Required]
+                [Required]
                 public string Property1 { get; set; }
 
                 [Required]
@@ -713,16 +763,53 @@
                 {
                     public InnerInnerCommand(ComplexCyclicCommand complexCyclicCommand)
                     {
-                        this.Property1 = "test"; 
+                        this.Property1 = "test";
                         this.Property2 = complexCyclicCommand;
                     }
 
                     [Required]
                     public string Property1 { get; set; }
-                    
+
                     [Required]
                     public ComplexCyclicCommand Property2 { get; set; }
                 }
+            }
+        }
+
+
+        public interface ISpy
+        {
+            void Spy(string category);
+        }
+
+        public class MultipleCommand1 : Command
+        {
+        }
+
+        public class MultipleCommand2 : Command
+        {
+            
+        }
+
+        public class MultipleHandler : Handler, IHandler<MultipleCommand1, string>, IHandler<MultipleCommand2, string>
+        {
+            private readonly ISpy spy;
+
+            public MultipleHandler(ISpy spy)
+            {
+                this.spy = spy;
+            }
+
+            public string Handle(MultipleCommand1 command)
+            {
+                this.spy.Spy("MultipleCommand1");
+                return string.Empty;
+            }
+
+            public string Handle(MultipleCommand2 command)
+            {
+                this.spy.Spy("MultipleCommand2");
+                return string.Empty;
             }
         }
 

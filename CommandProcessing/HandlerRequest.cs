@@ -16,6 +16,8 @@
 
         private readonly IList<IDisposable> disposableResources = new List<IDisposable>();
 
+        private static readonly Type VoidType = typeof(VoidResult);
+
         private IDependencyScope dependencyScope;
 
         /// <summary>
@@ -24,7 +26,29 @@
         /// <param name="configuration">The configuration.</param>
         /// <param name="command">The command.</param>
         public HandlerRequest(ProcessorConfiguration configuration, ICommand command)
-            : this(configuration, command, null)
+            : this(configuration, command, VoidType, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerRequest"/> class. 
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="parentRequest">The parent request. </param>
+        public HandlerRequest(ProcessorConfiguration configuration, ICommand command, HandlerRequest parentRequest)
+            : this(configuration, command, VoidType, parentRequest)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerRequest"/> class. 
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="command">The command.</param>
+        /// <param name="resultType">The result type.</param>
+        public HandlerRequest(ProcessorConfiguration configuration, ICommand command, Type resultType)
+            : this(configuration, command, resultType, null)
         {
         }
 
@@ -34,8 +58,9 @@
         /// </summary> 
         /// <param name="configuration">The configuration.</param>
         /// <param name="command">The command.</param>
+        /// <param name="resultType">The result type.</param>
         /// <param name="parentRequest">The parent request. </param>
-        public HandlerRequest(ProcessorConfiguration configuration, ICommand command, HandlerRequest parentRequest)
+        public HandlerRequest(ProcessorConfiguration configuration, ICommand command, Type resultType, HandlerRequest parentRequest)
         {
             if (configuration == null)
             {
@@ -47,9 +72,15 @@
                 throw Error.ArgumentNull("command");
             }
 
+            if (resultType == null)
+            {
+                throw Error.ArgumentNull("resultType");
+            }
+
             this.Configuration = configuration;
             this.Command = command;
             this.CommandType = command.GetType();
+            this.ResultType = resultType;
 
             this.ParentRequest = parentRequest;
         }
@@ -77,6 +108,12 @@
         /// </summary>
         /// <value>The command <see cref="System.Type"/>.</value>
         public Type CommandType { get; private set; }
+
+        /// <summary>
+        /// Gets the result type.
+        /// </summary>
+        /// <value>The result <see cref="System.Type"/>.</value>
+        public Type ResultType { get; private set; }
 
         /// <summary>
         /// Gets the handler identifier.

@@ -9,15 +9,18 @@
     [TestClass]
     public class DefaultCommandValidatorFixture
     {
+        private readonly ProcessorConfiguration configuration = new ProcessorConfiguration();
+
         [TestMethod]
         public void WhenValidatingUnvalidatableObjectThenReturnsTrue()
         {
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new UnvalidatableCommand { Property1 = "01234567" };
+            HandlerRequest request = new HandlerRequest(this.configuration, command);
 
             // Act
-            bool result = validator.Validate(command);
+            bool result = validator.Validate(request);
 
             // Assert
             Assert.IsTrue(result);
@@ -30,9 +33,10 @@
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new DataAnnotationsValidatableCommand { Property1 = "01234567" };
+            HandlerRequest request = new HandlerRequest(this.configuration, command);
 
             // Act
-            bool result = validator.Validate(command);
+            bool result = validator.Validate(request);
 
             // Assert
             Assert.IsTrue(result);
@@ -46,9 +50,10 @@
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new DataAnnotationsValidatableCommand { Property1 = "01234567890123456789" };
+            HandlerRequest request = new HandlerRequest(this.configuration, command);
 
             // Act
-            bool result = validator.Validate(command);
+            bool result = validator.Validate(request);
 
             // Assert
             Assert.IsFalse(result);
@@ -62,9 +67,10 @@
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new ValidatableObjectCommand(true);
+            HandlerRequest request = new HandlerRequest(this.configuration, command);
 
             // Act
-            bool result = validator.Validate(command);
+            bool result = validator.Validate(request);
 
             // Assert
             Assert.IsTrue(result);
@@ -78,9 +84,10 @@
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new ValidatableObjectCommand(false);
+            HandlerRequest request = new HandlerRequest(this.configuration, command);
 
             // Act
-            bool result = validator.Validate(command);
+            bool result = validator.Validate(request);
 
             // Assert
             Assert.IsFalse(result);
@@ -95,9 +102,10 @@
             ICommandValidator validator = new DefaultCommandValidator();
             MixedValidatableCommand command = new MixedValidatableCommand(true);
             command.Property1 = "123456";
+            HandlerRequest request = new HandlerRequest(this.configuration, command);
 
             // Act
-            bool result = validator.Validate(command);
+            bool result = validator.Validate(request);
 
             // Assert
             Assert.IsTrue(result);
@@ -112,9 +120,10 @@
             ICommandValidator validator = new DefaultCommandValidator();
             MixedValidatableCommand command = new MixedValidatableCommand(false);
             command.Property1 = "123456789456132456";
+            HandlerRequest request = new HandlerRequest(this.configuration, command);
 
             // Act
-            bool result = validator.Validate(command);
+            bool result = validator.Validate(request);
 
             // Assert
             Assert.IsFalse(result);

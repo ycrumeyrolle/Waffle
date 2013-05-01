@@ -177,7 +177,7 @@
         {
             StringBuilder uniqueIdBuilder = new StringBuilder();
             
-            // Unique ID of the action description
+            // Unique ID of the handler description
             AppendPartToUniqueIdBuilder(uniqueIdBuilder, filterContext.Descriptor.HandlerType);
 
             if (this.VaryByUser && filterContext.User != null)

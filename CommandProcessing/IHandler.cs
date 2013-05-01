@@ -22,12 +22,19 @@
     /// </summary>
     public interface IHandler
     {
-        ICommandProcessor Processor { get; set;  }
+        ICommandProcessor Processor { get; set; }
 
         /// <summary>
         /// Gets the <see cref="HandlerContext"/>.
         /// </summary>
         /// <value>The <see cref="HandlerContext"/>.</value>
         HandlerContext Context { get; set; }
+
+        /// <summary>
+        /// Handle the command.
+        /// </summary>
+        /// <param name="command">The <see cref="ICommand"/> to process.</param>
+        /// <returns>The result object.</returns>
+        object Handle(ICommand command);
     }
 }
