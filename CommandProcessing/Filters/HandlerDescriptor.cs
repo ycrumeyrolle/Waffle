@@ -9,6 +9,7 @@
     using System.Reflection;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Internal;
+    using CommandProcessing.Metadata;
 
     /// <summary>
     /// Provides information about the handler method.
@@ -49,7 +50,10 @@
             this.ResultType = methodInfo.ReturnType;
             this.attributesCached = this.attributesCached.Concat(methodInfo.GetCustomAttributes(true)).ToArray();
             this.handlerActivator = this.configuration.Services.GetHandlerActivator();
-            this.Name = this.configuration.Services.GetHandlerNameResolver().GetHandlerName(this);
+            ModelMetadataProvider metadataProvider = this.configuration.Services.GetModelMetadataProvider();
+            ModelMetadata metadata = metadataProvider.GetMetadataForType(null, handlerType);
+            this.Name = metadata.GetDisplayName();
+            this.Description = metadata.Description;
 
             this.Initialize();
         }
@@ -71,6 +75,12 @@
         /// </summary>
         /// <value>The handler name.</value>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// Gets the handler description.
+        /// </summary>
+        /// <value>The handler description.</value>
+        public string Description { get; private set; }
 
         /// <summary>
         /// Gets the handler type.

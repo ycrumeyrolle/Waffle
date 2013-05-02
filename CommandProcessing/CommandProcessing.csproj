@@ -124,6 +124,27 @@
     <Compile Include="CommandProcessorWrapper.cs" />
     <Compile Include="DefaultCommandWorker.cs" />
     <Compile Include="Descriptions\IHandlerDescriptorProvider.cs" />
+    <Compile Include="EventSourcing\EventSourced.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventSourcing\IEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventSourcing\IEventSourced.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventSourcing\IEventSourcedRepository.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventSourcing\IMementoOriginator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventSourcing\IVersionedEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventSourcing\VersionedEvent.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ICommandWorker.cs" />
     <Compile Include="IPrincipalProvider.cs" />
     <Compile Include="Eventing\IMessageHub.cs" />
@@ -174,8 +195,6 @@
     <Compile Include="DefaultPrincipalProvider.cs" />
     <Compile Include="Services\HandlerServices.cs" />
     <Compile Include="ServicesExtensions.cs" />
-    <Compile Include="Dispatcher\DefaultHandlerNameResolver.cs" />
-    <Compile Include="Dispatcher\IHandlerNameResolver.cs" />
     <Compile Include="Dispatcher\DefaultHandlerSelector.cs" />
     <Compile Include="Dispatcher\DefaultHandlerTypeResolver.cs" />
     <Compile Include="HandlerTypeCache.cs" />

@@ -79,7 +79,6 @@
     <Compile Include="SimpleHandlerFilter.cs" />
     <Compile Include="Dispatcher\DefaultHandlerTypeResolverFixture.cs" />
     <Compile Include="Dispatcher\DefaultHandlerSelectorFixture.cs" />
-    <Compile Include="Dispatcher\DefaultHandlerNameResolverFixture.cs" />
     <Compile Include="Filters\ConfigurationFilterProviderFixture.cs" />
     <Compile Include="Filters\HandlerDescriptorFixture.cs" />
     <Compile Include="Filters\HandlerContextFixture.cs" />

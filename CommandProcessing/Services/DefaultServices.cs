@@ -90,7 +90,6 @@
             this.SetSingle<IHandlerDescriptorProvider>(handlerSelector);
             this.SetSingle<IHandlerActivator>(new DefaultHandlerActivator());
             this.SetSingle<IHandlerTypeResolver>(new DefaultHandlerTypeResolver());
-            this.SetSingle<IHandlerNameResolver>(new DefaultHandlerNameResolver());
 
             this.SetMultiple<IFilterProvider>(new ConfigurationFilterProvider(), new HandlerFilterProvider());
 

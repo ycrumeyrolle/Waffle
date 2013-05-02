@@ -29,8 +29,8 @@
             HandlerServices services = new HandlerServices(config.Services);
 
             // Act
-            IHandlerNameResolver localVal = (IHandlerNameResolver)services.GetService(typeof(IHandlerNameResolver));
-            IHandlerNameResolver globalVal = (IHandlerNameResolver)config.Services.GetService(typeof(IHandlerNameResolver));
+            IHandlerTypeResolver localVal = (IHandlerTypeResolver)services.GetService(typeof(IHandlerTypeResolver));
+            IHandlerTypeResolver globalVal = (IHandlerTypeResolver)config.Services.GetService(typeof(IHandlerTypeResolver));
 
             // Assert
             // Local handler didn't override, should get same value as global case.
@@ -58,12 +58,12 @@
            ProcessorConfiguration config = new ProcessorConfiguration();
            HandlerServices services = new HandlerServices(config.Services);
 
-           IHandlerNameResolver newLocalService = new Mock<IHandlerNameResolver>().Object;
-           services.Replace(typeof(IHandlerNameResolver), newLocalService);
+           IHandlerTypeResolver newLocalService = new Mock<IHandlerTypeResolver>().Object;
+           services.Replace(typeof(IHandlerTypeResolver), newLocalService);
 
            // Act            
-           IHandlerNameResolver localVal = (IHandlerNameResolver)services.GetService(typeof(IHandlerNameResolver));
-           IHandlerNameResolver globalVal = (IHandlerNameResolver)config.Services.GetService(typeof(IHandlerNameResolver));
+           IHandlerTypeResolver localVal = (IHandlerTypeResolver)services.GetService(typeof(IHandlerTypeResolver));
+           IHandlerTypeResolver globalVal = (IHandlerTypeResolver)config.Services.GetService(typeof(IHandlerTypeResolver));
 
            // Assert
            // Local handler didn't override, should get same value as global case.
@@ -77,19 +77,19 @@
            // Setting on Controller config overrides the DI container. 
            ProcessorConfiguration config = new ProcessorConfiguration();
 
-           IHandlerNameResolver newDiService = new Mock<IHandlerNameResolver>().Object;
+           IHandlerTypeResolver newDiService = new Mock<IHandlerTypeResolver>().Object;
            var mockDependencyResolver = new Mock<IDependencyResolver>();
-           mockDependencyResolver.Setup(dr => dr.GetService(typeof(IHandlerNameResolver))).Returns(newDiService);
+           mockDependencyResolver.Setup(dr => dr.GetService(typeof(IHandlerTypeResolver))).Returns(newDiService);
            config.DependencyResolver = mockDependencyResolver.Object;
 
            HandlerServices services = new HandlerServices(config.Services);
 
-           IHandlerNameResolver newLocalService = new Mock<IHandlerNameResolver>().Object;
-           services.Replace(typeof(IHandlerNameResolver), newLocalService);
+           IHandlerTypeResolver newLocalService = new Mock<IHandlerTypeResolver>().Object;
+           services.Replace(typeof(IHandlerTypeResolver), newLocalService);
 
            // Act            
-           IHandlerNameResolver localVal = (IHandlerNameResolver)services.GetService(typeof(IHandlerNameResolver));
-           IHandlerNameResolver globalVal = (IHandlerNameResolver)config.Services.GetService(typeof(IHandlerNameResolver));
+           IHandlerTypeResolver localVal = (IHandlerTypeResolver)services.GetService(typeof(IHandlerTypeResolver));
+           IHandlerTypeResolver globalVal = (IHandlerTypeResolver)config.Services.GetService(typeof(IHandlerTypeResolver));
 
            // Assert
            // Local handler didn't override, should get same value as global case.            
@@ -128,15 +128,15 @@
            ServicesContainer global = config.Services;
 
            HandlerServices services = new HandlerServices(global);
-           IHandlerNameResolver newLocalService = new Mock<IHandlerNameResolver>().Object;
-           services.Replace(typeof(IHandlerNameResolver), newLocalService);
+           IHandlerTypeResolver newLocalService = new Mock<IHandlerTypeResolver>().Object;
+           services.Replace(typeof(IHandlerTypeResolver), newLocalService);
 
            // Act
-           services.Clear(typeof(IHandlerNameResolver));
+           services.Clear(typeof(IHandlerTypeResolver));
 
            // Assert
-           IHandlerNameResolver localVal = (IHandlerNameResolver)services.GetService(typeof(IHandlerNameResolver));
-           IHandlerNameResolver globalVal = (IHandlerNameResolver)global.GetService(typeof(IHandlerNameResolver));
+           IHandlerTypeResolver localVal = (IHandlerTypeResolver)services.GetService(typeof(IHandlerTypeResolver));
+           IHandlerTypeResolver globalVal = (IHandlerTypeResolver)global.GetService(typeof(IHandlerTypeResolver));
 
            Assert.AreSame(globalVal, localVal);
        }
@@ -151,10 +151,10 @@
 
            // Act
            // Setting to null is not the same as clear. Clear() means fall through to global config. 
-           services.Replace(typeof(IHandlerNameResolver), null);
+           services.Replace(typeof(IHandlerTypeResolver), null);
 
            // Assert
-           IHandlerNameResolver localVal = (IHandlerNameResolver)services.GetService(typeof(IHandlerNameResolver));
+           IHandlerTypeResolver localVal = (IHandlerTypeResolver)services.GetService(typeof(IHandlerTypeResolver));
 
            Assert.IsNull(localVal);
        }

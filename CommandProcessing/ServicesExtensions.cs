@@ -42,18 +42,7 @@
         {
             return services.GetServiceOrThrow<IHandlerActivator>();
         }
-
-        /// <summary>
-        /// Gets the <see cref="IHandlerNameResolver"/> service.
-        /// </summary>
-        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="IHandlerNameResolver"/> service.</returns>
-        /// <exception cref="InvalidOperationException">The <see cref="IHandlerNameResolver"/> service is not registered.</exception>
-        public static IHandlerNameResolver GetHandlerNameResolver(this ServicesContainer services)
-        {
-            return services.GetServiceOrThrow<IHandlerNameResolver>();
-        }
-
+        
         /// <summary>
         /// Gets the <see cref="IAssembliesResolver"/> service.
         /// </summary>
