@@ -121,6 +121,7 @@
     <Compile Include="Caching\CacheAttribute.cs" />
     <Compile Include="Caching\IgnoreCachingAttribute.cs" />
     <Compile Include="Caching\NoCacheAttribute.cs" />
+    <Compile Include="CommandProcessorWrapper.cs" />
     <Compile Include="DefaultCommandWorker.cs" />
     <Compile Include="Descriptions\IHandlerDescriptorProvider.cs" />
     <Compile Include="ICommandWorker.cs" />

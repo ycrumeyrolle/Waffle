@@ -22,10 +22,9 @@ namespace CommandProcessing
         /// <typeparam name="TCommand">The type of command to process.</typeparam>
         /// <typeparam name="TResult">The result type.</typeparam>
         /// <param name="command">The command to process.</param>
-        /// <param name="currentRequest">The current request. Pass null if there is not parent request.</param>
         /// <returns>The result of the command.</returns>
-        TResult Process<TCommand, TResult>(TCommand command, HandlerRequest currentRequest) where TCommand : ICommand;
-
+        TResult Process<TCommand, TResult>(TCommand command) where TCommand : ICommand;
+        
         /// <summary>
         /// Asks the the processor to supply a service.
         /// The service will be created by the <see cref="IDependencyResolver"/>.

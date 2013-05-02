@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using CommandProcessing.Tasks;
     using CommandProcessing.Validation;
