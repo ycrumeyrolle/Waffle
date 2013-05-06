@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Internal;
+    using CommandProcessing.Validation;
 
     /// <summary>
     /// Represents a request for an handler.    
@@ -12,8 +13,8 @@
     /// </summary>
     public sealed class HandlerRequest : IDisposable
     {
-        private readonly Guid id = Guid.NewGuid();
-
+        // Guid.NewGuid() seems to be costly. Call it only when required.
+        private readonly Lazy<Guid> id = new Lazy<Guid>(Guid.NewGuid);
         private readonly IList<IDisposable> disposableResources = new List<IDisposable>();
 
         private static readonly Type VoidType = typeof(VoidResult);
@@ -123,7 +124,7 @@
         {
             get
             {
-                return this.id;
+                return this.id.Value;
             }
         }
 

@@ -115,6 +115,24 @@ namespace CommandProcessing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The type {0} must have a public constructor which accepts three parameters of types {1}, {2}, and {3}..
+        /// </summary>
+        internal static string DataAnnotationsModelValidatorProvider_ConstructorRequirements {
+            get {
+                return ResourceManager.GetString("DataAnnotationsModelValidatorProvider_ConstructorRequirements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type {0} must have a public constructor which accepts two parameters of types {1} and {2}..
+        /// </summary>
+        internal static string DataAnnotationsModelValidatorProvider_ValidatableConstructorRequirements {
+            get {
+                return ResourceManager.GetString("DataAnnotationsModelValidatorProvider_ValidatableConstructorRequirements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred when trying to create a handler of type &apos;{0}&apos;. Make sure that the handler has a parameterless public constructor..
         /// </summary>
         internal static string DefaultHandlerActivator_ErrorCreatingHandler {
@@ -211,6 +229,24 @@ namespace CommandProcessing {
         internal static string MessageFormat {
             get {
                 return ResourceManager.GetString("MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; on type &apos;{1}&apos; is invalid. Value-typed properties marked as [Required] must also be marked with [DataMember(IsRequired=true)] to be recognized as required. Consider attributing the declaring type with [DataContract] and the property with [DataMember(IsRequired=true)]..
+        /// </summary>
+        internal static string MissingDataMemberIsRequired {
+            get {
+                return ResourceManager.GetString("MissingDataMemberIsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} property is required..
+        /// </summary>
+        internal static string MissingRequiredMember {
+            get {
+                return ResourceManager.GetString("MissingRequiredMember", resourceCulture);
             }
         }
         
@@ -328,6 +364,42 @@ namespace CommandProcessing {
         internal static string TraceRequestValidatedMessage {
             get {
                 return ResourceManager.GetString("TraceRequestValidatedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The model object inside the metadata claimed to be compatible with {0}, but was actually {1}..
+        /// </summary>
+        internal static string ValidatableObjectAdapter_IncompatibleType {
+            get {
+                return ResourceManager.GetString("ValidatableObjectAdapter_IncompatibleType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A value is required but was not present in the request..
+        /// </summary>
+        internal static string Validation_ValueNotFound {
+            get {
+                return ResourceManager.GetString("Validation_ValueNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field &apos;{0}&apos; on type &apos;{1}&apos; is attributed with one or more validation attributes. Validation attributes on fields are not supported. Consider using a public property for validation instead..
+        /// </summary>
+        internal static string ValidationAttributeOnField {
+            get {
+                return ResourceManager.GetString("ValidationAttributeOnField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non-public property &apos;{0}&apos; on type &apos;{1}&apos; is attributed with one or more validation attributes. Validation attributes on non-public properties are not supported. Consider using a public property for validation instead..
+        /// </summary>
+        internal static string ValidationAttributeOnNonPublicProperty {
+            get {
+                return ResourceManager.GetString("ValidationAttributeOnNonPublicProperty", resourceCulture);
             }
         }
     }

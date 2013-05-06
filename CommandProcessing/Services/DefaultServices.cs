@@ -15,6 +15,8 @@
     using CommandProcessing.Metadata;
     using CommandProcessing.Tracing;
     using CommandProcessing.Validation;
+    using CommandProcessing.Validation.Providers;
+    using CommandProcessing.Validation.Validators;
 
     /// <summary>
     ///     <para>
@@ -28,7 +30,6 @@
     ///         <item><see cref="IHandlerDescriptorProvider"/></item>
     ///         <item><see cref="IHandlerActivator"/></item>
     ///         <item><see cref="IHandlerTypeResolver"/></item>
-    ///         <item><see cref="IHandlerNameResolver"/></item>
     ///         <item><see cref="IFilterProvider"/></item>
     ///         <item><see cref="IAssembliesResolver"/></item>
     ///         <item><see cref="ICommandExplorer"/></item>
@@ -108,7 +109,12 @@
             this.SetSingle<IModelFlattener>(new DefaultModelFlattener());
 
             this.SetSingle<IPrincipalProvider>(new DefaultPrincipalProvider());
-            
+
+            // Validation
+            this.SetMultiple<ModelValidatorProvider>(new DataAnnotationsModelValidatorProvider());
+            ModelValidatorCache validatorCache = new ModelValidatorCache(new Lazy<ModelValidatorProvider[]>(this.GetModelValidatorProviders));
+            this.SetSingle<IModelValidatorCache>(validatorCache);
+
             // Tracing
             this.SetSingle<ITraceManager>(new TraceManager());
             this.SetSingle<ITraceWriter>(null);

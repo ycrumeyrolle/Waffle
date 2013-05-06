@@ -97,8 +97,9 @@
         public void WhenPublishingMassEventsThenCallbackAreCalled()
         {
             // Arrange
+            int count = 0;
             Mock<ICallback> callback1 = new Mock<ICallback>();
-            callback1.Setup(c => c.Callback(It.IsAny<object>())).Callback(this.Increment);
+            callback1.Setup(c => c.Callback(It.IsAny<object>())).Callback(() => Interlocked.Increment(ref count));
             Mock<ICallback> callback2 = new Mock<ICallback>();
             callback2.Setup(c => c.Callback(It.IsAny<object>()));
             Mock<ICallback> callback3 = new Mock<ICallback>();
@@ -116,26 +117,14 @@
             }
 
             // Assert
-            Assert.AreEqual(1000, this.value);
+            Assert.AreEqual(1000, count);
 
             // Does not work well on Parallel testing.
             // callback1.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(1000));
             callback2.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(0));
             callback3.Verify(c => c.Callback(It.IsAny<object>()), Times.Exactly(0));
         }
-
-        private readonly object syncLock = new object();
-
-        private int value = 0;
-
-        private void Increment()
-        {
-            lock (this.syncLock)
-            {
-                this.value++;
-            }
-        }
-
+        
         public interface ICallback
         {
             void Callback(object context);

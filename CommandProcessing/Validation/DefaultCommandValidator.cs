@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Linq;
@@ -12,69 +13,48 @@
     /// <summary>
     /// Recursively validate an object. 
     /// </summary>
-    public class DefaultBodyModelValidator : IBodyModelValidator
+    public class DefaultCommandValidator : ICommandValidator
     {
+        private readonly ConcurrentDictionary<Type, Type> elementTypeCache = new ConcurrentDictionary<Type, Type>();
+
         /// <summary>
-        /// Determines whether the <paramref name="model"/> is valid and adds any validation errors to the <paramref name="handlerContext"/>'s <see cref="ModelStateDictionary"/>
+        /// Determines whether the command is valid and adds any validation errors to the command's ValidationResults.
         /// </summary>
-        /// <param name="model">The model to be validated.</param>
-        /// <param name="type">The <see cref="Type"/> to use for validation.</param>
-        /// <param name="metadataProvider">The <see cref="ModelMetadataProvider"/> used to provide the model metadata.</param>
-        /// <param name="handlerContext">The <see cref="HandlerContext"/> within which the model is being validated.</param>
-        /// <param name="keyPrefix">The <see cref="string"/> to append to the key for any validation errors.</param>
-        /// <returns><c>true</c>if <paramref name="model"/> is valid, <c>false</c> otherwise.</returns>
-        public bool Validate(object model, Type type, ModelMetadataProvider metadataProvider, HandlerContext handlerContext, string keyPrefix)
+        /// <param name="request">The <see cref="HandlerRequest"/> to be validated.</param>
+        /// <returns>true if command is valid, false otherwise.</returns>
+        public bool Validate(HandlerRequest request)
         {
-            if (type == null)
+            if (request == null)
             {
-                throw Error.ArgumentNull("type");
+                throw Error.ArgumentNull("request");
             }
 
-            if (metadataProvider == null)
-            {
-                throw Error.ArgumentNull("metadataProvider");
-            }
+            ModelValidatorProvider[] validatorProviders = request.Configuration.Services.GetModelValidatorProviders();
 
-            if (handlerContext == null)
-            {
-                throw Error.ArgumentNull("actionContext");
-            }
-            
-            ModelValidatorProvider[] validatorProviders = handlerContext.GetValidatorProviders().ToArray();
-         
             // Optimization : avoid validating the object graph if there are no validator providers
             if (validatorProviders.Length == 0)
             {
                 return true;
             }
 
-            ModelMetadata metadata = metadataProvider.GetMetadataForType(() => model, type);
+            ModelMetadataProvider metadataProvider = request.Configuration.Services.GetModelMetadataProvider();
+            ModelMetadata metadata = metadataProvider.GetMetadataForType(() => request.Command, request.CommandType);
             ValidationContext validationContext = new ValidationContext
                 {
-                MetadataProvider = metadataProvider,
-                HandlerContext = handlerContext,
-                ValidatorCache = handlerContext.GetValidatorCache(),
-                ModelState = handlerContext.ModelState,
-                Visited = new HashSet<object>(),
-                KeyBuilders = new Stack<IKeyBuilder>(),
-                RootPrefix = keyPrefix
-            };
+                    MetadataProvider = metadataProvider,
+                    ValidatorProviders = validatorProviders,
+                    ValidatorCache = request.Configuration.Services.GetModelValidatorCache(),
+                    ModelState = request.Command.ModelState,
+                    Visited = new HashSet<object>(),
+                    KeyBuilders = new Stack<IKeyBuilder>(),
+                    Request = request,
+                    RootPrefix = string.Empty
+                };
             return this.ValidateNodeAndChildren(metadata, validationContext, container: null);
         }
-
-        internal static IEnumerable<ModelValidator> GetValidators(HandlerContext actionContext, ModelMetadata metadata, IModelValidatorCache validatorCache)
-        {
-            if (validatorCache == null)
-            {
-                // slow path: there is no validator cache on the configuration
-                return metadata.GetValidators(actionContext.Configuration.Services.GetModelValidatorProviders());
-            }
-
-            return validatorCache.GetValidators(metadata);
-        }
-
+        
         private bool ValidateNodeAndChildren(ModelMetadata metadata, ValidationContext validationContext, object container)
-        {            
+        {
             object model = metadata.Model;
             bool isValid;
 
@@ -136,7 +116,7 @@
         private bool ValidateElements(IEnumerable model, ValidationContext validationContext)
         {
             bool isValid = true;
-            Type elementType = GetElementType(model.GetType());
+            Type elementType = this.GetElementType(model.GetType());
             ModelMetadata elementMetadata = validationContext.MetadataProvider.GetMetadataForType(null, elementType);
 
             ElementScope elementScope = new ElementScope { Index = 0 };
@@ -162,8 +142,21 @@
         {
             bool isValid = true;
             string key = null;
-            foreach (ModelValidator validator in validationContext.HandlerContext.GetValidators(metadata, validationContext.ValidatorCache))
+            IModelValidatorCache validatorCache = validationContext.ValidatorCache;
+            ModelValidator[] validators;
+            if (validatorCache == null)
             {
+                // slow path: there is no validator cache on the configuration
+                validators = metadata.GetValidators(validationContext.ValidatorProviders).AsArray();
+            }
+            else
+            {
+                validators = validatorCache.GetValidators(metadata).AsArray();
+            }
+
+            for (int index = 0; index < validators.Length; index++)
+            {
+                ModelValidator validator = validators[index];
                 foreach (ModelValidationResult error in validator.Validate(metadata, container))
                 {
                     if (key == null)
@@ -190,30 +183,48 @@
             return isValid;
         }
 
-        private static Type GetElementType(Type type)
+        private Type GetElementType(Type type)
         {
             Contract.Assert(typeof(IEnumerable).IsAssignableFrom(type));
-            if (type.IsArray)
+
+            // Avoid to use reflection when it is possible
+            Type elementType;
+            if (this.elementTypeCache.TryGetValue(type, out elementType))
             {
-                return type.GetElementType();
+                return elementType;
             }
 
-            foreach (Type implementedInterface in type.GetInterfaces())
+            if (type.IsArray)
             {
+                elementType = type.GetElementType();
+            }
+
+            Type[] interfaces = type.GetInterfaces();
+            for (int index = 0; index < interfaces.Length; index++)
+            {
+                Type implementedInterface = interfaces[index];
                 if (implementedInterface.IsGenericType && implementedInterface.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
-                    return implementedInterface.GetGenericArguments()[0];
+                    elementType = implementedInterface.GetGenericArguments()[0];
+                    break;
                 }
             }
 
-            return typeof(object);
+            if (elementType == null)
+            {
+                elementType = typeof(object);
+            }
+
+            this.elementTypeCache.TryAdd(type, elementType);
+
+            return elementType;
         }
-        
+
         private class ValidationContext
         {
             public ModelMetadataProvider MetadataProvider { get; set; }
 
-            public HandlerContext HandlerContext { get; set; }
+            public ModelValidatorProvider[] ValidatorProviders { get; set; }
 
             public IModelValidatorCache ValidatorCache { get; set; }
 
@@ -222,6 +233,8 @@
             public HashSet<object> Visited { get; set; }
 
             public Stack<IKeyBuilder> KeyBuilders { get; set; }
+
+            public HandlerRequest Request { get; set; }
 
             public string RootPrefix { get; set; }
         }

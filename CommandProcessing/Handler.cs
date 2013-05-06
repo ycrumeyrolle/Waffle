@@ -25,7 +25,7 @@ namespace CommandProcessing
         /// <value>The <see cref="HandlerContext"/>.</value>
         public HandlerContext Context { get; set; }
         
-        public virtual dynamic Handle(ICommand command)
+        public virtual object Handle(ICommand command)
         {
             if (command == null)
             {

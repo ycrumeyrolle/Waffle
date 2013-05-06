@@ -36,8 +36,9 @@ namespace CommandProcessing.Tests.Metadata
         {
             public DisplayModel()
             {
-                Test = new ReadOnlyModel();   
+                this.Test = new ReadOnlyModel();   
             }
+
             public bool NoAttribute { get; set; }
 
             // Description
@@ -59,11 +60,9 @@ namespace CommandProcessing.Tests.Metadata
 
             IModelFlattener test = new DefaultModelFlattener();
             var model = new DisplayModel();
-            HandlerContext context =new HandlerContext();
             var result = test.Flatten(model, model.GetType(), provider, string.Empty);
 
-            Assert.IsNotNull(result );
+            Assert.IsNotNull(result);
         }
-
     }
 }

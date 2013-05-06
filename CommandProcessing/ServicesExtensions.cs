@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
@@ -213,7 +212,7 @@
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
         /// <returns>The <see cref="IInterceptor"/> services.</returns>
         /// <exception cref="InvalidOperationException">The <see cref="IInterceptor"/> services are not registered.</exception>
-        public static IEnumerable<IInterceptor> GetInterceptors(this ServicesContainer services)
+        public static IInterceptor[] GetInterceptors(this ServicesContainer services)
         {
             return services.GetServices<IInterceptor>();
         }
@@ -229,16 +228,38 @@
         {
             return services.GetServiceOrThrow<ICommandValidator>();
         }
-
+        
         /// <summary>
         /// Gets the list of <see cref="IFilterProvider"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
         /// <returns>The <see cref="IFilterProvider"/> services.</returns>
         /// <exception cref="InvalidOperationException">The <see cref="IFilterProvider"/> services are not registered.</exception>
-        public static IEnumerable<IFilterProvider> GetFilterProviders(this ServicesContainer services)
+        public static IFilterProvider[] GetFilterProviders(this ServicesContainer services)
         {
             return services.GetServices<IFilterProvider>();
+        }
+
+        /// <summary>
+        /// Gets the list of <see cref="ModelValidatorProvider"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ModelValidatorProvider"/> services.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ModelValidatorProvider"/> services are not registered.</exception>
+        public static ModelValidatorProvider[] GetModelValidatorProviders(this ServicesContainer services)
+        {
+            return services.GetServices<ModelValidatorProvider>();
+        }      
+        
+        /// <summary>
+        /// Gets the list of <see cref="IModelValidatorCache"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IModelValidatorCache"/> services.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IModelValidatorCache"/> services are not registered.</exception>
+        internal static IModelValidatorCache GetModelValidatorCache(this ServicesContainer services)
+        {
+            return services.GetService<IModelValidatorCache>();
         }
 
         internal static T GetServiceOrThrow<T>(this ServicesContainer services) where T : class
@@ -268,9 +289,9 @@
             return (TService)services.GetService(typeof(TService));
         }
 
-        private static IEnumerable<TService> GetServices<TService>(this ServicesContainer services)
+        private static TService[] GetServices<TService>(this ServicesContainer services)
         {
-            return services.GetServices(typeof(TService)).Cast<TService>();
+            return services.GetServices(typeof(TService)).AsArray<TService>();
         }
     }
 }

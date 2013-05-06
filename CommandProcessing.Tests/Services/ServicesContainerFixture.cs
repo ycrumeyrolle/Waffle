@@ -17,7 +17,7 @@
     [TestClass]
     public class DefaultServicesFixture
     {
-       [TestMethod]
+        [TestMethod]
         public void Constructor_GuardClauses()
         {
             // Act & assert
@@ -45,12 +45,12 @@
             Assert.AreEqual(2, filterProviders.Length);
             Assert.IsInstanceOfType(filterProviders[0], typeof(ConfigurationFilterProvider));
             Assert.IsInstanceOfType(filterProviders[1], typeof(HandlerFilterProvider));
-     
+
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandValidator)), typeof(DefaultCommandValidator));
-      
+
             object[] interceptors = defaultServices.GetServices(typeof(IInterceptor)).ToArray();
             Assert.AreEqual(0, interceptors.Length);
-         }
+        }
 
         [TestMethod]
         public void Add_GuardClauses()
@@ -62,8 +62,8 @@
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.Add(serviceType: null, service: new object()), "serviceType");
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.Add(typeof(object), service: null), "service");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.Add(typeof(object), new object()),"serviceType");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.Add(typeof(IFilterProvider), new object()),"service");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.Add(typeof(object), new object()), "serviceType");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.Add(typeof(IFilterProvider), new object()), "service");
         }
 
         [TestMethod]
@@ -283,7 +283,7 @@
 
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.GetServices(serviceType: null), "serviceType");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.GetServices(typeof(object)),"serviceType");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.GetServices(typeof(object)), "serviceType");
         }
 
         [TestMethod]
@@ -348,7 +348,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.Insert(serviceType: null, index: 0, service: new object()), "serviceType");
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.Insert(typeof(object), 0, service: null), "service");
             ExceptionAssert.ThrowsArgument(() => defaultServices.Insert(typeof(object), 0, new object()), "serviceType");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.Insert(typeof(IFilterProvider), 0, new object()),"service");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.Insert(typeof(IFilterProvider), 0, new object()), "service");
             ExceptionAssert.ThrowsArgumentOutOfRange(() => defaultServices.Insert(typeof(IFilterProvider), -1, new Mock<IFilterProvider>().Object), "index");
         }
 
@@ -380,9 +380,9 @@
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.InsertRange(serviceType: null, index: 0, services: new[] { new object() }), "serviceType");
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.InsertRange(typeof(object), 0, services: null), "services");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.InsertRange(typeof(object), 0, new[] { new object() }),"serviceType");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.InsertRange(typeof(IFilterProvider), 0, new[] { new object() }),"services");
-            ExceptionAssert.ThrowsArgumentOutOfRange(() => defaultServices.InsertRange(typeof(IFilterProvider), -1, new[] { new Mock<IFilterProvider>().Object }),"index");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.InsertRange(typeof(object), 0, new[] { new object() }), "serviceType");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.InsertRange(typeof(IFilterProvider), 0, new[] { new object() }), "services");
+            ExceptionAssert.ThrowsArgumentOutOfRange(() => defaultServices.InsertRange(typeof(IFilterProvider), -1, new[] { new Mock<IFilterProvider>().Object }), "index");
         }
 
         [TestMethod]
@@ -414,7 +414,7 @@
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.Remove(serviceType: null, service: new object()), "serviceType");
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.Remove(typeof(object), service: null), "service");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.Remove(typeof(object), new object()),"serviceType");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.Remove(typeof(object), new object()), "serviceType");
         }
 
         [TestMethod]
@@ -451,7 +451,7 @@
             // Assert
             CollectionAssert.AreEqual(new[] { filterProvider1, filterProvider2 }.ToArray(), defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
         }
-        
+
         [TestMethod]
         public void RemoveAll_GuardClauses()
         {
@@ -462,7 +462,7 @@
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.RemoveAll(serviceType: null, match: _ => true), "serviceType");
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.RemoveAll(typeof(object), match: null), "match");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.RemoveAll(typeof(object), _ => true),"serviceType");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.RemoveAll(typeof(object), _ => true), "serviceType");
         }
 
         [TestMethod]
@@ -508,8 +508,8 @@
 
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.RemoveAt(serviceType: null, index: 0), "serviceType");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.RemoveAt(typeof(object), 0),"serviceType");
-            ExceptionAssert.ThrowsArgumentOutOfRange(() => defaultServices.RemoveAt(typeof(IFilterProvider), -1),"index");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.RemoveAt(typeof(object), 0), "serviceType");
+            ExceptionAssert.ThrowsArgumentOutOfRange(() => defaultServices.RemoveAt(typeof(IFilterProvider), -1), "index");
         }
 
         [TestMethod]
@@ -540,7 +540,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.Replace(serviceType: null, service: new object()), "serviceType");
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.Replace(typeof(IFilterProvider), service: null), "service");
             ExceptionAssert.ThrowsArgument(() => defaultServices.Replace(typeof(object), new object()), "serviceType");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.Replace(typeof(IFilterProvider), new object()),"service");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.Replace(typeof(IFilterProvider), new object()), "service");
         }
 
         [TestMethod]
@@ -560,7 +560,7 @@
             // Assert
             CollectionAssert.AreEqual(new[] { newFilterProvider }, defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
         }
-        
+
         [TestMethod]
         public void ReplaceRange_GuardClauses()
         {
@@ -571,8 +571,8 @@
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.ReplaceRange(serviceType: null, services: new[] { new object() }), "serviceType");
             ExceptionAssert.ThrowsArgumentNull(() => defaultServices.ReplaceRange(typeof(object), services: null), "services");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.ReplaceRange(typeof(object), new[] { new object() }),"serviceType");
-            ExceptionAssert.ThrowsArgument(() => defaultServices.ReplaceRange(typeof(IFilterProvider), new[] { new object() }),"services");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.ReplaceRange(typeof(object), new[] { new object() }), "serviceType");
+            ExceptionAssert.ThrowsArgument(() => defaultServices.ReplaceRange(typeof(IFilterProvider), new[] { new object() }), "services");
         }
 
         [TestMethod]

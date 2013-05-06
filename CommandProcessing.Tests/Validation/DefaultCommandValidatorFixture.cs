@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Linq;
     using CommandProcessing;
     using CommandProcessing.Validation;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -41,7 +42,7 @@
             // Assert
             Assert.IsTrue(result);
             Assert.IsTrue(command.IsValid);
-            Assert.AreEqual(0, command.ValidationResults.Count);
+            Assert.AreEqual(0, command.ModelState.Count);
         }
 
         [TestMethod]
@@ -58,7 +59,7 @@
             // Assert
             Assert.IsFalse(result);
             Assert.IsFalse(command.IsValid);
-            Assert.AreEqual(1, command.ValidationResults.Count);
+            Assert.AreEqual(1, command.ModelState.Count);
         }
         
         [TestMethod]
@@ -75,7 +76,7 @@
             // Assert
             Assert.IsTrue(result);
             Assert.IsTrue(command.IsValid);
-            Assert.AreEqual(0, command.ValidationResults.Count);
+            Assert.AreEqual(0, command.ModelState.Count);
         }
 
         [TestMethod]
@@ -92,7 +93,7 @@
             // Assert
             Assert.IsFalse(result);
             Assert.IsFalse(command.IsValid);
-            Assert.AreEqual(2, command.ValidationResults.Count);
+            Assert.AreEqual(2, command.ModelState.Sum(kvp => kvp.Value.Errors.Count));
         }
 
         [TestMethod]
@@ -110,7 +111,7 @@
             // Assert
             Assert.IsTrue(result);
             Assert.IsTrue(command.IsValid);
-            Assert.AreEqual(0, command.ValidationResults.Count);
+            Assert.AreEqual(0, command.ModelState.Count);
         }
 
         [TestMethod]
@@ -130,7 +131,7 @@
 
             // Validator ignore IValidatableObject validation until DataAnnotations succeed.
             Assert.IsFalse(command.IsValid);
-            Assert.AreEqual(1, command.ValidationResults.Count);
+            Assert.AreEqual(1, command.ModelState.Count);
         }
 
 

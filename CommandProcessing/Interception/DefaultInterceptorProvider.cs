@@ -10,7 +10,7 @@
     public class DefaultInterceptionProvider : IInterceptionProvider
     {
         private readonly ProcessorConfiguration configuration;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultInterceptionProvider"/> class.
         /// </summary>
@@ -29,10 +29,10 @@
         /// </summary>
         public void OnExecuting()
         {
-            IEnumerable<IInterceptor> interceptors = this.configuration.Services.GetInterceptors();
-            foreach (IInterceptor interceptor in interceptors)
+            IInterceptor[] interceptors = this.configuration.Services.GetInterceptors();
+            for (int index = 0; index < interceptors.Length; index++)
             {
-                interceptor.OnExecuting();
+                interceptors[index].OnExecuting();
             }
         }
 
@@ -41,10 +41,10 @@
         /// </summary>
         public void OnExecuted()
         {
-            IEnumerable<IInterceptor> interceptors = this.configuration.Services.GetInterceptors();
-            foreach (IInterceptor interceptor in interceptors)
+            IInterceptor[] interceptors = this.configuration.Services.GetInterceptors();
+            for (int index = 0; index < interceptors.Length; index++)
             {
-                interceptor.OnExecuted();
+                interceptors[index].OnExecuted();
             }
         }
 
@@ -54,10 +54,10 @@
         /// <param name="exception">The raised <see cref="Exception"/></param>
         public void OnException(Exception exception)
         {
-            IEnumerable<IInterceptor> interceptors = this.configuration.Services.GetInterceptors();
-            foreach (var interceptor in interceptors)
+            IInterceptor[] interceptors = this.configuration.Services.GetInterceptors();
+            for (int index = 0; index < interceptors.Length; index++)
             {
-                interceptor.OnException(exception);
+                interceptors[index].OnException(exception);
             }
         }
     }

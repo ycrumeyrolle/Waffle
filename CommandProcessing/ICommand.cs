@@ -2,6 +2,7 @@ namespace CommandProcessing
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using CommandProcessing.Validation;
 
     /// <summary>
     /// Represents a command to transmit to the processor.
@@ -19,6 +20,6 @@ namespace CommandProcessing
         /// Gets the validation results collection.
         /// </summary>
         /// <value>The validation results collection.</value>
-        ICollection<ValidationResult> ValidationResults { get; }
+        ModelStateDictionary ModelState { get; }
     }
 }

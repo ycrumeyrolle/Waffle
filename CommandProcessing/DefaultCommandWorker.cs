@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using CommandProcessing.Tasks;
     using CommandProcessing.Validation;
@@ -22,10 +23,11 @@
         /// </summary>
         /// <value>The configuration.</value>
         public ProcessorConfiguration Configuration { get; private set; }
-        
+
         public TResult Execute<TCommand, TResult>(ICommandProcessor processor, HandlerRequest request) where TCommand : ICommand
         {
-            HandlerDescriptor descriptor = this.Configuration.Services.GetHandlerSelector().SelectHandler(request);
+            IHandlerSelector handlerSelector = this.Configuration.Services.GetHandlerSelector();
+            HandlerDescriptor descriptor = handlerSelector.SelectHandler(request);
 
             IHandler handler = descriptor.CreateHandler(request);
 
@@ -127,8 +129,8 @@
             return TaskHelpers.RunSynchronously(
                 () =>
                 {
-                    object result = ((dynamic)handler).Handle(context.Command);
-                    return TaskHelpers.FromResult(result);
+                    var res = handler.Handle(context.Command);
+                    return TaskHelpers.FromResult(res);
                 },
                 cancellationToken);
         }

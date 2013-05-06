@@ -20,12 +20,7 @@
         }
 
         protected internal ValidationAttribute Attribute { get; private set; }
-
-        public override bool IsRequired
-        {
-            get { return this.Attribute is RequiredAttribute; }
-        }
-
+        
         public override IEnumerable<ModelValidationResult> Validate(ModelMetadata metadata, object container)
         {
             ValidationContext context = new ValidationContext(container ?? metadata.Model, null, null);

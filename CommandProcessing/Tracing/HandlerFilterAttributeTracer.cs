@@ -144,7 +144,7 @@
                 ActionExecutedMethodName, 
                 beginTrace: (tr) =>
                 {
-                    tr.Message = Internal.Error.Format(Resources.TraceActionFilterMessage, FormattingUtilities.ActionDescriptorToString(actionExecutedContext.HandlerContext.Descriptor));
+                    tr.Message = Internal.Error.Format(Resources.TraceActionFilterMessage, FormattingUtilities.HandlerDescriptorToString(actionExecutedContext.HandlerContext.Descriptor));
                     tr.Exception = actionExecutedContext.Exception;
                     object response = actionExecutedContext.Result;
                 }, 
@@ -169,7 +169,7 @@
                 ActionExecutingMethodName, 
                 beginTrace: (tr) => 
                 {
-                    tr.Message = Internal.Error.Format(Resources.TraceActionFilterMessage, FormattingUtilities.ActionDescriptorToString(handlerContext.Descriptor)); 
+                    tr.Message = Internal.Error.Format(Resources.TraceActionFilterMessage, FormattingUtilities.HandlerDescriptorToString(handlerContext.Descriptor)); 
                 },
                 execute: () => this.innerFilter.OnCommandExecuting(handlerContext), 
                 endTrace: null, 

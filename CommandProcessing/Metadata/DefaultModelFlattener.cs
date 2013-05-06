@@ -2,6 +2,7 @@ namespace CommandProcessing.Metadata
 {
     using System;
     using System.Collections;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Globalization;
@@ -13,6 +14,8 @@ namespace CommandProcessing.Metadata
     /// </summary>
     public class DefaultModelFlattener : IModelFlattener
     {
+        private readonly ConcurrentDictionary<Type, Type> elementTypeCache = new ConcurrentDictionary<Type, Type>();
+
         private interface IKeyBuilder
         {
             string AppendTo(string prefix);
@@ -120,7 +123,7 @@ namespace CommandProcessing.Metadata
 
         private void VisitElements(IEnumerable model, VisitContext visitContext)
         {
-            Type elementType = GetElementType(model.GetType());
+            Type elementType = this.GetElementType(model.GetType());
             ModelMetadata elementMetadata = visitContext.MetadataProvider.GetMetadataForType(null, elementType);
 
             ElementScope elementScope = new ElementScope { Index = 0 };
@@ -150,30 +153,43 @@ namespace CommandProcessing.Metadata
             {
                 visitContext.FlatCommand.Add(key, metadata.Model);
             }
-            else
-            {
-                Console.WriteLine(metadata.Model);
-            }
         }
 
-        private static Type GetElementType(Type type)
+        private Type GetElementType(Type type)
         {
             Contract.Assert(typeof(IEnumerable).IsAssignableFrom(type));
+          
+            // Avoid to use reflection when it is possible
+            Type elementType;
+            if (this.elementTypeCache.TryGetValue(type, out elementType))
+            {
+                return elementType;
+            }
 
             if (type.IsArray)
             {
-                return type.GetElementType();
+                elementType = type.GetElementType();
             }
 
-            foreach (Type implementedInterface in type.GetInterfaces())
+            Type[] interfaces = type.GetInterfaces();
+            for (int index = 0; index < interfaces.Length; index++)
             {
+                Type implementedInterface = interfaces[index];
                 if (implementedInterface.IsGenericType && implementedInterface.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
-                    return implementedInterface.GetGenericArguments()[0];
+                    elementType = implementedInterface.GetGenericArguments()[0];
+                    break;
                 }
             }
 
-            return typeof(object);
+            if (elementType == null)
+            {
+                elementType = typeof(object);
+            }
+
+            this.elementTypeCache.TryAdd(type, elementType);
+
+            return elementType;
         }
         
         private class PropertyScope : IKeyBuilder

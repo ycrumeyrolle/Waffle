@@ -18,52 +18,33 @@ namespace CommandProcessing.Console
     {
         public static void Main(string[] args)
         {
-            ConsoleProfiling.Start();
-            using (StackExchange.Profiling.MiniProfiler.Current.Step("Call Methods"))
+            ProcessorConfiguration config = new ProcessorConfiguration();
+            ////   config.Services.Replace(typeof(ICommandValidator), new NullValidator());
+            ////     DefaultTraceWriter traceWorker = config.EnableSystemDiagnosticsTracing();
+
+
+            ////  PerformanceTracer traceWriter = new PerformanceTracer();
+
+            ////config.Services.Replace(typeof(ITraceWriter), traceWriter);
+            ////    traceWorker.MinimumLevel = Tracing.TraceLevel.DefaultCommandValidator;
+            config.Filters.Add(new CustomExceptionFilterAttribute());
+
+            long initialMemory = GC.GetTotalMemory(false);
+            using (CommandProcessor processor = new CommandProcessor(config))
             {
-
-                ProcessorConfiguration config = new ProcessorConfiguration();
-                //   config.Services.Replace(typeof(ICommandValidator), new NullValidator());
-           //     DefaultTraceWriter traceWorker = config.EnableSystemDiagnosticsTracing();
-
-
-                PerformanceTracer traceWriter = new PerformanceTracer();
-
-                config.Services.Replace(typeof(ITraceWriter), traceWriter);
-            //    traceWorker.MinimumLevel = Tracing.TraceLevel.Fatal;
-                config.Filters.Add(new CustomExceptionFilterAttribute());
-                using (CommandProcessor processor = new CommandProcessor(config))
-                {
-                    Command1 command1 = new Command1();
-                    Command2 command2 = new Command2();
-                    Command3 command3 = new Command3();
-                    Command4 command4 = new Command4();
-                    Command5 command5 = new Command5();
-                    Command6 command6 = new Command6();
-                    Command7 command7 = new Command7();
-                    Command8 command8 = new Command8();
-                    Command9 command9 = new Command9();
-                    Command10 command10 = new Command10();
-                    Command command11 = new MultipleCommand1();
-                    Command command12 = new MultipleCommand2();
-                    //Parallel.For(0, 10000, (i) =>
-                    //    {
-                    //        MiniProfiler.Start();
-                    //        processor.Process(command1);
-                    //        processor.Process(command2);
-                    //        processor.Process(command3);
-                    //        processor.Process(command4);
-                    //        processor.Process(command5);
-                    //        processor.Process(command6);
-                    //        processor.Process(command7);
-                    //        processor.Process(command8);
-                    //        processor.Process(command9);
-                    //        processor.Process(command10);
-                    //        MiniProfiler.Stop();
-                    //        Console.WriteLine(MiniProfiler.Current.RenderPlainText());
-                    //    });
-
-                    for (int i = 0; i < 100; i++)
+                Command1 command1 = new Command1();
+                Command2 command2 = new Command2();
+                Command3 command3 = new Command3();
+                Command4 command4 = new Command4();
+                Command5 command5 = new Command5();
+                Command6 command6 = new Command6();
+                Command7 command7 = new Command7();
+                Command8 command8 = new Command8();
+                Command9 command9 = new Command9();
+                Command10 command10 = new Command10();
+                MultipleCommand1 command11 = new MultipleCommand1();
+                MultipleCommand2 command12 = new MultipleCommand2();
+                Parallel.For(0, 100000, (i) =>
                     {
                         processor.Process(command1);
                         processor.Process(command2);
@@ -75,17 +56,26 @@ namespace CommandProcessing.Console
                         processor.Process(command8);
                         processor.Process(command9);
                         processor.Process(command10);
-                        processor.Process(command11);
-                        processor.Process(command12);
-                    }
-                }
+                        processor.Process<MultipleCommand1, string>(command11);
+                        processor.Process<MultipleCommand2, string>(command12);
+                    });
+
+                ////for (int i = 0; i < 100000; i++)
+                ////{
+                ////    processor.Process(command1);
+                ////    processor.Process(command2);
+                ////    processor.Process(command3);
+                ////    processor.Process(command4);
+                ////    processor.Process(command5);
+                ////    processor.Process(command6);
+                ////    processor.Process(command7);
+                ////    processor.Process(command8);
+                ////    processor.Process(command9);
+                ////    processor.Process(command10);
+                ////    processor.Process<MultipleCommand1, string>(command11);
+                ////    processor.Process<MultipleCommand2, string>(command12);
+                ////}
             }
-
-            var friendlyString = ConsoleProfiling.StopAndGetConsoleFriendlyOutputStringWithSqlTimings();
-            Console.WriteLine(friendlyString);
-            Debug.WriteLine(friendlyString);
-
-              System.Console.ReadLine();
         }
     }
 
@@ -182,7 +172,7 @@ namespace CommandProcessing.Console
     {
         public override void Handle(Command2 command)
         {
-          //  throw new Exception();
+            //  throw new Exception();
         }
     }
 

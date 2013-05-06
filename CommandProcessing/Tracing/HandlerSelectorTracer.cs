@@ -45,9 +45,8 @@
                     {
                         tr.Message = Error.Format(
                             Resources.TraceHandlerSelectedMessage,
-                            FormattingUtilities.ActionDescriptorToString(actionDescriptor));
+                            FormattingUtilities.HandlerDescriptorToString(actionDescriptor));
                     },
-
                 errorTrace: null);
 
             // Intercept returned HttpActionDescriptor with a tracing version

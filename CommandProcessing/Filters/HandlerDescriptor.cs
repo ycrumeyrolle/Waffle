@@ -6,6 +6,7 @@
     using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Reflection;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Internal;
@@ -46,9 +47,9 @@
             this.HandlerType = handlerType;
             this.filterPipeline = new Lazy<ICollection<FilterInfo>>(this.InitializeFilterPipeline);
             this.attributesCached = handlerType.GetCustomAttributes(true);
-            MethodInfo methodInfo = handlerType.GetMethod("Handle", new[] { commandType });
-            this.ResultType = methodInfo.ReturnType;
-            this.attributesCached = this.attributesCached.Concat(methodInfo.GetCustomAttributes(true)).ToArray();
+            var handleMethod = handlerType.GetMethod("Handle", new[] { commandType });
+            this.ResultType = handleMethod.ReturnType;
+            this.attributesCached = this.attributesCached.Concat(handleMethod.GetCustomAttributes(true)).ToArray();
             this.handlerActivator = this.configuration.Services.GetHandlerActivator();
             ModelMetadataProvider metadataProvider = this.configuration.Services.GetModelMetadataProvider();
             ModelMetadata metadata = metadataProvider.GetMetadataForType(null, handlerType);
@@ -159,13 +160,12 @@
 
         private ICollection<FilterInfo> InitializeFilterPipeline()
         {
-            IEnumerable<IFilterProvider> filterProviders = this.configuration.Services.GetFilterProviders();
+            IFilterProvider[] filterProviders = this.configuration.Services.GetFilterProviders();
             
-            IFilterProvider[] providers = filterProviders.AsArray();
             List<FilterInfo> filters = new List<FilterInfo>();
-            for (int i = 0; i < providers.Length; i++)
+            for (int i = 0; i < filterProviders.Length; i++)
             {
-                IFilterProvider provider = providers[i];
+                IFilterProvider provider = filterProviders[i];
                 foreach (FilterInfo filter in provider.GetFilters(this.configuration, this))
                 {
                     filters.Add(filter);

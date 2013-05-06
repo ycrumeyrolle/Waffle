@@ -5,15 +5,6 @@
 
     public class SimpleService
     {
-        //internal const int ValueType = 123;
-
-        //internal const string StringType = "test!";
-
-        //internal const StringSplitOptions EnumType = StringSplitOptions.RemoveEmptyEntries;
-
-        //[SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "For testing purpose.")]
-        //internal static readonly Random ReferenceType = new Random();
-
         [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "For testing purpose.")]
         internal int ValueTypeValue = 123;
 

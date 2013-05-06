@@ -173,11 +173,6 @@
             return this.innerDictionary.Remove(key);
         }
 
-        //public void SetModelValue(string key, ValueProviderResult value)
-        //{
-        //    this.GetModelStateForKey(key).Value = value;
-        //}
-
         public bool TryGetValue(string key, out ModelState value)
         {
             return this.innerDictionary.TryGetValue(key, out value);

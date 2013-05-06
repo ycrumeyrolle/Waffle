@@ -1,8 +1,8 @@
 namespace CommandProcessing
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
+    using System.Linq;
     using CommandProcessing.Caching;
+    using CommandProcessing.Validation;
 
     /// <summary>
     /// Represents a command to transmit to the processor.
@@ -10,7 +10,7 @@ namespace CommandProcessing
     /// </summary>
     public class Command : ICommand
     {
-        private readonly ICollection<ValidationResult> validationResults = new List<ValidationResult>();
+        private readonly ModelStateDictionary modelStateDictionary = new ModelStateDictionary();
 
         /// <summary>
         /// Gets whether the command is valid.
@@ -21,7 +21,7 @@ namespace CommandProcessing
         {
             get
             {
-                return this.validationResults.Count == 0;
+                return this.modelStateDictionary.Values.All(modelState => modelState.Errors.Count == 0); 
             }
         }
 
@@ -30,11 +30,11 @@ namespace CommandProcessing
         /// </summary>
         /// <value>The validation results collection.</value>
         [IgnoreCaching]
-        public virtual ICollection<ValidationResult> ValidationResults
+        public virtual ModelStateDictionary ModelState
         {
             get
             {
-                return this.validationResults;
+                return this.modelStateDictionary;
             }
         }
     }

@@ -1,13 +1,15 @@
 ﻿namespace CommandProcessing.Validation
 {
+    using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
+    using System.Linq;
     using CommandProcessing.Internal;
 
     /// <summary>
     /// Represents a class used to recursively validate a command.
     /// </summary>
     /// <remarks>Use internaly the <see cref="System.ComponentModel.DataAnnotations.Validator"/>.</remarks>
-    public class DefaultCommandValidator : ICommandValidator
+    public class SlowCommandValidator : ICommandValidator
     {
         /// <summary>
         /// Determines whether the command is valid and adds any validation errors to the command's ValidationResults.
@@ -27,7 +29,13 @@
             }
             
             ValidationContext context = new ValidationContext(request.Command, null, null);
-            bool valid = Validator.TryValidateObject(request.Command, context, request.Command.ValidationResults, true);
+            Collection<ValidationResult> results = new Collection<ValidationResult>();
+            bool valid = Validator.TryValidateObject(request.Command, context, results, true);
+
+            foreach (var result in results)
+            {
+                request.Command.ModelState.AddModelError(string.Empty, result.ErrorMessage);
+            }
             
             return valid;
         }

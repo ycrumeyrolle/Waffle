@@ -15,10 +15,10 @@
             var values = new Tuple<FilterInfo, FilterInfo, int>[] 
             {
                     Tuple.Create<FilterInfo, FilterInfo, int>(null, null, 0),
-                    Tuple.Create<FilterInfo, FilterInfo, int>(new FilterInfo(f, FilterScope.Handler), null, 1 ),
-                    Tuple.Create<FilterInfo, FilterInfo, int>(null, new FilterInfo(f, FilterScope.Handler), -1 ),
-                    Tuple.Create<FilterInfo, FilterInfo, int>(new FilterInfo(f, FilterScope.Handler), new FilterInfo(f, FilterScope.Handler), 0 ),
-                    Tuple.Create<FilterInfo, FilterInfo, int>(new FilterInfo(f, FilterScope.Global), new FilterInfo(f, FilterScope.Handler), -1 ),
+                    Tuple.Create<FilterInfo, FilterInfo, int>(new FilterInfo(f, FilterScope.Handler), null, 1),
+                    Tuple.Create<FilterInfo, FilterInfo, int>(null, new FilterInfo(f, FilterScope.Handler), -1),
+                    Tuple.Create<FilterInfo, FilterInfo, int>(new FilterInfo(f, FilterScope.Handler), new FilterInfo(f, FilterScope.Handler), 0),
+                    Tuple.Create<FilterInfo, FilterInfo, int>(new FilterInfo(f, FilterScope.Global), new FilterInfo(f, FilterScope.Handler), -1),
                     Tuple.Create<FilterInfo, FilterInfo, int>(new FilterInfo(f, FilterScope.Handler), new FilterInfo(f, FilterScope.Global), 1)
             };
             foreach (var tuple in values)

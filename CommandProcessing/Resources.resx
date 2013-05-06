@@ -132,6 +132,12 @@
   <data name="Common_TypeMustDeriveFromType" xml:space="preserve">
     <value> The type {0} must derive from {1}</value>
   </data>
+  <data name="DataAnnotationsModelValidatorProvider_ConstructorRequirements" xml:space="preserve">
+    <value>The type {0} must have a public constructor which accepts three parameters of types {1}, {2}, and {3}.</value>
+  </data>
+  <data name="DataAnnotationsModelValidatorProvider_ValidatableConstructorRequirements" xml:space="preserve">
+    <value>The type {0} must have a public constructor which accepts two parameters of types {1} and {2}.</value>
+  </data>
   <data name="DefaultHandlerActivator_ErrorCreatingHandler" xml:space="preserve">
     <value>An error occurred when trying to create a handler of type '{0}'. Make sure that the handler has a parameterless public constructor.</value>
   </data>
@@ -207,5 +213,23 @@ The request for '{0}' has found the following matching handlers : {1}</value>
   </data>
   <data name="ElapsedFormat" xml:space="preserve">
     <value>Elapsed='{0} ms'</value>
+  </data>
+  <data name="MissingDataMemberIsRequired" xml:space="preserve">
+    <value>Property '{0}' on type '{1}' is invalid. Value-typed properties marked as [Required] must also be marked with [DataMember(IsRequired=true)] to be recognized as required. Consider attributing the declaring type with [DataContract] and the property with [DataMember(IsRequired=true)].</value>
+  </data>
+  <data name="MissingRequiredMember" xml:space="preserve">
+    <value>The {0} property is required.</value>
+  </data>
+  <data name="ValidatableObjectAdapter_IncompatibleType" xml:space="preserve">
+    <value>The model object inside the metadata claimed to be compatible with {0}, but was actually {1}.</value>
+  </data>
+  <data name="ValidationAttributeOnField" xml:space="preserve">
+    <value>Field '{0}' on type '{1}' is attributed with one or more validation attributes. Validation attributes on fields are not supported. Consider using a public property for validation instead.</value>
+  </data>
+  <data name="ValidationAttributeOnNonPublicProperty" xml:space="preserve">
+    <value>Non-public property '{0}' on type '{1}' is attributed with one or more validation attributes. Validation attributes on non-public properties are not supported. Consider using a public property for validation instead.</value>
+  </data>
+  <data name="Validation_ValueNotFound" xml:space="preserve">
+    <value>A value is required but was not present in the request.</value>
   </data>
 </root>
