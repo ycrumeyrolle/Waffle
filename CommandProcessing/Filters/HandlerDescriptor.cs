@@ -6,8 +6,6 @@
     using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Internal;
     using CommandProcessing.Metadata;
@@ -18,15 +16,16 @@
     public class HandlerDescriptor
     {
         private readonly object[] attributesCached;
-
         private ProcessorConfiguration configuration;
-        
+        private FilterGrouping filterGrouping;   
+        private Collection<FilterInfo> filterPipelineForGrouping;  
+
         /// <summary>
         /// Gets the <see cref="IHandlerActivator"/> associated with this instance.
         /// </summary>
         private readonly IHandlerActivator handlerActivator;
 
-        private readonly Lazy<ICollection<FilterInfo>> filterPipeline;
+        private readonly Lazy<Collection<FilterInfo>> filterPipeline;
 
         private readonly ConcurrentDictionary<object, object> properties = new ConcurrentDictionary<object, object>();
 
@@ -45,7 +44,7 @@
 
             this.configuration = configuration;
             this.HandlerType = handlerType;
-            this.filterPipeline = new Lazy<ICollection<FilterInfo>>(this.InitializeFilterPipeline);
+            this.filterPipeline = new Lazy<Collection<FilterInfo>>(this.InitializeFilterPipeline);
             this.attributesCached = handlerType.GetCustomAttributes(true);
             var handleMethod = handlerType.GetMethod("Handle", new[] { commandType });
             this.ResultType = handleMethod.ReturnType;
@@ -118,7 +117,7 @@
         /// Retrieves the filters for the given configuration and handler.
         /// </summary>
         /// <returns>The filters for the given configuration and handler.</returns>
-        public virtual ICollection<FilterInfo> GetFilterPipeline()
+        public virtual Collection<FilterInfo> GetFilterPipeline()
         {
             return this.filterPipeline.Value;
         }
@@ -132,6 +131,18 @@
         {
             return this.handlerActivator.Create(request, this);
         }
+
+        internal FilterGrouping GetFilterGrouping()   
+        {
+            Collection<FilterInfo> currentFilterPipeline = this.GetFilterPipeline();
+            if (this.filterGrouping == null || this.filterPipelineForGrouping != currentFilterPipeline)   
+            {   
+                this.filterGrouping = new FilterGrouping(currentFilterPipeline);
+                this.filterPipelineForGrouping = currentFilterPipeline;   
+            }
+
+            return this.filterGrouping;   
+        }  
 
         private static void RemoveDuplicates(List<FilterInfo> filters)
         {
@@ -157,8 +168,8 @@
             IFilter filter = filterInstance as IFilter;
             return filter == null || filter.AllowMultiple;
         }
-
-        private ICollection<FilterInfo> InitializeFilterPipeline()
+        
+        private Collection<FilterInfo> InitializeFilterPipeline()
         {
             IFilterProvider[] filterProviders = this.configuration.Services.GetFilterProviders();
             
@@ -179,7 +190,7 @@
               RemoveDuplicates(filters);
             }
 
-            return filters;
+            return new Collection<FilterInfo>(filters);
         }
 
         // Initialize the Descriptor. This invokes all IHandlerConfiguration attributes
@@ -207,11 +218,11 @@
             for (int i = 0; i < attrs.Length; i++)
             {
                 object attr = attrs[i];
-                var handlerConfig = attr as IHandlerConfiguration;
+                IHandlerConfiguration handlerConfig = attr as IHandlerConfiguration;
                 if (handlerConfig != null)
                 {
-                    var originalConfig = descriptor.configuration;
-                    var settings = new HandlerSettings(originalConfig);
+                    ProcessorConfiguration originalConfig = descriptor.configuration;
+                    HandlerSettings settings = new HandlerSettings(originalConfig);
                     handlerConfig.Initialize(settings, descriptor);
                     descriptor.configuration = ProcessorConfiguration.ApplyHandlerSettings(settings, originalConfig);
                 }

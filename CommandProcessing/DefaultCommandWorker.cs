@@ -46,9 +46,7 @@
             handler.Context = context;
             handler.Processor = processor;
 
-            ICollection<FilterInfo> filterPipeline = descriptor.GetFilterPipeline();
-
-            FilterGrouping filterGrouping = new FilterGrouping(filterPipeline);
+            FilterGrouping filterGrouping = descriptor.GetFilterGrouping();
             CancellationToken cancellationToken = new CancellationToken();
 
             Task<object> result = TaskHelpers.RunSynchronously(() =>

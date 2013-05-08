@@ -94,7 +94,7 @@
             return new Collection<IFilter>(returnFilters);
         }
 
-        public override ICollection<FilterInfo> GetFilterPipeline()
+        public override Collection<FilterInfo> GetFilterPipeline()
         {
             List<FilterInfo> filters = new List<FilterInfo>(this.innerDescriptor.GetFilterPipeline());
             List<FilterInfo> returnFilters = new List<FilterInfo>(filters.Count);
