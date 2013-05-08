@@ -17,7 +17,18 @@ namespace CommandProcessing
         /// Gets the <see cref="ICommandProcessor"/>.
         /// </summary>
         /// <value>The command processor.</value>
-        public ICommandProcessor Processor { get; set; }
+        public ICommandProcessor Processor
+        {
+            get
+            {
+                if (this.Context != null && this.Context != null)
+                {
+                    return this.Context.Request.Processor;
+                }
+
+                return null;
+            }
+        }
         
         /// <summary>
         /// Gets the <see cref="HandlerContext"/>.

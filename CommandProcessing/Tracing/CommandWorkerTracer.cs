@@ -34,7 +34,7 @@
             }
         }
 
-        public TResult Execute<TCommand, TResult>(ICommandProcessor processor, HandlerRequest request) where TCommand : ICommand
+        public TResult Execute<TCommand, TResult>(HandlerRequest request) where TCommand : ICommand
         {
             return this.TraceWriter.TraceBeginEnd<TResult>(
                request,
@@ -43,7 +43,7 @@
                this.Inner.GetType().Name,
                ExecuteMethodName,
                beginTrace: null,
-               execute: () => this.Inner.Execute<TCommand, TResult>(processor, request),
+               execute: () => this.Inner.Execute<TCommand, TResult>(request),
                endTrace: null,
                errorTrace: null);
         }

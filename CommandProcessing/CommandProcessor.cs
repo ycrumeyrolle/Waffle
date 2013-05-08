@@ -68,7 +68,8 @@
 
             using (HandlerRequest request = new HandlerRequest(this.Configuration, command, typeof(TResult), currentRequest))
             {
-                return commandWorker.Execute<TCommand, TResult>(new CommandProcessorWrapper(this, request), request);
+                request.Processor = new CommandProcessorWrapper(this, request);
+                return commandWorker.Execute<TCommand, TResult>(request);
             }
         }
 

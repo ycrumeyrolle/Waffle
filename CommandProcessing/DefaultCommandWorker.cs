@@ -13,6 +13,10 @@
 
     public sealed class DefaultCommandWorker : ICommandWorker
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultCommandWorker"/> class.
+        /// </summary>
+        /// <param name="configuration"></param>
         public DefaultCommandWorker(ProcessorConfiguration configuration)
         {
             this.Configuration = configuration;
@@ -24,7 +28,7 @@
         /// <value>The configuration.</value>
         public ProcessorConfiguration Configuration { get; private set; }
 
-        public TResult Execute<TCommand, TResult>(ICommandProcessor processor, HandlerRequest request) where TCommand : ICommand
+        public TResult Execute<TCommand, TResult>(HandlerRequest request) where TCommand : ICommand
         {
             IHandlerSelector handlerSelector = this.Configuration.Services.GetHandlerSelector();
             HandlerDescriptor descriptor = handlerSelector.SelectHandler(request);
@@ -44,7 +48,6 @@
             HandlerContext context = new HandlerContext(request, descriptor);
             context.User = this.Configuration.Services.GetPrincipalProvider().Principal;
             handler.Context = context;
-            handler.Processor = processor;
 
             FilterGrouping filterGrouping = descriptor.GetFilterGrouping();
             CancellationToken cancellationToken = new CancellationToken();

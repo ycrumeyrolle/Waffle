@@ -32,6 +32,39 @@
             get { return this.innerHandler; }
         }
 
+        public ICommandProcessor Processor
+        {
+            get
+            {
+                return this.innerHandler.Processor;
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="HandlerContext"/>.
+        /// </summary>
+        /// <value>The <see cref="HandlerContext"/>.</value>
+        public HandlerContext Context
+        {
+            get
+            {
+                return this.innerHandler.Context;
+            }
+
+            set
+            {
+                this.innerHandler.Context = value;
+            }
+        }
+
+        public ITraceWriter TraceWriter
+        {
+            get
+            {
+                return this.traceWriter;
+            }
+        }
+
         void IDisposable.Dispose()
         {
             IDisposable disposable = this.innerHandler as IDisposable;
@@ -70,44 +103,6 @@
                         tr.Message = Error.Format(Resources.TraceHandlerExecutedMessage, request.CommandType.FullName);
                     },
                 errorTrace: null);
-        }
-
-        public ICommandProcessor Processor
-        {
-            get
-            {
-                return this.innerHandler.Processor;
-            }
-
-            set
-            {
-                this.innerHandler.Processor = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="HandlerContext"/>.
-        /// </summary>
-        /// <value>The <see cref="HandlerContext"/>.</value>
-        public HandlerContext Context
-        {
-            get
-            {
-                return this.innerHandler.Context;
-            }
-
-            set
-            {
-                this.innerHandler.Context = value;
-            }
-        }
-        
-        public ITraceWriter TraceWriter
-        {
-            get
-            {
-                return this.traceWriter;
-            }
         }
     }
 }

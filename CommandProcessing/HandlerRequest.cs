@@ -84,6 +84,10 @@
             this.ResultType = resultType;
 
             this.ParentRequest = parentRequest;
+            if (parentRequest != null)
+            {
+                this.Processor = parentRequest.Processor;
+            }
         }
 
         /// <summary>
@@ -127,6 +131,8 @@
                 return this.id.Value;
             }
         }
+
+        public ICommandProcessor Processor { get; set; }
 
         /// <summary>
         /// Provides a <see cref="IDependencyScope"/> for the request.

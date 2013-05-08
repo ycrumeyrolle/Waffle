@@ -22,7 +22,7 @@
     /// </summary>
     public interface IHandler
     {
-        ICommandProcessor Processor { get; set; }
+        ICommandProcessor Processor { get; }
 
         /// <summary>
         /// Gets the <see cref="HandlerContext"/>.
