@@ -19,7 +19,7 @@ namespace CommandProcessing.Console
         public static void Main(string[] args)
         {
             ProcessorConfiguration config = new ProcessorConfiguration();
-            ////   config.Services.Replace(typeof(ICommandValidator), new NullValidator());
+            config.Services.Replace(typeof(ICommandValidator), new NullValidator());
             ////     DefaultTraceWriter traceWorker = config.EnableSystemDiagnosticsTracing();
 
 
@@ -29,7 +29,7 @@ namespace CommandProcessing.Console
             ////    traceWorker.MinimumLevel = Tracing.TraceLevel.DefaultCommandValidator;
             config.Filters.Add(new CustomExceptionFilterAttribute());
 
-            long initialMemory = GC.GetTotalMemory(false);
+         ////   long initialMemory = GC.GetTotalMemory(false);
             using (CommandProcessor processor = new CommandProcessor(config))
             {
                 Command1 command1 = new Command1();
@@ -44,7 +44,7 @@ namespace CommandProcessing.Console
                 Command10 command10 = new Command10();
                 MultipleCommand1 command11 = new MultipleCommand1();
                 MultipleCommand2 command12 = new MultipleCommand2();
-                Parallel.For(0, 100000, (i) =>
+                Parallel.For(0, 5000000, (i) =>
                     {
                         processor.Process(command1);
                         processor.Process(command2);

@@ -7,18 +7,30 @@
     using CommandProcessing.Metadata;
     using CommandProcessing.Validation;
 
+    /// <summary>
+    /// Provides an object adapter that can be validated.
+    /// </summary>
     public class ValidatableObjectAdapter : ModelValidator
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValidatableObjectAdapter"/> class.
+        /// </summary>
+        /// <param name="validatorProviders"></param>
         public ValidatableObjectAdapter(IEnumerable<ModelValidatorProvider> validatorProviders)
             : base(validatorProviders)
         {
         }
 
+        /// <summary>
+        /// Validates a specified object.
+        /// </summary>
+        /// <param name="metadata">The metadata.</param>
+        /// <param name="container">The container.</param>
+        /// <returns>A list of validation results.</returns>
         public override IEnumerable<ModelValidationResult> Validate(ModelMetadata metadata, object container)
         {
-            // NOTE: Container is never used here, because IValidatableObject doesn't give you
+            // Container is never used here, because IValidatableObject doesn't give you
             // any way to get access to your container.
-
             object model = metadata.Model;
             if (model == null)
             {

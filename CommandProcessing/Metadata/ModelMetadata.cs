@@ -21,9 +21,7 @@
         private Func<object> modelAccessor;
         private IEnumerable<ModelMetadata> properties;
         private Type realModelType;
-
-        private bool convertEmptyStringToNull;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelMetadata"/> class. 
         /// </summary>
@@ -59,12 +57,6 @@
         public Type ContainerType
         {
             get { return this.containerType; }
-        }
-
-        public virtual bool ConvertEmptyStringToNull
-        {
-            get { return this.convertEmptyStringToNull; }
-            set { this.convertEmptyStringToNull = value; }
         }
 
         /// <summary>

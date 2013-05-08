@@ -160,7 +160,13 @@
         /// The timestamp.
         /// </value>
         public DateTime Timestamp { get; private set; }
-
+  
+        /// <summary>
+        /// Gets the elapsed time of the record.
+        /// </summary>
+        /// <value>
+        /// The elapsed time.
+        /// </value>
         public TimeSpan Elapsed { get; set; }
     }
 }

@@ -650,6 +650,7 @@
             try
             {
                 config = config ?? this.configuration;
+                config.EnableDefaultTracing();
                 this.dependencyResolver.Setup(r => r.BeginScope()).Returns(this.dependencyResolver.Object);
                 config.DependencyResolver = this.dependencyResolver.Object;
                 CommandProcessor processor = new CommandProcessor(config);

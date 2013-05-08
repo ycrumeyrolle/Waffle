@@ -205,7 +205,6 @@
             return services.GetService<ITraceWriter>();
         }
 
-
         /// <summary>
         /// Gets the list of <see cref="IInterceptor"/> service.
         /// </summary>
