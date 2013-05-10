@@ -40,9 +40,7 @@ namespace CommandProcessing.Tests.Metadata
             }
 
             public bool NoAttribute { get; set; }
-
-            // Description
-
+            
             [Display]
             public string DescriptionNotSet { get; set; }
 

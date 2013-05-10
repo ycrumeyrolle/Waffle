@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using CommandProcessing.Dependencies;
-    using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Eventing;
     using CommandProcessing.Filters;

@@ -1,7 +1,8 @@
-namespace CommandProcessing.Descriptions
+namespace CommandProcessing.Dispatcher
 {
     using System;
     using System.Collections.Generic;
+
     using CommandProcessing.Filters;
 
     /// <summary>

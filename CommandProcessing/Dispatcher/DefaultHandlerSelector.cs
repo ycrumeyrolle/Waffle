@@ -5,8 +5,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Linq;
-    using System.Text;
-    using CommandProcessing.Descriptions;
+    using System.Text;      
     using CommandProcessing.Filters;
     using CommandProcessing.Internal;
 

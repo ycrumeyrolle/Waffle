@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using CommandProcessing.Dependencies;
-    using CommandProcessing.Descriptions;
+    using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
 
     using Microsoft.Practices.Unity;

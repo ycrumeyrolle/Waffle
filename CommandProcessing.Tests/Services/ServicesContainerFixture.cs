@@ -4,7 +4,6 @@
     using System.Linq;
     using CommandProcessing;
     using CommandProcessing.Dependencies;
-    using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
     using CommandProcessing.Interception;

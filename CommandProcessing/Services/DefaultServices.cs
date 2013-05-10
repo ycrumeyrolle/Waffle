@@ -6,7 +6,6 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using CommandProcessing.Dependencies;
-    using CommandProcessing.Descriptions;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Eventing;
     using CommandProcessing.Filters;
@@ -16,7 +15,6 @@
     using CommandProcessing.Tracing;
     using CommandProcessing.Validation;
     using CommandProcessing.Validation.Providers;
-    using CommandProcessing.Validation.Validators;
 
     /// <summary>
     ///     <para>
