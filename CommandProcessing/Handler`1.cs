@@ -23,6 +23,11 @@
         /// <param name="command">The <see cref="ICommand"/> to process.</param>
         public abstract void Handle(TCommand command);
 
+        /// <summary>
+        /// Handle the command.
+        /// </summary>
+        /// <param name="command">The <see cref="ICommand"/> to process.</param>
+        /// <returns>The result object.</returns>
         public sealed override object Handle(ICommand command)
         {
             this.Handle((TCommand)command);

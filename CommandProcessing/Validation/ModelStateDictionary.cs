@@ -137,8 +137,8 @@
         /// <summary>
         /// Adds the specified model error to the errors collection for the model-state dictionary that is associated with the specified key.
         /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="exception">The exception.</param>
+        /// <param name="key">The key to add.</param>
+        /// <param name="exception">The exception to add.</param>
         public void AddModelError(string key, Exception exception)
         {
             this.GetModelStateForKey(key).Errors.Add(exception);
@@ -147,8 +147,8 @@
         /// <summary>
         /// Adds the specified error message to the errors collection for the model-state dictionary that is associated with the specified key.
         /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="errorMessage">The error message.</param>
+        /// <param name="key">The key to add.</param>
+        /// <param name="errorMessage">The error message to add.</param>
         public void AddModelError(string key, string errorMessage)
         {
             this.GetModelStateForKey(key).Errors.Add(errorMessage);
@@ -228,7 +228,7 @@
         /// <summary>
         /// Determines whether there are any <see cref="ModelError"/> objects that are associated with or prefixed with the specified key.
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <param name="key">The key to check.</param>
         /// <returns><c>true</c> if the model-state dictionary contains a value that is associated with the specified key; otherwise, <c>false</c>.</returns>
         public bool IsValidField(string key)
         {
@@ -270,7 +270,7 @@
         /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </summary>
         /// <returns>
-        /// true if <paramref name="item"/> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false. This method also returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// <c>true</c> if <paramref name="item"/> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, <c>false</c>. This method also returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </returns>
         /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
         public bool Remove(KeyValuePair<string, ModelState> item)

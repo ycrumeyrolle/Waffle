@@ -152,13 +152,13 @@
         }
 
         /// <summary>
-        /// The is filter tracer.
+        /// Returns a value that indicates whether this filter is a tracer.
         /// </summary>
         /// <param name="filter">
         /// The filter.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        /// <c>true</c> if <paramref name="filter"/> is a tracer; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsFilterTracer(IFilter filter)
         {

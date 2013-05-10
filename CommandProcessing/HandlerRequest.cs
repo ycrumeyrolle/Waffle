@@ -135,6 +135,7 @@
         /// <summary>
         /// Gets or sets the processor in charge of the request.
         /// </summary>
+        /// <value>The processor in charge of the request.</value>
         public ICommandProcessor Processor { get; set; }
 
         /// <summary>

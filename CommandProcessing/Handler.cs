@@ -35,7 +35,12 @@ namespace CommandProcessing
         /// </summary>
         /// <value>The <see cref="HandlerContext"/>.</value>
         public HandlerContext Context { get; set; }
-        
+
+        /// <summary>
+        /// Handle the command.
+        /// </summary>
+        /// <param name="command">The <see cref="ICommand"/> to process.</param>
+        /// <returns>The result object.</returns>
         public virtual object Handle(ICommand command)
         {
             if (command == null)

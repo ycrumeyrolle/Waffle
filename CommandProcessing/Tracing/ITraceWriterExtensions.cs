@@ -754,52 +754,52 @@
                                 });
 
                             return result;
-                        }), 
+                        }),
                         info =>
-                            {
-                                traceWriter.Trace(
-                                    request,
-                                    category,
-                                    TraceLevel.Error,
-                                    traceRecord =>
-                                    {
-                                        traceRecord.Kind = TraceKind.End;
-                                        traceRecord.Exception = info.Exception.GetBaseException();
-                                        traceRecord.Operator = operatorName;
-                                        traceRecord.Operation = operationName;
-                                        if (errorTrace != null)
-                                        {
-                                            errorTrace(traceRecord);
-                                        }
-
-                                        traceRecord.Elapsed = stopwatch.Elapsed;
-                                    });
-
-                                return info.Throw();
-                            }), 
-                            () =>
+                        {
+                            traceWriter.Trace(
+                                request,
+                                category,
+                                TraceLevel.Error,
+                                traceRecord =>
                                 {
-                                    if (task.IsCanceled)
+                                    traceRecord.Kind = TraceKind.End;
+                                    traceRecord.Exception = info.Exception.GetBaseException();
+                                    traceRecord.Operator = operatorName;
+                                    traceRecord.Operation = operationName;
+                                    if (errorTrace != null)
                                     {
-                                        traceWriter.Trace(
-                                            request,
-                                            category,
-                                            TraceLevel.Warn,
-                                            traceRecord =>
-                                            {
-                                                traceRecord.Kind = TraceKind.End;
-                                                traceRecord.Operator = operatorName;
-                                                traceRecord.Operation = operationName;
-                                                traceRecord.Message = Resources.TraceCancelledMessage;
-                                                if (errorTrace != null)
-                                                {
-                                                    errorTrace(traceRecord);
-                                                }
-
-                                                traceRecord.Elapsed = stopwatch.Elapsed;
-                                            });
+                                        errorTrace(traceRecord);
                                     }
+
+                                    traceRecord.Elapsed = stopwatch.Elapsed;
                                 });
+
+                            return info.Throw();
+                        }),
+                            () =>
+                            {
+                                if (task.IsCanceled)
+                                {
+                                    traceWriter.Trace(
+                                        request,
+                                        category,
+                                        TraceLevel.Warn,
+                                        traceRecord =>
+                                        {
+                                            traceRecord.Kind = TraceKind.End;
+                                            traceRecord.Operator = operatorName;
+                                            traceRecord.Operation = operationName;
+                                            traceRecord.Message = Resources.TraceCancelledMessage;
+                                            if (errorTrace != null)
+                                            {
+                                                errorTrace(traceRecord);
+                                            }
+
+                                            traceRecord.Elapsed = stopwatch.Elapsed;
+                                        });
+                                }
+                            });
             }
             catch (Exception ex)
             {
@@ -879,7 +879,11 @@
             }
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            traceWriter.Trace(request, category, level, traceRecord =>
+            traceWriter.Trace(
+                request,
+                category,
+                level,
+                traceRecord =>
                 {
                     traceRecord.Kind = TraceKind.Begin;
                     traceRecord.Operator = operatorName;
@@ -901,9 +905,15 @@
                     return task;
                 }
 
-                return TaskHelpersExtensions.Finally(TaskHelpersExtensions.Catch(TaskHelpersExtensions.Then(task, () =>
-                    {
-                        traceWriter.Trace(request, category, level, traceRecord =>
+                return TaskHelpersExtensions.Finally(
+                    TaskHelpersExtensions.Catch(
+                    TaskHelpersExtensions.Then(
+                    task,
+                    () => traceWriter.Trace(
+                        request,
+                        category,
+                        level,
+                        traceRecord =>
                             {
                                 traceRecord.Kind = TraceKind.End;
                                 traceRecord.Operator = operatorName;
@@ -914,47 +924,60 @@
                                 }
 
                                 traceRecord.Elapsed = stopwatch.Elapsed;
-                            });
-                    }), (info) =>
-                        {
-                            traceWriter.Trace(request, category, TraceLevel.Error, traceRecord =>
-                                {
-                                    traceRecord.Kind = TraceKind.End;
-                                    traceRecord.Exception = info.Exception.GetBaseException();
-                                    traceRecord.Operator = operatorName;
-                                    traceRecord.Operation = operationName;
-                                    if (errorTrace != null)
-                                    {
-                                        errorTrace(traceRecord);
-                                    }
-
-                                    traceRecord.Elapsed = stopwatch.Elapsed;
-                                });
-
-                            return info.Throw(info.Exception);
-                        }), () =>
+                            })),
+                    info =>
+                    {
+                        traceWriter.Trace(
+                            request, 
+                            category, 
+                            TraceLevel.Error, 
+                            traceRecord =>
                             {
-                                if (task.IsCanceled)
+                                traceRecord.Kind = TraceKind.End;
+                                traceRecord.Exception = info.Exception.GetBaseException();
+                                traceRecord.Operator = operatorName;
+                                traceRecord.Operation = operationName;
+                                if (errorTrace != null)
                                 {
-                                    traceWriter.Trace(request, category, TraceLevel.Warn, traceRecord =>
-                                        {
-                                            traceRecord.Kind = TraceKind.End;
-                                            traceRecord.Operator = operatorName;
-                                            traceRecord.Operation = operationName;
-                                            traceRecord.Message = Resources.TraceCancelledMessage;
-                                            if (errorTrace != null)
-                                            {
-                                                errorTrace(traceRecord);
-                                            }
-
-                                            traceRecord.Elapsed = stopwatch.Elapsed;
-                                        });
+                                    errorTrace(traceRecord);
                                 }
+
+                                traceRecord.Elapsed = stopwatch.Elapsed;
                             });
+
+                        return info.Throw(info.Exception);
+                    }),
+                        () =>
+                        {
+                            if (task.IsCanceled)
+                            {
+                                traceWriter.Trace(
+                                    request,
+                                    category,
+                                    TraceLevel.Warn,
+                                    traceRecord =>
+                                    {
+                                        traceRecord.Kind = TraceKind.End;
+                                        traceRecord.Operator = operatorName;
+                                        traceRecord.Operation = operationName;
+                                        traceRecord.Message = Resources.TraceCancelledMessage;
+                                        if (errorTrace != null)
+                                        {
+                                            errorTrace(traceRecord);
+                                        }
+
+                                        traceRecord.Elapsed = stopwatch.Elapsed;
+                                    });
+                            }
+                        });
             }
             catch (Exception ex)
             {
-                traceWriter.Trace(request, category, TraceLevel.Error, traceRecord =>
+                traceWriter.Trace(
+                    request,
+                    category,
+                    TraceLevel.Error,
+                    traceRecord =>
                     {
                         traceRecord.Kind = TraceKind.End;
                         traceRecord.Operator = operatorName;

@@ -11,6 +11,10 @@ namespace CommandProcessing
         {
         }
 
+        /// <summary>
+        /// Gets the <see cref="VoidResult"/> instance. 
+        /// </summary>
+        /// <value>The <see cref="VoidResult"/> instance. </value>
         public static VoidResult Instance
         {
             get

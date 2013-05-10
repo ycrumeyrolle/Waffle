@@ -4,16 +4,7 @@
 
     internal static class TraceKindHelper
     {
-        /// <summary>
-        /// The is defined.
-        /// </summary>
-        /// <param name="traceKind">
-        /// The trace kind.
-        /// </param>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        public static bool IsDefined(TraceKind traceKind)
+        private static bool IsDefined(TraceKind traceKind)
         {
             return traceKind == TraceKind.Trace || traceKind == TraceKind.Begin || traceKind == TraceKind.End;
         }

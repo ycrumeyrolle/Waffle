@@ -63,7 +63,7 @@
         /// Gets or sets the kind of trace.
         /// </summary>
         /// <value>
-        /// The kind.
+        /// The kind of trace.
         /// </value>
         public TraceKind Kind
         {

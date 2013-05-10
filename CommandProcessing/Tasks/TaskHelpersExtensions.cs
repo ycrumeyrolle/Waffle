@@ -10,7 +10,7 @@
 
     internal static class TaskHelpersExtensions
     {
-        private static readonly Task<AsyncVoid> DefaultCompleted = TaskHelpers.FromResult<AsyncVoid>(default(AsyncVoid));
+        private static readonly Task<AsyncVoid> DefaultCompleted = TaskHelpers.FromResult(default(AsyncVoid));
 
         private static readonly Action<Task> RethrowWithNoStackLossDelegate = GetRethrowWithNoStackLossDelegate();
 
@@ -112,11 +112,32 @@
             task.ContinueWith(innerTask => tcs.TrySetFromTask(innerTask), TaskContinuationOptions.NotOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
 
             // this runs only if the inner task faulted
-            task.ContinueWith(innerTask =>
-            {
-                if (syncContext != null)
+            task.ContinueWith(
+                innerTask =>
                 {
-                    syncContext.Post(state =>
+                    if (syncContext != null)
+                    {
+                        syncContext.Post(
+                            state =>
+                            {
+                                try
+                                {
+                                    Task<TResult> resultTask = continuation();
+                                    if (resultTask == null)
+                                    {
+                                        throw new InvalidOperationException("You cannot return null from the TaskHelpersExtensions.Catch continuation. You must return a valid task or throw an exception.");
+                                    }
+
+                                    tcs.TrySetResult(resultTask);
+                                }
+                                catch (Exception ex)
+                                {
+                                    tcs.TrySetException(ex);
+                                }
+                            },
+                        state: null);
+                    }
+                    else
                     {
                         try
                         {
@@ -132,26 +153,9 @@
                         {
                             tcs.TrySetException(ex);
                         }
-                    }, state: null);
-                }
-                else
-                {
-                    try
-                    {
-                        Task<TResult> resultTask = continuation();
-                        if (resultTask == null)
-                        {
-                            throw new InvalidOperationException("You cannot return null from the TaskHelpersExtensions.Catch continuation. You must return a valid task or throw an exception.");
-                        }
-
-                        tcs.TrySetResult(resultTask);
                     }
-                    catch (Exception ex)
-                    {
-                        tcs.TrySetException(ex);
-                    }
-                }
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                },
+            TaskContinuationOptions.OnlyOnFaulted);
 
             return tcs.Task.FastUnwrap();
         }
@@ -208,7 +212,8 @@
         private static Task CopyResultToCompletionSourceImplContinuation<TTask, TResult>(TTask task, TaskCompletionSource<TResult> tcs, Func<TTask, TResult> resultThunk)
             where TTask : Task
         {
-            return task.ContinueWith(innerTask =>
+            return task.ContinueWith(
+                innerTask =>
             {
                 switch (innerTask.Status)
                 {
@@ -221,11 +226,12 @@
                         tcs.TrySetResult(resultThunk(task));
                         break;
                 }
-            }, TaskContinuationOptions.ExecuteSynchronously);
+            }, 
+            TaskContinuationOptions.ExecuteSynchronously);
         }
 
         /// <summary>
-        /// Cast Task to Task of object
+        /// Cast Task to Task of object.
         /// </summary>
         [SuppressMessage("Microsoft.WebAPI", "CR4001:DoNotCallProblematicMethodsOnTask", Justification = "The usages here are deemed safe, and provide the implementations that this rule relies upon.")]
         internal static Task<object> CastToObject(this Task task)
@@ -245,14 +251,15 @@
 
                 if (task.Status == TaskStatus.RanToCompletion)
                 {
-                    return TaskHelpers.FromResult<object>((object)null);
+                    return TaskHelpers.FromResult<object>(null);
                 }
             }
 
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
             // schedule a synchronous task to cast: no need to worry about sync context or try/catch
-            task.ContinueWith(innerTask =>
+            task.ContinueWith(
+                innerTask =>
             {
                 if (innerTask.IsFaulted)
                 {
@@ -264,9 +271,10 @@
                 }
                 else
                 {
-                    tcs.SetResult((object)null);
+                    tcs.SetResult(null);
                 }
-            }, TaskContinuationOptions.ExecuteSynchronously);
+            }, 
+            TaskContinuationOptions.ExecuteSynchronously);
 
             return tcs.Task;
         }
@@ -292,14 +300,15 @@
 
                 if (task.Status == TaskStatus.RanToCompletion)
                 {
-                    return TaskHelpers.FromResult<object>((object)task.Result);
+                    return TaskHelpers.FromResult<object>(task.Result);
                 }
             }
 
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
             // schedule a synchronous task to cast: no need to worry about sync context or try/catch
-            task.ContinueWith(innerTask =>
+            task.ContinueWith(
+                innerTask =>
             {
                 if (innerTask.IsFaulted)
                 {
@@ -311,9 +320,10 @@
                 }
                 else
                 {
-                    tcs.SetResult((object)innerTask.Result);
+                    tcs.SetResult(innerTask.Result);
                 }
-            }, TaskContinuationOptions.ExecuteSynchronously);
+            }, 
+            TaskContinuationOptions.ExecuteSynchronously);
 
             return tcs.Task;
         }
@@ -354,7 +364,8 @@
             TaskCompletionSource<TOuterResult> tcs = new TaskCompletionSource<TOuterResult>();
 
             // schedule a synchronous task to cast: no need to worry about sync context or try/catch
-            task.ContinueWith(innerTask =>
+            task.ContinueWith(
+                innerTask =>
             {
                 if (innerTask.IsFaulted)
                 {
@@ -375,7 +386,8 @@
                         tcs.SetException(exception);
                     }
                 }
-            }, TaskContinuationOptions.ExecuteSynchronously);
+            }, 
+            TaskContinuationOptions.ExecuteSynchronously);
 
             return tcs.Task;
         }
@@ -464,13 +476,15 @@
 
             TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
 
-            task.ContinueWith(innerTask =>
+            task.ContinueWith(
+                innerTask =>
             {
                 try
                 {
                     if (syncContext != null)
                     {
-                        syncContext.Post(state =>
+                        syncContext.Post(
+                            state =>
                         {
                             try
                             {
@@ -482,7 +496,8 @@
                                 MarkExceptionsObserved(innerTask);
                                 tcs.SetException(ex);
                             }
-                        }, null);
+                        }, 
+                        null);
                     }
                     else
                     {
@@ -495,7 +510,8 @@
                     MarkExceptionsObserved(innerTask);
                     tcs.TrySetException(ex);
                 }
-            }, runSynchronously ? TaskContinuationOptions.ExecuteSynchronously : TaskContinuationOptions.None);
+            },
+            runSynchronously ? TaskContinuationOptions.ExecuteSynchronously : TaskContinuationOptions.None);
 
             return tcs.Task;
         }
@@ -517,29 +533,28 @@
                 var lambda = Expression.Lambda<Action<Task>>(getResultCall, taskParameter);
                 return lambda.Compile();
             }
-            else
+
+            Func<Exception, Exception> prepForRemoting = null;
+
+            try
             {
-                Func<Exception, Exception> prepForRemoting = null;
-
-                try
+                if (AppDomain.CurrentDomain.IsFullyTrusted)
                 {
-                    if (AppDomain.CurrentDomain.IsFullyTrusted)
-                    {
-                        // .NET 4 - do the same thing Lazy<T> does by calling Exception.PrepForRemoting
-                        // This is an internal method in mscorlib.dll, so pass a test Exception to it to make sure we can call it.
-                        var exceptionParameter = Expression.Parameter(typeof(Exception));
-                        var prepForRemotingCall = Expression.Call(exceptionParameter, "PrepForRemoting", Type.EmptyTypes);
-                        var lambda = Expression.Lambda<Func<Exception, Exception>>(prepForRemotingCall, exceptionParameter);
-                        var func = lambda.Compile();
-                        func(new Exception()); // make sure the method call succeeds before assigning the 'prepForRemoting' local variable
-                        prepForRemoting = func;
-                    }
+                    // .NET 4 - do the same thing Lazy<T> does by calling Exception.PrepForRemoting
+                    // This is an internal method in mscorlib.dll, so pass a test Exception to it to make sure we can call it.
+                    var exceptionParameter = Expression.Parameter(typeof(Exception));
+                    var prepForRemotingCall = Expression.Call(exceptionParameter, "PrepForRemoting", Type.EmptyTypes);
+                    var lambda = Expression.Lambda<Func<Exception, Exception>>(prepForRemotingCall, exceptionParameter);
+                    var func = lambda.Compile();
+                    func(new Exception()); // make sure the method call succeeds before assigning the 'prepForRemoting' local variable
+                    prepForRemoting = func;
                 }
-                catch
-                {
-                } // If delegate creation fails (medium trust) we will simply throw the base exception.
+            }
+            catch
+            {
+            } // If delegate creation fails (medium trust) we will simply throw the base exception.
 
-                return task =>
+            return task =>
                 {
                     try
                     {
@@ -556,7 +571,6 @@
                         throw baseException;
                     }
                 };
-            }
         }
 
         /// <summary>
@@ -697,7 +711,8 @@
 
             TaskCompletionSource<Task<TOuterResult>> tcs = new TaskCompletionSource<Task<TOuterResult>>();
 
-            task.ContinueWith(innerTask =>
+            task.ContinueWith(
+                innerTask =>
             {
                 if (innerTask.IsFaulted)
                 {
@@ -711,7 +726,8 @@
                 {
                     if (syncContext != null)
                     {
-                        syncContext.Post(state =>
+                        syncContext.Post(
+                            state =>
                         {
                             try
                             {
@@ -721,14 +737,16 @@
                             {
                                 tcs.TrySetException(ex);
                             }
-                        }, state: null);
+                        }, 
+                        state: null);
                     }
                     else
                     {
                         tcs.TrySetResult(continuation(task));
                     }
                 }
-            }, runSynchronously ? TaskContinuationOptions.ExecuteSynchronously : TaskContinuationOptions.None);
+            }, 
+            runSynchronously ? TaskContinuationOptions.ExecuteSynchronously : TaskContinuationOptions.None);
 
             return tcs.Task.FastUnwrap();
         }
@@ -760,7 +778,6 @@
                 return TaskHelpers.FromError<AsyncVoid>(e);
             }
         }
-
 
         /// <summary>
         /// Changes the return value of a task to the given result, if the task ends in the RanToCompletion state.
@@ -802,7 +819,8 @@
         {
             TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
 
-            task.ContinueWith(innerTask =>
+            task.ContinueWith(
+                innerTask =>
             {
                 if (task.Status == TaskStatus.RanToCompletion)
                 {
@@ -812,7 +830,8 @@
                 {
                     tcs.TrySetFromTask(innerTask);
                 }
-            }, TaskContinuationOptions.ExecuteSynchronously);
+            }, 
+            TaskContinuationOptions.ExecuteSynchronously);
 
             return tcs.Task;
         }

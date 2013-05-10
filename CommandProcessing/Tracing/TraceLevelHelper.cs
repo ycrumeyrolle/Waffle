@@ -4,18 +4,7 @@
 
     internal static class TraceLevelHelper
     {
-        #region Public Methods and Operators
-
-        /// <summary>
-        /// The is defined.
-        /// </summary>
-        /// <param name="traceLevel">
-        /// The trace level.
-        /// </param>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
-        public static bool IsDefined(TraceLevel traceLevel)
+        private static bool IsDefined(TraceLevel traceLevel)
         {
             return traceLevel == TraceLevel.Off || traceLevel == TraceLevel.Debug || traceLevel == TraceLevel.Info || traceLevel == TraceLevel.Warn || traceLevel == TraceLevel.Error || traceLevel == TraceLevel.Fatal;
         }
@@ -38,7 +27,5 @@
                 throw Internal.Error.InvalidEnumArgument(parameterValue, (int)value, typeof(TraceLevel));
             }
         }
-
-        #endregion
     }
 }

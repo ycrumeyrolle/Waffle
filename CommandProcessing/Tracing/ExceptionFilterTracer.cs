@@ -52,30 +52,24 @@
                 return this.InnerFilter as IExceptionFilter;
             }
         }
-        
+
         /// <summary>
-        /// The execute exception filter async.
+        /// Executes an asynchronous exception filter.
         /// </summary>
-        /// <param name="actionExecutedContext">
-        /// The handler executed context.
-        /// </param>
-        /// <param name="cancellationToken">
-        /// The cancellation token.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Task"/>.
-        /// </returns>
-        public Task ExecuteExceptionFilterAsync(HandlerExecutedContext actionExecutedContext, CancellationToken cancellationToken)
+        /// <param name="handlerExecutedContext">The handler executed context.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>An asynchronous exception filter.</returns>
+        public Task ExecuteExceptionFilterAsync(HandlerExecutedContext handlerExecutedContext, CancellationToken cancellationToken)
         {
             return this.TraceWriter.TraceBeginEndAsync(
-                actionExecutedContext.Request, 
+                handlerExecutedContext.Request, 
                 TraceCategories.FiltersCategory, 
                 TraceLevel.Info, 
                 this.InnerExceptionFilter.GetType().Name, 
-                ExecuteExceptionFilterAsyncMethodName, 
-                beginTrace: tr => tr.Exception = actionExecutedContext.Exception, 
-                execute: () => this.InnerExceptionFilter.ExecuteExceptionFilterAsync(actionExecutedContext, cancellationToken), 
-                endTrace: tr => tr.Exception = actionExecutedContext.Exception, 
+                ExecuteExceptionFilterAsyncMethodName,
+                beginTrace: tr => tr.Exception = handlerExecutedContext.Exception,
+                execute: () => this.InnerExceptionFilter.ExecuteExceptionFilterAsync(handlerExecutedContext, cancellationToken),
+                endTrace: tr => tr.Exception = handlerExecutedContext.Exception, 
                 errorTrace: null);
         }
     }
