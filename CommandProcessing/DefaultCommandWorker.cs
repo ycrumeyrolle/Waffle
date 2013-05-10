@@ -51,10 +51,10 @@
 
             FilterGrouping filterGrouping = descriptor.GetFilterGrouping();
             CancellationToken cancellationToken = new CancellationToken();
-            
+
             Func<Task<object>> invokeFunc = InvokeHandlerWithHandlerFiltersAsync(context, cancellationToken, filterGrouping.HandlerFilters, () => InvokeHandlerAsync(context, handler, cancellationToken));
             Task<object> result = invokeFunc();
-                
+
             result = InvokeHandlerWithExceptionFiltersAsync(result, context, cancellationToken, filterGrouping.ExceptionFilters);
 
             return (TResult)result.Result;
@@ -105,29 +105,33 @@
                 });
         }
 
-        private static Func<Task<TResult>> InvokeHandlerWithHandlerFiltersAsync<TResult>(HandlerContext context, CancellationToken cancellationToken, IEnumerable<IHandlerFilter> filters, Func<Task<TResult>> innerAction)
+        private static Func<Task<TResult>> InvokeHandlerWithHandlerFiltersAsync<TResult>(HandlerContext context, CancellationToken cancellationToken, IHandlerFilter[] filters, Func<Task<TResult>> innerAction)
         {
             Contract.Requires(context != null);
             Contract.Requires(filters != null);
             Contract.Requires(innerAction != null);
+            
+            Func<Task<TResult>> result = innerAction;
+            for (int i = filters.Length - 1; i >= 0; i--)
+            {
+                IHandlerFilter filter = filters[i];
+                Func<Func<Task<TResult>>, IHandlerFilter, Func<Task<TResult>>> chainContinuation = (continuation, innerFilter) =>
+                {
+                    return () => innerFilter.ExecuteHandlerFilterAsync(context, cancellationToken, continuation);
+                };
 
-            // Because the continuation gets built from the inside out we need to reverse the filter list
-            // so that least specific filters (Global) get run first and the most specific filters (Handler) get run last.
-            filters = filters.Reverse();
-
-            Func<Task<TResult>> result = filters.Aggregate(
-                innerAction,
-                (continuation, filter) => () => filter.ExecuteHandlerFilterAsync(context, cancellationToken, continuation));
+                result = chainContinuation(result, filter);
+            }
 
             return result;
         }
 
         private static Task<object> InvokeHandlerAsync(HandlerContext context, IHandler handler, CancellationToken cancellationToken)
-        { 
-            if (cancellationToken.IsCancellationRequested)   
-            {   
-                return TaskHelpers.Canceled<object>();   
-            }  
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return TaskHelpers.Canceled<object>();
+            }
 
             try
             {
@@ -136,7 +140,7 @@
             }
             catch (Exception e)
             {
-                return TaskHelpers.FromError<object>(e); 
+                return TaskHelpers.FromError<object>(e);
             }
         }
     }

@@ -1,7 +1,5 @@
 ﻿namespace CommandProcessing.Tests.Filters
 {
-    using System;
-    using System.Linq;
     using CommandProcessing.Filters;
     using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,10 +20,10 @@
 
             // Assert
             Assert.IsNotNull(exceptionFilters);
-            Assert.AreEqual(5, exceptionFilters.Count());
+            Assert.AreEqual(5, exceptionFilters.Length);
 
             Assert.IsNotNull(handlerFilters);
-            Assert.AreEqual(4, handlerFilters.Count());
+            Assert.AreEqual(4, handlerFilters.Length);
         }
 
         [TestMethod]

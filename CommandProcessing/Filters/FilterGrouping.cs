@@ -1,13 +1,15 @@
 ﻿namespace CommandProcessing.Filters
 {
     using System.Collections.Generic;
+    using System.Linq;
+
     using CommandProcessing.Internal;
 
     internal class FilterGrouping
     {
-        private readonly List<IHandlerFilter> handlerFilters = new List<IHandlerFilter>();
+        private readonly IHandlerFilter[] handlerFilters;
 
-        private readonly List<IExceptionFilter> exceptionFilters = new List<IExceptionFilter>();
+        private readonly IExceptionFilter[] exceptionFilters;
 
         public FilterGrouping(IEnumerable<FilterInfo> filters)
         {
@@ -16,17 +18,12 @@
                 throw Error.ArgumentNull("filters");
             }
 
-            var list = filters.AsList();
-            for (int i = 0; i < list.Count; i++)
-            {
-                FilterInfo current = list[i];
-                IFilter instance = current.Instance;
-                FilterGrouping.Categorize(instance, this.handlerFilters);
-                FilterGrouping.Categorize(instance, this.exceptionFilters);
-            }
+            List<FilterInfo> list = filters.AsList();
+            this.handlerFilters = SelectAvailable<IHandlerFilter>(list).ToArray();
+            this.exceptionFilters = SelectAvailable<IExceptionFilter>(list).ToArray();
         }
 
-        public IEnumerable<IHandlerFilter> HandlerFilters
+        public IHandlerFilter[] HandlerFilters
         {
             get
             {
@@ -34,7 +31,7 @@
             }
         }
 
-        public IEnumerable<IExceptionFilter> ExceptionFilters
+        public IExceptionFilter[] ExceptionFilters
         {
             get
             {
@@ -42,13 +39,9 @@
             }
         }
 
-        private static void Categorize<T>(IFilter filter, List<T> list) where T : class
+        private static IEnumerable<T> SelectAvailable<T>(List<FilterInfo> filters)
         {
-            T t = filter as T;
-            if (t != null)
-            {
-                list.Add(t);
-            }
+            return filters.Where(f => (f.Instance is T)).Select(f => (T)f.Instance);
         }
     }
 }
