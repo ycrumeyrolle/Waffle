@@ -142,17 +142,6 @@
         }
 
         /// <summary>
-        /// Gets the list of <see cref="ICommandExplorer"/> service.
-        /// </summary>
-        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="ICommandExplorer"/> services.</returns>
-        /// <exception cref="InvalidOperationException">The <see cref="ICommandExplorer"/> services are not registered.</exception>
-        public static ICommandExplorer GetCommandExplorer(this ServicesContainer services)
-        {
-            return services.GetServiceOrThrow<ICommandExplorer>();
-        }
-
-        /// <summary>
         /// Gets the <see cref="IPrincipalProvider"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>

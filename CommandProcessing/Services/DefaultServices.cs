@@ -32,7 +32,6 @@
     ///         <item><see cref="IHandlerTypeResolver"/></item>
     ///         <item><see cref="IFilterProvider"/></item>
     ///         <item><see cref="IAssembliesResolver"/></item>
-    ///         <item><see cref="ICommandExplorer"/></item>
     ///         <item><see cref="IProxyBuilder"/></item>
     ///         <item><see cref="IInterceptor"/></item>
     ///         <item><see cref="ICommandValidator"/></item>
@@ -95,9 +94,7 @@
             this.SetMultiple<IFilterProvider>(new ConfigurationFilterProvider(), new HandlerFilterProvider());
 
             this.SetSingle<IAssembliesResolver>(new DefaultAssembliesResolver());
-
-            this.SetSingle<ICommandExplorer>(new DefaultCommandExplorer(this.configuration));
-
+            
             this.SetSingle<IProxyBuilder>(new DefaultProxyBuilder());
             this.SetSingle<IInterceptionProvider>(new DefaultInterceptionProvider(this.configuration));
             this.SetMultiple<IInterceptor>(new IInterceptor[0]);

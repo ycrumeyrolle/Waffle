@@ -79,7 +79,6 @@
                 yield return new object[] { typeof(IHandlerTypeResolver) };
                 yield return new object[] { typeof(IFilterProvider) };
                 yield return new object[] { typeof(IAssembliesResolver) };
-                yield return new object[] { typeof(ICommandExplorer) };
             }
         }
 

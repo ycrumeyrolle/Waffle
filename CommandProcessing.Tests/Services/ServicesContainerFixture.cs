@@ -38,7 +38,6 @@
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(IHandlerActivator)), typeof(DefaultHandlerActivator));
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(IHandlerTypeResolver)), typeof(DefaultHandlerTypeResolver));
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(IAssembliesResolver)), typeof(DefaultAssembliesResolver));
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandExplorer)), typeof(DefaultCommandExplorer));
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(IInterceptionProvider)), typeof(DefaultInterceptionProvider));
 
             object[] filterProviders = defaultServices.GetServices(typeof(IFilterProvider)).ToArray();
