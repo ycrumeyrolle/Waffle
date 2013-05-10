@@ -1914,7 +1914,9 @@
                               .Then(() =>
                               {
                                   throw new NotImplementedException();
+#pragma warning disable 0162
                                   return TaskHelpers.Completed();  // Return-after-throw to guarantee correct lambda signature
+#pragma warning restore 0162
                               })
 
             // Assert
@@ -2090,7 +2092,9 @@
                               .Then(() =>
                               {
                                   throw new NotImplementedException();
+#pragma warning disable 0162
                                   return 0;  // Return-after-throw to guarantee correct lambda signature
+#pragma warning restore 0162
                               })
 
             // Assert
@@ -2266,7 +2270,9 @@
                               .Then(() =>
                               {
                                   throw new NotImplementedException();
+#pragma warning disable 0162
                                   return TaskHelpers.FromResult(0);  // Return-after-throw to guarantee correct lambda signature
+#pragma warning restore 0162
                               })
 
             // Assert
@@ -2615,7 +2621,9 @@
                               .Then(result =>
                               {
                                   throw new NotImplementedException();
+#pragma warning disable 0162
                                   return 0;  // Return-after-throw to guarantee correct lambda signature
+#pragma warning restore 0162
                               })
 
             // Assert
@@ -2791,7 +2799,9 @@
                               .Then(result =>
                               {
                                   throw new NotImplementedException();
+#pragma warning disable 0162
                                   return TaskHelpers.Completed();  // Return-after-throw to guarantee correct lambda signature
+#pragma warning restore 0162
                               })
 
             // Assert
@@ -2967,7 +2977,9 @@
                               .Then(result =>
                               {
                                   throw new NotImplementedException();
+#pragma warning disable 0162
                                   return TaskHelpers.FromResult(0);  // Return-after-throw to guarantee correct lambda signature
+#pragma warning restore 0162
                               })
 
             // Assert
