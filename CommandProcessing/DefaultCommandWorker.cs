@@ -51,13 +51,10 @@
 
             FilterGrouping filterGrouping = descriptor.GetFilterGrouping();
             CancellationToken cancellationToken = new CancellationToken();
-
-            Task<object> result = TaskHelpers.RunSynchronously(() =>
-                {
-                    Func<Task<object>> invokeFunc = InvokeHandlerWithHandlerFiltersAsync(context, cancellationToken, filterGrouping.HandlerFilters, () => InvokeHandlerAsync(context, handler, cancellationToken));
-                    return invokeFunc();
-                });
-
+            
+            Func<Task<object>> invokeFunc = InvokeHandlerWithHandlerFiltersAsync(context, cancellationToken, filterGrouping.HandlerFilters, () => InvokeHandlerAsync(context, handler, cancellationToken));
+            Task<object> result = invokeFunc();
+                
             result = InvokeHandlerWithExceptionFiltersAsync(result, context, cancellationToken, filterGrouping.ExceptionFilters);
 
             return (TResult)result.Result;
@@ -126,14 +123,21 @@
         }
 
         private static Task<object> InvokeHandlerAsync(HandlerContext context, IHandler handler, CancellationToken cancellationToken)
-        {
-            return TaskHelpers.RunSynchronously(
-                () =>
-                {
-                    var res = handler.Handle(context.Command);
-                    return TaskHelpers.FromResult(res);
-                },
-                cancellationToken);
+        { 
+            if (cancellationToken.IsCancellationRequested)   
+            {   
+                return TaskHelpers.Canceled<object>();   
+            }  
+
+            try
+            {
+                var res = handler.Handle(context.Command);
+                return TaskHelpers.FromResult(res);
+            }
+            catch (Exception e)
+            {
+                return TaskHelpers.FromError<object>(e); 
+            }
         }
     }
 }

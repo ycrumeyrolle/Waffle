@@ -4,6 +4,8 @@ namespace CommandProcessing.Eventing
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
+
     using CommandProcessing.Internal;
     using CommandProcessing.Tasks;
 
@@ -63,9 +65,22 @@ namespace CommandProcessing.Eventing
             if (this.store.TryGetValue(eventName, out queue))
             {
                 var actions = queue.AsArray();
-               
-                var tasks = actions.Select(item => TaskHelpers.RunSynchronously(() => item.Item2(context)));
+
+                var tasks = actions.Select(item => this.ExecutePublishingAsync(item.Item2, context));
                 TaskHelpers.Iterate(tasks);
+            }
+        }
+
+        private Task ExecutePublishingAsync(Action<object> action, object value)
+        {
+            try
+            {
+                action(value);
+                return TaskHelpers.Completed();
+            }
+            catch (Exception e)
+            {
+                return TaskHelpers.FromError(e);
             }
         }
     }

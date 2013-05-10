@@ -373,34 +373,6 @@
             Assert.AreEqual(null, tcs.Task.Result);
         }
 
-        // -----------------------------------------------------------------
-        //  TaskHelpers.RunSynchronously
-
-        [TestMethod]
-        public void RunSynchronously_Executes_Action()
-        {
-            bool wasRun = false;
-            Task t = TaskHelpers.RunSynchronously(() => { wasRun = true; });
-            t.WaitUntilCompleted();
-            Assert.IsTrue(wasRun);
-        }
-
-        [TestMethod]
-        public void RunSynchronously_Captures_Exception_In_AggregateException()
-        {
-            Task t = TaskHelpers.RunSynchronously(() => { throw new InvalidOperationException(); });
-            ExceptionAssert.Throws<InvalidOperationException>(() => t.Wait());
-        }
-
-        [TestMethod]
-        public void RunSynchronously_Cancels()
-        {
-            CancellationTokenSource cts = new CancellationTokenSource();
-            cts.Cancel();
-
-            Task t = TaskHelpers.RunSynchronously(() => { throw new InvalidOperationException(); }, cts.Token);
-            ExceptionAssert.Throws<TaskCanceledException>(() => t.Wait());
-        }
         // ----------------------------------------------------------------
         //   Task<T> Task<object>.CastFromObject()
 

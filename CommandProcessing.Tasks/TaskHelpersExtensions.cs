@@ -11,7 +11,7 @@
     internal static class TaskHelpersExtensions
     {
         private static readonly Task<AsyncVoid> DefaultCompleted = TaskHelpers.FromResult<AsyncVoid>(default(AsyncVoid));
-    
+
         private static readonly Action<Task> RethrowWithNoStackLossDelegate = GetRethrowWithNoStackLossDelegate();
 
         /// <summary>
@@ -750,12 +750,17 @@
         /// </summary>
         private static Task<AsyncVoid> ToAsyncVoidTask(Action action)
         {
-            return TaskHelpers.RunSynchronously<AsyncVoid>(() =>
+            try
             {
                 action();
                 return DefaultCompleted;
-            });
+            }
+            catch (Exception e)
+            {
+                return TaskHelpers.FromError<AsyncVoid>(e);
+            }
         }
+
 
         /// <summary>
         /// Changes the return value of a task to the given result, if the task ends in the RanToCompletion state.
@@ -809,7 +814,7 @@
                 }
             }, TaskContinuationOptions.ExecuteSynchronously);
 
-            return tcs.Task;          
+            return tcs.Task;
         }
 
         /// <summary>
