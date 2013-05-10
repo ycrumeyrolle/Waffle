@@ -51,6 +51,8 @@
                 throw new HandlerNotFoundException(typeof(TCommand));
             }
 
+            request.RegisterForDispose(handler);
+            
             if (!this.ValidateCommand(request) && this.Configuration.AbortOnInvalidCommand)
             {
                 return default(TResult);

@@ -196,11 +196,12 @@
         /// Registers a resource to be disposed at the end of the request.
         /// </summary>
         /// <param name="resource">The resource to dispose.</param>
-        public void RegisterForDispose(IDisposable resource)
+        public void RegisterForDispose(object resource)
         {
-            if (resource != null)
+            IDisposable disposableResource = resource as IDisposable;
+            if (disposableResource != null)
             {
-                this.disposableResources.Add(resource);
+                this.disposableResources.Add(disposableResource);
             }
         }
     }
