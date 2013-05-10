@@ -28,50 +28,43 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Unity.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.MiniProfiler", "CommandProcessing.MiniProfiler\CommandProcessing.MiniProfiler.csproj", "{AE6E76B2-4DFD-467B-B296-B388270ECB25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Tasks", "CommandProcessing.Tasks\CommandProcessing.Tasks.csproj", "{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Console", "CommandProcessing.Console\CommandProcessing.Console.csproj", "{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
+		SccNumberOfProjects = 6
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccProjectUniqueName0 = CommandProcessing.Tasks\\CommandProcessing.Tasks.csproj
-		SccProjectName0 = CommandProcessing.Tasks
+		SccProjectUniqueName0 = CommandProcessing\\CommandProcessing.csproj
+		SccProjectName0 = CommandProcessing
 		SccAuxPath0 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath0 = CommandProcessing.Tasks
+		SccLocalPath0 = CommandProcessing
 		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName1 = CommandProcessing\\CommandProcessing.csproj
-		SccProjectName1 = CommandProcessing
+		SccProjectUniqueName1 = CommandProcessing.Tests\\CommandProcessing.Tests.csproj
+		SccProjectName1 = CommandProcessing.Tests
 		SccAuxPath1 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath1 = CommandProcessing
+		SccLocalPath1 = CommandProcessing.Tests
 		SccProvider1 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName2 = CommandProcessing.Tests\\CommandProcessing.Tests.csproj
-		SccProjectName2 = CommandProcessing.Tests
+		SccProjectUniqueName2 = CommandProcessing.Unity\\CommandProcessing.Unity.csproj
+		SccProjectName2 = CommandProcessing.Unity
 		SccAuxPath2 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath2 = CommandProcessing.Tests
+		SccLocalPath2 = CommandProcessing.Unity
 		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName3 = CommandProcessing.Unity\\CommandProcessing.Unity.csproj
-		SccProjectName3 = CommandProcessing.Unity
+		SccProjectUniqueName3 = CommandProcessing.Unity.Tests\\CommandProcessing.Unity.Tests.csproj
+		SccProjectName3 = CommandProcessing.Unity.Tests
 		SccAuxPath3 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath3 = CommandProcessing.Unity
+		SccLocalPath3 = CommandProcessing.Unity.Tests
 		SccProvider3 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName4 = CommandProcessing.Unity.Tests\\CommandProcessing.Unity.Tests.csproj
-		SccProjectName4 = CommandProcessing.Unity.Tests
+		SccProjectUniqueName4 = CommandProcessing.MiniProfiler\\CommandProcessing.MiniProfiler.csproj
+		SccProjectName4 = CommandProcessing.MiniProfiler
 		SccAuxPath4 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath4 = CommandProcessing.Unity.Tests
+		SccLocalPath4 = CommandProcessing.MiniProfiler
 		SccProvider4 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName5 = CommandProcessing.MiniProfiler\\CommandProcessing.MiniProfiler.csproj
-		SccProjectName5 = CommandProcessing.MiniProfiler
+		SccProjectUniqueName5 = CommandProcessing.Console\\CommandProcessing.Console.csproj
+		SccProjectName5 = CommandProcessing.Console
 		SccAuxPath5 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath5 = CommandProcessing.MiniProfiler
+		SccLocalPath5 = CommandProcessing.Console
 		SccProvider5 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName6 = CommandProcessing.Console\\CommandProcessing.Console.csproj
-		SccProjectName6 = CommandProcessing.Console
-		SccAuxPath6 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath6 = CommandProcessing.Console
-		SccProvider6 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Command processing.vsmdi
@@ -135,16 +128,6 @@ Global
 		{AE6E76B2-4DFD-467B-B296-B388270ECB25}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AE6E76B2-4DFD-467B-B296-B388270ECB25}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AE6E76B2-4DFD-467B-B296-B388270ECB25}.Release|x86.ActiveCfg = Release|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}.Release|x86.ActiveCfg = Release|Any CPU
 		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -161,8 +144,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

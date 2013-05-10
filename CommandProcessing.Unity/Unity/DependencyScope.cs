@@ -5,6 +5,8 @@
     using System.Linq;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Descriptions;
+    using CommandProcessing.Filters;
+
     using Microsoft.Practices.Unity;
     
     /// <summary>
@@ -109,10 +111,12 @@
                 throw new ArgumentNullException("configuration");
             }
 
-            ICommandExplorer explorer = configuration.Services.GetCommandExplorer();
-            foreach (var description in explorer.Descriptions)
+            IHandlerDescriptorProvider descriptorProvider = configuration.Services.GetHandlerDescriptorProvider();
+            IDictionary<Type, HandlerDescriptor> descriptorsMapping = descriptorProvider.GetHandlerMapping();
+            foreach (KeyValuePair<Type, HandlerDescriptor> description in descriptorsMapping)
             {
-                this.container.RegisterType(description.HandlerType);
+                // TODO : register with others lifetimes
+                this.container.RegisterType(description.Value.HandlerType);
             }
         }
 

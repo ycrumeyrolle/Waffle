@@ -127,7 +127,7 @@
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="CommandProcessorWrapper.cs" />
     <Compile Include="DefaultCommandWorker.cs" />
-    <Compile Include="Descriptions\IHandlerDescriptorProvider.cs" />
+    <Compile Include="Dispatcher\IHandlerDescriptorProvider.cs" />
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="ICommandWorker.cs" />
     <Compile Include="IPrincipalProvider.cs" />
@@ -151,12 +151,15 @@
     <Compile Include="IHandler.cs" />
     <Compile Include="Interception\DefaultInterceptorProvider.cs" />
     <Compile Include="Interception\IInterceptionProvider.cs" />
-    <Compile Include="Descriptions\CommandDescription.cs" />
     <Compile Include="ListWrapperCollection.cs" />
     <Compile Include="Metadata\ElementScope.cs" />
     <Compile Include="Metadata\IKeyBuilder.cs" />
     <Compile Include="Metadata\PropertyScope.cs" />
-    <Compile Include="TypeDescriptorHelper.cs" />
+    <Compile Include="Tasks\CatchInfo.cs" />
+    <Compile Include="Tasks\CatchInfo`1.cs" />
+    <Compile Include="Tasks\CatchInfoBase.cs" />
+    <Compile Include="Tasks\TaskHelpers.cs" />
+    <Compile Include="Tasks\TaskHelpersExtensions.cs" />
     <Compile Include="Validation\DefaultCommandValidator.cs" />
     <Compile Include="Validation\IModelValidatorCache.cs" />
     <Compile Include="Validation\ModelError.cs" />
@@ -176,9 +179,7 @@
     <Compile Include="Filters\HandlerContext.cs" />
     <Compile Include="Handler`2.cs" />
     <Compile Include="HandlerRequest.cs" />
-    <Compile Include="Descriptions\DefaultCommandExplorer.cs" />
     <Compile Include="HandlerSettings.cs" />
-    <Compile Include="Descriptions\ICommandExplorer.cs" />
     <Compile Include="Interception\IInterceptor.cs" />
     <Compile Include="Interception\IProxyBuilder.cs" />
     <Compile Include="Interception\DefaultProxyBuilder.cs" />
@@ -278,12 +279,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CommandProcessing.Tasks\CommandProcessing.Tasks.csproj">
-      <Project>{7056FDCF-DAF0-43F2-85CC-50E30E6B3ACE}</Project>
-      <Name>CommandProcessing.Tasks</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
