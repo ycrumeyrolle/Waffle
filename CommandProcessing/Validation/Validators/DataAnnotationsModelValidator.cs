@@ -43,6 +43,11 @@
         /// <returns>A list of validation results.</returns>
         public override IEnumerable<ModelValidationResult> Validate(ModelMetadata metadata, object container)
         {
+            if (metadata == null)
+            {
+                throw Error.ArgumentNull("metadata");
+            }
+
             ValidationContext context = new ValidationContext(container ?? metadata.Model, null, null);
             context.DisplayName = metadata.GetDisplayName();
 

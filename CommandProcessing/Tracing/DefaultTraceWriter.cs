@@ -187,7 +187,7 @@
             
             if (traceRecord.Elapsed != TimeSpan.Zero)
             {
-                messages.Add(Error.Format(Resources.ElapsedFormat, traceRecord.Elapsed.ToString("c")));
+                messages.Add(Error.Format(Resources.ElapsedFormat, traceRecord.Elapsed.ToString("c", CultureInfo.CurrentCulture)));
             }
 
             if (!string.IsNullOrEmpty(traceRecord.Message))
@@ -247,7 +247,7 @@
 
             if (traceRecord.Elapsed != TimeSpan.Zero)
             {
-                messages.Add(Error.Format(Resources.ElapsedFormat, traceRecord.Elapsed.ToString("c")));
+                messages.Add(Error.Format(Resources.ElapsedFormat, traceRecord.Elapsed.ToString("c", CultureInfo.CurrentCulture)));
             }
 
             if (this.IsVerbose)

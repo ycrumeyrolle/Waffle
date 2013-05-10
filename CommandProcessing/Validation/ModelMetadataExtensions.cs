@@ -16,7 +16,6 @@
         /// <param name="metadata">The metadata.</param>
         /// <param name="validatorProviders">The validator providers.</param>
         /// <returns>The list of validators.</returns>
-        /// </summary>
         public static IEnumerable<ModelValidator> GetValidators(this ModelMetadata metadata, IEnumerable<ModelValidatorProvider> validatorProviders)
         {
             if (validatorProviders == null)

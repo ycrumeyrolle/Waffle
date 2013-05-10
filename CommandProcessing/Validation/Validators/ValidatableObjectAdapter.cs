@@ -29,6 +29,11 @@
         /// <returns>A list of validation results.</returns>
         public override IEnumerable<ModelValidationResult> Validate(ModelMetadata metadata, object container)
         {
+            if (metadata == null)
+            {
+                throw Error.ArgumentNull("metadata");
+            }
+
             // Container is never used here, because IValidatableObject doesn't give you
             // any way to get access to your container.
             object model = metadata.Model;

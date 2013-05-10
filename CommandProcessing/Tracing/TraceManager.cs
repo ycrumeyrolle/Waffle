@@ -1,6 +1,7 @@
 ﻿namespace CommandProcessing.Tracing
 {
     using CommandProcessing.Dispatcher;
+    using CommandProcessing.Internal;
     using CommandProcessing.Services;
     using CommandProcessing.Validation;
 
@@ -8,6 +9,11 @@
     {
         public void Initialize(ProcessorConfiguration configuration)
         {
+            if (configuration == null)
+            {
+                throw Error.ArgumentNull("configuration");
+            }
+
             ITraceWriter traceWriter = configuration.Services.GetTraceWriter();
             if (traceWriter != null)
             {

@@ -22,6 +22,10 @@
     /// </summary>
     public interface IHandler
     {
+        /// <summary>
+        /// Gets the processor in charge of the handler.
+        /// </summary>
+        /// <value>The <see cref="ICommandProcessor"/>.</value>
         ICommandProcessor Processor { get; }
 
         /// <summary>

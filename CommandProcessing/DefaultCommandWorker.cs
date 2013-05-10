@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Threading;
@@ -11,6 +12,9 @@
     using CommandProcessing.Tasks;
     using CommandProcessing.Validation;
 
+    /// <summary>
+    /// Default implementation of the <see cref="ICommandWorker"/>.
+    /// </summary>
     public sealed class DefaultCommandWorker : ICommandWorker
     {
         /// <summary>
@@ -110,7 +114,7 @@
             Contract.Requires(context != null);
             Contract.Requires(filters != null);
             Contract.Requires(innerAction != null);
-            
+
             Func<Task<TResult>> result = innerAction;
             for (int i = filters.Length - 1; i >= 0; i--)
             {
@@ -126,6 +130,7 @@
             return result;
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "The caught exception type is reflected into a faulted task.")]
         private static Task<object> InvokeHandlerAsync(HandlerContext context, IHandler handler, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)

@@ -3,6 +3,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using CommandProcessing.Filters;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Tracer for <see cref="Filters.HandlerFilterAttribute"/>.
@@ -161,6 +162,11 @@
         /// </param>
         public override void OnCommandExecuting(HandlerContext handlerContext)
         {
+            if (handlerContext == null)
+            {
+                throw Error.ArgumentNull("handlerContext");
+            }
+
             this.traceWriter.TraceBeginEnd(
                 handlerContext.Request, 
                 TraceCategories.FiltersCategory, 

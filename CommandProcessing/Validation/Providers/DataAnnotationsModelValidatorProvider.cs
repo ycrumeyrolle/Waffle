@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
+
+    using CommandProcessing.Internal;
     using CommandProcessing.Metadata;
     using CommandProcessing.Validation;
     using CommandProcessing.Validation.Validators;
@@ -49,6 +51,11 @@
         /// <returns>The validators for the model.</returns>
         protected override IEnumerable<ModelValidator> GetValidators(ModelMetadata metadata, IEnumerable<ModelValidatorProvider> validatorProviders, IEnumerable<Attribute> attributes)
         {
+            if (metadata == null)
+            {
+                throw Error.ArgumentNull("metadata");
+            }
+
             List<ModelValidator> results = new List<ModelValidator>();
 
             // Produce a validator for each validation attribute we find

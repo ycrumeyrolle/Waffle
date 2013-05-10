@@ -132,6 +132,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the processor in charge of the request.
+        /// </summary>
         public ICommandProcessor Processor { get; set; }
 
         /// <summary>

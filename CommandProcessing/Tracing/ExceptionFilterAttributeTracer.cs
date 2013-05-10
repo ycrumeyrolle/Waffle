@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using CommandProcessing.Filters;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Tracer for <see cref="Filters.ExceptionFilterAttribute"/>.
@@ -135,6 +136,11 @@
         /// </param>
         public override void OnException(HandlerExecutedContext handlerExecutedContext)
         {
+            if (handlerExecutedContext == null)
+            {
+                throw Error.ArgumentNull("handlerExecutedContext");
+            }
+
             this.traceStore.TraceBeginEnd(
                 handlerExecutedContext.Request, 
                 TraceCategories.FiltersCategory, 

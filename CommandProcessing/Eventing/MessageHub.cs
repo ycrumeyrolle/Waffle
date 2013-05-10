@@ -3,6 +3,7 @@ namespace CommandProcessing.Eventing
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -66,12 +67,13 @@ namespace CommandProcessing.Eventing
             {
                 var actions = queue.AsArray();
 
-                var tasks = actions.Select(item => this.ExecutePublishingAsync(item.Item2, context));
+                var tasks = actions.Select(item => ExecutePublishingAsync(item.Item2, context));
                 TaskHelpers.Iterate(tasks);
             }
         }
 
-        private Task ExecutePublishingAsync(Action<object> action, object value)
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "The caught exception type is reflected into a faulted task.")]
+        private static Task ExecutePublishingAsync(Action<object> action, object value)
         {
             try
             {
