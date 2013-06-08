@@ -5,7 +5,7 @@
 
     public static class ExceptionAssert
     {
-        internal static TException Throws<TException>(Action action) where TException : Exception
+        public static TException Throws<TException>(Action action) where TException : Exception
         {
             TException exception = null;
             try
@@ -33,13 +33,13 @@
         }
 
 
-        internal static void ThrowsArgumentNull(Action action, string paramName)
+        public static void ThrowsArgumentNull(Action action, string paramName)
         {
             ArgumentNullException exception = Throws<ArgumentNullException>(action);
             Assert.AreEqual(paramName, exception.ParamName);
         }
 
-        internal static void ThrowsArgument(Action action, string paramName)
+        public static void ThrowsArgument(Action action, string paramName)
         {
             ArgumentException exception = Throws<ArgumentException>(action);
             Assert.AreEqual(paramName, exception.ParamName);
@@ -51,7 +51,7 @@
         /// <param name="testCode">A delegate to the code to be tested</param>
         /// <param name="paramName">The name of the parameter that should throw the exception</param>
           /// <returns>The exception that was thrown, when successful</returns>
-        internal static ArgumentOutOfRangeException ThrowsArgumentOutOfRange(Action testCode, string paramName)
+        public static ArgumentOutOfRangeException ThrowsArgumentOutOfRange(Action testCode, string paramName)
         {
             var ex = Throws<ArgumentOutOfRangeException>(testCode);
 

@@ -67,12 +67,14 @@
     <Compile Include="Internal\ErrorFixture.cs" />
     <Compile Include="Internal\ListWrapperCollectionFixture.cs" />
     <Compile Include="Internal\TaskHelperFixture.cs" />
-    <Compile Include="Metadata\DataAnnotationsModelMetadataProvider.cs" />
+    <Compile Include="Metadata\DataAnnotationsModelMetadataProviderFixture.cs" />
     <Compile Include="ProcessorConfigurationFixture.cs" />
     <Compile Include="Filters\FilterInfoComparerFixture.cs" />
     <Compile Include="Filters\HandlerFilterProviderFixture.cs" />
     <Compile Include="Filters\HandlerFilterCollectionFixture.cs" />
     <Compile Include="Filters\HandlerExecutedContextFixture.cs" />
+    <Compile Include="Queries\QueryServiceExtensionsFixture.cs" />
+    <Compile Include="Queries\DefaultQueryServiceFixture.cs" />
     <Compile Include="Services\ServicesExtensionsFixture.cs" />
     <Compile Include="Services\HandlerServicesFixture.cs" />
     <Compile Include="Services\ServicesContainerFixture.cs" />

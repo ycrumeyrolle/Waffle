@@ -155,6 +155,10 @@
     <Compile Include="Metadata\ElementScope.cs" />
     <Compile Include="Metadata\IKeyBuilder.cs" />
     <Compile Include="Metadata\PropertyScope.cs" />
+    <Compile Include="QueryServiceExtensions.cs" />
+    <Compile Include="Queries\DefaultQueryService.cs" />
+    <Compile Include="Queries\IQueryContext.cs" />
+    <Compile Include="Queries\IQueryService.cs" />
     <Compile Include="Tasks\CatchInfo.cs" />
     <Compile Include="Tasks\CatchInfo`1.cs" />
     <Compile Include="Tasks\CatchInfoBase.cs" />
