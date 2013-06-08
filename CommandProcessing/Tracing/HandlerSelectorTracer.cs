@@ -31,7 +31,7 @@
         
         HandlerDescriptor IHandlerSelector.SelectHandler(HandlerRequest request)
         {
-            HandlerDescriptor actionDescriptor = null;
+            HandlerDescriptor handlerDescriptor = null;
 
             this.traceWriter.TraceBeginEnd<HandlerDescriptor>(
                 request,
@@ -40,17 +40,22 @@
                 this.innerSelector.GetType().Name,
                 SelectActionMethodName,
                 beginTrace: null,
-                execute: () => actionDescriptor = this.innerSelector.SelectHandler(request),
+                execute: () => handlerDescriptor = this.innerSelector.SelectHandler(request),
                 endTrace: (tr) =>
                     {
                         tr.Message = Error.Format(
                             Resources.TraceHandlerSelectedMessage,
-                            FormattingUtilities.HandlerDescriptorToString(actionDescriptor));
+                            FormattingUtilities.HandlerDescriptorToString(handlerDescriptor));
                     },
                 errorTrace: null);
 
             // Intercept returned HttpActionDescriptor with a tracing version
-            return actionDescriptor == null ? null : new HandlerDescriptorTracer(actionDescriptor, this.traceWriter);
+            if (handlerDescriptor != null && !(handlerDescriptor is HandlerDescriptorTracer))   
+            {
+                return new HandlerDescriptorTracer(handlerDescriptor, this.traceWriter);   
+            }
+
+            return handlerDescriptor; 
         }
     }
 }
