@@ -4,9 +4,9 @@
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Linq;
-    using CommandProcessing.Filters;
     using CommandProcessing.Internal;
     using CommandProcessing.Metadata;
 
@@ -52,10 +52,23 @@
                 };
             return this.ValidateNodeAndChildren(metadata, validationContext, container: null);
         }
-        
+
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "See comment below")]
         private bool ValidateNodeAndChildren(ModelMetadata metadata, ValidationContext validationContext, object container)
         {
-            object model = metadata.Model;
+            object model;
+            try
+            {
+                model = metadata.Model;
+            }
+            catch
+            {
+                // Retrieving the model failed - typically caused by a property getter throwing   
+                // Being unable to retrieve a property is not a validation error - many properties can only be retrieved if certain conditions are met   
+                // For example, Uri.AbsoluteUri throws for relative URIs but it shouldn't be considered a validation error   
+                return true;
+            }
+
             bool isValid;
 
             // Optimization: we don't need to recursively traverse the graph for null and primitive types

@@ -1,5 +1,6 @@
 ﻿namespace CommandProcessing.Tests.Validation
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
@@ -133,8 +134,26 @@
             Assert.IsFalse(command.IsValid);
             Assert.AreEqual(1, command.ModelState.Count);
         }
+        
+        [TestMethod]
+        public void WhenValidatingCommandWithUriThenReturnsTrue()
+        {
+            // Assign
+            ICommandValidator validator = new DefaultCommandValidator();
+            CommandWithUriProperty command = new CommandWithUriProperty();
+            command.Property1 = new Uri("/test/values", UriKind.Relative);
+            HandlerRequest request = new HandlerRequest(this.configuration, command);
 
+            // Act
+            bool result = validator.Validate(request);
 
+            // Assert
+            // A lots of properties of Uri throw exceptions but its still valid
+            Assert.IsTrue(result);
+            Assert.IsTrue(command.IsValid);
+            Assert.AreEqual(0, command.ModelState.Count);
+        }
+        
         private class UnvalidatableCommand : Command
         {
             public string Property1 { get; set; }
@@ -189,6 +208,12 @@
                 yield return new ValidationResult("Error 1");
                 yield return new ValidationResult("Error 2");
             }
+        }
+
+        private class CommandWithUriProperty : Command
+        {
+            [Required]
+            public Uri Property1 { get; set; }
         }
     }
 }

@@ -4,6 +4,7 @@ namespace CommandProcessing.Metadata
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Globalization;
     using System.Linq;
@@ -66,6 +67,7 @@ namespace CommandProcessing.Metadata
             return visitContext.FlatCommand;
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "See comment below")]
         private void VisitNodeAndChildren(ModelMetadata metadata, VisitContext visitContext)
         {
             // Do not traverse the model if caching must be ignored
@@ -74,7 +76,18 @@ namespace CommandProcessing.Metadata
                 return;
             }
 
-            object model = metadata.Model;
+            object model;
+            try
+            {
+                model = metadata.Model;
+            }
+            catch
+            {
+                // Retrieving the model failed - typically caused by a property getter throwing   
+                // Being unable to retrieve a property is not an error - many properties can only be retrieved if certain conditions are met   
+                // For example, Uri.AbsoluteUri throws for relative URIs but it shouldn't be considered a validation error   
+                return;
+            }
 
             // Optimization: we don't need to recursively traverse the graph for null and primitive types
             if (model == null || TypeHelper.IsSimpleType(model.GetType()))
