@@ -11,7 +11,7 @@
     using Moq;
 
     [TestClass]
-    public class CommandProcessorWithUnityFixture : IDisposable
+    public sealed class CommandProcessorWithUnityFixture : IDisposable
     {
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
 
@@ -147,6 +147,7 @@
         [TestCleanup]
         public void Dispose()
         {
+            this.configuration.Dispose();
             foreach (IDisposable disposable in this.disposableResources)
             {
                 disposable.Dispose();

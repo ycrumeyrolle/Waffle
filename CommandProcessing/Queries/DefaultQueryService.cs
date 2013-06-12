@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Globalization;
+    using CommandProcessing.Internal;
 
     /// <summary>
     /// Provides a default implementation of the <see cref="IQueryService"/> interface.
@@ -22,19 +24,19 @@
         {
             if (contextType == null)
             {
-                throw new ArgumentNullException("contextType");
+                throw Error.ArgumentNull("contextType");
             }
 
             Func<IQueryContext> factory;
             if (!this.queryableAdapterFactories.TryGetValue(contextType, out factory))
             {
-                throw new InvalidOperationException(string.Format("No IQueryContext factory found for '{0}'.", contextType.Name));
+                throw Error.InvalidOperation(Resources.QueryService_NoQueryContext, contextType.Name);
             }
 
             IQueryContext queryableContext = factory();
             if (queryableContext == null)
             {
-                throw new InvalidOperationException(string.Format("IQueryContext factory for '{0}' return null.", contextType.Name));
+                throw Error.InvalidOperation(Resources.QueryService_NoQueryContextFactory, contextType.Name);
             }
 
             return queryableContext;
@@ -51,12 +53,12 @@
         {
             if (queryContextFactory == null)
             {
-                throw new ArgumentNullException("queryContextFactory");
+                throw Error.ArgumentNull("queryContextFactory");
             }
 
             if (contextType == null)
             {
-                throw new ArgumentNullException("contextType");
+                throw Error.ArgumentNull("contextType");
             }
 
             this.queryableAdapterFactories.TryAdd(contextType, queryContextFactory);

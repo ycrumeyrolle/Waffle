@@ -766,6 +766,7 @@
         /// <summary>
         /// Adapts any action into a Task (returning AsyncVoid, so that it's usable with Task{T} extension methods).
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Reviewed.")]
         private static Task<AsyncVoid> ToAsyncVoidTask(Action action)
         {
             try

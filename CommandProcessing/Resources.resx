@@ -232,4 +232,10 @@ The request for '{0}' has found the following matching handlers : {1}</value>
   <data name="Validation_ValueNotFound" xml:space="preserve">
     <value>A value is required but was not present in the request.</value>
   </data>
+  <data name="QueryService_NoQueryContext" xml:space="preserve">
+    <value>No IQueryContext factory found for '{0}'.</value>
+  </data>
+  <data name="QueryService_NoQueryContextFactory" xml:space="preserve">
+    <value>IQueryContext factory for '{0}' return null.</value>
+  </data>
 </root>

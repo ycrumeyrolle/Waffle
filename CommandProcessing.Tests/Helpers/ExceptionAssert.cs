@@ -5,6 +5,21 @@
 
     public static class ExceptionAssert
     {
+        public static void DoesNotThrow(Action action)
+        {
+            Exception exception = null;
+            try
+            {
+                action();
+            }
+            catch (Exception e)
+            {
+                exception = UnwrapException(e);
+            }
+
+            Assert.IsNull(exception);
+        }
+
         public static TException Throws<TException>(Action action) where TException : Exception
         {
             TException exception = null;

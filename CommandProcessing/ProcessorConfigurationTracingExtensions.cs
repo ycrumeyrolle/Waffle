@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using CommandProcessing.Internal;
     using CommandProcessing.Tracing;
 
     /// <summary>
@@ -23,7 +24,7 @@
         {
             if (configuration == null)
             {
-                throw new ArgumentNullException("configuration");
+                throw Error.ArgumentNull("configuration");
             }
 
             DefaultTraceWriter traceWriter = new DefaultTraceWriter

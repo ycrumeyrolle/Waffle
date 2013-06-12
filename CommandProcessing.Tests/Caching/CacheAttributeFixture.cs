@@ -10,7 +10,7 @@
     using Moq;
 
     [TestClass]
-    public class CacheAttributeFixture
+    public sealed class CacheAttributeFixture : IDisposable
     {
         private readonly Mock<ObjectCache> cache;
 
@@ -326,6 +326,11 @@
         private CacheAttribute CreateAttribute(ObjectCache innerCache = null)
         {
             return new CacheAttribute(innerCache ?? this.cache.Object);
+        }
+
+        public void Dispose()
+        {
+            this.config.Dispose();
         }
     }
 }

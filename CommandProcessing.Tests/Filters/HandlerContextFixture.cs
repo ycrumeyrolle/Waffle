@@ -1,12 +1,13 @@
 ﻿namespace CommandProcessing.Tests.Filters
 {
+    using System;
     using CommandProcessing;
     using CommandProcessing.Filters;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
 
     [TestClass]
-    public class HandlerContextFixture
+    public sealed class HandlerContextFixture : IDisposable
     {
         private readonly ProcessorConfiguration config = new ProcessorConfiguration();
 
@@ -47,6 +48,11 @@
             Assert.IsNotNull(context.Request);
             Assert.IsNotNull(context.Items);
             Assert.AreEqual(0, context.Items.Count);
+        }
+
+        public void Dispose()
+        {
+            this.config.Dispose();
         }
     }
 }

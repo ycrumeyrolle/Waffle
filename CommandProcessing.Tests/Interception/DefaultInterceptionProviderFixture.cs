@@ -7,7 +7,7 @@
     using Moq;
 
     [TestClass]
-    public class DefaultInterceptionProviderFixture : IDisposable
+    public sealed class DefaultInterceptionProviderFixture : IDisposable
     {
         private readonly ProcessorConfiguration configuration;
 

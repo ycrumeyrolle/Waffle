@@ -5,13 +5,12 @@
     using System.Collections.ObjectModel;
     using CommandProcessing;
     using CommandProcessing.Dependencies;
-    using CommandProcessing.Filters;
     using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
 
     [TestClass]
-    public class HandlerRequestFixture : IDisposable
+    public sealed class HandlerRequestFixture : IDisposable
     {
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
 
@@ -85,7 +84,7 @@
             Mock<ICommand> command = new Mock<ICommand>();
             HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
             HandlerRequest innerRequest = new HandlerRequest(this.defaultConfig, command.Object, request);
-          
+
             Mock<IDependencyResolver> resolver = new Mock<IDependencyResolver>(MockBehavior.Strict);
             resolver
                 .Setup(r => r.BeginScope())
@@ -110,7 +109,7 @@
             Assert.AreNotSame(scope1, scope4);
             resolver.Verify(r => r.BeginScope(), Times.Exactly(2));
         }
-        
+
         [TestMethod]
         public void WhenDisposingThenScopeIsDisposed()
         {
@@ -195,6 +194,7 @@
         [TestCleanup]
         public void Dispose()
         {
+            this.defaultConfig.Dispose();
             foreach (IDisposable disposable in this.disposableResources)
             {
                 disposable.Dispose();

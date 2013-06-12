@@ -9,7 +9,7 @@
     using Moq;
 
     [TestClass]
-    public class ProcessorConfigurationFixture : IDisposable
+    public sealed class ProcessorConfigurationFixture : IDisposable
     {
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
 
@@ -53,14 +53,12 @@
         {
             // Arrange
             Mock<IDisposable> disposable = new Mock<IDisposable>();
-            using (ProcessorConfiguration config = new ProcessorConfiguration())
-            {
-                disposable.Setup(d => d.Dispose());
-                config.RegisterForDispose(disposable.Object);
+            ProcessorConfiguration config = new ProcessorConfiguration();
+            disposable.Setup(d => d.Dispose());
+            config.RegisterForDispose(disposable.Object);
 
-                // Act
-                config.Dispose();
-            }
+            // Act
+            config.Dispose();
 
             // Assert
             disposable.Verify(d => d.Dispose(), Times.Once());
@@ -69,6 +67,7 @@
         [TestCleanup]
         public void Dispose()
         {
+            this.defaultConfig.Dispose();
             foreach (IDisposable disposable in this.disposableResources)
             {
                 disposable.Dispose();

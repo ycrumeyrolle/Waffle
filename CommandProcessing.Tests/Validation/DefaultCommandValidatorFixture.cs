@@ -9,7 +9,7 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class DefaultCommandValidatorFixture
+    public sealed class DefaultCommandValidatorFixture : IDisposable
     {
         private readonly ProcessorConfiguration configuration = new ProcessorConfiguration();
 
@@ -214,6 +214,11 @@
         {
             [Required]
             public Uri Property1 { get; set; }
+        }
+
+        public void Dispose()
+        {
+            this.configuration.Dispose();
         }
     }
 }

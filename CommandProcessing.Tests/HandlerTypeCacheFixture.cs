@@ -11,7 +11,7 @@
     using Moq;
 
     [TestClass]
-    public class HandlerTypeCacheFixture : IDisposable
+    public sealed class HandlerTypeCacheFixture : IDisposable
     {
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
 
@@ -121,6 +121,7 @@
         [TestCleanup]
         public void Dispose()
         {
+            this.defaultConfig.Dispose();
             foreach (IDisposable disposable in this.disposableResources)
             {
                 disposable.Dispose();

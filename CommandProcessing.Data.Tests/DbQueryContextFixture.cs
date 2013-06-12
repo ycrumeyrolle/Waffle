@@ -1,14 +1,13 @@
 ﻿namespace CommandProcessing.Data.Tests
 {
     using System;
-    using System.ComponentModel.DataAnnotations;
+    using System.Collections.Generic;
     using System.Data.Common;
     using System.Data.Entity;
-    using CommandProcessing.Data.Tests.TestHelpers;
-    using CommandProcessing.Queries;
+    using System.Data.Entity.Infrastructure;
+    using System.Linq;
     using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Moq;
 
     [TestClass]
     public class DbQueryContextFixture
@@ -23,44 +22,63 @@
         }
 
         [TestMethod]
-        public void WhenInstanciatingDbQueryContextThenRetunsObject()
+        public void WhenInstanciatingDbQueryContextThenReturnsObject()
         {
             // Arrange
-            var dbContext = CreateDbContext();
+            var context = CreateDbContext();
 
             // Act
-            DbQueryContext context = new DbQueryContext(dbContext);
+            DbQueryContext queryContext = new DbQueryContext(context);
 
             // Assert
             Assert.IsNotNull(context);
         }
 
         [TestMethod]
-        public void WhenInstanciatingDbQueryContextThenRetunsObjectx()
+        public void WhenFindingItemThenRetunsEntity()
         {
             // Arrange
-            var dbContext = CreateDbContext();
-            DbQueryContext context = new DbQueryContext(dbContext);
+            var context = CreateDbContext(10);
+            DbQueryContext queryContext = new DbQueryContext(context);
 
             // Act & assert
-            //// var result = context.Find<FakeEntity>("test");
+            var result = queryContext.Find<FakeEntity>("test3");
 
             // Assert
-            //// Assert.IsNotNull(context);
-            Assert.Inconclusive("Unable to test DbContext for now without database. More work required...");
+            Assert.IsNotNull(result);
+            Assert.AreEqual(3, result.Property2);
+            Assert.AreEqual("test3", result.Property1);
         }
 
-        private static DbContext CreateDbContext()
+        [TestMethod]
+        public void WhenQueryingItemsThenRetunsEntities()
         {
-            FakeConnectionFactory.RegisterFactory<FakeDbContext>();
+            // Arrange
+            var context = CreateDbContext(10);
+            DbQueryContext queryContext = new DbQueryContext(context);
 
-            var connection = new FakeDbConnection("fake");
-            FakeDbContext context = new FakeDbContext(connection, true);
-            Database.SetInitializer(new DoNotCreateDatabaseInitializer<FakeDbContext>());
+            // Act & assert
+            var query = queryContext.Query<FakeEntity>();
 
+            // Assert
+            Assert.IsNotNull(query);
+            Assert.AreEqual(context.Entities.Count(), query.Count());
+            Assert.IsNotNull(query.FirstOrDefault());
+            Assert.AreEqual(context.Entities.FirstOrDefault(), query.FirstOrDefault());
+            Assert.AreEqual(context.Entities.Count(item => item.Property2 >= 5), query.Count(item => item.Property2 >= 5));
+        }
 
-            //var context = new Mock<DbContext>(MockBehavior.Strict);
-            //context.Setup(c => c.Set(typeof(FakeEntity))).Returns(CreateSet<FakeEntity>());
+        private static FakeDbContext CreateDbContext(int count = 0)
+        {
+            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
+
+            FakeDbContext context = new FakeDbContext(connection);
+            for (int i = 1; i <= count; i++)
+            {
+                context.Entities.Add(new FakeEntity { Property1 = "test" + i, Property2 = i });
+            }
+
+            context.SaveChanges();
             return context;
         }
 
@@ -68,23 +86,5 @@
         {
             return Activator.CreateInstance<DbSet<T>>();
         }
-    }
-
-    public class FakeDbContext : DbContext
-    {
-        public FakeDbContext(DbConnection existingConnection, bool contextOwnsConnection)
-            : base(existingConnection, contextOwnsConnection)
-        {
-        }
-
-        public DbSet<FakeEntity> Entities { get; set; }
-    }
-
-    public class FakeEntity
-    {
-        [Key]
-        public string Property1 { get; set; }
-
-        public int Property2 { get; set; }
     }
 }

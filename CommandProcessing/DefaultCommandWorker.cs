@@ -9,6 +9,7 @@
     using System.Threading.Tasks;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
+    using CommandProcessing.Internal;
     using CommandProcessing.Tasks;
     using CommandProcessing.Validation;
 
@@ -41,6 +42,11 @@
         /// <returns>The result of the command, if any.</returns>
         public TResult Execute<TCommand, TResult>(HandlerRequest request) where TCommand : ICommand
         {
+            if (request == null)
+            {
+                throw Error.ArgumentNull("request");
+            }
+
             IHandlerSelector handlerSelector = this.Configuration.Services.GetHandlerSelector();
             HandlerDescriptor descriptor = handlerSelector.SelectHandler(request);
 

@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Data", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandProcessing.Data.Tests", "CommandProcessing.Data.Tests\CommandProcessing.Data.Tests.csproj", "{A326A020-8334-4F28-A42E-738081314F2C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{102D2E98-A089-4D17-93D7-328A22EDDDA2}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 6
@@ -45,6 +47,7 @@ Global
 		SccLocalPath0 = CommandProcessing
 		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccProjectUniqueName1 = CommandProcessing.Tests\\CommandProcessing.Tests.csproj
+		SccProjectTopLevelParentUniqueName1 = Command\u0020processing.sln
 		SccProjectName1 = CommandProcessing.Tests
 		SccAuxPath1 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
 		SccLocalPath1 = CommandProcessing.Tests
@@ -55,6 +58,7 @@ Global
 		SccLocalPath2 = CommandProcessing.Unity
 		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccProjectUniqueName3 = CommandProcessing.Unity.Tests\\CommandProcessing.Unity.Tests.csproj
+		SccProjectTopLevelParentUniqueName3 = Command\u0020processing.sln
 		SccProjectName3 = CommandProcessing.Unity.Tests
 		SccAuxPath3 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
 		SccLocalPath3 = CommandProcessing.Unity.Tests
@@ -65,6 +69,7 @@ Global
 		SccLocalPath4 = CommandProcessing.MiniProfiler
 		SccProvider4 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccProjectUniqueName5 = CommandProcessing.Console\\CommandProcessing.Console.csproj
+		SccProjectTopLevelParentUniqueName5 = Command\u0020processing.sln
 		SccProjectName5 = CommandProcessing.Console
 		SccAuxPath5 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
 		SccLocalPath5 = CommandProcessing.Console
@@ -165,6 +170,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A326A020-8334-4F28-A42E-738081314F2C} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
+		{302CA73F-4D47-4DEC-BE2C-803B210A8B46} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
+		{09400EB8-573D-46A5-94E1-1E2F8CC52B0C} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35

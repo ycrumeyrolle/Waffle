@@ -10,7 +10,7 @@
     using Moq;
 
     [TestClass]
-    public class HandlerDescriptorFixture
+    public sealed class HandlerDescriptorFixture : IDisposable
     {
         private readonly ProcessorConfiguration config = new ProcessorConfiguration();
 
@@ -107,6 +107,14 @@
             {
                 settings.Services.Replace(typeof(IProxyBuilder), new Mock<IProxyBuilder>(MockBehavior.Loose).Object); 
             }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.config.Dispose();
         }
     }
 }

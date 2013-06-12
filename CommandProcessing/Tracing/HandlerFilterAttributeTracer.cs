@@ -136,6 +136,11 @@
         /// </param>
         public override void OnCommandExecuted(HandlerExecutedContext actionExecutedContext)
         {
+            if (actionExecutedContext == null)
+            {
+                throw Error.ArgumentNull("actionExecutedContext");
+            }
+
             this.traceWriter.TraceBeginEnd(
                 actionExecutedContext.Request, 
                 TraceCategories.FiltersCategory, 

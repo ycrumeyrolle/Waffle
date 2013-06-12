@@ -12,7 +12,7 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class DefaultHandlerSelectorFixture
+    public sealed class DefaultHandlerSelectorFixture : IDisposable
     {
         private readonly ProcessorConfiguration config = new ProcessorConfiguration();
 
@@ -188,6 +188,11 @@
             {
                 return new[] { typeof(SimpleHandler1), typeof(SimpleHandler3) };
             }
+        }
+
+        public void Dispose()
+        {
+            this.config.Dispose();
         }
     }
 }

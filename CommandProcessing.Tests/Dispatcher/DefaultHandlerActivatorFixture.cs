@@ -1,8 +1,6 @@
 ﻿namespace CommandProcessing.Tests.Dispatcher
 {
     using System;
-    using System.Linq;
-
     using CommandProcessing;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Dispatcher;
@@ -12,7 +10,7 @@
     using Moq;
 
     [TestClass]
-    public class DefaultHandlerActivatorFixture : IDisposable
+    public sealed class DefaultHandlerActivatorFixture : IDisposable
     {
         private readonly ProcessorConfiguration config;
 
