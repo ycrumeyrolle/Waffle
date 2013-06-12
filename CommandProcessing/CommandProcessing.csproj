@@ -271,7 +271,6 @@
     <Compile Include="Tracing\TraceLevelHelper.cs" />
     <Compile Include="Tracing\TraceManager.cs" />
     <Compile Include="Tracing\TraceRecord.cs" />
-    <Compile Include="Validation\SlowCommandValidator.cs" />
     <Compile Include="Validation\ICommandValidator.cs" />
   </ItemGroup>
   <ItemGroup>
