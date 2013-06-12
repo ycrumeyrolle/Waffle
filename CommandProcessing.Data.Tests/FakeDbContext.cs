@@ -11,5 +11,13 @@
         }
 
         public DbSet<FakeEntity> Entities { get; set; }
+
+        public bool Disposed { get; set; }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            this.Disposed = true;
+        }
     }
 }

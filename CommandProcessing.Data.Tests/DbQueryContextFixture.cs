@@ -1,10 +1,6 @@
 ﻿namespace CommandProcessing.Data.Tests
 {
-    using System;
-    using System.Collections.Generic;
     using System.Data.Common;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
     using System.Linq;
     using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,8 +8,6 @@
     [TestClass]
     public class DbQueryContextFixture
     {
-        // private readonly Mock<IQueryContext> queryContext = new Mock<IQueryContext>(MockBehavior.Strict);
-
         [TestMethod]
         public void WhenIntanciatingDbQueryContextWithoutDbContextThenThrowsArgumentNullException()
         {
@@ -25,24 +19,24 @@
         public void WhenInstanciatingDbQueryContextThenReturnsObject()
         {
             // Arrange
-            var context = CreateDbContext();
+            FakeDbContext context = CreateDbContext();
 
             // Act
             DbQueryContext queryContext = new DbQueryContext(context);
 
             // Assert
-            Assert.IsNotNull(context);
+            Assert.IsNotNull(queryContext);
         }
 
         [TestMethod]
         public void WhenFindingItemThenRetunsEntity()
         {
             // Arrange
-            var context = CreateDbContext(10);
+            FakeDbContext context = CreateDbContext(10);
             DbQueryContext queryContext = new DbQueryContext(context);
 
-            // Act & assert
-            var result = queryContext.Find<FakeEntity>("test3");
+            // Act
+            FakeEntity result = queryContext.Find<FakeEntity>("test3");
 
             // Assert
             Assert.IsNotNull(result);
@@ -54,10 +48,10 @@
         public void WhenQueryingItemsThenRetunsEntities()
         {
             // Arrange
-            var context = CreateDbContext(10);
+            FakeDbContext context = CreateDbContext(10);
             DbQueryContext queryContext = new DbQueryContext(context);
 
-            // Act & assert
+            // Act
             var query = queryContext.Query<FakeEntity>();
 
             // Assert
@@ -66,6 +60,20 @@
             Assert.IsNotNull(query.FirstOrDefault());
             Assert.AreEqual(context.Entities.FirstOrDefault(), query.FirstOrDefault());
             Assert.AreEqual(context.Entities.Count(item => item.Property2 >= 5), query.Count(item => item.Property2 >= 5));
+        }
+
+        [TestMethod]
+        public void WhenDisposingQueryContexthenDisposeInnerDbContext()
+        {
+            // Arrange
+            FakeDbContext context = CreateDbContext(10);
+            DbQueryContext queryContext = new DbQueryContext(context);
+
+            // Act
+            queryContext.Dispose();
+
+            // Assert
+            Assert.IsTrue(context.Disposed);
         }
 
         private static FakeDbContext CreateDbContext(int count = 0)
@@ -80,11 +88,6 @@
 
             context.SaveChanges();
             return context;
-        }
-
-        private static DbSet<T> CreateSet<T>() where T : class
-        {
-            return Activator.CreateInstance<DbSet<T>>();
         }
     }
 }
