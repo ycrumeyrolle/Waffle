@@ -67,15 +67,15 @@
         {
             // Assign
             DefaultHandlerSelector resolver = this.CreateTestableService();
-            HandlerRequest request = new HandlerRequest(this.config, new SimpleCommand2());
-            this.config.Services.Replace(typeof(IHandlerTypeResolver), new SimpleHandlerTypeResolver());
+            HandlerRequest request = new HandlerRequest(this.config, new BadCommand());
+            this.config.Services.Replace(typeof(IHandlerTypeResolver), new BadHandlerTypeResolver());
 
             // Act & assert
             ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
         [TestMethod]
-        public void WhenSelectingHandlerWiuthNullParamterThenThrowsArgumentNullException()
+        public void WhenSelectingHandlerWithNullParamterThenThrowsArgumentNullException()
         {
             // Assign
             DefaultHandlerSelector resolver = this.CreateTestableService();
@@ -120,6 +120,10 @@
         {
         }
 
+        private class BadCommand : Command
+        {
+        }
+
         private class SimpleHandler1 : Handler<SimpleCommand>
         {
             public override void Handle(SimpleCommand command)
@@ -139,6 +143,14 @@
         private class SimpleHandler3 : Handler<SimpleCommand2>
         {
             public override void Handle(SimpleCommand2 command)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class BadHandler : Handler<BadCommand, string>
+        {
+            public override string Handle(BadCommand command)
             {
                 throw new NotImplementedException();
             }
@@ -173,6 +185,14 @@
             public ICollection<Type> GetHandlerTypes(IAssembliesResolver assembliesResolver)
             {
                 return new[] { typeof(SimpleHandler1), typeof(SimpleHandler3) };
+            }
+        }
+
+        private class BadHandlerTypeResolver : IHandlerTypeResolver
+        {
+            public ICollection<Type> GetHandlerTypes(IAssembliesResolver assembliesResolver)
+            {
+                return new[] { typeof(BadHandler) };
             }
         }
 

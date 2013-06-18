@@ -6,7 +6,7 @@
     using System.Reflection;
     using CommandProcessing;
     using CommandProcessing.Dispatcher;
-
+    using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using Moq;
@@ -15,7 +15,14 @@
     public class DefaultHandlerTypeResolverFixture
     {
         private readonly Mock<IAssembliesResolver> assembliesResolver = new Mock<IAssembliesResolver>(MockBehavior.Strict);
-        
+
+        [TestMethod]
+        public void WhenCreatingHandlerTypesWithoutPredicateThenThrowsArgumentNullException()
+        {
+            // Act & assert
+            ExceptionAssert.ThrowsArgumentNull(() => new DefaultHandlerTypeResolver(null), "predicate");
+        }
+
         [TestMethod]
         public void WhenGettingHandlerTypesThenReturnsCollection()
         {
@@ -39,18 +46,8 @@
             DefaultHandlerTypeResolver resolver = this.CreateTestableService();
             bool exceptionRaised = false;
 
-            // Act
-            try
-            {
-                resolver.GetHandlerTypes(null);
-            }
-            catch (ArgumentNullException)
-            {
-                exceptionRaised = true;
-            }
-
-            // Assert
-            Assert.IsTrue(exceptionRaised);
+            // Act & assert
+            ExceptionAssert.ThrowsArgumentNull(() => resolver.GetHandlerTypes(null), "assembliesResolver");
         }
 
         [TestMethod]
