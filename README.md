@@ -46,7 +46,7 @@ var command = new ComputePricingCommand
 using (CommandProcessor processor = new CommandProcessor())
 {
   // The processor will find the handler and delegates to it the action 
-  Pricing result = processor.Process<ComputePricingCommand, Pricing>(command);
+  Pricing result = processor.Process<Pricing>(command);
   Console.WriteLine("The pricing is : " + result.Amount);
 }
 </pre>
