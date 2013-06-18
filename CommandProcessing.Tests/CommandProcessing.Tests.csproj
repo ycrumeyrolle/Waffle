@@ -57,6 +57,7 @@
     <Compile Include="Dependencies\DependencyResolverExtensionsResolverFixture.cs" />
     <Compile Include="Eventing\EventAttributeFixture.cs" />
     <Compile Include="Eventing\MessageHubFixture.cs" />
+    <Compile Include="Filters\ExceptionFiltreAttributeFixture.cs" />
     <Compile Include="Filters\TransactionAttributeFixture.cs" />
     <Compile Include="HandlerRequestFixture.cs" />
     <Compile Include="HandlerTypeCacheFixture.cs" />
