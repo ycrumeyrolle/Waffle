@@ -2,19 +2,22 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Reflection;
     using CommandProcessing;
     using CommandProcessing.Dispatcher;
-    using CommandProcessing.Filters;
-
+    using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public sealed class DefaultHandlerSelectorFixture : IDisposable
     {
         private readonly ProcessorConfiguration config = new ProcessorConfiguration();
+
+        [TestMethod]
+        public void WhenCreatingDefaultHandlerSelectorWithourConfigurationThenThrowsArgumentNullException()
+        {
+            // Act & assert
+            ExceptionAssert.ThrowsArgumentNull(() => new DefaultHandlerSelector(null), "configuration");
+        }
 
         [TestMethod]
         public void WhenSelectingUnknownHandlerThenThrowsInvalidOperationException()
@@ -25,18 +28,8 @@
             this.config.Services.Replace(typeof(IHandlerTypeResolver), new EmptyHandlerTypeResolver());
             bool exceptionRaised = false;
 
-            // Act
-            try
-            {
-                resolver.SelectHandler(request);
-            }
-            catch (InvalidOperationException)
-            {
-                exceptionRaised = true;
-            }
-
-            // Assert
-            Assert.IsTrue(exceptionRaised);
+            // Act & assert
+            ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
         [TestMethod]
@@ -48,18 +41,8 @@
             this.config.Services.Replace(typeof(IHandlerTypeResolver), new DuplicateHandlerTypeResolver());
             bool exceptionRaised = false;
 
-            // Act
-            try
-            {
-                resolver.SelectHandler(request);
-            }
-            catch (InvalidOperationException)
-            {
-                exceptionRaised = true;
-            }
-
-            // Assert
-            Assert.IsTrue(exceptionRaised);
+            // Act & assert
+            ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
         [TestMethod]
@@ -72,12 +55,23 @@
 
             // Act
             var descriptor = resolver.SelectHandler(request);
-
-
+            
             // Assert
             Assert.IsNotNull(descriptor);
             Assert.AreEqual(typeof(SimpleHandler1), descriptor.HandlerType);
             Assert.AreEqual(typeof(SimpleCommand), descriptor.CommandType);
+        }
+
+        [TestMethod]
+        public void WhenSelectingBadHandlerThenThrowsInvalidOperationException()
+        {
+            // Assign
+            DefaultHandlerSelector resolver = this.CreateTestableService();
+            HandlerRequest request = new HandlerRequest(this.config, new SimpleCommand2());
+            this.config.Services.Replace(typeof(IHandlerTypeResolver), new SimpleHandlerTypeResolver());
+
+            // Act & assert
+            ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
         [TestMethod]
@@ -88,18 +82,9 @@
             HandlerRequest request = null;
             bool exceptionRaised = false;
 
-            // Act
-            try
-            {
-                resolver.SelectHandler(request);
-            }
-            catch (ArgumentNullException)
-            {
-                exceptionRaised = true;
-            }
-
-            // Assert
-            Assert.IsTrue(exceptionRaised);
+            // Act & assert
+            ExceptionAssert.ThrowsArgumentNull(() => resolver.SelectHandler(request), "request");
+   
         }
         
         [TestMethod]

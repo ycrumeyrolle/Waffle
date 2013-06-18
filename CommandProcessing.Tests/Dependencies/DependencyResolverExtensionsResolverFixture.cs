@@ -2,6 +2,7 @@
 {
     using System.Linq;
     using CommandProcessing.Dependencies;
+    using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
 
@@ -9,6 +10,20 @@
     public class DependencyResolverExtensionsResolverFixture
     {
         readonly private Mock<IDependencyScope> resolver = new Mock<IDependencyScope>();
+
+        [TestMethod]
+        public void WhenGettingServiceWithoutResolverThenThrowsArgumentNullException()
+        {
+            // Act & assert
+            ExceptionAssert.ThrowsArgumentNull(() => DependencyResolverExtensions.GetService<IService>(null), "resolver");
+        }
+
+        [TestMethod]
+        public void WhenGettingServicesWithoutResolverThenThrowsArgumentNullException()
+        {
+            // Act & assert
+            ExceptionAssert.ThrowsArgumentNull(() => DependencyResolverExtensions.GetServices<IService>(null), "resolver");
+        }
 
         [TestMethod]
         public void WhenGettingServiceThenDelegatesToResolver()
