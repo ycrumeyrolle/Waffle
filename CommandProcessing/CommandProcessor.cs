@@ -45,31 +45,29 @@
         /// <summary>
         /// Process the command. 
         /// </summary>
-        /// <typeparam name="TCommand">The type of command to process.</typeparam>
         /// <typeparam name="TResult">The result type.</typeparam>
         /// <param name="command">The command to process.</param>
         /// <returns>The result of the command.</returns>
-        public TResult Process<TCommand, TResult>(TCommand command) where TCommand : ICommand
+        public TResult Process<TResult>(ICommand command)
         {
-            return this.Process<TCommand, TResult>(command, null);
+            return this.Process<TResult>(command, null);
         }
 
         /// <summary>
         /// Process the command. 
         /// </summary>
-        /// <typeparam name="TCommand">The type of command to process.</typeparam>
         /// <typeparam name="TResult">The result type.</typeparam>
         /// <param name="command">The command to process.</param>
         /// <param name="currentRequest">The current request. Pass null if there is not parent request.</param>
         /// <returns>The result of the command.</returns>
-        internal TResult Process<TCommand, TResult>(TCommand command, HandlerRequest currentRequest) where TCommand : ICommand
+        internal TResult Process<TResult>(ICommand command, HandlerRequest currentRequest)
         {
             ICommandWorker commandWorker = this.Configuration.Services.GetCommandWorker();
 
             using (HandlerRequest request = new HandlerRequest(this.Configuration, command, typeof(TResult), currentRequest))
             {
                 request.Processor = new CommandProcessorWrapper(this, request);
-                return commandWorker.Execute<TCommand, TResult>(request);
+                return commandWorker.Execute<TResult>(request);
             }
         }
 

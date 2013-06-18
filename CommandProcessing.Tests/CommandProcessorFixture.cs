@@ -67,7 +67,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = processor.Process<ValidCommand, string>(command);
+            var result = processor.Process<string>(command);
 
             // Assert
             Assert.AreEqual("OK", result);
@@ -104,10 +104,10 @@
             MultipleCommand2 command2 = new MultipleCommand2();
 
             // Act & assert
-            processor.Process<MultipleCommand1, string>(command1);
+            processor.Process<string>(command1);
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Never());
-            processor.Process<MultipleCommand2, string>(command2);
+            processor.Process<string>(command2);
 
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Once());
@@ -122,7 +122,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            ExceptionAssert.Throws<Exception>(() => processor.Process<ValidCommand, string>(command));
+            ExceptionAssert.Throws<Exception>(() => processor.Process<string>(command));
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
 
@@ -138,7 +138,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            ExceptionAssert.Throws<Exception>(() => processor.Process<ValidCommand, string>(command));
+            ExceptionAssert.Throws<Exception>(() => processor.Process<string>(command));
             exceptionFilter.Verify(f => f.OnException(It.IsAny<HandlerExecutedContext>()), Times.Once());
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
@@ -160,7 +160,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = processor.Process<ValidCommand, string>(command);
+            var result = processor.Process<string>(command);
 
             exceptionFilter.Verify(f => f.OnException(It.IsAny<HandlerExecutedContext>()), Times.Once());
             Assert.AreEqual("Exception !!", result);
@@ -183,7 +183,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = processor.Process<ValidCommand, string>(command);
+            var result = processor.Process<string>(command);
 
             Assert.AreEqual("Exception !!", result);
             exceptionFilter.Verify(f => f.OnException(It.IsAny<HandlerExecutedContext>()), Times.Once());
@@ -203,7 +203,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = processor.Process<ValidCommand, string>(command);
+            var result = processor.Process<string>(command);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Contains("OK"));
@@ -230,7 +230,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = processor.Process<ValidCommand, string>(command);
+            var result = processor.Process<string>(command);
 
             Assert.AreEqual("OK from filter", result);
             filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
@@ -260,7 +260,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = processor.Process<ValidCommand, string>(command);
+            var result = processor.Process<string>(command);
 
             Assert.AreEqual("Exception !!", result);
             filter1.Verify(f => f.OnCommandExecuting(It.IsAny<HandlerContext>()), Times.Once());
@@ -292,7 +292,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = processor.Process<ValidCommand, string>(command);
+            var result = processor.Process<string>(command);
 
             // Assert
             // Exception filter overrides result of handler filters
@@ -453,7 +453,7 @@
             CommandProcessor processor = this.CreatTestableProcessor();
 
             // Act
-            ExceptionAssert.Throws<HandlerNotFoundException>(() => processor.Process<ValidCommand, string>(command));
+            ExceptionAssert.Throws<HandlerNotFoundException>(() => processor.Process<string>(command));
 
             // Assert
             activator.Verify(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()), Times.Once());
@@ -474,7 +474,7 @@
             CommandProcessor processor = this.CreatTestableProcessor();
 
             // Act
-            var result = processor.Process<InvalidCommand, string>(command);
+            var result = processor.Process<string>(command);
 
             // Assert
             Assert.IsNull(result);
@@ -504,8 +504,8 @@
             this.configuration.Filters.Add(attribute);
 
             // Act
-            var result1 = processor.Process<ValidCommand, string>(command1);
-            var result2 = processor.Process<ValidCommand, string>(command2);
+            var result1 = processor.Process<string>(command1);
+            var result2 = processor.Process<string>(command2);
 
             Assert.AreNotEqual(result1, result2);
         }
@@ -531,8 +531,8 @@
             this.configuration.Filters.Add(attribute);
 
             // Act
-            var result1 = processor.Process<ValidCommand, string>(command1);
-            var result2 = processor.Process<ValidCommand, string>(command2);
+            var result1 = processor.Process<string>(command1);
+            var result2 = processor.Process<string>(command2);
 
             // Without cache result1 would be different from result2
             // With the cache results are the same
@@ -559,8 +559,8 @@
             this.configuration.Filters.Add(attribute);
 
             // Act
-            var result1 = processor.Process<ComplexCyclicCommand, string>(command1);
-            var result2 = processor.Process<ComplexCyclicCommand, string>(command2);
+            var result1 = processor.Process<string>(command1);
+            var result2 = processor.Process<string>(command2);
 
             // Without cache result 1 would be different from result2
             // With the cache results are the same
@@ -589,8 +589,8 @@
             this.configuration.Filters.Add(attribute);
 
             // Act
-            var result1 = processor.Process<ComplexCyclicCommand, string>(command1);
-            var result2 = processor.Process<ComplexCyclicCommand, string>(command2);
+            var result1 = processor.Process<string>(command1);
+            var result2 = processor.Process<string>(command2);
 
             // Without cache result 1 would be different from result2
             // With the cache results are the same

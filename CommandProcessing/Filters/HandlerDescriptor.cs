@@ -44,6 +44,7 @@
 
             this.configuration = configuration;
             this.HandlerType = handlerType;
+            this.CommandType = commandType;
             this.filterPipeline = new Lazy<Collection<FilterInfo>>(this.InitializeFilterPipeline);
             this.attributesCached = handlerType.GetCustomAttributes(true);
             var handleMethod = handlerType.GetMethod("Handle", new[] { commandType });
@@ -87,6 +88,12 @@
         /// </summary>
         /// <value>The handler type.</value>
         public Type HandlerType { get; private set; }
+
+        /// <summary>
+        /// Gets the command type.
+        /// </summary>
+        /// <value>The handler type.</value>
+        public Type CommandType { get; private set; }
 
         /// <summary>
         /// Gets the handler result type.

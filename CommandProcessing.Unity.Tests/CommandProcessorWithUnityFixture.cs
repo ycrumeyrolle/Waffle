@@ -36,7 +36,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = processor.Process<ValidCommand, string>(command);
+            var result = processor.Process<string>(command);
 
             // Assert
             Assert.AreEqual("OK", result);

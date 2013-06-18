@@ -34,16 +34,16 @@
             }
         }
 
-        public TResult Execute<TCommand, TResult>(HandlerRequest request) where TCommand : ICommand
+        public TResult Execute<TResult>(HandlerRequest request)
         {
-            return this.TraceWriter.TraceBeginEnd<TResult>(
+            return this.TraceWriter.TraceBeginEnd(
                request,
                TraceCategories.RequestsCategory,
                TraceLevel.Info,
                this.Inner.GetType().Name,
                ExecuteMethodName,
                beginTrace: null,
-               execute: () => this.Inner.Execute<TCommand, TResult>(request),
+               execute: () => this.Inner.Execute<TResult>(request),
                endTrace: null,
                errorTrace: null);
         }

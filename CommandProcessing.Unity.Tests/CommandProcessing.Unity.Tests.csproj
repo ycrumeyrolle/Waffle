@@ -59,9 +59,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandProcessorWithUnityFixture.cs" />
+    <Compile Include="ConfigurationExtensionsFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommandProcessing.Tests\CommandProcessing.Tests.csproj">
+      <Project>{302CA73F-4D47-4DEC-BE2C-803B210A8B46}</Project>
+      <Name>CommandProcessing.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CommandProcessing.Unity\CommandProcessing.Unity.csproj">
       <Project>{82D3A967-2E21-421C-A340-1A8A1CD683C9}</Project>
       <Name>CommandProcessing.Unity</Name>

@@ -19,11 +19,10 @@ namespace CommandProcessing
         /// <summary>
         /// Process the command. 
         /// </summary>
-        /// <typeparam name="TCommand">The type of command to process.</typeparam>
         /// <typeparam name="TResult">The result type.</typeparam>
         /// <param name="command">The command to process.</param>
         /// <returns>The result of the command.</returns>
-        TResult Process<TCommand, TResult>(TCommand command) where TCommand : ICommand;
+        TResult Process<TResult>(ICommand command);
         
         /// <summary>
         /// Asks the the processor to supply a service.

@@ -77,6 +77,7 @@
             // Assert
             Assert.IsNotNull(descriptor);
             Assert.AreEqual(typeof(SimpleHandler1), descriptor.HandlerType);
+            Assert.AreEqual(typeof(SimpleCommand), descriptor.CommandType);
         }
 
         [TestMethod]

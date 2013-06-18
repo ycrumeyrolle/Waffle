@@ -56,8 +56,8 @@ namespace CommandProcessing.Console
                         processor.Process(command8);
                         processor.Process(command9);
                         processor.Process(command10);
-                        processor.Process<MultipleCommand1, string>(command11);
-                        processor.Process<MultipleCommand2, string>(command12);
+                        processor.Process<string>(command11);
+                        processor.Process<string>(command12);
                     });
 
                 ////for (int i = 0; i < 100000; i++)

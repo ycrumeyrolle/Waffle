@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Runtime.Serialization;
+    using CommandProcessing.Filters;
 
     /// <summary>
     /// Represents an error that occur when no handler is found.
@@ -71,6 +72,16 @@
         protected HandlerNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+        }
+
+        internal static HandlerNotFoundException Create(HandlerDescriptor descriptor)
+        {
+            if (descriptor.ResultType == typeof(VoidResult))
+            {
+                return new HandlerNotFoundException(descriptor.CommandType);
+            }
+
+            return new HandlerNotFoundException(descriptor.CommandType, descriptor.ResultType);
         }
     }
 }
