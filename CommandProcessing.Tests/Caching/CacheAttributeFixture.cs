@@ -27,7 +27,6 @@
         {
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
-            filter.Duration = 1;
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
             HandlerRequest request = new HandlerRequest(this.config, command);
             HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
@@ -46,7 +45,6 @@
         {
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
-            filter.Duration = 1;
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
             SimpleCommand cachedCommand = new SimpleCommand { Property1 = 12, Property2 = "test in cache" };
             HandlerRequest request = new HandlerRequest(this.config, command);
@@ -64,11 +62,40 @@
         }
 
         [TestMethod]
+        public void WhenExecutingFilterWithoutContextThenThrowsArgumentNullException()
+        {
+            // Arrange
+            CacheAttribute filter = this.CreateAttribute();
+
+            // Act & Assert
+            ExceptionAssert.ThrowsArgumentNull(() => filter.OnCommandExecuting(null), "handlerContext");
+        }
+
+        [TestMethod]
+        public void WhenExecutingFilterToIgnoreThenCacheIsIgnored()
+        {
+            // Arrange
+            CacheAttribute filter = this.CreateAttribute();
+            SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
+            SimpleCommand cachedCommand = new SimpleCommand { Property1 = 12, Property2 = "test in cache" };
+            HandlerRequest request = new HandlerRequest(this.config, command);
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(NotCachedCommand), typeof(NotCachedHandler));
+            HandlerContext context = new HandlerContext(request, descriptor);
+            this.cache.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<string>())).Returns(new CacheAttribute.CacheEntry(cachedCommand));
+
+            // Act
+            filter.OnCommandExecuting(context);
+
+            // Assert
+            this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            Assert.IsNull(context.Result);
+        }
+
+        [TestMethod]
         public void WhenExecutedFilterWithExceptionThenCacheIsNotUpdated()
         {
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
-            filter.Duration = 1;
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
             HandlerRequest request = new HandlerRequest(this.config, command);
             HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
@@ -84,11 +111,41 @@
         }
 
         [TestMethod]
+        public void WhenExecutedFilterWithoutContextThenThrowsArgumentNullException()
+        {
+            // Arrange
+            CacheAttribute filter = this.CreateAttribute();
+
+            // Act & Assert
+            ExceptionAssert.ThrowsArgumentNull(() => filter.OnCommandExecuted(null), "handlerExecutedContext");
+        }
+
+        [TestMethod]
+        public void WhenExecutedFilterToIgnoreThenCacheIsIgnored()
+        {
+            // Arrange
+            CacheAttribute filter = this.CreateAttribute();
+            SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
+            SimpleCommand cachedCommand = new SimpleCommand { Property1 = 12, Property2 = "test in cache" };
+            HandlerRequest request = new HandlerRequest(this.config, command);
+            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(NotCachedCommand), typeof(NotCachedHandler));
+            HandlerContext context = new HandlerContext(request, descriptor);
+            HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
+            this.cache.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<string>())).Returns(new CacheAttribute.CacheEntry(cachedCommand));
+
+            // Act
+            filter.OnCommandExecuted(executedContext);
+
+            // Assert
+            this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
+            Assert.IsNull(context.Result);
+        }
+
+        [TestMethod]
         public void WhenExecutedFilterWithoutKeyThenCacheIsNotUpdated()
         {
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
-            filter.Duration = 1;
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
             HandlerRequest request = new HandlerRequest(this.config, command);
             HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
@@ -108,7 +165,6 @@
         {
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
-            filter.Duration = 1;
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
             HandlerRequest request = new HandlerRequest(this.config, command);
             HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
@@ -129,7 +185,6 @@
         {
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
-            filter.Duration = 1;
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
             HandlerRequest request = new HandlerRequest(this.config, command);
             HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));

@@ -110,7 +110,7 @@
                 throw Error.ArgumentNull("handlerContext");
             }
 
-            if (handlerContext.Descriptor.GetCustomAttributes<NoCacheAttribute>().Count > 0)
+            if (ShouldIgnoreCache(handlerContext.Descriptor))
             {
                 return;
             }
@@ -142,7 +142,7 @@
                 return;
             }
 
-            if (handlerExecutedContext.HandlerContext.Descriptor.GetCustomAttributes<NoCacheAttribute>().Count > 0)
+            if (ShouldIgnoreCache(handlerExecutedContext.HandlerContext.Descriptor))
             {
                 return;
             }
@@ -161,6 +161,11 @@
             DateTimeOffset expiration = this.CreateExpiration();
 
             this.cache.Add(key, new CacheEntry(handlerExecutedContext.Result), expiration); 
+        }
+
+        private static bool ShouldIgnoreCache(HandlerDescriptor descriptor)
+        {
+            return descriptor.GetCustomAttributes<NoCacheAttribute>().Count > 0;
         }
 
         private DateTimeOffset CreateExpiration()
