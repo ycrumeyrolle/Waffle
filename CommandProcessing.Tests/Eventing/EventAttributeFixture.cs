@@ -2,6 +2,7 @@
 {
     using CommandProcessing.Eventing;
     using CommandProcessing.Filters;
+    using CommandProcessing.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
 
@@ -36,6 +37,16 @@
 
             // Assert
             messageHub.Verify(h => h.Publish("test", It.IsAny<object>()), Times.Once());
+        }
+
+        [TestMethod]
+        public void WhenHandlerExecutedWithoutContextThenThrowsArgumentNullException()
+        {
+            // Arrange
+            EventAttribute attribute = new EventAttribute("test");
+
+            // Act & assert
+            ExceptionAssert.ThrowsArgumentNull(() => attribute.OnCommandExecuted(null), "handlerExecutedContext");
         }
     }
 }
