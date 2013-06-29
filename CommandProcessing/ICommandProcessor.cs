@@ -1,6 +1,7 @@
 namespace CommandProcessing
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading.Tasks;
     using CommandProcessing.Dependencies;
 
     /// <summary>
@@ -22,7 +23,7 @@ namespace CommandProcessing
         /// <typeparam name="TResult">The result type.</typeparam>
         /// <param name="command">The command to process.</param>
         /// <returns>The result of the command.</returns>
-        TResult Process<TResult>(ICommand command);
+        Task<TResult> ProcessAsync<TResult>(ICommand command);
         
         /// <summary>
         /// Asks the the processor to supply a service.

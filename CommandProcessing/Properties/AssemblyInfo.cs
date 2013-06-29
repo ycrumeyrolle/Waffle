@@ -37,3 +37,4 @@ using System.Runtime.InteropServices;
 [assembly: NeutralResourcesLanguage("en-US")]
 [assembly: CLSCompliant(true)]
 [assembly: InternalsVisibleTo("CommandProcessing.Tests")]
+[assembly: InternalsVisibleTo("CommandProcessing.Console")]

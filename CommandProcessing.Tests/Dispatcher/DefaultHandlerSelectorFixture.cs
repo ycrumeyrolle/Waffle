@@ -26,7 +26,6 @@
             DefaultHandlerSelector resolver = this.CreateTestableService();
             HandlerRequest request = new HandlerRequest(this.config, new SimpleCommand());
             this.config.Services.Replace(typeof(IHandlerTypeResolver), new EmptyHandlerTypeResolver());
-            bool exceptionRaised = false;
 
             // Act & assert
             ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
@@ -39,7 +38,6 @@
             DefaultHandlerSelector resolver = this.CreateTestableService();
             HandlerRequest request = new HandlerRequest(this.config, new SimpleCommand());
             this.config.Services.Replace(typeof(IHandlerTypeResolver), new DuplicateHandlerTypeResolver());
-            bool exceptionRaised = false;
 
             // Act & assert
             ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
@@ -80,7 +78,6 @@
             // Assign
             DefaultHandlerSelector resolver = this.CreateTestableService();
             HandlerRequest request = null;
-            bool exceptionRaised = false;
 
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => resolver.SelectHandler(request), "request");

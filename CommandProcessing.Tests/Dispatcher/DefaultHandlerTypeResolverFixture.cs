@@ -44,7 +44,6 @@
         {
             // Assign
             DefaultHandlerTypeResolver resolver = this.CreateTestableService();
-            bool exceptionRaised = false;
 
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => resolver.GetHandlerTypes(null), "assembliesResolver");

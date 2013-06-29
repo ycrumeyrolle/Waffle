@@ -39,7 +39,7 @@
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="request">The <see cref="HandlerRequest"/> to execute.</param>
         /// <returns>The result of the command, if any.</returns>
-        public TResult Execute<TResult>(HandlerRequest request)
+        public Task<TResult> ExecuteAsync<TResult>(HandlerRequest request)
         {
             if (request == null)
             {
@@ -60,7 +60,7 @@
 
             if (!this.ValidateCommand(request) && this.Configuration.AbortOnInvalidCommand)
             {
-                return default(TResult);
+                return TaskHelpers.Completed<TResult>();
             }
 
             HandlerContext context = new HandlerContext(request, descriptor);
@@ -74,7 +74,7 @@
 
             result = InvokeHandlerWithExceptionFiltersAsync(result, context, cancellationToken, filterGrouping.ExceptionFilters);
 
-            return (TResult)result.Result;
+            return result.CastFromObject<TResult>();
         }
 
         private void RegisterForDispose(HandlerRequest request, HandlerLifetime lifetime, IHandler handler)

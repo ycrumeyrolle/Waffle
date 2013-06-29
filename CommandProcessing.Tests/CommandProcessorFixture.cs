@@ -105,15 +105,15 @@
             MultipleCommand2 command3 = new MultipleCommand2();
 
             // Act & assert
-            processor.Process<string>(command1);
+            processor.ProcessAsync<string>(command1);
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Never());
-            processor.Process<string>(command2);
+            processor.ProcessAsync<string>(command2);
 
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Once());
             
-            processor.Process<string>(command2);
+            processor.ProcessAsync<string>(command2);
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Exactly(2));
         }
@@ -458,7 +458,7 @@
             CommandProcessor processor = this.CreatTestableProcessor();
 
             // Act
-            ExceptionAssert.Throws<HandlerNotFoundException>(() => processor.Process<string>(command));
+            ExceptionAssert.Throws<HandlerNotFoundException>(() => processor.ProcessAsync<string>(command));
 
             // Assert
             activator.Verify(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()), Times.Once());
@@ -509,8 +509,8 @@
             this.configuration.Filters.Add(attribute);
 
             // Act
-            var result1 = processor.Process<string>(command1);
-            var result2 = processor.Process<string>(command2);
+            var result1 = processor.ProcessAsync<string>(command1);
+            var result2 = processor.ProcessAsync<string>(command2);
 
             Assert.AreNotEqual(result1, result2);
         }

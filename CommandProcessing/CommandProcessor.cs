@@ -1,6 +1,7 @@
 ﻿namespace CommandProcessing
 {
     using System;
+    using System.Threading.Tasks;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Internal;
 
@@ -48,9 +49,9 @@
         /// <typeparam name="TResult">The result type.</typeparam>
         /// <param name="command">The command to process.</param>
         /// <returns>The result of the command.</returns>
-        public TResult Process<TResult>(ICommand command)
+        public Task<TResult> ProcessAsync<TResult>(ICommand command)
         {
-            return this.Process<TResult>(command, null);
+            return this.ProcessAsync<TResult>(command, null);
         }
 
         /// <summary>
@@ -60,14 +61,14 @@
         /// <param name="command">The command to process.</param>
         /// <param name="currentRequest">The current request. Pass null if there is not parent request.</param>
         /// <returns>The result of the command.</returns>
-        internal TResult Process<TResult>(ICommand command, HandlerRequest currentRequest)
+        internal Task<TResult> ProcessAsync<TResult>(ICommand command, HandlerRequest currentRequest)
         {
             ICommandWorker commandWorker = this.Configuration.Services.GetCommandWorker();
 
             using (HandlerRequest request = new HandlerRequest(this.Configuration, command, typeof(TResult), currentRequest))
             {
                 request.Processor = new CommandProcessorWrapper(this, request);
-                return commandWorker.Execute<TResult>(request);
+                return commandWorker.ExecuteAsync<TResult>(request);
             }
         }
 

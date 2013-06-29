@@ -1,6 +1,7 @@
 ﻿namespace CommandProcessing.Tracing
 {
     using System.Diagnostics.Contracts;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Tracer for <see cref="IHandler"/>.
@@ -34,7 +35,7 @@
             }
         }
 
-        public TResult Execute<TResult>(HandlerRequest request)
+        public Task<TResult> ExecuteAsync<TResult>(HandlerRequest request)
         {
             return this.TraceWriter.TraceBeginEnd(
                request,
@@ -43,7 +44,7 @@
                this.Inner.GetType().Name,
                ExecuteMethodName,
                beginTrace: null,
-               execute: () => this.Inner.Execute<TResult>(request),
+               execute: () => this.Inner.ExecuteAsync<TResult>(request),
                endTrace: null,
                errorTrace: null);
         }

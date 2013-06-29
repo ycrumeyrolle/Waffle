@@ -1,5 +1,7 @@
 ﻿namespace CommandProcessing
 {
+    using System.Threading.Tasks;
+
     /// <summary>
     /// Represents a worker for command. 
     /// </summary>
@@ -11,6 +13,6 @@
         /// <typeparam name="TResult">The type of the result.</typeparam>
         /// <param name="request">The <see cref="HandlerRequest"/> to execute.</param>
         /// <returns>The result of the command, if any.</returns>
-        TResult Execute<TResult>(HandlerRequest request);
+        Task<TResult> ExecuteAsync<TResult>(HandlerRequest request);
     }
 }

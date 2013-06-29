@@ -1,5 +1,7 @@
 ﻿namespace CommandProcessing
 {
+    using System.Threading.Tasks;
+
     internal class CommandProcessorWrapper : ICommandProcessor
     {
         private readonly CommandProcessor inner;
@@ -23,9 +25,9 @@
         /// <typeparam name="TResult">The result type.</typeparam>
         /// <param name="command">The command to process.</param>
         /// <returns>The result of the command.</returns>
-        public TResult Process<TResult>(ICommand command)
+        public Task<TResult> ProcessAsync<TResult>(ICommand command)
         {
-            return this.inner.Process<TResult>(command, this.request);
+            return this.inner.ProcessAsync<TResult>(command, this.request);
         }
 
         public TService Using<TService>() where TService : class

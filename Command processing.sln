@@ -172,12 +172,15 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A326A020-8334-4F28-A42E-738081314F2C} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
-		{302CA73F-4D47-4DEC-BE2C-803B210A8B46} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
 		{09400EB8-573D-46A5-94E1-1E2F8CC52B0C} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
 		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
+		{A326A020-8334-4F28-A42E-738081314F2C} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
+		{302CA73F-4D47-4DEC-BE2C-803B210A8B46} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
