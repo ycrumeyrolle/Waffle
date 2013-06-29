@@ -68,12 +68,32 @@
             activator.Verify(a => a.Create(It.IsAny<HandlerRequest>(), It.IsAny<HandlerDescriptor>()), Times.Once());
         }
 
+        [TestMethod]
+        public void Ctor_HandlerLifetime()
+        {
+            // Arrange
+            Mock<IHandlerActivator> activator = new Mock<IHandlerActivator>(MockBehavior.Strict);
+            this.config.Services.Replace(typeof(IHandlerActivator), activator.Object);
+
+            // Act
+            HandlerDescriptor defaultDescriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+            HandlerDescriptor transcientDescriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(TranscientHandler));
+            HandlerDescriptor perRequestDescriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(PerRequestHandler));
+            HandlerDescriptor perProcessorDescriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(PerProcessorHandler));
+
+            // Assert
+            Assert.AreEqual(HandlerLifetime.PerRequest, defaultDescriptor.Lifetime);
+            Assert.AreEqual(HandlerLifetime.Transcient, transcientDescriptor.Lifetime);
+            Assert.AreEqual(HandlerLifetime.PerRequest, perRequestDescriptor.Lifetime);
+            Assert.AreEqual(HandlerLifetime.Processor, perProcessorDescriptor.Lifetime);
+        }
+
         [SimpleExceptionFilter("filter1")]
         [SimpleHandlerFilter]
         [SimpleHandlerFilter]
         [SimpleHandlerFilter]
-        [HandlerConfigurationAttribute]
-        [FakeHandlerConfigurationAttribute]
+        [HandlerConfiguration]
+        [FakeHandlerConfiguration]
         private class SimpleHandler : Handler<SimpleCommand>
         {
             public override void Handle(SimpleCommand command)
@@ -81,7 +101,34 @@
                 throw new NotImplementedException();
             }
         }
-        
+
+        [HandlerLifetime(HandlerLifetime.Transcient)]
+        private class TranscientHandler : Handler<SimpleCommand>
+        {
+            public override void Handle(SimpleCommand command)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        [HandlerLifetime(HandlerLifetime.PerRequest)]
+        private class PerRequestHandler : Handler<SimpleCommand>
+        {
+            public override void Handle(SimpleCommand command)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        [HandlerLifetime(HandlerLifetime.Processor)]
+        private class PerProcessorHandler : Handler<SimpleCommand>
+        {
+            public override void Handle(SimpleCommand command)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
         public class SimpleHandlerFilter : HandlerFilterAttribute
         {
@@ -105,7 +152,7 @@
         {
             public void Initialize(HandlerSettings settings, HandlerDescriptor descriptor)
             {
-                settings.Services.Replace(typeof(IProxyBuilder), new Mock<IProxyBuilder>(MockBehavior.Loose).Object); 
+                settings.Services.Replace(typeof(IProxyBuilder), new Mock<IProxyBuilder>(MockBehavior.Loose).Object);
             }
         }
 

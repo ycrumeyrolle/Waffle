@@ -53,18 +53,17 @@
 
             if (handler == null)
             {
-                throw HandlerNotFoundException.Create(descriptor);
+                throw CreateHandlerNotFoundException(descriptor);
             }
 
-            request.RegisterForDispose(handler);
-            
+            this.RegisterForDispose(request, descriptor.Lifetime, handler);
+
             if (!this.ValidateCommand(request) && this.Configuration.AbortOnInvalidCommand)
             {
                 return default(TResult);
             }
 
             HandlerContext context = new HandlerContext(request, descriptor);
-            context.User = this.Configuration.Services.GetPrincipalProvider().Principal;
             handler.Context = context;
 
             FilterGrouping filterGrouping = descriptor.GetFilterGrouping();
@@ -76,6 +75,20 @@
             result = InvokeHandlerWithExceptionFiltersAsync(result, context, cancellationToken, filterGrouping.ExceptionFilters);
 
             return (TResult)result.Result;
+        }
+
+        private void RegisterForDispose(HandlerRequest request, HandlerLifetime lifetime, IHandler handler)
+        {
+            if (lifetime == HandlerLifetime.Processor)
+            {
+                // Per-processor lifetime will be disposed only on processor disposing
+                this.Configuration.RegisterForDispose(handler as IDisposable);
+            }
+            else
+            {
+                // Per-request and transcient lifetime will be disposed on main request disposing
+                request.RegisterForDispose(handler, true);
+            }
         }
 
         private bool ValidateCommand(HandlerRequest request)
@@ -105,8 +118,7 @@
                     // must be lazily evaluated. Otherwise all the tasks might start executing even though we want to run them
                     // sequentially and not invoke any of the following ones if an earlier fails.
                     IEnumerable<Task> lazyTaskEnumeration = filters.Select(filter => filter.ExecuteExceptionFilterAsync(executedContext, cancellationToken));
-                    Task<TResult> resultTask =
-                        TaskHelpers.Iterate(lazyTaskEnumeration, cancellationToken)
+                    Task<TResult> resultTask = TaskHelpers.Iterate(lazyTaskEnumeration, cancellationToken)
                                    .Then(
                                    () =>
                                    {
@@ -161,6 +173,16 @@
             {
                 return TaskHelpers.FromError<object>(e);
             }
+        }
+
+        private static HandlerNotFoundException CreateHandlerNotFoundException(HandlerDescriptor descriptor)
+        {
+            if (descriptor.ResultType == typeof(VoidResult))
+            {
+                return new HandlerNotFoundException(descriptor.CommandType);
+            }
+
+            return new HandlerNotFoundException(descriptor.CommandType, descriptor.ResultType);
         }
     }
 }

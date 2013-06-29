@@ -2,13 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Dispatcher;
     using CommandProcessing.Filters;
-
     using Microsoft.Practices.Unity;
-    
+
     /// <summary>
     /// Represents a scope that is tracked by the Unity container. The scope is
     /// used to keep track of resources that have been provided, so that they can then be
@@ -17,7 +17,7 @@
     public class DependencyScope : IDependencyScope
     {
         private readonly IUnityContainer container;
-    
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DependencyScope"/> class. 
         /// </summary>
@@ -115,8 +115,8 @@
             IDictionary<Type, HandlerDescriptor> descriptorsMapping = descriptorProvider.GetHandlerMapping();
             foreach (KeyValuePair<Type, HandlerDescriptor> description in descriptorsMapping)
             {
-                // TODO : register with others lifetimes
-                this.container.RegisterType(description.Value.HandlerType);
+                LifetimeManager lifetime = GetLifetimeManager(description.Value.Lifetime);
+                this.container.RegisterType(description.Value.HandlerType, lifetime);
             }
         }
 
@@ -128,6 +128,22 @@
         protected static DependencyScope CreateScope(IUnityContainer container)
         {
             return new DependencyScope(container);
+        }
+
+        private static LifetimeManager GetLifetimeManager(HandlerLifetime handlerLifetime)
+        {
+            switch (handlerLifetime)
+            {
+                case HandlerLifetime.Transcient:
+                    return new TransientLifetimeManager();
+
+                case HandlerLifetime.PerRequest:
+                case HandlerLifetime.Processor:
+                    return new ContainerControlledLifetimeManager();
+
+                default:
+                    throw new InvalidEnumArgumentException("handlerLifetime", (int)handlerLifetime, typeof(HandlerLifetime));
+            }
         }
     }
 }

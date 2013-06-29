@@ -73,15 +73,5 @@
             : base(info, context)
         {
         }
-
-        internal static HandlerNotFoundException Create(HandlerDescriptor descriptor)
-        {
-            if (descriptor.ResultType == typeof(VoidResult))
-            {
-                return new HandlerNotFoundException(descriptor.CommandType);
-            }
-
-            return new HandlerNotFoundException(descriptor.CommandType, descriptor.ResultType);
-        }
     }
 }

@@ -57,8 +57,8 @@
         /// <param name="request">
         /// The request.
         /// </param>
-        /// <param name="handlerType">
-        /// The handler Type.
+        /// <param name="descriptor">
+        /// The handler descriptor.
         /// </param>
         /// <param name="activator">
         /// The activator.
@@ -66,21 +66,32 @@
         /// <returns>
         /// The <see cref="Handler"/>.
         /// </returns>
-        private static IHandler GetInstanceOrActivator(HandlerRequest request, Type handlerType, out Func<IHandler> activator)
+        private static IHandler GetInstanceOrActivator(HandlerRequest request, HandlerDescriptor descriptor, out Func<IHandler> activator)
         {
             Contract.Requires(request != null);
-            Contract.Requires(handlerType != null);
+            Contract.Requires(descriptor != null);
 
             // If dependency resolver returns handler object then use it.
-            IHandler instance = (IHandler)request.GetDependencyScope().GetService(handlerType);
+            IHandler instance = (IHandler)request.GetDependencyScope().GetService(descriptor.HandlerType);
             if (instance != null)
             {
                 activator = null;
                 return instance;
             }
 
-            // Otherwise create a delegate for creating a new instance of the type
-            activator = TypeActivator.Create<IHandler>(handlerType);
+            switch (descriptor.Lifetime)
+            {
+                case HandlerLifetime.Transcient:
+                case HandlerLifetime.PerRequest:
+                case HandlerLifetime.Processor:
+                    // Otherwise create a delegate for creating a new instance of the type
+                    activator = TypeActivator.Create<IHandler>(descriptor.HandlerType);
+                    break;
+
+                default:
+                    throw Error.InvalidEnumArgument("descriptor", (int)descriptor.Lifetime, typeof(HandlerLifetime));
+            }
+
             return null;
         }
 
@@ -95,7 +106,7 @@
             // HandlerDescriptor.Properties cache
             if (this.fastCache == null)
             {
-                IHandler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
+                IHandler handler = GetInstanceOrActivator(request, descriptor, out activator);
                 if (handler != null)
                 {
                     // we have a handler registered with the dependency resolver for this handler type                      
@@ -121,7 +132,7 @@
                 }
                 else
                 {
-                    IHandler handler = GetInstanceOrActivator(request, descriptor.HandlerType, out activator);
+                    IHandler handler = GetInstanceOrActivator(request, descriptor, out activator);
                     if (handler != null)
                     {
                         // we have a handler registered with the dependency resolver for this handler type

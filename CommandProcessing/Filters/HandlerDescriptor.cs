@@ -55,6 +55,7 @@
             ModelMetadata metadata = metadataProvider.GetMetadataForType(null, handlerType);
             this.Name = metadata.GetDisplayName();
             this.Description = metadata.Description;
+            this.Lifetime = this.GetHandlerLifetime();
 
             this.Initialize();
         }
@@ -100,6 +101,12 @@
         /// </summary>
         /// <value>The handler result type.</value>
         public Type ResultType { get; private set; }
+
+        /// <summary>
+        /// Gets the handler lifetime.
+        /// </summary>
+        /// <value>The handler lifetime.</value>
+        public HandlerLifetime Lifetime { get; private set; }
 
         /// <summary>
         /// Retrieves the filters for the handler descriptor.
@@ -234,6 +241,22 @@
                     descriptor.configuration = ProcessorConfiguration.ApplyHandlerSettings(settings, originalConfig);
                 }
             }
+        }
+
+        private HandlerLifetime GetHandlerLifetime()
+        {
+            int length = this.attributesCached.Length;
+            for (int i = 0; i < length; i++)
+            {
+                HandlerLifetimeAttribute handlerLifetimeAttribute = this.attributesCached[i] as HandlerLifetimeAttribute;
+                if (handlerLifetimeAttribute != null)
+                {
+                    return handlerLifetimeAttribute.HandlerLifetime;
+                }
+            }
+
+            // No attribute were found. Default lifetime is  per-request
+            return HandlerLifetime.PerRequest;
         }
     }
 }

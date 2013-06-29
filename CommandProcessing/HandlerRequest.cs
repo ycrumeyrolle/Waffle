@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using CommandProcessing.Dependencies;
     using CommandProcessing.Internal;
-    using CommandProcessing.Validation;
 
     /// <summary>
     /// Represents a request for an handler.    
@@ -144,7 +143,7 @@
         /// <returns>A <see cref="IDependencyScope"/>.</returns>
         public IDependencyScope GetDependencyScope()
         {
-            return this.GetDependencyScope(true);
+            return this.GetDependencyScope(useDeepestRequest: true);
         }
 
         /// <summary>
@@ -194,14 +193,26 @@
 
         /// <summary>
         /// Registers a resource to be disposed at the end of the request.
+        /// The resource will be disposed when the <see cref="HandlerRequest"/> will be disposed.
         /// </summary>
         /// <param name="resource">The resource to dispose.</param>
         public void RegisterForDispose(object resource)
         {
+            this.RegisterForDispose(resource, false);
+        }
+
+        /// <summary>
+        /// Registers a resource to be disposed at the end of the request.
+        /// </summary>
+        /// <param name="resource">The resource to dispose.</param> 
+        /// <param name="useDeepestRequest">Indicate whether to use the deepest request to register the disposing.</param>
+        public void RegisterForDispose(object resource, bool useDeepestRequest)
+        {
             IDisposable disposableResource = resource as IDisposable;
             if (disposableResource != null)
             {
-                this.disposableResources.Add(disposableResource);
+                HandlerRequest request = this.GetRootRequest(useDeepestRequest);
+                request.disposableResources.Add(disposableResource);
             }
         }
     }

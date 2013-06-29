@@ -129,6 +129,8 @@
     <Compile Include="DefaultCommandWorker.cs" />
     <Compile Include="Dispatcher\IHandlerDescriptorProvider.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="Filters\HandlerLifetime.cs" />
+    <Compile Include="HandlerLifetimeAttribute.cs" />
     <Compile Include="ICommandWorker.cs" />
     <Compile Include="IPrincipalProvider.cs" />
     <Compile Include="Eventing\IMessageHub.cs" />

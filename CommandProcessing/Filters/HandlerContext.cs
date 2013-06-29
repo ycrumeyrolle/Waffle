@@ -30,10 +30,16 @@ namespace CommandProcessing.Filters
                 throw Error.ArgumentNull("request");
             }
 
+            if (request.Configuration == null)
+            {
+                throw Error.Argument("request");
+            }
+
             this.Configuration = request.Configuration;
             this.Request = request;
             this.Command = request.Command;
             this.Descriptor = descriptor;
+            this.User = this.Configuration.Services.GetPrincipalProvider().Principal;
         }
 
         /// <summary>

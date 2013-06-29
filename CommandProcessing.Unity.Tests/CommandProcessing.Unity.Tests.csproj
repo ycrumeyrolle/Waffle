@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="CommandProcessorWithUnityFixture.cs" />
     <Compile Include="ConfigurationExtensionsFixture.cs" />
+    <Compile Include="DependencyScopeFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

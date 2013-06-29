@@ -1,11 +1,7 @@
 ﻿namespace CommandProcessing.Unity.Tests
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel.DataAnnotations;
     using CommandProcessing;
-    using CommandProcessing.Dispatcher;
     using CommandProcessing.Tests.Helpers;
     using Microsoft.Practices.Unity;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

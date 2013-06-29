@@ -102,6 +102,7 @@
             CommandProcessor processor = this.CreatTestableProcessor();
             MultipleCommand1 command1 = new MultipleCommand1();
             MultipleCommand2 command2 = new MultipleCommand2();
+            MultipleCommand2 command3 = new MultipleCommand2();
 
             // Act & assert
             processor.Process<string>(command1);
@@ -111,6 +112,10 @@
 
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Once());
+            
+            processor.Process<string>(command2);
+            spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
+            spy.Verify(h => h.Spy("MultipleCommand2"), Times.Exactly(2));
         }
         
         [TestMethod]
@@ -650,7 +655,7 @@
             try
             {
                 config = config ?? this.configuration;
-                config.EnableDefaultTracing();
+             //   config.EnableDefaultTracing();
                 this.dependencyResolver.Setup(r => r.BeginScope()).Returns(this.dependencyResolver.Object);
                 config.DependencyResolver = this.dependencyResolver.Object;
                 CommandProcessor processor = new CommandProcessor(config);
