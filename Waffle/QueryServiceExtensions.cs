@@ -1,6 +1,7 @@
 ﻿namespace Waffle
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using Waffle.Internal;
     using Waffle.Queries;
 
@@ -35,6 +36,7 @@
         /// <param name="queryContextFactory"></param>
         /// <typeparam name="T">The type of the <see cref="IQueryContext"/>.</typeparam>
         /// <exception cref="ArgumentNullException"></exception>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "Cannot ")]
         public static void RegisterContextFactory<T>(this IQueryService queryService, Func<IQueryContext> queryContextFactory) where T : IQueryContext
         {
             if (queryService == null)

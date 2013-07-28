@@ -386,7 +386,7 @@
                 .CastFromObject<string>()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
                     Assert.AreEqual("StringResult", task.Result);
@@ -403,7 +403,7 @@
                 .CastFromObject<int>()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
                     Assert.AreEqual(123, task.Result);
@@ -420,7 +420,7 @@
                 .CastFromObject<string>()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.Faulted, task.Status);
                     Assert.IsInstanceOfType(task.Exception.GetBaseException(), typeof(InvalidCastException));
@@ -437,7 +437,7 @@
                 .CastFromObject<string>()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.Faulted, task.Status);;
                     Assert.IsInstanceOfType(task.Exception.GetBaseException(), typeof(InvalidOperationException));
@@ -454,7 +454,7 @@
                 .CastFromObject<int>()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.Faulted, task.Status);
                     Assert.IsInstanceOfType(task.Exception.GetBaseException(), typeof(InvalidOperationException));
@@ -471,7 +471,7 @@
                 .CastFromObject<string>()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.Canceled, task.Status);
                 });
@@ -487,7 +487,7 @@
                 .CastFromObject<int>()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.Canceled, task.Status);
                 });
@@ -506,7 +506,7 @@
                 .CastToObject()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
                     Assert.AreEqual("StringResult", (string)task.Result);
@@ -523,7 +523,7 @@
                 .CastToObject()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
                     Assert.AreEqual(123, (int)task.Result);
@@ -540,7 +540,7 @@
                 .CastToObject()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.Faulted, task.Status);
                     Assert.IsInstanceOfType(task.Exception.GetBaseException(), typeof(InvalidOperationException));
@@ -557,7 +557,7 @@
                 .CastToObject()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.Canceled, task.Status);
                 });
@@ -576,7 +576,7 @@
                 .CastToObject()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
                     Assert.AreEqual(null, task.Result);
@@ -593,7 +593,7 @@
                 .CastToObject()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.Faulted, task.Status);
                     Assert.IsInstanceOfType(task.Exception.GetBaseException(), typeof(InvalidOperationException));
@@ -610,7 +610,7 @@
                 .CastToObject()
 
             // Assert
-                .ContinueWith((task) =>
+                .ContinueWith(task =>
                 {
                     Assert.AreEqual(TaskStatus.Canceled, task.Status);
                 });

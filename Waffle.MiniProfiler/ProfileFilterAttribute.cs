@@ -3,13 +3,14 @@
     using System;
     using System.Collections.Generic;
     using StackExchange.Profiling;
+    using Waffle.Commands;
     using Waffle.Filters;
 
     /// <summary>
     /// Represents a filter to profile handlers execution.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    public sealed class ProfileFilterAttribute : HandlerFilterAttribute
+    public sealed class ProfileFilterAttribute : CommandHandlerFilterAttribute
     {
         private const string Key = "__ProfileFilterKey";
 
@@ -17,7 +18,7 @@
         /// Occurs before the handle method is invoked.
         /// </summary>
         /// <param name="handlerContext">The handler context.</param>
-        public override void OnCommandExecuting(HandlerContext handlerContext)
+        public override void OnCommandExecuting(CommandHandlerContext handlerContext)
         {
             if (handlerContext == null)
             {
@@ -58,7 +59,7 @@
             }
         }
 
-        private static Stack<IDisposable> GetStack(HandlerContext context)
+        private static Stack<IDisposable> GetStack(CommandHandlerContext context)
         {
             Stack<IDisposable> stack = context.Items[Key] as Stack<IDisposable>;
             return stack;

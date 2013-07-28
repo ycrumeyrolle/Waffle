@@ -1,9 +1,7 @@
 ﻿namespace Waffle.Tests.Filters
 {
     using System;
-    using System.Threading;
     using System.Transactions;
-    using Waffle.Tests.Helpers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Waffle.Filters;
 
@@ -27,7 +25,7 @@
         {
             // Arrange
             TransactionFilterAttribute filter = new TransactionFilterAttribute();
-            HandlerContext executingContext = new HandlerContext();
+            CommandHandlerContext executingContext = new CommandHandlerContext();
             executingContext.Result = "OK";
             HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, null);
 
@@ -45,7 +43,7 @@
         {
             // Arrange
             TransactionFilterAttribute filter = new TransactionFilterAttribute();
-            HandlerContext executingContext = new HandlerContext();
+            CommandHandlerContext executingContext = new CommandHandlerContext();
             HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, new Exception());
 
             // Act
@@ -62,7 +60,7 @@
         {
             // Arrange
             TransactionFilterAttribute filter = new TransactionFilterAttribute();
-            HandlerContext executingContext = new HandlerContext();
+            CommandHandlerContext executingContext = new CommandHandlerContext();
             HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, new Exception());
             executedContext.Result = "Exception handled";
 

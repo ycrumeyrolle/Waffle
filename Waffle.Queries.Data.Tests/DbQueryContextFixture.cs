@@ -2,6 +2,7 @@
 {
     using System.Data.Common;
     using System.Linq;
+    using Effort;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Waffle.Tests.Helpers;
 
@@ -9,7 +10,7 @@
     public class DbQueryContextFixture
     {
         [TestMethod]
-        public void WhenIntanciatingDbQueryContextWithoutDbContextThenThrowsArgumentNullException()
+        public void WhenInstanciatingDbQueryContextWithoutDbContextThenThrowsArgumentNullException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => new DbQueryContext(null), "innerContext");
@@ -45,7 +46,7 @@
         }
 
         [TestMethod]
-        public void WhenQueryingItemsThenRetunsEntities()
+        public void WhenQueryingItemsThenReturnsEntities()
         {
             // Arrange
             FakeDbContext context = CreateDbContext(10);
@@ -78,7 +79,7 @@
 
         private static FakeDbContext CreateDbContext(int count = 0)
         {
-            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
+            DbConnection connection = DbConnectionFactory.CreateTransient();
 
             FakeDbContext context = new FakeDbContext(connection);
             for (int i = 1; i <= count; i++)

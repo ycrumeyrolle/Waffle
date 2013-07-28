@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Waffle.Internal;
     using Waffle.Metadata;
@@ -22,6 +23,7 @@
     /// </summary>
     /// <param name="validatorProviders">An enumeration of validator providers.</param>
     /// <returns>The <see cref="ModelValidator"/></returns>
+    [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Validatable", Justification = "False positive.")]
     public delegate ModelValidator DataAnnotationsValidatableObjectAdapterFactory(IEnumerable<ModelValidatorProvider> validatorProviders);
 
     /// <summary>

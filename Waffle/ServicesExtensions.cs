@@ -3,13 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using Waffle.Commands;
     using Waffle.Dependencies;
-    using Waffle.Dispatcher;
-    using Waffle.Eventing;
+    using Waffle.Events;
     using Waffle.Filters;
     using Waffle.Interception;
     using Waffle.Internal;
     using Waffle.Metadata;
+    using Waffle.Properties;
     using Waffle.Services;
     using Waffle.Tracing;
     using Waffle.Validation;
@@ -31,16 +32,27 @@
     public static class ServicesExtensions
     {
         /// <summary>
-        /// Gets the <see cref="IHandlerActivator"/> service.
+        /// Gets the <see cref="ICommandHandlerActivator"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="IHandlerActivator"/> service.</returns>
-        /// <exception cref="InvalidOperationException">The <see cref="IHandlerActivator"/> service is not registered.</exception>
-        public static IHandlerActivator GetHandlerActivator(this ServicesContainer services)
+        /// <returns>The <see cref="ICommandHandlerActivator"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerActivator"/> service is not registered.</exception>
+        public static ICommandHandlerActivator GetHandlerActivator(this ServicesContainer services)
         {
-            return services.GetServiceOrThrow<IHandlerActivator>();
+            return services.GetServiceOrThrow<ICommandHandlerActivator>();
         }
-        
+
+        /// <summary>
+        /// Gets the <see cref="IEventHandlerActivator"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IEventHandlerActivator"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerActivator"/> service is not registered.</exception>
+        public static IEventHandlerActivator GetEventHandlerActivator(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IEventHandlerActivator>();
+        }
+
         /// <summary>
         /// Gets the <see cref="IAssembliesResolver"/> service.
         /// </summary>
@@ -53,36 +65,69 @@
         }
 
         /// <summary>
-        /// Gets the <see cref="IHandlerSelector"/> service.
+        /// Gets the <see cref="ICommandHandlerSelector"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="IHandlerSelector"/> service.</returns>
-        /// <exception cref="InvalidOperationException">The <see cref="IHandlerSelector"/> service is not registered.</exception>
-        public static IHandlerSelector GetHandlerSelector(this ServicesContainer services)
+        /// <returns>The <see cref="ICommandHandlerSelector"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerSelector"/> service is not registered.</exception>
+        public static ICommandHandlerSelector GetHandlerSelector(this ServicesContainer services)
         {
-            return services.GetServiceOrThrow<IHandlerSelector>();
+            return services.GetServiceOrThrow<ICommandHandlerSelector>();
         }
 
         /// <summary>
-        /// Gets the <see cref="IHandlerDescriptorProvider"/> service.
+        /// Gets the <see cref="IEventHandlerSelector"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="IHandlerDescriptorProvider"/> service.</returns>
-        /// <exception cref="InvalidOperationException">The <see cref="IHandlerDescriptorProvider"/> service is not registered.</exception>
-        public static IHandlerDescriptorProvider GetHandlerDescriptorProvider(this ServicesContainer services)
+        /// <returns>The <see cref="IEventHandlerSelector"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerSelector"/> service is not registered.</exception>
+        public static IEventHandlerSelector GetEventHandlerSelector(this ServicesContainer services)
         {
-            return services.GetServiceOrThrow<IHandlerDescriptorProvider>();
+            return services.GetServiceOrThrow<IEventHandlerSelector>();
         }
 
         /// <summary>
-        /// Gets the <see cref="IHandlerTypeResolver"/> service.
+        /// Gets the <see cref="ICommandHandlerDescriptorProvider"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="IHandlerTypeResolver"/> service.</returns>
-        /// <exception cref="InvalidOperationException">The <see cref="IHandlerTypeResolver"/> service is not registered.</exception>
-        public static IHandlerTypeResolver GetHandlerTypeResolver(this ServicesContainer services)
+        /// <returns>The <see cref="ICommandHandlerDescriptorProvider"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerDescriptorProvider"/> service is not registered.</exception>
+        public static ICommandHandlerDescriptorProvider GetCommandHandlerDescriptorProvider(this ServicesContainer services)
         {
-            return services.GetServiceOrThrow<IHandlerTypeResolver>();
+            return services.GetServiceOrThrow<ICommandHandlerDescriptorProvider>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IEventHandlerDescriptorProvider"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IEventHandlerDescriptorProvider"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerDescriptorProvider"/> service is not registered.</exception>
+        public static IEventHandlerDescriptorProvider GetEventHandlerDescriptorProvider(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IEventHandlerDescriptorProvider>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="ICommandHandlerTypeResolver"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ICommandHandlerTypeResolver"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerTypeResolver"/> service is not registered.</exception>
+        public static ICommandHandlerTypeResolver GetCommandHandlerTypeResolver(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<ICommandHandlerTypeResolver>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IEventHandlerTypeResolver"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IEventHandlerTypeResolver"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerTypeResolver"/> service is not registered.</exception>
+        public static IEventHandlerTypeResolver GetEventHandlerTypeResolver(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IEventHandlerTypeResolver>();
         }
 
         /// <summary>
@@ -105,17 +150,6 @@
         public static IInterceptionProvider GetInterceptorProvider(this ServicesContainer services)
         {
             return services.GetServiceOrThrow<IInterceptionProvider>();
-        }
-
-        /// <summary>
-        /// Gets the <see cref="IMessageHub"/> service.
-        /// </summary>
-        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="IMessageHub"/> service.</returns>
-        /// <exception cref="InvalidOperationException">The <see cref="IMessageHub"/> service is not registered.</exception>
-        public static IMessageHub GetMessageHub(this ServicesContainer services)
-        {
-            return services.GetServiceOrThrow<IMessageHub>();
         }
         
         /// <summary>
@@ -163,14 +197,25 @@
         }
 
         /// <summary>
-        /// Gets the <see cref="ICommandProcessor"/> service.
+        /// Gets the <see cref="IEventWorker"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="ICommandProcessor"/> service.</returns>
-        /// <exception cref="InvalidOperationException">The <see cref="ICommandProcessor"/> service is not registered.</exception>
-        public static ICommandProcessor GetProcessor(this ServicesContainer services)
+        /// <returns>The <see cref="IEventWorker"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IEventWorker"/> service is not registered.</exception>
+        public static IEventWorker GetEventWorker(this ServicesContainer services)
         {
-            return services.GetServiceOrThrow<ICommandProcessor>();
+            return services.GetServiceOrThrow<IEventWorker>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IMessageProcessor"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IMessageProcessor"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IMessageProcessor"/> service is not registered.</exception>
+        public static IMessageProcessor GetProcessor(this ServicesContainer services)
+        {
+            return services.GetServiceOrThrow<IMessageProcessor>();
         }
 
         /// <summary>

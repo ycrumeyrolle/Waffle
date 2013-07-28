@@ -16,7 +16,7 @@
             // Arrange
             Mock<CommandProcessorFixture.ISpy> spy = new Mock<CommandProcessorFixture.ISpy>();
             IExceptionFilter filter = new CustomExceptionFilterAttribute(spy.Object);
-            HandlerContext handlerContext = new HandlerContext();
+            CommandHandlerContext handlerContext = new CommandHandlerContext();
             Exception exception = new Exception();
             HandlerExecutedContext handlerExecutedContext = new HandlerExecutedContext(handlerContext, exception);
             CancellationToken cancellationToken = new CancellationToken();

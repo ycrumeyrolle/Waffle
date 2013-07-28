@@ -4,7 +4,9 @@
     using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
+    using Waffle.Commands;
     using Waffle.Filters;
+    using Waffle.Tests.Commands;
 
     [TestClass]
     public sealed class HandlerContextFixture : IDisposable
@@ -18,7 +20,7 @@
         {
             // Arrange
             // Act
-            HandlerContext context = new HandlerContext();
+            CommandHandlerContext context = new CommandHandlerContext();
 
             // Assert
             Assert.IsNull(context.Configuration);
@@ -34,11 +36,11 @@
         public void WhenCreatingInstanceWithParameterCtorThenPropertiesAreDefined()
         {
             // Arrange
-            HandlerRequest request = new HandlerRequest(this.config, this.command.Object);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+            CommandHandlerRequest request = new CommandHandlerRequest(this.config, this.command.Object);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
          
             // Act
-            HandlerContext context = new HandlerContext(request, descriptor);
+            CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
 
             // Assert
             Assert.AreSame(this.config, context.Configuration);

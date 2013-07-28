@@ -1,7 +1,7 @@
 ﻿namespace Waffle.Tests
 {
     using System.ComponentModel.DataAnnotations;
-    using Waffle;
+    using Waffle.Commands;
 
     public class SimpleCommand : Command
     {

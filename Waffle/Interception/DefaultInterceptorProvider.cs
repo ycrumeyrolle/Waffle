@@ -1,7 +1,6 @@
 ﻿namespace Waffle.Interception
 {
     using System;
-    using System.Collections.Generic;
     using Waffle.Internal;
 
     /// <summary>

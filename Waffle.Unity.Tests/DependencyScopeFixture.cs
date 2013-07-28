@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Waffle;
     using Microsoft.Practices.ObjectBuilder2;
     using Microsoft.Practices.Unity;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -64,13 +63,25 @@
             this.container
                 .Setup(c => c.Registrations)
                 .Returns(Enumerable.Empty<ContainerRegistration>());
+
+            IBuilderContext builderContext = new FakeBuildContext();
+    
+            this.container
+                .Setup(c => c.Resolve(It.IsAny<Type>(), It.IsAny<string>()))
+                .Throws(new ResolutionFailedException(typeof(object), null, null, builderContext));
+
             DependencyScope scope = this.CreateDependencyScope();
 
             // Act 
-            object service = scope.GetService(typeof(object));
+            object service1 = scope.GetService(typeof(IAssembliesResolver));
+            object service2 = scope.GetService(typeof(IAssembliesResolver));
 
             // Assert
-            Assert.IsNull(service);
+            Assert.IsNull(service1);
+            Assert.IsNull(service2);
+
+            // Assert the resolution is done only once when it throw a ResolutionFailedException
+            this.container.Verify(c => c.Resolve(It.IsAny<Type>(), It.IsAny<string>()), Times.Once());
         }
 
         [TestMethod]
@@ -100,14 +111,25 @@
             this.container
                 .Setup(c => c.Registrations)
                 .Returns(Enumerable.Empty<ContainerRegistration>());
+            IBuilderContext builderContext = new FakeBuildContext();
+
+            this.container
+                .Setup(c => c.ResolveAll(It.IsAny<Type>()))
+                .Throws(new ResolutionFailedException(typeof(object), null, null, builderContext));
             DependencyScope scope = this.CreateDependencyScope();
 
             // Act 
-            IEnumerable<object> services = scope.GetServices(typeof(object));
+            IEnumerable<object> services1 = scope.GetServices(typeof(IAssembliesResolver));
+            IEnumerable<object> services2 = scope.GetServices(typeof(IAssembliesResolver));
 
             // Assert
-            Assert.IsNotNull(services);
-            Assert.AreEqual(0, services.Count());
+            Assert.IsNotNull(services1);
+            Assert.AreEqual(0, services1.Count());
+            Assert.IsNotNull(services2);
+            Assert.AreEqual(0, services2.Count());
+
+            // Assert the resolution is done only once when it throw a ResolutionFailedException
+            this.container.Verify(c => c.ResolveAll(It.IsAny<Type>()), Times.Once());
         }
 
         private DependencyScope CreateDependencyScope()
@@ -121,6 +143,65 @@
                 : base(container)
             {
             }
+        }
+
+        private class FakeBuildContext : IBuilderContext
+        {
+            public void AddResolverOverrides(IEnumerable<ResolverOverride> newOverrides)
+            {
+            }
+
+            public IDependencyResolverPolicy GetOverriddenResolver(Type dependencyType)
+            {
+                return null;
+            }
+
+            public object NewBuildUp(NamedTypeBuildKey newBuildKey)
+            {
+                return null;
+            }
+
+            public object NewBuildUp(NamedTypeBuildKey newBuildKey, Action<IBuilderContext> childCustomizationBlock)
+            {
+                return null;
+            }
+
+            public IStrategyChain Strategies { get; private set; }
+
+            public ILifetimeContainer Lifetime { get; private set; }
+
+            public NamedTypeBuildKey OriginalBuildKey {
+                get
+                {
+                    return new NamedTypeBuildKey(typeof(object));
+                }
+            }
+
+            public NamedTypeBuildKey BuildKey
+            {
+                get
+                {
+                    return new NamedTypeBuildKey(typeof(object));
+                }
+
+                set
+                {
+                }
+            }
+
+            public IPolicyList PersistentPolicies { get; private set; }
+
+            public IPolicyList Policies { get; private set; }
+
+            public IRecoveryStack RecoveryStack { get; private set; }
+
+            public object Existing { get; set; }
+
+            public bool BuildComplete { get; set; }
+
+            public object CurrentOperation { get; set; }
+
+            public IBuilderContext ChildContext { get; private set; }
         }
     }
 }

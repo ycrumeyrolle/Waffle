@@ -1,13 +1,14 @@
 ﻿namespace Waffle.Tests
 {
-    using System;
     using System.Diagnostics;
-    using Waffle;
     using Waffle.Caching;
+    using Waffle.Commands;
+    using Waffle.Filters;
+    using Waffle.Tests.Commands;
 
-    public class SimpleHandler : Handler<SimpleCommand>
+    public class SimpleCommandHandler : CommandHandler<SimpleCommand>
     {
-        public override void Handle(SimpleCommand command)
+        public override void Handle(SimpleCommand command, CommandHandlerContext context)
         {
             Trace.WriteLine("Property1 : " + command.Property1);
 
@@ -16,9 +17,9 @@
     }
 
     [NoCache]
-    public class NotCachedHandler : Handler<NotCachedCommand>
+    public class NotCachedCommandHandler : CommandHandler<NotCachedCommand>
     {
-        public override void Handle(NotCachedCommand command)
+        public override void Handle(NotCachedCommand command, CommandHandlerContext context)
         {
             Trace.WriteLine("Property1 : " + command.Property1);
 

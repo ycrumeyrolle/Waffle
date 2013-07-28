@@ -4,62 +4,66 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using Waffle.Dispatcher;
     using Waffle.Internal;
     using Waffle.Metadata;
 
-    /// <summary>
-    /// Provides information about the handler method.
-    /// </summary>
     public class HandlerDescriptor
     {
-        private readonly object[] attributesCached;
-        private ProcessorConfiguration configuration;
-        private FilterGrouping filterGrouping;   
-        private Collection<FilterInfo> filterPipelineForGrouping;  
-
-        /// <summary>
-        /// Gets the <see cref="IHandlerActivator"/> associated with this instance.
-        /// </summary>
-        private readonly IHandlerActivator handlerActivator;
+        private readonly ConcurrentDictionary<object, object> properties = new ConcurrentDictionary<object, object>();
 
         private readonly Lazy<Collection<FilterInfo>> filterPipeline;
 
-        private readonly ConcurrentDictionary<object, object> properties = new ConcurrentDictionary<object, object>();
+        private object[] attributesCached;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerDescriptor"/> class.
         /// </summary>
         /// <remarks>The default constructor is intended for use by unit testing only.</remarks>
-        public HandlerDescriptor()
+        protected HandlerDescriptor()
         {
         }
 
-        internal HandlerDescriptor(ProcessorConfiguration configuration, Type commandType, Type handlerType)
+        protected HandlerDescriptor(ProcessorConfiguration configuration, Type messageType, Type handlerType)
         {
-            Contract.Requires(configuration != null);
-            Contract.Requires(handlerType != null);
+            if (configuration == null)
+            {
+                throw Error.ArgumentNull("configuration");
+            }
 
-            this.configuration = configuration;
+            if (messageType == null)
+            {
+                throw Error.ArgumentNull("messageType");
+            } 
+            
+            if (handlerType == null)
+            {
+                throw Error.ArgumentNull("handlerType");
+            } 
+
+            this.Configuration = configuration;
             this.HandlerType = handlerType;
-            this.CommandType = commandType;
-            this.filterPipeline = new Lazy<Collection<FilterInfo>>(this.InitializeFilterPipeline);
+            this.MessageType = messageType;
             this.attributesCached = handlerType.GetCustomAttributes(true);
-            var handleMethod = handlerType.GetMethod("Handle", new[] { commandType });
-            this.ResultType = handleMethod.ReturnType;
-            this.attributesCached = this.attributesCached.Concat(handleMethod.GetCustomAttributes(true)).ToArray();
-            this.handlerActivator = this.configuration.Services.GetHandlerActivator();
-            ModelMetadataProvider metadataProvider = this.configuration.Services.GetModelMetadataProvider();
+            this.filterPipeline = new Lazy<Collection<FilterInfo>>(this.InitializeFilterPipeline);
+            ModelMetadataProvider metadataProvider = this.Configuration.Services.GetModelMetadataProvider();
             ModelMetadata metadata = metadataProvider.GetMetadataForType(null, handlerType);
             this.Name = metadata.GetDisplayName();
             this.Description = metadata.Description;
             this.Lifetime = this.GetHandlerLifetime();
-
-            this.Initialize();
         }
-        
+
+        protected ProcessorConfiguration Configuration { get; set; }
+
+        protected ICollection<object> AttributesCached
+        {
+            get
+            {
+                return this.attributesCached;
+            }
+        }
+
         /// <summary>
         /// Gets the properties associated with this instance.
         /// </summary>
@@ -73,6 +77,18 @@
         }
 
         /// <summary>
+        /// Gets the handler type.
+        /// </summary>
+        /// <value>The handler type.</value>
+        public Type HandlerType { get; private set; }
+
+        /// <summary>
+        /// Gets the command type.
+        /// </summary>
+        /// <value>The handler type.</value>
+        public Type MessageType { get; private set; }
+     
+        /// <summary>
         /// Gets the handler name.
         /// </summary>
         /// <value>The handler name.</value>
@@ -85,33 +101,21 @@
         public string Description { get; private set; }
 
         /// <summary>
-        /// Gets the handler type.
-        /// </summary>
-        /// <value>The handler type.</value>
-        public Type HandlerType { get; private set; }
-
-        /// <summary>
-        /// Gets the command type.
-        /// </summary>
-        /// <value>The handler type.</value>
-        public Type CommandType { get; private set; }
-
-        /// <summary>
-        /// Gets the handler result type.
-        /// </summary>
-        /// <value>The handler result type.</value>
-        public Type ResultType { get; private set; }
-
-        /// <summary>
         /// Gets the handler lifetime.
         /// </summary>
         /// <value>The handler lifetime.</value>
         public HandlerLifetime Lifetime { get; private set; }
 
+        protected void AddAttributesToCache(IEnumerable<object> attributes)
+        {
+            this.attributesCached = this.attributesCached.Concat(attributes).ToArray();
+        }
+
         /// <summary>
         /// Retrieves the filters for the handler descriptor.
         /// </summary>
         /// <returns>The filters for the handler descriptor.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method performs a time-consuming operation.")]
         public virtual Collection<IFilter> GetFilters()
         {
             return new Collection<IFilter>(this.GetCustomAttributes<IFilter>().ToList());
@@ -131,32 +135,11 @@
         /// Retrieves the filters for the given configuration and handler.
         /// </summary>
         /// <returns>The filters for the given configuration and handler.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method performs a time-consuming operation.")]
         public virtual Collection<FilterInfo> GetFilterPipeline()
         {
             return this.filterPipeline.Value;
         }
-
-        /// <summary>
-        /// Creates a handler instance for the given <see cref="HandlerRequest"/>.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <returns>The created handler instance.</returns>
-        public virtual IHandler CreateHandler(HandlerRequest request)
-        {
-            return this.handlerActivator.Create(request, this);
-        }
-
-        internal FilterGrouping GetFilterGrouping()   
-        {
-            Collection<FilterInfo> currentFilterPipeline = this.GetFilterPipeline();
-            if (this.filterGrouping == null || this.filterPipelineForGrouping != currentFilterPipeline)   
-            {   
-                this.filterGrouping = new FilterGrouping(currentFilterPipeline);
-                this.filterPipelineForGrouping = currentFilterPipeline;   
-            }
-
-            return this.filterGrouping;   
-        }  
 
         private static void RemoveDuplicates(List<FilterInfo> filters)
         {
@@ -182,16 +165,16 @@
             IFilter filter = filterInstance as IFilter;
             return filter == null || filter.AllowMultiple;
         }
-        
+
         private Collection<FilterInfo> InitializeFilterPipeline()
         {
-            IFilterProvider[] filterProviders = this.configuration.Services.GetFilterProviders();
-            
+            IFilterProvider[] filterProviders = this.Configuration.Services.GetFilterProviders();
+
             List<FilterInfo> filters = new List<FilterInfo>();
             for (int i = 0; i < filterProviders.Length; i++)
             {
                 IFilterProvider provider = filterProviders[i];
-                foreach (FilterInfo filter in provider.GetFilters(this.configuration, this))
+                foreach (FilterInfo filter in provider.GetFilters(this.Configuration, this))
                 {
                     filters.Add(filter);
                 }
@@ -201,46 +184,10 @@
 
             if (filters.Count > 1)
             {
-              RemoveDuplicates(filters);
+                RemoveDuplicates(filters);
             }
 
             return new Collection<FilterInfo>(filters);
-        }
-
-        // Initialize the Descriptor. This invokes all IHandlerConfiguration attributes
-        // on the handler type (and its base types)
-        private void Initialize()
-        {
-            InvokeAttributesOnHandlerType(this, this.HandlerType);
-        }
-
-        // Helper to invoke any handler config attributes on this handler type or its base classes.
-        private static void InvokeAttributesOnHandlerType(HandlerDescriptor descriptor, Type type)
-        {
-            Contract.Requires(descriptor != null);
-
-            if (type == null)
-            {
-                return;
-            }
-
-            // Initialize base class before derived classes (same order as ctors).
-            InvokeAttributesOnHandlerType(descriptor, type.BaseType);
-
-            // Check for attribute
-            object[] attrs = type.GetCustomAttributes(inherit: false);
-            for (int i = 0; i < attrs.Length; i++)
-            {
-                object attr = attrs[i];
-                IHandlerConfiguration handlerConfig = attr as IHandlerConfiguration;
-                if (handlerConfig != null)
-                {
-                    ProcessorConfiguration originalConfig = descriptor.configuration;
-                    HandlerSettings settings = new HandlerSettings(originalConfig);
-                    handlerConfig.Initialize(settings, descriptor);
-                    descriptor.configuration = ProcessorConfiguration.ApplyHandlerSettings(settings, originalConfig);
-                }
-            }
         }
 
         private HandlerLifetime GetHandlerLifetime()
@@ -255,7 +202,7 @@
                 }
             }
 
-            // No attribute were found. Default lifetime is  per-request
+            // No attribute were found. Default lifetime is per-request
             return HandlerLifetime.PerRequest;
         }
     }

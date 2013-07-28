@@ -38,8 +38,8 @@
             DefaultProxyBuilder builder = this.CreateTestableBuilder();
 
             // Act
+            builder.Build(service, this.interceptor.Object);
             var proxy = builder.Build(service, this.interceptor.Object);
-            proxy = builder.Build(service, this.interceptor.Object);
 
             // Assert
             // TODO : How to validate the cache hit? Using a external object?
@@ -305,7 +305,6 @@
         public void WhenBuildingWithoutServiceThenThrowsArgumentNullException()
         {
             // Assign
-            SimpleService service = null;
             DefaultProxyBuilder builder = this.CreateTestableBuilder();
 
             this.interceptor.Setup(i => i.OnExecuting());
@@ -316,7 +315,7 @@
             // Act
             try
             {
-                builder.Build(service, this.interceptor.Object);
+                builder.Build<SimpleService>(null, this.interceptor.Object);
             }
             catch (ArgumentNullException)
             {

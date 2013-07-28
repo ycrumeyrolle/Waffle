@@ -5,6 +5,7 @@
     using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
+    using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Dispatcher;
     using Waffle.Filters;
@@ -33,9 +34,9 @@
             var defaultServices = new DefaultServices(config);
 
             // Assert
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(IHandlerSelector)), typeof(DefaultHandlerSelector));
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(IHandlerActivator)), typeof(DefaultHandlerActivator));
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(IHandlerTypeResolver)), typeof(DefaultHandlerTypeResolver));
+            Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandHandlerSelector)), typeof(DefaultCommandHandlerSelector));
+            Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandHandlerActivator)), typeof(DefaultCommandHandlerActivator));
+            Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandHandlerTypeResolver)), typeof(DefaultCommandHandlerTypeResolver));
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(IAssembliesResolver)), typeof(DefaultAssembliesResolver));
             Assert.IsInstanceOfType(defaultServices.GetService(typeof(IInterceptionProvider)), typeof(DefaultInterceptionProvider));
 
@@ -228,10 +229,10 @@
             // Arrange
             var config = new ProcessorConfiguration();
             var defaultServices = new DefaultServices(config);
-            defaultServices.Clear(typeof(IHandlerSelector));
+            defaultServices.Clear(typeof(ICommandHandlerSelector));
 
             // Act
-            object service = defaultServices.GetService(typeof(IHandlerSelector));
+            object service = defaultServices.GetService(typeof(ICommandHandlerSelector));
 
             // Assert
             Assert.IsNull(service);
@@ -243,13 +244,13 @@
             // Arrange
             var config = new ProcessorConfiguration();
             var defaultServices = new DefaultServices(config);
-            var filterProvider = new Mock<IHandlerSelector>().Object;
+            var filterProvider = new Mock<ICommandHandlerSelector>().Object;
             var mockDependencyResolver = new Mock<IDependencyResolver>();
-            mockDependencyResolver.Setup(dr => dr.GetService(typeof(IHandlerSelector))).Returns(filterProvider);
+            mockDependencyResolver.Setup(dr => dr.GetService(typeof(ICommandHandlerSelector))).Returns(filterProvider);
             config.DependencyResolver = mockDependencyResolver.Object;
 
             // Act
-            object service = defaultServices.GetService(typeof(IHandlerSelector));
+            object service = defaultServices.GetService(typeof(ICommandHandlerSelector));
 
             // Assert
             Assert.AreSame(filterProvider, service);
@@ -265,11 +266,11 @@
             config.DependencyResolver = mockDependencyResolver.Object;
 
             // Act
-            defaultServices.GetService(typeof(IHandlerSelector));
-            defaultServices.GetService(typeof(IHandlerSelector));
+            defaultServices.GetService(typeof(ICommandHandlerSelector));
+            defaultServices.GetService(typeof(ICommandHandlerSelector));
 
             // Assert
-            mockDependencyResolver.Verify(dr => dr.GetService(typeof(IHandlerSelector)), Times.Once());
+            mockDependencyResolver.Verify(dr => dr.GetService(typeof(ICommandHandlerSelector)), Times.Once());
         }
 
         [TestMethod]

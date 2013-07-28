@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+    <metadata>
+        <id>Waffle</id>
+        <version>1.0-alpha1</version>
+        <title>Waffle - Commands &amp; events processor</title>
+        <authors>Yann Crumeyrolle</authors>
+        <owners>Yann Crumeyrolle</owners>
+        <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+        <projectUrl>https://github.com/Murk59/Waffle</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>An extensible commands and events processor pattern implementation.</description>
+        <summary />
+        <copyright />
+        <tags>command pattern processor processing CQRS message event</tags>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Transactions" targetFramework="" />
+        </frameworkAssemblies>
+    </metadata>
+    <files>
+        <file src="lib\net40\Waffle.dll" target="lib\net40\Waffle.dll" />
+        <file src="lib\net40\Waffle.XML" target="lib\net40\Waffle.XML" />
+    </files>
+</package>

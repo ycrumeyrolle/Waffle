@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Resources;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -10,11 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Waffle")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Waffle")]
-[assembly: AssemblyCopyright("Copyright © 2013")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -23,6 +17,10 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("e97cfc27-22c5-438a-8b31-0abf59655975")]
+[assembly: InternalsVisibleTo("Waffle.Tests")]
+[assembly: InternalsVisibleTo("Waffle.Unity")]
+[assembly: InternalsVisibleTo("Waffle.Events.MongoDb")]
+[assembly: InternalsVisibleTo("Waffle.Queries.Data")]
 
 // Version information for an assembly consists of the following four values:
 //      Major Version
@@ -34,7 +32,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: NeutralResourcesLanguage("en-US")]
-[assembly: CLSCompliant(true)]
-[assembly: InternalsVisibleTo("Waffle.Tests")]
-[assembly: InternalsVisibleTo("Waffle.Tests.Console")]

@@ -1,9 +1,9 @@
 ﻿namespace Waffle.Tests.Services
 {
     using System;
-    using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Waffle.Dispatcher;
+    using Waffle;
+    using Waffle.Commands;
     using Waffle.Services;
     using Waffle.Tests.Helpers;
 
@@ -15,10 +15,10 @@
         {
             ProcessorConfiguration config = new ProcessorConfiguration();
             DefaultServices services = new DefaultServices(config);
-            services.Replace(typeof(IHandlerActivator), null);
+            services.Replace(typeof(ICommandHandlerActivator), null);
 
             // Act & Assert
-            ExceptionAssert.Throws<InvalidOperationException>(() => services.GetServiceOrThrow<IHandlerActivator>());
+            ExceptionAssert.Throws<InvalidOperationException>(() => services.GetServiceOrThrow<ICommandHandlerActivator>());
         }
     }
 }

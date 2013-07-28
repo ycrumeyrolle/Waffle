@@ -3,6 +3,8 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using Waffle.Commands;
+    using Waffle.Events;
     using Waffle.Filters;
 
     /// <summary>
@@ -87,14 +89,15 @@
         public static IEnumerable<IFilter> CreateFilterTracers(IFilter filter, ITraceWriter traceWriter)
         {
             List<IFilter> filters = new List<IFilter>();
-            bool addedActionAttributeTracer = false;
+            bool addedCommandHandlerAttributeTracer = false;
             bool addedExceptionAttributeTracer = false;
+            bool addedEventHandlerAttributeTracer = false;
 
-            HandlerFilterAttribute handlerFilterAttribute = filter as HandlerFilterAttribute;
-            if (handlerFilterAttribute != null)
+            CommandHandlerFilterAttribute commandHandlerFilterAttribute = filter as CommandHandlerFilterAttribute;
+            if (commandHandlerFilterAttribute != null)
             {
-                filters.Add(new HandlerFilterAttributeTracer(handlerFilterAttribute, traceWriter));
-                addedActionAttributeTracer = true;
+                filters.Add(new CommandHandlerFilterAttributeTracer(commandHandlerFilterAttribute, traceWriter));
+                addedCommandHandlerAttributeTracer = true;
             }
 
             ExceptionFilterAttribute exceptionFilterAttribute = filter as ExceptionFilterAttribute;
@@ -104,11 +107,18 @@
                 addedExceptionAttributeTracer = true;
             }
 
-            // Do not add an IHandlerFilter tracer if we already added an HandlerFilterAttribute tracer
-            IHandlerFilter actionFilter = filter as Filters.IHandlerFilter;
-            if (actionFilter != null && !addedActionAttributeTracer)
+            EventHandlerFilterAttribute eventHandlerFilterAttribute = filter as EventHandlerFilterAttribute;
+            if (eventHandlerFilterAttribute != null)
             {
-                filters.Add(new HandlerFilterTracer(actionFilter, traceWriter));
+                filters.Add(new EventHandlerFilterAttributeTracer(eventHandlerFilterAttribute, traceWriter));
+                addedEventHandlerAttributeTracer = true;
+            }
+
+            // Do not add an IHandlerFilter tracer if we already added an HandlerFilterAttribute tracer
+            ICommandHandlerFilter commandHandlerFilter = filter as ICommandHandlerFilter;
+            if (commandHandlerFilter != null && !addedCommandHandlerAttributeTracer)
+            {
+                filters.Add(new CommandHandlerFilterTracer(commandHandlerFilter, traceWriter));
             }
 
             // Do not add an IExceptionFilter tracer if we already added an ExceptoinFilterAttribute tracer
@@ -116,6 +126,13 @@
             if (exceptionFilter != null && !addedExceptionAttributeTracer)
             {
                 filters.Add(new ExceptionFilterTracer(exceptionFilter, traceWriter));
+            }
+
+            // Do not add an IEventHandlerFilter tracer if we already added an EventHandlerFilterAttribute tracer
+            IEventHandlerFilter eventHandlerFilter = filter as IEventHandlerFilter;
+            if (eventHandlerFilter != null && !addedEventHandlerAttributeTracer)
+            {
+                filters.Add(new EventHandlerFilterTracer(eventHandlerFilter, traceWriter));
             }
 
             if (filters.Count == 0)
@@ -162,7 +179,7 @@
         /// </returns>
         public static bool IsFilterTracer(IFilter filter)
         {
-            return filter is FilterTracer || filter is HandlerFilterAttributeTracer || filter is ExceptionFilterAttributeTracer;
+            return filter is FilterTracer || filter is CommandHandlerFilterAttributeTracer || filter is ExceptionFilterAttributeTracer;
         }
     }
 }

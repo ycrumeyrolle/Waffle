@@ -2,14 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Transactions;
+    using Waffle.Commands;
     using Waffle.Internal;
 
     /// <summary>
     /// Represents a filter to make handlers transactional.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    public sealed class TransactionFilterAttribute : HandlerFilterAttribute
+    public sealed class TransactionFilterAttribute : CommandHandlerFilterAttribute
     {
         private const string Key = "__TransactionFilterKey";
 
@@ -45,11 +47,12 @@
         /// Occurs before the handle method is invoked.
         /// </summary>
         /// <param name="handlerContext">The handler context.</param>
-        public override void OnCommandExecuting(HandlerContext handlerContext)
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The TransactionScope is wrapped in the stack for late disposing.")]
+        public override void OnCommandExecuting(CommandHandlerContext handlerContext)
         {
             if (handlerContext == null)
             {
-                throw Error.ArgumentNull("handlerContext");
+                throw Error.ArgumentNull("CommandHandlerContext");
             }
 
             Stack<TransactionScope> stack = GetStack(handlerContext);
@@ -60,20 +63,8 @@
             }
 
             TransactionOptions options = new TransactionOptions { Timeout = this.Timeout, IsolationLevel = this.IsolationLevel };
-            TransactionScope transactionScope = null;
-            try
-            {
-                transactionScope = new TransactionScope(this.ScopeOption, options);
-                stack.Push(transactionScope);
-                transactionScope = null;
-            }
-            finally
-            {
-                if (transactionScope != null)
-                {
-                    transactionScope.Dispose();
-                }
-            }
+            TransactionScope transactionScope = new TransactionScope(this.ScopeOption, options);
+            stack.Push(transactionScope);
         }
 
         /// <summary>
@@ -100,7 +91,7 @@
             }
         }
 
-        private static Stack<TransactionScope> GetStack(HandlerContext context)
+        private static Stack<TransactionScope> GetStack(CommandHandlerContext context)
         {
             object value;
             if (context.Items.TryGetValue(Key, out value))

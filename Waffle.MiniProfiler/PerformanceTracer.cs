@@ -12,6 +12,11 @@
 
         public void Trace(HandlerRequest request, string category, TraceLevel level, Action<TraceRecord> traceAction)
         {
+            if (traceAction == null)
+            {
+                throw new ArgumentNullException("traceAction");
+            }
+
             TraceRecord record = new TraceRecord(request, category, level);
             traceAction(record);
             this.WriteTrace(record);

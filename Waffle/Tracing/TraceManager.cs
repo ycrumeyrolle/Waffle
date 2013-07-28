@@ -1,6 +1,7 @@
 ﻿namespace Waffle.Tracing
 {
-    using Waffle.Dispatcher;
+    using Waffle.Commands;
+    using Waffle.Events;
     using Waffle.Internal;
     using Waffle.Services;
     using Waffle.Validation;
@@ -24,10 +25,14 @@
 
         private static void CreateAllTracers(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
-            CreateHandlerSelectorTracer(configuration, traceWriter);
-            CreateHandlerActivatorTracer(configuration, traceWriter);
+            CreateCommandHandlerSelectorTracer(configuration, traceWriter);
+            CreateCommandHandlerActivatorTracer(configuration, traceWriter);
             CreateHandlerValidatorTracer(configuration, traceWriter);
             CreateCommandWorkerTracer(configuration, traceWriter);
+
+            CreateEventHandlerSelectorTracer(configuration, traceWriter);
+            CreateEventHandlerActivatorTracer(configuration, traceWriter);
+            CreateEventWorkerTracer(configuration, traceWriter);
         }
 
         // Get services from the global config. These are normally per-handler services, but we're getting the global fallbacks.
@@ -36,23 +41,23 @@
             return (TService)services.GetService(typeof(TService));
         }
 
-        private static void CreateHandlerSelectorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
+        private static void CreateCommandHandlerSelectorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
-            IHandlerSelector selector = GetService<IHandlerSelector>(configuration.Services);
-            if (selector != null && !(selector is HandlerSelectorTracer))
+            ICommandHandlerSelector selector = GetService<ICommandHandlerSelector>(configuration.Services);
+            if (selector != null && !(selector is CommandHandlerSelectorTracer))
             {
-                HandlerSelectorTracer tracer = new HandlerSelectorTracer(selector, traceWriter);
-                configuration.Services.Replace(typeof(IHandlerSelector), tracer);
+                CommandHandlerSelectorTracer tracer = new CommandHandlerSelectorTracer(selector, traceWriter);
+                configuration.Services.Replace(typeof(ICommandHandlerSelector), tracer);
             }
         }
 
-        private static void CreateHandlerActivatorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
+        private static void CreateCommandHandlerActivatorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
-            IHandlerActivator activator = GetService<IHandlerActivator>(configuration.Services);
-            if (activator != null && !(activator is HandlerActivatorTracer))
+            ICommandHandlerActivator activator = GetService<ICommandHandlerActivator>(configuration.Services);
+            if (activator != null && !(activator is CommandHandlerActivatorTracer))
             {
-                HandlerActivatorTracer tracer = new HandlerActivatorTracer(activator, traceWriter);
-                configuration.Services.Replace(typeof(IHandlerActivator), tracer);
+                CommandHandlerActivatorTracer tracer = new CommandHandlerActivatorTracer(activator, traceWriter);
+                configuration.Services.Replace(typeof(ICommandHandlerActivator), tracer);
             }
         }
 
@@ -73,6 +78,36 @@
             {
                 CommandWorkerTracer tracer = new CommandWorkerTracer(worker, traceWriter);
                 configuration.Services.Replace(typeof(ICommandWorker), tracer);
+            }
+        }
+        
+        private static void CreateEventHandlerSelectorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
+        {
+            IEventHandlerSelector selector = GetService<IEventHandlerSelector>(configuration.Services);
+            if (selector != null && !(selector is EventHandlerSelectorTracer))
+            {
+                EventHandlerSelectorTracer tracer = new EventHandlerSelectorTracer(selector, traceWriter);
+                configuration.Services.Replace(typeof(IEventHandlerSelector), tracer);
+            }
+        }
+
+        private static void CreateEventHandlerActivatorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
+        {
+            IEventHandlerActivator activator = GetService<IEventHandlerActivator>(configuration.Services);
+            if (activator != null && !(activator is EventHandlerActivatorTracer))
+            {
+                EventHandlerActivatorTracer tracer = new EventHandlerActivatorTracer(activator, traceWriter);
+                configuration.Services.Replace(typeof(IEventHandlerActivator), tracer);
+            }
+        }
+
+        private static void CreateEventWorkerTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
+        {
+            IEventWorker worker = GetService<IEventWorker>(configuration.Services);
+            if (worker != null && !(worker is EventWorkerTracer))
+            {
+                EventWorkerTracer tracer = new EventWorkerTracer(worker, traceWriter);
+                configuration.Services.Replace(typeof(IEventWorker), tracer);
             }
         }
     }

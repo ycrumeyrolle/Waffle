@@ -6,6 +6,7 @@
     using System.Linq;
     using Waffle.Internal;
     using Waffle.Metadata;
+    using Waffle.Properties;
     using Waffle.Validation;
 
     /// <summary>

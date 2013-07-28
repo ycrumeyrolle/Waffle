@@ -4,10 +4,11 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
-    using Waffle.Dispatcher;
+    using Waffle;
+    using Waffle.Commands;
+    using Waffle.Tests.Commands;
     using Waffle.Tests.Helpers;
 
     [TestClass]
@@ -17,7 +18,7 @@
 
         private readonly ProcessorConfiguration defaultConfig = new ProcessorConfiguration();
 
-        private Mock<IHandlerTypeResolver> resolver = new Mock<IHandlerTypeResolver>(MockBehavior.Strict);
+        private Mock<ICommandHandlerTypeResolver> resolver = new Mock<ICommandHandlerTypeResolver>(MockBehavior.Strict);
 
         public HandlerTypeCacheFixture()
         {
@@ -28,7 +29,7 @@
         public void WhenCreatingHandlerTypeCacheWithoutConfigThenThrowArgumentNullException()
         {
             // Act & Assert
-            ExceptionAssert.ThrowsArgumentNull(() => new HandlerTypeCache(null), "configuration");
+            ExceptionAssert.ThrowsArgumentNull(() => new CommandHandlerTypeCache(null), "configuration");
         }
 
         [TestMethod]
@@ -36,17 +37,17 @@
         {
             // Arrange
             var types = CreateHandlerType();
-            this.defaultConfig.Services.Replace(typeof(IHandlerTypeResolver), this.resolver.Object);
-            this.resolver.Setup(r => r.GetHandlerTypes(It.IsAny<IAssembliesResolver>())).Returns(types);
+            this.defaultConfig.Services.Replace(typeof(ICommandHandlerTypeResolver), this.resolver.Object);
+            this.resolver.Setup(r => r.GetCommandHandlerTypes(It.IsAny<IAssembliesResolver>())).Returns(types);
             
             // Act
-            HandlerTypeCache cache = new HandlerTypeCache(this.defaultConfig);
+            CommandHandlerTypeCache cache = new CommandHandlerTypeCache(this.defaultConfig);
             
             // Assert
             Assert.IsNotNull(cache.Cache);
             Assert.AreEqual(typeof(SimpleCommand), cache.Cache.First().Key);
-            Assert.AreEqual(1, cache.Cache.First().Value[typeof(SimpleHandler)].Count());
-            Assert.AreEqual(typeof(SimpleHandler), cache.Cache.First().Value[typeof(SimpleHandler)].First());
+            Assert.AreEqual(1, cache.Cache.First().Value[typeof(SimpleCommandHandler)].Count());
+            Assert.AreEqual(typeof(SimpleCommandHandler), cache.Cache.First().Value[typeof(SimpleCommandHandler)].First());
         }
 
         [TestMethod]
@@ -54,9 +55,9 @@
         {
             // Arrange
             var types = CreateHandlerType();
-            this.defaultConfig.Services.Replace(typeof(IHandlerTypeResolver), this.resolver.Object);
-            this.resolver.Setup(r => r.GetHandlerTypes(It.IsAny<IAssembliesResolver>())).Returns(types);
-            HandlerTypeCache cache = new HandlerTypeCache(this.defaultConfig);
+            this.defaultConfig.Services.Replace(typeof(ICommandHandlerTypeResolver), this.resolver.Object);
+            this.resolver.Setup(r => r.GetCommandHandlerTypes(It.IsAny<IAssembliesResolver>())).Returns(types);
+            CommandHandlerTypeCache cache = new CommandHandlerTypeCache(this.defaultConfig);
 
             // Act 
             var result = cache.GetHandlerTypes(typeof(SimpleCommand));
@@ -71,9 +72,9 @@
         {
             // Arrange
             var types = CreateHandlerType();
-            this.defaultConfig.Services.Replace(typeof(IHandlerTypeResolver), this.resolver.Object);
-            this.resolver.Setup(r => r.GetHandlerTypes(It.IsAny<IAssembliesResolver>())).Returns(types);
-            HandlerTypeCache cache = new HandlerTypeCache(this.defaultConfig);
+            this.defaultConfig.Services.Replace(typeof(ICommandHandlerTypeResolver), this.resolver.Object);
+            this.resolver.Setup(r => r.GetCommandHandlerTypes(It.IsAny<IAssembliesResolver>())).Returns(types);
+            CommandHandlerTypeCache cache = new CommandHandlerTypeCache(this.defaultConfig);
 
             // Act 
             var result = cache.GetHandlerTypes(typeof(Command));
@@ -88,9 +89,9 @@
         {
             // Arrange
             var types = CreateHandlerType();
-            this.defaultConfig.Services.Replace(typeof(IHandlerTypeResolver), this.resolver.Object);
-            this.resolver.Setup(r => r.GetHandlerTypes(It.IsAny<IAssembliesResolver>())).Returns(types);
-            HandlerTypeCache cache = new HandlerTypeCache(this.defaultConfig);
+            this.defaultConfig.Services.Replace(typeof(ICommandHandlerTypeResolver), this.resolver.Object);
+            this.resolver.Setup(r => r.GetCommandHandlerTypes(It.IsAny<IAssembliesResolver>())).Returns(types);
+            CommandHandlerTypeCache cache = new CommandHandlerTypeCache(this.defaultConfig);
 
             // Act & aAssert
             ExceptionAssert.ThrowsArgumentNull(() => cache.GetHandlerTypes(null), "commandType");
@@ -100,7 +101,7 @@
         {
             return new[]
             {
-              typeof(SimpleHandler),
+              typeof(SimpleCommandHandler),
               typeof(NoHandler)
             };
         }

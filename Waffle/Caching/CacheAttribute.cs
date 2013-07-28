@@ -8,6 +8,7 @@
     using System.Runtime.Caching;
     using System.Security.Cryptography;
     using System.Text;
+    using Waffle.Commands;
     using Waffle.Filters;
     using Waffle.Internal;
     using Waffle.Metadata;
@@ -15,9 +16,10 @@
     /// <summary>
     /// Represents a filter to cache command result.
     /// </summary>
+    /// <remarks>Be aware that the attribute will cache command execution, so events will not be raised.</remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     [SuppressMessage("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes", Justification = "NoCacheAttri")]
-    public class CacheAttribute : HandlerFilterAttribute
+    public class CacheAttribute : CommandHandlerFilterAttribute
     {
         private const string CacheKey = "__CacheAttribute";
 
@@ -103,11 +105,11 @@
         /// Occurs before the handle method is invoked.
         /// </summary>
         /// <param name="handlerContext">The handler context.</param>
-        public override void OnCommandExecuting(HandlerContext handlerContext)
+        public override void OnCommandExecuting(CommandHandlerContext handlerContext)
         {
             if (handlerContext == null)
             {
-                throw Error.ArgumentNull("handlerContext");
+                throw Error.ArgumentNull("CommandHandlerContext");
             }
 
             if (ShouldIgnoreCache(handlerContext.Descriptor))
@@ -163,7 +165,7 @@
             this.cache.Add(key, new CacheEntry(handlerExecutedContext.Result), expiration); 
         }
 
-        private static bool ShouldIgnoreCache(HandlerDescriptor descriptor)
+        private static bool ShouldIgnoreCache(CommandHandlerDescriptor descriptor)
         {
             return descriptor.GetCustomAttributes<NoCacheAttribute>().Count > 0;
         }
@@ -178,7 +180,7 @@
             return DateTimeOffset.UtcNow.AddSeconds(this.Duration);
         }
 
-        private string GetUniqueId(HandlerContext filterContext)
+        private string GetUniqueId(CommandHandlerContext filterContext)
         {
             StringBuilder uniqueIdBuilder = new StringBuilder();
             
@@ -203,7 +205,7 @@
         }
         
         // Generate a unique ID of normalized key names + key values
-        private string GetUniqueIdFromCommand(HandlerContext filterContext)
+        private string GetUniqueIdFromCommand(CommandHandlerContext filterContext)
         {
             IModelFlattener flattener = filterContext.Configuration.Services.GetModelFlattener();
             ModelMetadataProvider metadataProvider = filterContext.Configuration.Services.GetModelMetadataProvider();

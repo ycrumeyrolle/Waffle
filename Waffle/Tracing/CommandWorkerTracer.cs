@@ -2,9 +2,10 @@
 {
     using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
+    using Waffle.Commands;
 
     /// <summary>
-    /// Tracer for <see cref="IHandler"/>.
+    /// Tracer for <see cref="ICommandHandler"/>.
     /// </summary>
     internal class CommandWorkerTracer : ICommandWorker, IDecorator<ICommandWorker>
     {
@@ -35,7 +36,7 @@
             }
         }
 
-        public Task<TResult> ExecuteAsync<TResult>(HandlerRequest request)
+        public Task<TResult> ExecuteAsync<TResult>(CommandHandlerRequest request)
         {
             return this.TraceWriter.TraceBeginEnd(
                request,

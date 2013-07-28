@@ -4,11 +4,12 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
-    using Waffle;
     using Microsoft.Practices.Unity;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
-    using Waffle.Dispatcher;
+    using Waffle;
+    using Waffle.Commands;
+    using Waffle.Filters;
 
     [TestClass]
     public sealed class CommandProcessorWithUnityFixture : IDisposable
@@ -19,20 +20,20 @@
         
         private readonly IUnityContainer container = new UnityContainer();
 
-        private readonly Mock<IHandlerTypeResolver> resolver = new Mock<IHandlerTypeResolver>();
+        private readonly Mock<ICommandHandlerTypeResolver> resolver = new Mock<ICommandHandlerTypeResolver>();
 
         [TestMethod]
         public void WhenProcessingValidCommandThenCommandIsProcessed()
         {
             // Arrange
             this.resolver
-                .Setup(r => r.GetHandlerTypes(It.IsAny<IAssembliesResolver>()))
-                .Returns(new[] { typeof(ValidHandler) });
-            this.configuration.Services.Replace(typeof(IHandlerTypeResolver), this.resolver.Object);
+                .Setup(r => r.GetCommandHandlerTypes(It.IsAny<IAssembliesResolver>()))
+                .Returns(new[] { typeof(ValidCommandHandler) });
+            this.configuration.Services.Replace(typeof(ICommandHandlerTypeResolver), this.resolver.Object);
             var service = new Mock<ISimpleService>();
             
-            this.container.RegisterInstance<ISimpleService>(service.Object);
-            CommandProcessor processor = this.CreatTestableProcessor();
+            this.container.RegisterInstance(service.Object);
+            MessageProcessor processor = this.CreateTestableProcessor();
             ValidCommand command = new ValidCommand();
 
             // Act
@@ -48,13 +49,13 @@
         {
             // Arrange
             this.resolver
-                .Setup(r => r.GetHandlerTypes(It.IsAny<IAssembliesResolver>()))
-                .Returns(new[] { typeof(ValidHandlerWithoutResult) });
-            this.configuration.Services.Replace(typeof(IHandlerTypeResolver), this.resolver.Object);
+                .Setup(r => r.GetCommandHandlerTypes(It.IsAny<IAssembliesResolver>()))
+                .Returns(new[] { typeof(ValidCommandHandlerWithoutResult) });
+            this.configuration.Services.Replace(typeof(ICommandHandlerTypeResolver), this.resolver.Object);
             var service = new Mock<ISimpleService>();
 
-            this.container.RegisterInstance<ISimpleService>(service.Object);
-            CommandProcessor processor = this.CreatTestableProcessor();
+            this.container.RegisterInstance(service.Object);
+            MessageProcessor processor = this.CreateTestableProcessor();
             ValidCommand command = new ValidCommand();
 
             // Act
@@ -64,13 +65,13 @@
             service.Verify(s => s.Execute(), Times.Once());
         }
         
-        private CommandProcessor CreatTestableProcessor(ProcessorConfiguration config = null)
+        private MessageProcessor CreateTestableProcessor(ProcessorConfiguration config = null)
         {
             try
             {
                 config = config ?? this.configuration;
                 config.RegisterContainer(this.container);
-                CommandProcessor processor = new CommandProcessor(config);
+                MessageProcessor processor = new MessageProcessor(config);
                 this.disposableResources.Add(processor);
                 config = null;
                 return processor;
@@ -101,32 +102,32 @@
             public string Property { get; set; }
         }
 
-        public class ValidHandler : Handler<ValidCommand, string>
+        public class ValidCommandHandler : CommandHandler<ValidCommand, string>
         {
-            public ValidHandler(ISimpleService service)
+            public ValidCommandHandler(ISimpleService service)
             {
                 this.Service = service;
             }
 
             public ISimpleService Service { get; set; }
 
-            public override string Handle(ValidCommand command)
+            public override string Handle(ValidCommand command, CommandHandlerContext context)
             {
                 this.Service.Execute();
                 return "OK";
             }
         }
 
-        public class ValidHandlerWithoutResult : Handler<ValidCommand>
+        public class ValidCommandHandlerWithoutResult : CommandHandler<ValidCommand>
         {
-            public ValidHandlerWithoutResult(ISimpleService service)
+            public ValidCommandHandlerWithoutResult(ISimpleService service)
             {
                 this.Service = service;
             }
 
             public ISimpleService Service { get; set; }
-            
-            public override void Handle(ValidCommand command)
+
+            public override void Handle(ValidCommand command, CommandHandlerContext context)
             {
                 this.Service.Execute();
             }

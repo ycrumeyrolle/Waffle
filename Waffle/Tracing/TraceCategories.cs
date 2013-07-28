@@ -14,16 +14,16 @@
         /// <summary>
         /// The handlers category.
         /// </summary>
-        public static readonly string HandlersCategory = "CommandProcessing.Handlers";
+        public static readonly string HandlersCategory = "Handlers";
 
         /// <summary>
         /// The filters category.
         /// </summary>
-        public static readonly string FiltersCategory = "CommandProcessing.Filters";
+        public static readonly string FiltersCategory = "Filters";
 
         /// <summary>
         /// The request category.
         /// </summary>
-        public static readonly string RequestsCategory = "CommandProcessing.Requests";
+        public static readonly string RequestsCategory = "Requests";
     }
 }

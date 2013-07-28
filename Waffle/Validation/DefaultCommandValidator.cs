@@ -7,6 +7,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Linq;
+    using Waffle.Commands;
     using Waffle.Internal;
     using Waffle.Metadata;
 
@@ -22,7 +23,7 @@
         /// </summary>
         /// <param name="request">The <see cref="HandlerRequest"/> to be validated.</param>
         /// <returns>true if command is valid, false otherwise.</returns>
-        public bool Validate(HandlerRequest request)
+        public bool Validate(CommandHandlerRequest request)
         {
             if (request == null)
             {
@@ -38,16 +39,15 @@
             }
 
             ModelMetadataProvider metadataProvider = request.Configuration.Services.GetModelMetadataProvider();
-            ModelMetadata metadata = metadataProvider.GetMetadataForType(() => request.Command, request.CommandType);
+            ModelMetadata metadata = metadataProvider.GetMetadataForType(() => request.Command, request.MessageType);
             ValidationContext validationContext = new ValidationContext
                 {
                     MetadataProvider = metadataProvider,
                     ValidatorProviders = validatorProviders,
                     ValidatorCache = request.Configuration.Services.GetModelValidatorCache(),
                     ModelState = request.Command.ModelState,
-                    Visited = new HashSet<object>(),
+                    Visited = new HashSet<object>(ReferenceEqualityComparer.Instance),
                     KeyBuilders = new Stack<IKeyBuilder>(),
-                    Request = request,
                     RootPrefix = string.Empty
                 };
             return this.ValidateNodeAndChildren(metadata, validationContext, container: null);
@@ -246,8 +246,6 @@
             public HashSet<object> Visited { get; set; }
 
             public Stack<IKeyBuilder> KeyBuilders { get; set; }
-
-            public HandlerRequest Request { get; set; }
 
             public string RootPrefix { get; set; }
         }

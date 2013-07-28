@@ -6,6 +6,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Globalization;
+    using Waffle.Properties;
 
     /// <summary>
     /// Utility class for creating and unwrapping <see cref="Exception"/> instances.

@@ -7,6 +7,7 @@
     using System.Linq;
     using Waffle.Dependencies;
     using Waffle.Internal;
+    using Waffle.Properties;
 
     /// <summary>
     /// Represents a container for service instances used by the <see cref="ProcessorConfiguration"/>. Note that

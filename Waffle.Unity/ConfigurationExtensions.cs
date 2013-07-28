@@ -5,7 +5,7 @@
     using Waffle.Unity;
 
     /// <summary>
-    /// This provides an easy way to handle Unity with the <see cref="CommandProcessor"/>.
+    /// This provides an easy way to handle Unity with the <see cref="MessageProcessor"/>.
     /// </summary>
     public static class ConfigurationExtensions
     {

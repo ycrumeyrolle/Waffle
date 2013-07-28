@@ -2,7 +2,6 @@
 {
     using System;
 
-    using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Waffle.Filters;
 
@@ -13,7 +12,7 @@
         public void WhenCreatingInstanceThenPropertiesAreDefined()
         {
             // Arrange
-            HandlerContext preContext = new HandlerContext();
+            CommandHandlerContext preContext = new CommandHandlerContext();
             Exception exception = new Exception();
 
             // Act
@@ -29,7 +28,7 @@
         public void WhenSettingResultThenResultIsDefined()
         {
             // Arrange
-            HandlerContext preContext = new HandlerContext();
+            CommandHandlerContext preContext = new CommandHandlerContext();
             Exception exception = new Exception();
             HandlerExecutedContext context = new HandlerExecutedContext(preContext, exception);
             var value = "test";

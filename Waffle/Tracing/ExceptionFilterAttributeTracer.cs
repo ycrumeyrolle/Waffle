@@ -7,7 +7,7 @@
     using Waffle.Internal;
 
     /// <summary>
-    /// Tracer for <see cref="Filters.ExceptionFilterAttribute"/>.
+    /// Tracer for <see cref="ExceptionFilterAttribute"/>.
     /// </summary>
     [SuppressMessage("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes", Justification = "internal type needs to override, tracer are not sealed")]
     internal class ExceptionFilterAttributeTracer : ExceptionFilterAttribute, IDecorator<ExceptionFilterAttribute>

@@ -16,7 +16,7 @@
 
             // Act
             var exceptionFilters = group.ExceptionFilters;
-            var handlerFilters = group.HandlerFilters;
+            var handlerFilters = group.CommandHandlerFilters;
 
             // Assert
             Assert.IsNotNull(exceptionFilters);
@@ -30,26 +30,26 @@
         public void WhenGettingWithNullParameterThenThrowsException()
         {   
             // Assert
-            ExceptionAssert.ThrowsArgumentNull(() => new FilterGrouping(null), "filters");
+            ExceptionAssert.ThrowsArgumentNull(() => new CommandFilterGrouping(null), "filters");
         }
 
-        private static FilterGrouping CreateTestableFilterGrouping()
+        private static CommandFilterGrouping CreateTestableFilterGrouping()
         {
             var filters = new[]
                 {
-                    new FilterInfo(new Mock<IHandlerFilter>().Object, FilterScope.Global),
+                    new FilterInfo(new Mock<ICommandHandlerFilter>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<IFilter>().Object, FilterScope.Global),
-                    new FilterInfo(new Mock<IHandlerFilter>().Object, FilterScope.Global),
+                    new FilterInfo(new Mock<ICommandHandlerFilter>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global),
-                    new FilterInfo(new Mock<IHandlerFilter>().Object, FilterScope.Global),
+                    new FilterInfo(new Mock<ICommandHandlerFilter>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<IFilter>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global),
-                    new FilterInfo(new Mock<IHandlerFilter>().Object, FilterScope.Global),
+                    new FilterInfo(new Mock<ICommandHandlerFilter>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global),
                     new FilterInfo(new Mock<ExceptionFilterAttribute>().Object, FilterScope.Global)
                 };
-            FilterGrouping group = new FilterGrouping(filters);
+            CommandFilterGrouping group = new CommandFilterGrouping(filters);
             return group;
         }
     }

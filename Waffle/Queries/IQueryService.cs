@@ -19,6 +19,6 @@
         /// </summary>
         /// <param name="contextType">The <see cref="IQueryContext"/> type.</param>
         /// <param name="queryContextFactory">The factory method.</param>
-        void RegisterContextFactory(Type contextType, Func<IQueryContext> queryContextFactory);
+        void RegisterContextFactory<T>(Type contextType, Func<T> queryContextFactory) where T : IQueryContext;
     }
 }

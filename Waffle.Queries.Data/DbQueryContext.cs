@@ -3,6 +3,7 @@
     using System;
     using System.Data.Entity;
     using System.Linq;
+    using Waffle.Internal;
     using Waffle.Queries;
 
     public class DbQueryContext : IQueryContext
@@ -17,7 +18,7 @@
         {
             if (innerContext == null)
             {
-                throw new ArgumentNullException("innerContext");
+                throw Error.ArgumentNull("innerContext");
             }
 
             this.innerContext = innerContext;

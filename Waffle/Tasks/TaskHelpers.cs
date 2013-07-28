@@ -12,7 +12,7 @@
     /// </summary>
     internal static class TaskHelpers
     {
-        private static readonly Task DefaultCompleted = FromResult<AsyncVoid>(default(AsyncVoid));
+        private static readonly Task DefaultCompleted = FromResult(default(AsyncVoid));
 
         private static readonly Task<object> CompletedTaskReturningNull = FromResult<object>(null);
 
@@ -114,12 +114,11 @@
         {
             Contract.Requires(asyncIterator != null);
 
-            IEnumerator<Task> enumerator = null;
             try
             {
-                enumerator = asyncIterator.GetEnumerator();
+                IEnumerator<Task> enumerator = asyncIterator.GetEnumerator();
                 Task task = IterateImpl(enumerator, cancellationToken);
-                return (disposeEnumerator && enumerator != null) ? TaskHelpersExtensions.Finally((Task)task, enumerator.Dispose, runSynchronously: true) : task;
+                return (disposeEnumerator && enumerator != null) ? task.Finally(enumerator.Dispose, runSynchronously: true) : task;
             }
             catch (Exception ex)
             {

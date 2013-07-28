@@ -1,6 +1,5 @@
 ﻿namespace Waffle.Tests.Filters
 {
-    using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Waffle.Filters;
@@ -13,8 +12,8 @@
         public void WhenCreatingFilterInfoThenPropertiesAreDefined()
         {
             // Arrange
-            IFilter filter1 = new Mock<IHandlerFilter>().Object;
-            IFilter filter2 = new Mock<IHandlerFilter>().Object;
+            IFilter filter1 = new Mock<ICommandHandlerFilter>().Object;
+            IFilter filter2 = new Mock<ICommandHandlerFilter>().Object;
 
             // Act
             FilterInfo filterInfo1 = new FilterInfo(filter1, FilterScope.Global);

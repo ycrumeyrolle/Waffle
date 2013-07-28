@@ -42,15 +42,7 @@
         /// The category.
         /// </value>
         public string Category { get; set; }
-
-        /// <summary>
-        /// Gets the <see cref="HandlerRequest"/>.
-        /// </summary>
-        /// <value>
-        /// The command.
-        /// </value>
-        public ICommand Command { get; private set; }
-
+        
         /// <summary>
         /// Gets or sets the exception.
         /// </summary>

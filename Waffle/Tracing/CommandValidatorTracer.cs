@@ -1,7 +1,9 @@
 ﻿namespace Waffle.Tracing
 {
     using System.Diagnostics.Contracts;
+    using Waffle.Commands;
     using Waffle.Internal;
+    using Waffle.Properties;
     using Waffle.Validation;
 
     internal class CommandValidatorTracer : ICommandValidator, IDecorator<ICommandValidator>
@@ -30,9 +32,9 @@
         /// </summary>
         /// <param name="request">The <see cref="HandlerRequest"/> to be validated.</param>
         /// <returns>true if command is valid, false otherwise.</returns>
-        public bool Validate(HandlerRequest request)
+        public bool Validate(CommandHandlerRequest request)
         {
-            return this.traceWriter.TraceBeginEnd<bool>(
+            return this.traceWriter.TraceBeginEnd(
                 request,
                 TraceCategories.HandlersCategory,
                 TraceLevel.Info,
@@ -40,7 +42,7 @@
                 SelectActionMethodName,
                 beginTrace: tr =>
                     {
-                        tr.Message = Error.Format(Resources.TraceRequestValidatedMessage, request.CommandType.FullName);
+                        tr.Message = Error.Format(Resources.TraceRequestValidatedMessage, request.MessageType.FullName);
                     },
                 execute: () => this.innerValidator.Validate(request),
                 endTrace: null,

@@ -1,6 +1,7 @@
 namespace Waffle.Metadata
 {
     using System;
+    using Waffle.Commands;
 
     /// <summary>
     /// Defines the methods that are required to flatten a <see cref="ICommand"/>.

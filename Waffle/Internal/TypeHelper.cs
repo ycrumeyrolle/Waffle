@@ -5,10 +5,14 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Diagnostics.Contracts;
+    using Waffle.Commands;
+    using Waffle.Events;
 
     internal static class TypeHelper
     {
-        internal static readonly Type HandlerType = typeof(Handler);
+        internal static readonly Type CommandHandlerType = typeof(ICommandHandler);
+
+        internal static readonly Type EventHandlerType = typeof(IEventHandler);
 
         internal static ReadOnlyCollection<T> OfType<T>(object[] objects) where T : class
         {

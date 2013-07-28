@@ -10,77 +10,28 @@
     /// The <see cref="HandlerRequest"/> is responsible to encapsulate 
     /// all informations around a call to an handler.
     /// </summary>
-    public sealed class HandlerRequest : IDisposable
+    public class HandlerRequest : IDisposable
     {
         // Guid.NewGuid() seems to be costly. Call it only when required.
         private readonly Lazy<Guid> id = new Lazy<Guid>(Guid.NewGuid);
         private readonly IList<IDisposable> disposableResources = new List<IDisposable>();
-
-        private static readonly Type VoidType = typeof(VoidResult);
-
+        
         private IDependencyScope dependencyScope;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HandlerRequest"/> class. 
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="command">The command.</param>
-        public HandlerRequest(ProcessorConfiguration configuration, ICommand command)
-            : this(configuration, command, VoidType, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HandlerRequest"/> class. 
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="command">The command.</param>
-        /// <param name="parentRequest">The parent request. </param>
-        public HandlerRequest(ProcessorConfiguration configuration, ICommand command, HandlerRequest parentRequest)
-            : this(configuration, command, VoidType, parentRequest)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HandlerRequest"/> class. 
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="command">The command.</param>
-        /// <param name="resultType">The result type.</param>
-        public HandlerRequest(ProcessorConfiguration configuration, ICommand command, Type resultType)
-            : this(configuration, command, resultType, null)
-        {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerRequest"/> class. 
         /// The request will be a child request of the <paramref name="parentRequest"/>.
         /// </summary> 
         /// <param name="configuration">The configuration.</param>
-        /// <param name="command">The command.</param>
-        /// <param name="resultType">The result type.</param>
         /// <param name="parentRequest">The parent request. </param>
-        public HandlerRequest(ProcessorConfiguration configuration, ICommand command, Type resultType, HandlerRequest parentRequest)
+        public HandlerRequest(ProcessorConfiguration configuration, HandlerRequest parentRequest)
         {
             if (configuration == null)
             {
                 throw Error.ArgumentNull("configuration");
             }
 
-            if (command == null)
-            {
-                throw Error.ArgumentNull("command");
-            }
-
-            if (resultType == null)
-            {
-                throw Error.ArgumentNull("resultType");
-            }
-
             this.Configuration = configuration;
-            this.Command = command;
-            this.CommandType = command.GetType();
-            this.ResultType = resultType;
 
             this.ParentRequest = parentRequest;
             if (parentRequest != null)
@@ -100,25 +51,7 @@
         /// </summary>
         /// <value>The configuration.</value>
         public ProcessorConfiguration Configuration { get; private set; }
-
-        /// <summary>
-        /// Gets the current command.
-        /// </summary>
-        /// <value>The current command.</value>
-        public ICommand Command { get; private set; }
-
-        /// <summary>
-        /// Gets the command type.
-        /// </summary>
-        /// <value>The command <see cref="System.Type"/>.</value>
-        public Type CommandType { get; private set; }
-
-        /// <summary>
-        /// Gets the result type.
-        /// </summary>
-        /// <value>The result <see cref="System.Type"/>.</value>
-        public Type ResultType { get; private set; }
-
+        
         /// <summary>
         /// Gets the handler identifier.
         /// </summary>
@@ -135,7 +68,13 @@
         /// Gets or sets the processor in charge of the request.
         /// </summary>
         /// <value>The processor in charge of the request.</value>
-        public ICommandProcessor Processor { get; set; }
+        public IMessageProcessor Processor { get; set; }
+
+        /// <summary>
+        /// Gets the message type.
+        /// </summary>
+        /// <value>The message <see cref="System.Type"/>.</value>
+        public Type MessageType { get; protected set; }
 
         /// <summary>
         /// Provides a <see cref="IDependencyScope"/> for the request.
@@ -157,8 +96,9 @@
 
             if (request.dependencyScope == null)
             {
-                request.dependencyScope = this.Configuration.DependencyResolver.BeginScope();
-                request.RegisterForDispose(this.dependencyScope);
+                IDependencyScope scope = this.Configuration.DependencyResolver.BeginScope();
+                request.RegisterForDispose(scope);
+                request.dependencyScope = scope;
             }
 
             return request.dependencyScope;
@@ -169,9 +109,18 @@
         /// </summary>
         public void Dispose()
         {
-            foreach (IDisposable item in this.disposableResources)
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                item.Dispose();
+                foreach (IDisposable item in this.disposableResources)
+                {
+                    item.Dispose();
+                }
             }
         }
 

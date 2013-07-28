@@ -1,5 +1,7 @@
 ﻿namespace Waffle.Validation
 {
+    using Waffle.Commands;
+
     /// <summary>
     /// Represents an interface for the validation of the commands.
     /// </summary>
@@ -10,6 +12,6 @@
         /// </summary>
         /// <param name="request">The <see cref="HandlerRequest"/> to be validated.</param>
         /// <returns>true if command is valid, false otherwise.</returns>
-        bool Validate(HandlerRequest request);
+        bool Validate(CommandHandlerRequest request);
     }
 }

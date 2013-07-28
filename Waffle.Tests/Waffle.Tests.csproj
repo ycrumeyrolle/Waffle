@@ -3,9 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{302CA73F-4D47-4DEC-BE2C-803B210A8B46}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -14,12 +11,17 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,7 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Waffle.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,8 +57,6 @@
     <Compile Include="Caching\CacheAttributeFixture.cs" />
     <Compile Include="CommandProcessorFixture.cs" />
     <Compile Include="Dependencies\DependencyResolverExtensionsResolverFixture.cs" />
-    <Compile Include="Eventing\EventAttributeFixture.cs" />
-    <Compile Include="Eventing\MessageHubFixture.cs" />
     <Compile Include="Filters\ExceptionFiltreAttributeFixture.cs" />
     <Compile Include="Filters\TransactionAttributeFixture.cs" />
     <Compile Include="HandlerRequestFixture.cs" />
@@ -80,8 +80,8 @@
     <Compile Include="Services\HandlerServicesFixture.cs" />
     <Compile Include="Services\ServicesContainerFixture.cs" />
     <Compile Include="SimpleHandlerFilter.cs" />
-    <Compile Include="Dispatcher\DefaultHandlerTypeResolverFixture.cs" />
-    <Compile Include="Dispatcher\DefaultHandlerSelectorFixture.cs" />
+    <Compile Include="Commands\DefaultCommandHandlerTypeResolverFixture.cs" />
+    <Compile Include="Commands\DefaultCommandHandlerSelectorFixture.cs" />
     <Compile Include="Filters\ConfigurationFilterProviderFixture.cs" />
     <Compile Include="Filters\HandlerDescriptorFixture.cs" />
     <Compile Include="Filters\HandlerContextFixture.cs" />
@@ -92,11 +92,11 @@
     <Compile Include="Interception\DefaultInterceptionProviderFixture.cs" />
     <Compile Include="Interception\ProxyBuilderFixture.cs" />
     <Compile Include="Interception\SimpleService.cs" />
-    <Compile Include="ResultingCommand.cs" />
+    <Compile Include="Commands\ResultingCommand.cs" />
     <Compile Include="ResultingHandler.cs" />
     <Compile Include="SimpleCommand.cs" />
     <Compile Include="Dependencies\EmptyResolverFixture.cs" />
-    <Compile Include="Dispatcher\DefaultHandlerActivatorFixture.cs" />
+    <Compile Include="Commands\DefaultCommandHandlerActivatorFixture.cs" />
     <Compile Include="Dispatcher\DefaultAssembliesResolverFixture.cs" />
     <Compile Include="SimpleExceptionFilter.cs" />
     <Compile Include="SimpleHandler.cs" />
@@ -109,8 +109,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Settings.StyleCop">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Events\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Waffle\Waffle.csproj">
       <Project>{289D3B8B-D8A2-44AF-931C-9B3DF7E319B6}</Project>

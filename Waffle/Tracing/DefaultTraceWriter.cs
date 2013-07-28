@@ -6,32 +6,33 @@
     using System.Diagnostics.Contracts;
     using System.Globalization;
     using Waffle.Internal;
+    using Waffle.Properties;
 
     /// <summary>
     /// Implementation of <see cref="ITraceWriter"/> that traces to <see cref="System.Diagnostics.Trace"/>
     /// </summary>
     public class DefaultTraceWriter : ITraceWriter
     {
-        private static readonly TraceEventType[] TraceLevelToTraceEventType = new[]
-                                                                                  {
-                                                                                      // TraceLevel.Off
-                                                                                      (TraceEventType)0,
+        private static readonly TraceEventType[] TraceLevelToTraceEventType =
+        {
+            // TraceLevel.Off
+            0,
 
-                                                                                      // TraceLevel.Debug
-                                                                                      TraceEventType.Verbose,
+            // TraceLevel.Debug
+            TraceEventType.Verbose,
 
-                                                                                      // TraceLevel.Info
-                                                                                      TraceEventType.Information,
+            // TraceLevel.Info
+            TraceEventType.Information,
 
-                                                                                      // TraceLevel.Warn
-                                                                                      TraceEventType.Warning,
+            // TraceLevel.Warn
+            TraceEventType.Warning,
 
-                                                                                      // TraceLevel.Error
-                                                                                      TraceEventType.Error,
+            // TraceLevel.Error
+            TraceEventType.Error,
 
-                                                                                      // TraceLevel.Fatal
-                                                                                      TraceEventType.Critical
-                                                                                  };
+            // TraceLevel.Fatal
+            TraceEventType.Critical
+        };
 
         private TraceLevel minLevel = TraceLevel.Info;
 
@@ -184,7 +185,7 @@
 
                 messages.Add(Error.Format(Resources.IdFormat, traceRecord.RequestId.ToString()));
             }
-            
+
             if (traceRecord.Elapsed != TimeSpan.Zero)
             {
                 messages.Add(Error.Format(Resources.ElapsedFormat, traceRecord.Elapsed.ToString("c", CultureInfo.CurrentCulture)));

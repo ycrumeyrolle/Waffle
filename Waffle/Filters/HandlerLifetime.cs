@@ -8,7 +8,7 @@
         /// <summary>
         /// The handler will be always newly instanciated.
         /// </summary>
-        Transcient,
+        Transient,
 
         /// <summary>
         /// The handler will be instanciated only once per request. Subrequest will have the same instance.

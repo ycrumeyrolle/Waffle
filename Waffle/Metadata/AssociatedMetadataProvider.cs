@@ -158,7 +158,7 @@ namespace Waffle.Metadata
             }
 
             // If either the type isn't public or we can't find a public getter, use the slow Reflection path
-            return container => property.GetValue(container);
+            return property.GetValue;
         }
 
         // Uses Lightweight Code Gen to generate a tiny delegate that gets the property value

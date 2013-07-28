@@ -1,7 +1,7 @@
 ﻿namespace Waffle.Filters
 {
     /// <summary>
-    /// Defines members for a filter.
+    /// Defines members for a message filter.
     /// </summary>
     public interface IFilter
     {

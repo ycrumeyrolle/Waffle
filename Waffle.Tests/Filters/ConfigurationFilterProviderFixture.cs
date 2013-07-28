@@ -1,11 +1,9 @@
 ﻿namespace Waffle.Tests.Filters
 {
     using System.Linq;
-
-    using Waffle;
-    using Waffle.Dispatcher;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
+    using Waffle;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
 

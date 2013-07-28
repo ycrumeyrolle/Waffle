@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Filters;
     using Waffle.Internal;
@@ -14,7 +15,7 @@
     /// </summary>
     public sealed class ProcessorConfiguration : IDisposable
     {
-        private readonly List<IDisposable> resourcesToDispose = new List<IDisposable>();
+        private readonly HashSet<IDisposable> resourcesToDispose = new HashSet<IDisposable>();
         
         private readonly HandlerFilterCollection filters = new HandlerFilterCollection();
         
@@ -33,7 +34,7 @@
             this.AbortOnInvalidCommand = true;
         }
 
-        private ProcessorConfiguration(ProcessorConfiguration configuration, HandlerSettings settings)
+        private ProcessorConfiguration(ProcessorConfiguration configuration, CommandHandlerSettings settings)
         {
             this.filters = configuration.Filters;
             this.dependencyResolver = configuration.DependencyResolver;
@@ -55,7 +56,7 @@
         public bool AbortOnInvalidCommand { get; set; }
      
         /// <summary>
-        /// Gets or sets whether the services created with the Using method of the <see cref="CommandProcessor"/> 
+        /// Gets or sets whether the services created with the Using method of the <see cref="MessageProcessor"/> 
         /// shoud be a proxy.
         /// </summary>
         /// <value><c>true</c> if the service should be a proxy ; false otherwise.</value>
@@ -155,7 +156,7 @@
             }
         }
 
-        internal static ProcessorConfiguration ApplyHandlerSettings(HandlerSettings settings, ProcessorConfiguration configuration)
+        internal static ProcessorConfiguration ApplyHandlerSettings(CommandHandlerSettings settings, ProcessorConfiguration configuration)
         {
             if (!settings.IsServiceCollectionInitialized)
             {

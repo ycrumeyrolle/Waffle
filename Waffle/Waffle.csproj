@@ -30,7 +30,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Waffle.ruleset</CodeAnalysisRuleSet>
     <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
@@ -121,36 +121,77 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Caching\CacheAttribute.cs" />
     <Compile Include="Caching\IgnoreCachingAttribute.cs" />
     <Compile Include="Caching\NoCacheAttribute.cs" />
+    <Compile Include="Commands\CommandHandlerDescriptor.cs" />
+    <Compile Include="Commands\CommandHandlerRequest.cs" />
+    <Compile Include="Commands\HandleCommandFunc.cs" />
+    <Compile Include="Events\EventHandler.cs" />
+    <Compile Include="HandlerActivator.cs" />
+    <Compile Include="Commands\VoidCommandAction.cs" />
+    <Compile Include="EventStoreExtensions.cs" />
+    <Compile Include="Events\DefaultEventStore.cs" />
+    <Compile Include="Events\EventHandlersDescriptor.cs" />
+    <Compile Include="Events\EventHandlerFilterAttribute.cs" />
+    <Compile Include="Events\DefaultEventHandlerTypeResolver.cs" />
+    <Compile Include="Events\DefaultEventWorker.cs" />
+    <Compile Include="Events\DefaultEventHandlerSelector.cs" />
+    <Compile Include="Events\DefaultEventHandlerActivator.cs" />
+    <Compile Include="Events\HandleEventAction.cs" />
+    <Compile Include="Events\IEventHandlerFilter.cs" />
+    <Compile Include="Events\IEventHandlerTypeResolver.cs" />
+    <Compile Include="Events\IEventStore.cs" />
+    <Compile Include="HandlerTypeResolver.cs" />
+    <Compile Include="Events\EventHandlerTypeCache.cs" />
+    <Compile Include="Events\EventHandlerContext.cs" />
+    <Compile Include="Events\EventHandlerRequest.cs" />
+    <Compile Include="Events\IEventHandlerActivator.cs" />
+    <Compile Include="Events\IHandlerDescriptorProvider.cs" />
+    <Compile Include="Events\EventHandlerDescriptor.cs" />
+    <Compile Include="Events\IEventHandlerSelector.cs" />
+    <Compile Include="Filters\EventFilterGrouping.cs" />
+    <Compile Include="ICommandSender.cs" />
+    <Compile Include="Events\IEventPublisher.cs" />
+    <Compile Include="Events\IEventProcessor.cs" />
+    <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Events\IEventHandler.cs" />
+    <Compile Include="Events\IEventWorker.cs" />
+    <Compile Include="MessageHandler.cs" />
+    <Compile Include="Tracing\EventHandlerFilterTracer.cs" />
+    <Compile Include="Tracing\EventHandlerFilterAttributeTracer.cs" />
+    <Compile Include="Tracing\EventHandlerActivatorTracer.cs" />
+    <Compile Include="Tracing\EventHandlerSelectorTracer.cs" />
+    <Compile Include="Tracing\EventHandlerTracer.cs" />
+    <Compile Include="Tracing\EventHandlerDescriptorTracer.cs" />
+    <Compile Include="Tracing\EventWorkerTracer.cs" />
     <Compile Include="Validation\CollectionExtensions.cs" />
-    <Compile Include="CommandProcessorWrapper.cs" />
-    <Compile Include="DefaultCommandWorker.cs" />
-    <Compile Include="Dispatcher\IHandlerDescriptorProvider.cs" />
+    <Compile Include="MessageProcessorWrapper.cs" />
+    <Compile Include="Commands\DefaultCommandWorker.cs" />
+    <Compile Include="Commands\ICommandHandlerDescriptorProvider.cs" />
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Filters\HandlerLifetime.cs" />
     <Compile Include="HandlerLifetimeAttribute.cs" />
-    <Compile Include="ICommandWorker.cs" />
+    <Compile Include="Commands\ICommandWorker.cs" />
     <Compile Include="IPrincipalProvider.cs" />
-    <Compile Include="Eventing\IMessageHub.cs" />
-    <Compile Include="Eventing\MessageHub.cs" />
     <Compile Include="Internal\CollectionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Command.cs" />
-    <Compile Include="CommandProcessorExtensions.cs" />
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="MessageProcessorExtensions.cs" />
     <Compile Include="Internal\Error.cs" />
-    <Compile Include="Eventing\EventAttribute.cs" />
     <Compile Include="Filters\ExceptionFilterAttribute.cs" />
     <Compile Include="Filters\FilterInfoComparer.cs" />
-    <Compile Include="Filters\HandlerFilterAttribute.cs" />
+    <Compile Include="Commands\CommandHandlerFilterAttribute.cs" />
     <Compile Include="Filters\IHandlerConfiguration.cs" />
     <Compile Include="Filters\TransactionFilterAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Handler.cs" />
-    <Compile Include="Handler`1.cs" />
-    <Compile Include="IHandler.cs" />
+    <Compile Include="Commands\CommandHandler.cs" />
+    <Compile Include="Commands\CommandHandler`1.cs" />
+    <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Interception\DefaultInterceptorProvider.cs" />
     <Compile Include="Interception\IInterceptionProvider.cs" />
     <Compile Include="ListWrapperCollection.cs" />
@@ -179,13 +220,14 @@
     <Compile Include="Validation\ModelValidatorProvider.cs" />
     <Compile Include="Validation\Providers\AssociatedValidatorProvider.cs" />
     <Compile Include="Validation\Providers\DataAnnotationsModelValidatorProvider.cs" />
+    <Compile Include="Validation\ReferenceEqualityComparer.cs" />
     <Compile Include="Validation\Validators\DataAnnotationsModelValidator.cs" />
     <Compile Include="Validation\Validators\ValidatableObjectAdapter.cs" />
-    <Compile Include="VoidResult.cs" />
-    <Compile Include="Filters\HandlerContext.cs" />
-    <Compile Include="Handler`2.cs" />
+    <Compile Include="Commands\VoidResult.cs" />
+    <Compile Include="Filters\CommandHandlerContext.cs" />
+    <Compile Include="Commands\CommandHandler`2.cs" />
     <Compile Include="HandlerRequest.cs" />
-    <Compile Include="HandlerSettings.cs" />
+    <Compile Include="Commands\CommandHandlerSettings.cs" />
     <Compile Include="Interception\IInterceptor.cs" />
     <Compile Include="Interception\IProxyBuilder.cs" />
     <Compile Include="Interception\DefaultProxyBuilder.cs" />
@@ -206,25 +248,25 @@
     <Compile Include="DefaultPrincipalProvider.cs" />
     <Compile Include="Services\HandlerServices.cs" />
     <Compile Include="ServicesExtensions.cs" />
-    <Compile Include="Dispatcher\DefaultHandlerSelector.cs" />
-    <Compile Include="Dispatcher\DefaultHandlerTypeResolver.cs" />
-    <Compile Include="HandlerTypeCache.cs" />
-    <Compile Include="Dispatcher\IHandlerSelector.cs" />
+    <Compile Include="Commands\DefaultCommandHandlerSelector.cs" />
+    <Compile Include="Commands\DefaultCommandHandlerTypeResolver.cs" />
+    <Compile Include="Commands\CommandHandlerTypeCache.cs" />
+    <Compile Include="Commands\ICommandHandlerSelector.cs" />
     <Compile Include="Dispatcher\DefaultAssembliesResolver.cs" />
-    <Compile Include="Dispatcher\DefaultHandlerActivator.cs" />
+    <Compile Include="Commands\DefaultCommandHandlerActivator.cs" />
     <Compile Include="Services\DefaultServices.cs" />
-    <Compile Include="IAssembliesResolver.cs" />
-    <Compile Include="Dispatcher\IHandlerActivator.cs" />
+    <Compile Include="Dispatcher\IAssembliesResolver.cs" />
+    <Compile Include="Commands\ICommandHandlerActivator.cs" />
     <Compile Include="Dependencies\IDependencyResolver.cs" />
     <Compile Include="Dependencies\EmptyResolver.cs" />
     <Compile Include="Dependencies\IDependencyScope.cs" />
     <Compile Include="Filters\HandlerExecutedContext.cs" />
-    <Compile Include="HandlerNotFoundException.cs" />
-    <Compile Include="CommandProcessor.cs" />
+    <Compile Include="Commands\CommandHandlerNotFoundException.cs" />
+    <Compile Include="MessageProcessor.cs" />
     <Compile Include="Filters\HandlerFilterCollection.cs" />
     <Compile Include="Filters\ConfigurationFilterProvider.cs" />
     <Compile Include="Filters\FilterScope.cs" />
-    <Compile Include="Filters\FilterGrouping.cs" />
+    <Compile Include="Filters\CommandFilterGrouping.cs" />
     <Compile Include="Filters\FilterInfo.cs" />
     <Compile Include="Filters\FilterAttribute.cs" />
     <Compile Include="Dependencies\DepencyResolverExtensions.cs" />
@@ -232,16 +274,16 @@
     <Compile Include="Filters\HandlerFilterProvider.cs" />
     <Compile Include="Filters\IExceptionFilter.cs" />
     <Compile Include="Filters\IFilterProvider.cs" />
-    <Compile Include="ICommand.cs" />
-    <Compile Include="Filters\IHandlerFilter.cs" />
-    <Compile Include="ICommandProcessor.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Filters\ICommandHandlerFilter.cs" />
+    <Compile Include="IMessageProcessor.cs" />
     <Compile Include="Filters\IFilter.cs" />
-    <Compile Include="Dispatcher\IHandlerTypeResolver.cs" />
+    <Compile Include="Commands\ICommandHandlerTypeResolver.cs" />
     <Compile Include="Internal\MemberInfoExtensions.cs" />
     <Compile Include="ProcessorConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ServicesContainer.cs" />
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -251,20 +293,20 @@
     <Compile Include="Tracing\CommandValidatorTracer.cs" />
     <Compile Include="Tracing\CommandWorkerTracer.cs" />
     <Compile Include="Tracing\FormattingUtilities.cs" />
-    <Compile Include="Tracing\HandlerActivatorTracer.cs" />
-    <Compile Include="Tracing\HandlerFilterTracer.cs" />
+    <Compile Include="Tracing\CommandHandlerActivatorTracer.cs" />
+    <Compile Include="Tracing\CommandHandlerFilterTracer.cs" />
     <Compile Include="Tracing\ExceptionFilterAttributeTracer.cs" />
     <Compile Include="Tracing\ExceptionFilterTracer.cs" />
     <Compile Include="Tracing\FilterTracer.cs" />
-    <Compile Include="Tracing\HandlerFilterAttributeTracer.cs" />
-    <Compile Include="Tracing\HandlerDescriptorTracer.cs" />
-    <Compile Include="Tracing\HandlerSelectorTracer.cs" />
-    <Compile Include="Tracing\HandlerTracer.cs" />
+    <Compile Include="Tracing\CommandHandlerFilterAttributeTracer.cs" />
+    <Compile Include="Tracing\CommandHandlerDescriptorTracer.cs" />
+    <Compile Include="Tracing\CommandHandlerSelectorTracer.cs" />
+    <Compile Include="Tracing\CommandHandlerTracer.cs" />
     <Compile Include="ProcessorConfigurationTracingExtensions.cs" />
     <Compile Include="Tracing\IDecorator.cs" />
     <Compile Include="Tracing\ITraceManager.cs" />
     <Compile Include="Tracing\ITraceWriter.cs" />
-    <Compile Include="Tracing\ITraceWriterExtensions.cs" />
+    <Compile Include="Tracing\TraceWriterExtensions.cs" />
     <Compile Include="Tracing\DefaultTraceWriter.cs" />
     <Compile Include="Tracing\TraceCategories.cs" />
     <Compile Include="Tracing\TraceKind.cs" />
@@ -276,7 +318,7 @@
     <Compile Include="Validation\ICommandValidator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>

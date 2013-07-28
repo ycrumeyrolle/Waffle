@@ -2,8 +2,9 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Globalization;
+    using System.Linq.Expressions;
     using Waffle.Internal;
+    using Waffle.Properties;
 
     /// <summary>
     /// Provides a default implementation of the <see cref="IQueryService"/> interface.
@@ -49,7 +50,7 @@
         /// <param name="queryContextFactory">The factory method.</param>
         /// <exception cref="ArgumentNullException"><paramref name="contextType"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="queryContextFactory"/> is null.</exception>
-        public void RegisterContextFactory(Type contextType, Func<IQueryContext> queryContextFactory)
+        public void RegisterContextFactory<T>(Type contextType, Func<T> queryContextFactory) where T : IQueryContext
         {
             if (queryContextFactory == null)
             {
@@ -61,7 +62,16 @@
                 throw Error.ArgumentNull("contextType");
             }
 
-            this.queryableAdapterFactories.TryAdd(contextType, queryContextFactory);
+            Func<IQueryContext> func = CastFunc<T, IQueryContext>(queryContextFactory);
+            this.queryableAdapterFactories.TryAdd(contextType, func);
+        }
+
+        private static Func<TTo> CastFunc<TFrom, TTo>(Func<TFrom> func)
+        {
+            Expression<Func<TFrom>> expression = () => func();
+            Expression converted = Expression.Convert(expression.Body, typeof(TTo));
+
+            return Expression.Lambda<Func<TTo>>(converted, expression.Parameters).Compile();
         }
     }
 }

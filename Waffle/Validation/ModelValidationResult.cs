@@ -1,7 +1,5 @@
 ﻿namespace Waffle.Validation
 {
-    using System.ComponentModel.DataAnnotations;
-
     /// <summary>
     ///  Represents a container for the results of a validation request.
     /// </summary>

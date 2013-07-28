@@ -7,6 +7,7 @@
     using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
+    using Waffle.Commands;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
 
@@ -20,7 +21,7 @@
         [TestMethod]
         public void WhenGettingFiltersIfConfigurationParameterIsNullThenThrowsException()
         {
-            ExceptionAssert.ThrowsArgumentNull(() => this.provider.GetFilters(null, new Mock<HandlerDescriptor>().Object), "configuration");
+            ExceptionAssert.ThrowsArgumentNull(() => this.provider.GetFilters(null, new Mock<CommandHandlerDescriptor>().Object), "configuration");
         }
 
         [TestMethod]
@@ -34,7 +35,7 @@
         {
             // Arrange
             var comparer = new TestFilterInfoComparer();
-            Mock<HandlerDescriptor> descriptor = new Mock<HandlerDescriptor>();
+            Mock<CommandHandlerDescriptor> descriptor = new Mock<CommandHandlerDescriptor>();
             IFilter filter1 = new Mock<IFilter>().Object;
             IFilter filter2 = new Mock<IFilter>().Object;
             descriptor

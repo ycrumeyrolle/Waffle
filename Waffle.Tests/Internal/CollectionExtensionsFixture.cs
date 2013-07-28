@@ -14,9 +14,9 @@
         [TestMethod]
         public void AsArray_Array_ReturnsSameInstance()
         {
-            object[] array = new object[] { new object(), new object() };
-
-            object[] arrayAsArray = ((IEnumerable<object>)array).AsArray();
+            object[] array = { new object(), new object() };
+            IEnumerable<object> arrayAsEnumerable = array;
+            object[] arrayAsArray = arrayAsEnumerable.AsArray();
 
             Assert.AreSame(array, arrayAsArray);
         }
@@ -26,8 +26,8 @@
         {
             IList<object> list = new List<object> { new object(), new object() };
             object[] listToArray = list.ToArray();
-
-            object[] listAsArray = ((IEnumerable<object>)list).AsArray();
+            IEnumerable<object> arrayAsEnumerable = listToArray;
+            object[] listAsArray = arrayAsEnumerable.AsArray();
 
             EnumerableAssert.AreEqual(listAsArray, listToArray);
         }
@@ -35,9 +35,9 @@
         [TestMethod]
         public void AsCollection_Collection_ReturnsSameInstance()
         {
-            Collection<object> collection = new Collection<object>() { new object(), new object() };
-
-            Collection<object> collectionAsCollection = ((IEnumerable<object>)collection).AsCollection();
+            Collection<object> collection = new Collection<object> { new object(), new object() };
+            IEnumerable<object> collectionAsEnumerable = collection;
+            Collection<object> collectionAsCollection = collectionAsEnumerable.AsCollection();
 
             Assert.AreSame(collection, collectionAsCollection);
         }
@@ -45,11 +45,11 @@
         [TestMethod]
         public void AsCollection_Enumerable_Copies()
         {
-            IEnumerable<object> enumerable = new LinkedList<object>(new object[] { new object(), new object() });
+            IEnumerable<object> enumerable = new LinkedList<object>(new [] { new object(), new object() });
 
-            Collection<object> enumerableAsCollection = ((IEnumerable<object>)enumerable).AsCollection();
-
-            EnumerableAssert.AreEqual(enumerable, ((IEnumerable<object>)enumerableAsCollection));
+            Collection<object> enumerableAsCollection = enumerable.AsCollection();
+            IEnumerable<object> collectionAsEnumerable = enumerableAsCollection;
+            EnumerableAssert.AreEqual(enumerable, enumerableAsCollection);
         }
 
         [TestMethod]
@@ -67,8 +67,8 @@
         public void AsIList_IList_ReturnsSameInstance()
         {
             List<object> list = new List<object> { new object(), new object() };
-
-            IList<object> listAsIList = ((IEnumerable<object>)list).AsIList();
+            IEnumerable<object> listAsEnumerable = list;
+            IList<object> listAsIList = listAsEnumerable.AsIList();
 
             Assert.AreSame(list, listAsIList);
         }
@@ -80,8 +80,8 @@
             enumerable.AddLast(new object());
             enumerable.AddLast(new object());
             List<object> expected = enumerable.ToList();
-
-            IList<object> enumerableAsIList = ((IEnumerable<object>)enumerable).AsIList();
+            IEnumerable<object> listAsEnumerable = enumerable;
+            IList<object> enumerableAsIList = listAsEnumerable.AsIList();
 
             EnumerableAssert.AreEqual(expected, enumerableAsIList);
             Assert.AreNotSame(expected, enumerableAsIList);
@@ -91,8 +91,8 @@
         public void AsList_List_ReturnsSameInstance()
         {
             List<object> list = new List<object> { new object(), new object() };
-
-            List<object> listAsList = ((IEnumerable<object>)list).AsList();
+            IEnumerable<object> listAsEnumerable = list;
+            List<object> listAsList = listAsEnumerable.AsList();
 
             Assert.AreSame(list, listAsList);
         }
@@ -102,8 +102,8 @@
         {
             List<object> list = new List<object> { new object(), new object() };
             object[] array = list.ToArray();
-
-            List<object> arrayAsList = ((IEnumerable<object>)array).AsList();
+            IEnumerable<object> arrayAsEnumerable = array;
+            List<object> arrayAsList = arrayAsEnumerable.AsList();
 
             EnumerableAssert.AreEqual(list, arrayAsList);
             Assert.AreNotSame(list, arrayAsList);
@@ -114,8 +114,8 @@
         {
             List<object> list = new List<object> { new object(), new object() };
             ListWrapperCollection<object> listWrapper = new ListWrapperCollection<object>(list);
-
-            List<object> listWrapperAsList = ((IEnumerable<object>)listWrapper).AsList();
+            IEnumerable<object> listWrapperAsEnumerable = listWrapper;
+            List<object> listWrapperAsList = listWrapperAsEnumerable.AsList();
 
             Assert.AreSame(list, listWrapperAsList);
         }
@@ -189,7 +189,7 @@
         [TestMethod]
         public void SingleOfTypeDefaultOrErrorIListMultipleMatchesThrows()
         {
-            IList<object> multipleMatch = new List<object>() { new object(), "Match1", new object(), "Match2" };
+            IList<object> multipleMatch = new List<object> { new object(), "Match1", new object(), "Match2" };
             object errorArgument = new object();
             Action<object> errorAction = argument =>
             {

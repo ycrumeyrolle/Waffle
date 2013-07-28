@@ -1,10 +1,10 @@
 namespace Waffle.Tests
 {
     using System;
-    using Waffle.Filters;
+    using Waffle.Commands;
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-    public class SimpleHandlerFilter : HandlerFilterAttribute
+    public class SimpleCommandHandlerFilter : CommandHandlerFilterAttribute
     {
     }
 }

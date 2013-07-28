@@ -1,6 +1,7 @@
 ﻿namespace Waffle.Filters
 {
     using System;
+    using Waffle.Commands;
     using Waffle.Internal;
 
     /// <summary>
@@ -8,14 +9,14 @@
     /// </summary>
     public class HandlerExecutedContext
     {
-        private readonly HandlerContext handlerContext;
+        private readonly CommandHandlerContext handlerContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerExecutedContext"/> class.
         /// </summary>
         /// <param name="handlerContext">Then handler context.</param>
         /// <param name="exception">The exception. Optionnal.</param>
-        public HandlerExecutedContext(HandlerContext handlerContext, Exception exception)
+        public HandlerExecutedContext(CommandHandlerContext handlerContext, Exception exception)
         {
             if (handlerContext == null)
             {
@@ -30,7 +31,7 @@
         /// Gets or sets the handler context. 
         /// </summary>
         /// <value>The handler context.</value>
-        public HandlerContext HandlerContext
+        public CommandHandlerContext HandlerContext
         {
             get
             {
@@ -71,8 +72,8 @@
         {
             get
             {
-                return (HandlerContext != null && HandlerContext.Request != null)
-                           ? HandlerContext.Request.Command
+                return (this.HandlerContext != null && this.HandlerContext.Request != null)
+                           ? this.HandlerContext.Request.Command
                            : null;
             }
         }
@@ -87,8 +88,8 @@
         {
             get
             {
-                return (HandlerContext != null && HandlerContext.Request != null)
-                           ? HandlerContext.Request
+                return (this.HandlerContext != null && this.HandlerContext.Request != null)
+                           ? this.HandlerContext.Request
                            : null;
             }
         }

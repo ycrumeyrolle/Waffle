@@ -5,13 +5,15 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Dispatcher;
-    using Waffle.Eventing;
+    using Waffle.Events;
     using Waffle.Filters;
     using Waffle.Interception;
     using Waffle.Internal;
     using Waffle.Metadata;
+    using Waffle.Properties;
     using Waffle.Tracing;
     using Waffle.Validation;
     using Waffle.Validation.Providers;
@@ -24,26 +26,37 @@
     ///         <see cref="IDependencyResolver"/> instead. The supported types for this container are:
     ///     </para>
     ///     <list type="bullet">
-    ///         <item><see cref="IHandlerSelector"/></item>
-    ///         <item><see cref="IHandlerDescriptorProvider"/></item>
-    ///         <item><see cref="IHandlerActivator"/></item>
-    ///         <item><see cref="IHandlerTypeResolver"/></item>
+    ///         <item><see cref="IMessageProcessor"/></item>
+    ///         <item><see cref="ICommandWorker"/></item>
+    ///         <item><see cref="ICommandHandlerSelector"/></item>
+    ///         <item><see cref="ICommandHandlerDescriptorProvider"/></item>
+    ///         <item><see cref="ICommandHandlerActivator"/></item>
+    ///         <item><see cref="ICommandHandlerTypeResolver"/></item>  
+    ///         <item><see cref="IEventWorker"/></item>
+    ///         <item><see cref="IEventHandlerSelector"/></item>
+    ///         <item><see cref="IEventHandlerDescriptorProvider"/></item>
+    ///         <item><see cref="IEventHandlerActivator"/></item>
+    ///         <item><see cref="IEventHandlerTypeResolver"/></item>
     ///         <item><see cref="IFilterProvider"/></item>
     ///         <item><see cref="IAssembliesResolver"/></item>
     ///         <item><see cref="IProxyBuilder"/></item>
+    ///         <item><see cref="IInterceptionProvider"/></item>
     ///         <item><see cref="IInterceptor"/></item>
     ///         <item><see cref="ICommandValidator"/></item>
-    ///         <item><see cref="IMessageHub"/></item>
-    ///         <item><see cref="ICommandProcessor"/></item>
+    ///         <item><see cref="ModelValidatorProvider"/></item>
+    ///         <item><see cref="IModelValidatorCache"/></item>
+    ///         <item><see cref="IMessageProcessor"/></item>
     ///         <item><see cref="IPrincipalProvider"/></item>
+    ///         <item><see cref="ModelMetadataProvider"/></item>
+    ///         <item><see cref="IModelFlattener"/></item>
+    ///         <item><see cref="IEventStore"/></item>
     ///     </list>
     ///     <para>
     ///         Passing any type which is not on this to any method on this interface will cause
     ///         an <see cref="ArgumentException"/> to be thrown.
     ///     </para>
     /// </summary>
-    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Although this class is not sealed, end users cannot set instances of it so in practice it is sealed.")]
-    public class DefaultServices : ServicesContainer
+    public sealed class DefaultServices : ServicesContainer
     {
         private ConcurrentDictionary<Type, object[]> cacheMulti = new ConcurrentDictionary<Type, object[]>();
 
@@ -83,11 +96,18 @@
 
             // Initialize the dictionary with all known service types, even if the list for that service type is
             // empty, because we will throw if the developer tries to read or write unsupported types.
-            DefaultHandlerSelector handlerSelector = new DefaultHandlerSelector(this.configuration);
-            this.SetSingle<IHandlerSelector>(handlerSelector);
-            this.SetSingle<IHandlerDescriptorProvider>(handlerSelector);
-            this.SetSingle<IHandlerActivator>(new DefaultHandlerActivator());
-            this.SetSingle<IHandlerTypeResolver>(new DefaultHandlerTypeResolver());
+            DefaultCommandHandlerSelector commandHandlerSelector = new DefaultCommandHandlerSelector(this.configuration);
+            this.SetSingle<ICommandHandlerSelector>(commandHandlerSelector);
+            this.SetSingle<ICommandHandlerDescriptorProvider>(commandHandlerSelector);
+            this.SetSingle<ICommandHandlerActivator>(new DefaultCommandHandlerActivator());
+            this.SetSingle<ICommandHandlerTypeResolver>(new DefaultCommandHandlerTypeResolver());
+
+            // Events
+            DefaultEventHandlerSelector eventHandlerSelector = new DefaultEventHandlerSelector(this.configuration);
+            this.SetSingle<IEventHandlerSelector>(eventHandlerSelector);
+            this.SetSingle<IEventHandlerDescriptorProvider>(eventHandlerSelector);
+            this.SetSingle<IEventHandlerActivator>(new DefaultEventHandlerActivator());
+            this.SetSingle<IEventHandlerTypeResolver>(new DefaultEventHandlerTypeResolver());
 
             this.SetMultiple<IFilterProvider>(new ConfigurationFilterProvider(), new HandlerFilterProvider());
 
@@ -97,13 +117,13 @@
             this.SetSingle<IInterceptionProvider>(new DefaultInterceptionProvider(this.configuration));
             this.SetMultiple<IInterceptor>(new IInterceptor[0]);
             this.SetSingle<ICommandValidator>(new DefaultCommandValidator());
-
-            this.SetSingle<IMessageHub>(new MessageHub());
-
+            
             this.SetSingle<ModelMetadataProvider>(new DataAnnotationsModelMetadataProvider());
             this.SetSingle<IModelFlattener>(new DefaultModelFlattener());
 
             this.SetSingle<IPrincipalProvider>(new DefaultPrincipalProvider());
+
+            this.SetSingle<IEventStore>(new DefaultEventStore());
 
             // Validation
             this.SetMultiple<ModelValidatorProvider>(new DataAnnotationsModelValidatorProvider());
@@ -115,7 +135,8 @@
             this.SetSingle<ITraceWriter>(null);
 
             this.SetSingle<ICommandWorker>(new DefaultCommandWorker(configuration));
-            this.SetSingle<ICommandProcessor>(null);
+            this.SetSingle<IEventWorker>(new DefaultEventWorker(configuration));
+            this.SetSingle<IMessageProcessor>(null);
 
             this.serviceTypesSingle = new HashSet<Type>(this.defaultServicesSingle.Keys);
             this.serviceTypesMulti = new HashSet<Type>(this.defaultServicesMulti.Keys);

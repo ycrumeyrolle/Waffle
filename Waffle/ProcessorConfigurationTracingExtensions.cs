@@ -1,6 +1,5 @@
 ﻿namespace Waffle
 {
-    using System;
     using System.ComponentModel;
     using Waffle.Internal;
     using Waffle.Tracing;

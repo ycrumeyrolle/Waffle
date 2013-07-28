@@ -6,7 +6,9 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using Waffle.Caching;
+    using Waffle.Commands;
     using Waffle.Filters;
+    using Waffle.Tests.Commands;
     using Waffle.Tests.Helpers;
 
     [TestClass]
@@ -28,9 +30,9 @@
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
-            HandlerRequest request = new HandlerRequest(this.config, command);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
-            HandlerContext context = new HandlerContext(request, descriptor);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
 
             // Act
             filter.OnCommandExecuting(context);
@@ -47,9 +49,9 @@
             CacheAttribute filter = this.CreateAttribute();
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
             SimpleCommand cachedCommand = new SimpleCommand { Property1 = 12, Property2 = "test in cache" };
-            HandlerRequest request = new HandlerRequest(this.config, command);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
-            HandlerContext context = new HandlerContext(request, descriptor);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
             this.cache.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<string>())).Returns(new CacheAttribute.CacheEntry(cachedCommand));
 
             // Act
@@ -68,7 +70,7 @@
             CacheAttribute filter = this.CreateAttribute();
 
             // Act & Assert
-            ExceptionAssert.ThrowsArgumentNull(() => filter.OnCommandExecuting(null), "handlerContext");
+            ExceptionAssert.ThrowsArgumentNull(() => filter.OnCommandExecuting(null), "CommandHandlerContext");
         }
 
         [TestMethod]
@@ -78,9 +80,9 @@
             CacheAttribute filter = this.CreateAttribute();
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
             SimpleCommand cachedCommand = new SimpleCommand { Property1 = 12, Property2 = "test in cache" };
-            HandlerRequest request = new HandlerRequest(this.config, command);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(NotCachedCommand), typeof(NotCachedHandler));
-            HandlerContext context = new HandlerContext(request, descriptor);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(NotCachedCommand), typeof(NotCachedCommandHandler));
+            CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
             this.cache.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<string>())).Returns(new CacheAttribute.CacheEntry(cachedCommand));
 
             // Act
@@ -97,9 +99,9 @@
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
-            HandlerRequest request = new HandlerRequest(this.config, command);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
-            HandlerContext context = new HandlerContext(request, descriptor);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
             HandlerExecutedContext executedContext = new HandlerExecutedContext(context, new Exception());
 
             // Act
@@ -127,9 +129,9 @@
             CacheAttribute filter = this.CreateAttribute();
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
             SimpleCommand cachedCommand = new SimpleCommand { Property1 = 12, Property2 = "test in cache" };
-            HandlerRequest request = new HandlerRequest(this.config, command);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(NotCachedCommand), typeof(NotCachedHandler));
-            HandlerContext context = new HandlerContext(request, descriptor);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(NotCachedCommand), typeof(NotCachedCommandHandler));
+            CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
             HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
             this.cache.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<string>())).Returns(new CacheAttribute.CacheEntry(cachedCommand));
 
@@ -147,9 +149,9 @@
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
-            HandlerRequest request = new HandlerRequest(this.config, command);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
-            HandlerContext context = new HandlerContext(request, descriptor);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
 
             HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
 
@@ -166,9 +168,9 @@
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
-            HandlerRequest request = new HandlerRequest(this.config, command);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
-            HandlerContext context = new HandlerContext(request, descriptor);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
             filter.OnCommandExecuting(context);
             context.Items["__CacheAttribute"] = null;
             HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
@@ -186,9 +188,9 @@
             // Arrange
             CacheAttribute filter = this.CreateAttribute();
             SimpleCommand command = new SimpleCommand { Property1 = 12, Property2 = "test" };
-            HandlerRequest request = new HandlerRequest(this.config, command);
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
-            HandlerContext context = new HandlerContext(request, descriptor);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
             filter.OnCommandExecuting(context);
 
             HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
@@ -208,22 +210,22 @@
             filter.Duration = 10;
             filter.VaryByParams = "Property1";
 
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             SimpleCommand command1 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
-            HandlerRequest request1 = new HandlerRequest(this.config, command1);
-            HandlerContext context1 = new HandlerContext(request1, descriptor);
+            CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, command1);
+            CommandHandlerContext context1 = new CommandHandlerContext(request1, descriptor);
             HandlerExecutedContext executedContext1 = new HandlerExecutedContext(context1, null);
             executedContext1.Result = "result1";
 
             SimpleCommand command2 = new SimpleCommand { Property1 = 2, Property2 = "test2" };
-            HandlerRequest request2 = new HandlerRequest(this.config, command2);
-            HandlerContext context2 = new HandlerContext(request2, descriptor);
+            CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, command2);
+            CommandHandlerContext context2 = new CommandHandlerContext(request2, descriptor);
             HandlerExecutedContext executedContext2 = new HandlerExecutedContext(context2, null);
             executedContext2.Result = "result2";
 
             SimpleCommand command3 = new SimpleCommand { Property1 = 2, Property2 = "test3" };
-            HandlerRequest request3 = new HandlerRequest(this.config, command3);
-            HandlerContext context3 = new HandlerContext(request3, descriptor);
+            CommandHandlerRequest request3 = new CommandHandlerRequest(this.config, command3);
+            CommandHandlerContext context3 = new CommandHandlerContext(request3, descriptor);
             HandlerExecutedContext executedContext3 = new HandlerExecutedContext(context3, null);
             executedContext3.Result = "result3";
 
@@ -249,22 +251,22 @@
             filter.Duration = 10;
             filter.VaryByParams = "none";
 
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             SimpleCommand command1 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
-            HandlerRequest request1 = new HandlerRequest(this.config, command1);
-            HandlerContext context1 = new HandlerContext(request1, descriptor);
+            CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, command1);
+            CommandHandlerContext context1 = new CommandHandlerContext(request1, descriptor);
             HandlerExecutedContext executedContext1 = new HandlerExecutedContext(context1, null);
             executedContext1.Result = "result1";
 
             SimpleCommand command2 = new SimpleCommand { Property1 = 2, Property2 = "test2" };
-            HandlerRequest request2 = new HandlerRequest(this.config, command2);
-            HandlerContext context2 = new HandlerContext(request2, descriptor);
+            CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, command2);
+            CommandHandlerContext context2 = new CommandHandlerContext(request2, descriptor);
             HandlerExecutedContext executedContext2 = new HandlerExecutedContext(context2, null);
             executedContext2.Result = "result2";
 
             SimpleCommand command3 = new SimpleCommand { Property1 = 2, Property2 = "test3" };
-            HandlerRequest request3 = new HandlerRequest(this.config, command3);
-            HandlerContext context3 = new HandlerContext(request3, descriptor);
+            CommandHandlerRequest request3 = new CommandHandlerRequest(this.config, command3);
+            CommandHandlerContext context3 = new CommandHandlerContext(request3, descriptor);
             HandlerExecutedContext executedContext3 = new HandlerExecutedContext(context3, null);
             executedContext3.Result = "result3";
 
@@ -290,22 +292,22 @@
             filter.Duration = 10;
             filter.VaryByParams = "XXXX";
 
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             SimpleCommand command1 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
-            HandlerRequest request1 = new HandlerRequest(this.config, command1);
-            HandlerContext context1 = new HandlerContext(request1, descriptor);
+            CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, command1);
+            CommandHandlerContext context1 = new CommandHandlerContext(request1, descriptor);
             HandlerExecutedContext executedContext1 = new HandlerExecutedContext(context1, null);
             executedContext1.Result = "result1";
 
             SimpleCommand command2 = new SimpleCommand { Property1 = 2, Property2 = "test2" };
-            HandlerRequest request2 = new HandlerRequest(this.config, command2);
-            HandlerContext context2 = new HandlerContext(request2, descriptor);
+            CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, command2);
+            CommandHandlerContext context2 = new CommandHandlerContext(request2, descriptor);
             HandlerExecutedContext executedContext2 = new HandlerExecutedContext(context2, null);
             executedContext2.Result = "result2";
 
             SimpleCommand command3 = new SimpleCommand { Property1 = 2, Property2 = "test3" };
-            HandlerRequest request3 = new HandlerRequest(this.config, command3);
-            HandlerContext context3 = new HandlerContext(request3, descriptor);
+            CommandHandlerRequest request3 = new CommandHandlerRequest(this.config, command3);
+            CommandHandlerContext context3 = new CommandHandlerContext(request3, descriptor);
             HandlerExecutedContext executedContext3 = new HandlerExecutedContext(context3, null);
             executedContext3.Result = "result3";
 
@@ -342,24 +344,24 @@
             filter.VaryByUser = true;
             filter.VaryByParams = CacheAttribute.VaryByParamsNone;
 
-            HandlerDescriptor descriptor = new HandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleHandler));
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             SimpleCommand command1 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
-            HandlerRequest request1 = new HandlerRequest(this.config, command1);
-            HandlerContext context1 = new HandlerContext(request1, descriptor);
+            CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, command1);
+            CommandHandlerContext context1 = new CommandHandlerContext(request1, descriptor);
             context1.User = new GenericPrincipal(new GenericIdentity("user1"), null);
             HandlerExecutedContext executedContext1 = new HandlerExecutedContext(context1, null);
             executedContext1.Result = "result1";
 
             SimpleCommand command2 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
-            HandlerRequest request2 = new HandlerRequest(this.config, command2);
-            HandlerContext context2 = new HandlerContext(request2, descriptor);
+            CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, command2);
+            CommandHandlerContext context2 = new CommandHandlerContext(request2, descriptor);
             context2.User = new GenericPrincipal(new GenericIdentity("user2"), null);
             HandlerExecutedContext executedContext2 = new HandlerExecutedContext(context2, null);
             executedContext2.Result = "result2";
 
             SimpleCommand command3 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
-            HandlerRequest request3 = new HandlerRequest(this.config, command3);
-            HandlerContext context3 = new HandlerContext(request3, descriptor);
+            CommandHandlerRequest request3 = new CommandHandlerRequest(this.config, command3);
+            CommandHandlerContext context3 = new CommandHandlerContext(request3, descriptor);
             context3.User = new GenericPrincipal(new GenericIdentity("user1"), null);
             HandlerExecutedContext executedContext3 = new HandlerExecutedContext(context3, null);
             executedContext3.Result = "result3";

@@ -4,10 +4,10 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Waffle;
+    using Waffle.Commands;
     using Waffle.Dependencies;
-    using Waffle.Dispatcher;
     using Waffle.Filters;
 
     [TestClass]
@@ -73,9 +73,9 @@
         {
             get
             {
-                yield return new object[] { typeof(IHandlerSelector) };
-                yield return new object[] { typeof(IHandlerActivator) };
-                yield return new object[] { typeof(IHandlerTypeResolver) };
+                yield return new object[] { typeof(ICommandHandlerSelector) };
+                yield return new object[] { typeof(ICommandHandlerActivator) };
+                yield return new object[] { typeof(ICommandHandlerTypeResolver) };
                 yield return new object[] { typeof(IFilterProvider) };
                 yield return new object[] { typeof(IAssembliesResolver) };
             }
@@ -87,7 +87,7 @@
             {
                 yield return new object[] { typeof(IDisposable) };
                 yield return new object[] { typeof(ICollection) };
-                yield return new object[] { typeof(IHandlerFilter) };
+                yield return new object[] { typeof(ICommandHandlerFilter) };
             }
         }
     }

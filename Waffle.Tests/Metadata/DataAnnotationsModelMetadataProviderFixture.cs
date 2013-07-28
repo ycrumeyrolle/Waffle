@@ -8,7 +8,6 @@ namespace Waffle.Tests.Metadata
 {
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
-    using Waffle.Filters;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Waffle.Metadata;
 

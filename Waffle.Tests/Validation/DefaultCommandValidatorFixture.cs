@@ -6,6 +6,7 @@
     using System.Linq;
     using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Waffle.Commands;
     using Waffle.Validation;
 
     [TestClass]
@@ -19,7 +20,7 @@
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new UnvalidatableCommand { Property1 = "01234567" };
-            HandlerRequest request = new HandlerRequest(this.configuration, command);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
             bool result = validator.Validate(request);
@@ -35,7 +36,7 @@
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new DataAnnotationsValidatableCommand { Property1 = "01234567" };
-            HandlerRequest request = new HandlerRequest(this.configuration, command);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
             bool result = validator.Validate(request);
@@ -52,7 +53,7 @@
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new DataAnnotationsValidatableCommand { Property1 = "01234567890123456789" };
-            HandlerRequest request = new HandlerRequest(this.configuration, command);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
             bool result = validator.Validate(request);
@@ -69,7 +70,7 @@
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new ValidatableObjectCommand(true);
-            HandlerRequest request = new HandlerRequest(this.configuration, command);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
             bool result = validator.Validate(request);
@@ -86,7 +87,7 @@
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
             Command command = new ValidatableObjectCommand(false);
-            HandlerRequest request = new HandlerRequest(this.configuration, command);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
             bool result = validator.Validate(request);
@@ -104,7 +105,7 @@
             ICommandValidator validator = new DefaultCommandValidator();
             MixedValidatableCommand command = new MixedValidatableCommand(true);
             command.Property1 = "123456";
-            HandlerRequest request = new HandlerRequest(this.configuration, command);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
             bool result = validator.Validate(request);
@@ -122,7 +123,7 @@
             ICommandValidator validator = new DefaultCommandValidator();
             MixedValidatableCommand command = new MixedValidatableCommand(false);
             command.Property1 = "123456789456132456";
-            HandlerRequest request = new HandlerRequest(this.configuration, command);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
             bool result = validator.Validate(request);
@@ -142,7 +143,7 @@
             ICommandValidator validator = new DefaultCommandValidator();
             CommandWithUriProperty command = new CommandWithUriProperty();
             command.Property1 = new Uri("/test/values", UriKind.Relative);
-            HandlerRequest request = new HandlerRequest(this.configuration, command);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
             bool result = validator.Validate(request);

@@ -6,6 +6,7 @@
     using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
+    using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Tests.Helpers;
 
@@ -28,9 +29,9 @@
             Mock<ICommand> command = new Mock<ICommand>();
 
             // Act & Assert
-            ExceptionAssert.ThrowsArgumentNull(() => new HandlerRequest(null, command.Object), "configuration");
-            ExceptionAssert.ThrowsArgumentNull(() => new HandlerRequest(this.defaultConfig, null), "command");
-            ExceptionAssert.ThrowsArgumentNull(() => new HandlerRequest(null, null), "configuration");
+            ExceptionAssert.ThrowsArgumentNull(() => new CommandHandlerRequest(null, command.Object), "configuration");
+            ExceptionAssert.ThrowsArgumentNull(() => new CommandHandlerRequest(this.defaultConfig, null), "command");
+            ExceptionAssert.ThrowsArgumentNull(() => new CommandHandlerRequest(null, null), "configuration");
         }
 
         [TestMethod]
@@ -40,13 +41,13 @@
             Mock<ICommand> command = new Mock<ICommand>();
 
             // Act
-            HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
+            CommandHandlerRequest request = new CommandHandlerRequest(this.defaultConfig, command.Object);
 
             // Assert
             Assert.IsNull(request.ParentRequest);
             Assert.AreSame(this.defaultConfig, request.Configuration);
             Assert.AreSame(command.Object, request.Command);
-            Assert.AreEqual(command.Object.GetType(), request.CommandType);
+            Assert.AreEqual(command.Object.GetType(), request.MessageType);
             Assert.AreNotEqual(Guid.Empty, request.Id);
         }
 
@@ -55,7 +56,7 @@
         {
             // Arrange
             Mock<ICommand> command = new Mock<ICommand>();
-            HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
+            HandlerRequest request = new CommandHandlerRequest(this.defaultConfig, command.Object);
             Mock<IDependencyScope> scope = new Mock<IDependencyScope>(MockBehavior.Strict);
             scope.Setup(s => s.Dispose());
 
@@ -82,8 +83,8 @@
         {
             // Arrange
             Mock<ICommand> command = new Mock<ICommand>();
-            HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
-            HandlerRequest innerRequest = new HandlerRequest(this.defaultConfig, command.Object, request);
+            HandlerRequest request = new CommandHandlerRequest(this.defaultConfig, command.Object);
+            HandlerRequest innerRequest = new CommandHandlerRequest(this.defaultConfig, command.Object, request);
 
             Mock<IDependencyResolver> resolver = new Mock<IDependencyResolver>(MockBehavior.Strict);
             resolver
@@ -115,7 +116,7 @@
         {
             // Arrange
             Mock<ICommand> command = new Mock<ICommand>();
-            HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
+            HandlerRequest request = new CommandHandlerRequest(this.defaultConfig, command.Object);
             Mock<IDependencyScope> scope = new Mock<IDependencyScope>(MockBehavior.Strict);
             scope.Setup(s => s.Dispose());
 
@@ -140,8 +141,8 @@
         {
             // Arrange
             Mock<ICommand> command = new Mock<ICommand>();
-            HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
-            HandlerRequest innerRequest = new HandlerRequest(this.defaultConfig, command.Object, request);
+            HandlerRequest request = new CommandHandlerRequest(this.defaultConfig, command.Object);
+            HandlerRequest innerRequest = new CommandHandlerRequest(this.defaultConfig, command.Object, request);
 
             Mock<IDependencyResolver> resolver = new Mock<IDependencyResolver>(MockBehavior.Strict);
             int disposedCount = 0;
@@ -168,8 +169,8 @@
         {
             // Arrange
             Mock<ICommand> command = new Mock<ICommand>();
-            HandlerRequest request = new HandlerRequest(this.defaultConfig, command.Object);
-            HandlerRequest innerRequest = new HandlerRequest(this.defaultConfig, command.Object, request);
+            HandlerRequest request = new CommandHandlerRequest(this.defaultConfig, command.Object);
+            HandlerRequest innerRequest = new CommandHandlerRequest(this.defaultConfig, command.Object, request);
 
             Mock<IDependencyResolver> resolver = new Mock<IDependencyResolver>(MockBehavior.Strict);
             int disposedCount = 0;

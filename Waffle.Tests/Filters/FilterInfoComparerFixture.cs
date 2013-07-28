@@ -12,7 +12,7 @@
         public void Compare()
         {
             IFilter f = new Mock<IFilter>().Object;
-            var values = new Tuple<FilterInfo, FilterInfo, int>[] 
+            var values = new[] 
             {
                     Tuple.Create<FilterInfo, FilterInfo, int>(null, null, 0),
                     Tuple.Create<FilterInfo, FilterInfo, int>(new FilterInfo(f, FilterScope.Handler), null, 1),

@@ -32,7 +32,7 @@ namespace Waffle.Tests.Internal
         public void ListWrapperCollection_ItemsList_IsPassedInList()
         {
             // Arrange
-            List<object> list = new List<object>() { new object(), new object() };
+            List<object> list = new List<object> { new object(), new object() };
             ListWrapperCollection<object> listWrapper = new ListWrapperCollection<object>(list);
 
             // Act & Assert

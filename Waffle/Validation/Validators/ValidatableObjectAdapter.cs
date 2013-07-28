@@ -2,14 +2,17 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Waffle.Internal;
     using Waffle.Metadata;
+    using Waffle.Properties;
     using Waffle.Validation;
 
     /// <summary>
     /// Provides an object adapter that can be validated.
     /// </summary>
+    [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Validatable", Justification = "Validatable is a .Net Framework term.")]
     public class ValidatableObjectAdapter : ModelValidator
     {
         /// <summary>
