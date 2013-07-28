@@ -29,7 +29,8 @@
         {
         }
 
-        internal EventHandlerDescriptor(ProcessorConfiguration configuration, Type eventType, Type handlerType) : base(configuration, eventType, handlerType)
+        public EventHandlerDescriptor(ProcessorConfiguration configuration, Type eventType, Type handlerType)
+            : base(configuration, eventType, handlerType)
         {
             var handleMethod = handlerType.GetMethod("Handle", new[] { eventType, typeof(EventHandlerContext) });
             this.AddAttributesToCache(handleMethod.GetCustomAttributes(true));

@@ -8,12 +8,16 @@
     using Microsoft.Practices.Unity;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
+    using Waffle.Commands;
+    using Waffle.Events;
+    using Waffle.Filters;
     using Waffle.Tests.Helpers;
+    using Waffle.Validation;
 
     [TestClass]
     public sealed class DependencyScopeFixture
     {
-        private readonly Mock<IUnityContainer> container = new Mock<IUnityContainer>(MockBehavior.Strict);
+        private readonly Mock<IUnityContainer> container = new Mock<IUnityContainer>();
 
         [TestMethod]
         public void Ctor_NullConfiguration_ThrowsArgumentNullException()
@@ -65,7 +69,7 @@
                 .Returns(Enumerable.Empty<ContainerRegistration>());
 
             IBuilderContext builderContext = new FakeBuildContext();
-    
+
             this.container
                 .Setup(c => c.Resolve(It.IsAny<Type>(), It.IsAny<string>()))
                 .Throws(new ResolutionFailedException(typeof(object), null, null, builderContext));
@@ -132,6 +136,39 @@
             this.container.Verify(c => c.ResolveAll(It.IsAny<Type>()), Times.Once());
         }
 
+        [TestMethod]
+        public void RegisterHandlers_()
+        {
+            ProcessorConfiguration config = new ProcessorConfiguration();
+            Dictionary<Type, CommandHandlerDescriptor> commands = new Dictionary<Type, CommandHandlerDescriptor>
+                                                                  {
+                                                                      { typeof(object), new CommandHandlerDescriptor(config, typeof(FakeCommand), typeof(FakeTransientHandler)) }
+                                                                  };
+
+            Mock<ICommandHandlerDescriptorProvider> commandDescProvider = new Mock<ICommandHandlerDescriptorProvider>();
+            commandDescProvider
+                .Setup(p => p.GetHandlerMapping())
+                .Returns(commands);
+
+            List<EventHandlerDescriptor> eventDescriptors = new List<EventHandlerDescriptor>();
+            eventDescriptors.Add(new EventHandlerDescriptor(config, typeof(FakeEvent), typeof(FakeTransientHandler)));
+            eventDescriptors.Add(new EventHandlerDescriptor(config, typeof(FakeEvent), typeof(FakePerRequestHandler)));
+            eventDescriptors.Add(new EventHandlerDescriptor(config, typeof(FakeEvent), typeof(FakeProcessorHandler)));
+
+            Dictionary<Type, EventHandlersDescriptor> events = new Dictionary<Type, EventHandlersDescriptor> { { typeof(FakeEvent), new EventHandlersDescriptor("xx", eventDescriptors) } };
+
+            Mock<IEventHandlerDescriptorProvider> eventDescProvider = new Mock<IEventHandlerDescriptorProvider>();
+            eventDescProvider
+                .Setup(p => p.GetHandlerMapping())
+                .Returns(events);
+
+            config.Services.Replace(typeof(ICommandHandlerDescriptorProvider), commandDescProvider.Object);
+            config.Services.Replace(typeof(IEventHandlerDescriptorProvider), eventDescProvider.Object);
+
+            DependencyScope scope = this.CreateDependencyScope();
+            scope.RegisterHandlers(config);
+        }
+
         private DependencyScope CreateDependencyScope()
         {
             return new FakeDependencyScope(this.container.Object);
@@ -170,7 +207,8 @@
 
             public ILifetimeContainer Lifetime { get; private set; }
 
-            public NamedTypeBuildKey OriginalBuildKey {
+            public NamedTypeBuildKey OriginalBuildKey
+            {
                 get
                 {
                     return new NamedTypeBuildKey(typeof(object));
@@ -202,6 +240,87 @@
             public object CurrentOperation { get; set; }
 
             public IBuilderContext ChildContext { get; private set; }
+        }
+
+        private class FakeCommand : ICommand
+        {
+            /// <summary>
+            /// Gets whether the command is valid.
+            /// </summary>
+            /// <value><c>true</c> id the command is valid ; <c>false</c> otherwise.</value>
+            public bool IsValid { get; private set; }
+
+            /// <summary>
+            /// Gets the validation results collection.
+            /// </summary>
+            /// <value>The validation results collection.</value>
+            public ModelStateDictionary ModelState { get; private set; }
+        }
+
+        private class FakeEvent : IEvent
+        {
+            /// <summary>
+            /// Gets the identifier of the source originating the event.
+            /// </summary>
+            /// <value>The identifier of the source originating the event.</value>
+            public Guid SourceId { get; private set; }
+        }
+
+        [HandlerLifetime(HandlerLifetime.Transient)]
+        private class FakeTransientHandler : MessageHandler,
+            IEventHandler<FakeEvent>,
+            ICommandHandler<FakeCommand>
+        {
+            /// <summary>
+            /// Handle the command.
+            /// </summary>
+            /// <param name="command">The <see cref="ICommand"/> to process.</param>
+            /// <param name="context">The <see cref="CommandHandlerContext"/>.</param>
+            /// <returns>The result object.</returns>
+            public void Handle(FakeCommand command, CommandHandlerContext context)
+            {
+                throw new NotImplementedException();
+            }
+
+            /// <summary>
+            /// Handle the event.
+            /// </summary>
+            /// <param name="event">The <see cref="IEvent"/> to handle.</param>
+            /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
+            public void Handle(FakeEvent @event, EventHandlerContext context)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        [HandlerLifetime(HandlerLifetime.Processor)]
+        private class FakeProcessorHandler : MessageHandler,
+            IEventHandler<FakeEvent>
+        {
+            /// <summary>
+            /// Handle the event.
+            /// </summary>
+            /// <param name="event">The <see cref="IEvent"/> to handle.</param>
+            /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
+            public void Handle(FakeEvent @event, EventHandlerContext context)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        [HandlerLifetime(HandlerLifetime.PerRequest)]
+        private class FakePerRequestHandler : MessageHandler,
+            IEventHandler<FakeEvent>
+        {
+            /// <summary>
+            /// Handle the event.
+            /// </summary>
+            /// <param name="event">The <see cref="IEvent"/> to handle.</param>
+            /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
+            public void Handle(FakeEvent @event, EventHandlerContext context)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

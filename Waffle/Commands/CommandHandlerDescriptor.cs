@@ -25,12 +25,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandHandlerDescriptor"/> class.
         /// </summary>
-        /// <remarks>The default constructor is intended for use by unit testing only.</remarks>
         public CommandHandlerDescriptor()
         {
         }
 
-        internal CommandHandlerDescriptor(ProcessorConfiguration configuration, Type commandType, Type handlerType)
+        public CommandHandlerDescriptor(ProcessorConfiguration configuration, Type commandType, Type handlerType)
             : base(configuration, commandType, handlerType)
         {
             var handleMethod = handlerType.GetMethod("Handle", new[] { commandType, HandlerContextType });
