@@ -14,12 +14,12 @@
         <copyright />
         <tags>command pattern processor processing CQRS message event</tags>
         <frameworkAssemblies>
-            <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="" />
-            <frameworkAssembly assemblyName="System.Transactions" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Runtime.Caching" />
+            <frameworkAssembly assemblyName="System.Transactions" />
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="lib\net40\Waffle.dll" target="lib\net40\Waffle.dll" />
-        <file src="lib\net40\Waffle.XML" target="lib\net40\Waffle.XML" />
+        <file src="Waffle\bin\Release\Waffle.dll" target="lib\net40\Waffle.dll" />
+        <file src="Waffle\bin\Release\Waffle.XML" target="lib\net40\Waffle.XML" />
     </files>
 </package>

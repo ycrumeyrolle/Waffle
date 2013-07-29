@@ -3,6 +3,10 @@
     using System.Diagnostics.CodeAnalysis;
     using Waffle.Internal;
 
+    /// <summary>
+    /// Represents a base implementation of the the event handler. 
+    /// </summary>
+    /// <typeparam name="TEvent">The type of the event.</typeparam>
     [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "This interface is similar to the EventHandler from .Net.")]
     public abstract class EventHandler<TEvent> : IEventHandler<TEvent> where TEvent : IEvent
     {

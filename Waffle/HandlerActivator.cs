@@ -7,6 +7,10 @@
     using Waffle.Internal;
     using Waffle.Properties;
 
+    /// <summary>
+    /// Represents an activator for handlers.
+    /// </summary>
+    /// <typeparam name="THandler"></typeparam>
     public class HandlerActivator<THandler> where THandler : class
     {
         private readonly object cacheKey = new object();
@@ -14,7 +18,7 @@
         private Tuple<HandlerDescriptor, Func<THandler>> fastCache;
 
         /// <summary>
-        /// Creates the <see cref="THandler"/> specified by <paramref name="descriptor"/> using the given <paramref name="request"/>.
+        /// Creates the handler specified by <paramref name="descriptor"/> using the given <paramref name="request"/>.
         /// </summary>
         /// <param name="request">
         /// The request.
@@ -23,7 +27,7 @@
         /// The andler descriptor.
         /// </param>
         /// <returns>
-        /// The <see cref="THandler"/>.
+        /// The handler.
         /// </returns>
         public THandler Create(HandlerRequest request, HandlerDescriptor descriptor)
         {
@@ -61,7 +65,7 @@
         /// The activator.
         /// </param>
         /// <returns>
-        /// The <see cref="THandler"/>.
+        /// The handler.
         /// </returns>
         private static THandler GetInstanceOrActivator(HandlerRequest request, HandlerDescriptor descriptor, out Func<THandler> activator)
         {

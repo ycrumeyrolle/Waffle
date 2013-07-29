@@ -28,7 +28,13 @@
         public EventHandlerDescriptor()
         {
         }
-
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventHandlerDescriptor"/> class.
+        /// </summary>
+        /// <param name="configuration">The <see cref="ProcessorConfiguration"/>.</param>
+        /// <param name="eventType">The type of the message.</param>
+        /// <param name="handlerType">The type of thr handler.</param>
         public EventHandlerDescriptor(ProcessorConfiguration configuration, Type eventType, Type handlerType)
             : base(configuration, eventType, handlerType)
         {

@@ -7,6 +7,9 @@
     using System.Reflection;
     using Waffle.Internal;
 
+    /// <summary>
+    /// Represents a resolver of types according a predicate.
+    /// </summary>
     public class HandlerTypeResolver 
     {
         private readonly Predicate<Type> isHandlerTypePredicate;

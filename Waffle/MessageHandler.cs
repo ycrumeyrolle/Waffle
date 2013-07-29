@@ -5,6 +5,9 @@
     using Waffle.Filters;
     using Waffle.Internal;
 
+    /// <summary>
+    /// Represents a base implementation of the command handler and the event handler. 
+    /// </summary>
     public abstract class MessageHandler : ICommandHandler, IEventHandler
     {
         /// <summary>

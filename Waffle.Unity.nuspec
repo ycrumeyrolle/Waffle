@@ -19,7 +19,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="lib\net40\Waffle.Unity.dll" target="lib\net40\Waffle.Unity.dll" />
-        <file src="lib\net40\Waffle.Unity.XML" target="lib\net40\Waffle.Unity.XML" />
+        <file src="Waffle.Unity\bin\Release\Waffle.Unity.dll" target="lib\net40\Waffle.Unity.dll" />
+        <file src="Waffle.Unity\bin\Release\Waffle.Unity.XML" target="lib\net40\Waffle.Unity.XML" />
     </files>
 </package>

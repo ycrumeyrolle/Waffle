@@ -9,6 +9,9 @@
     using Waffle.Internal;
     using Waffle.Metadata;
 
+    /// <summary>
+    /// Represents a descriptor for an handler.
+    /// </summary>
     public class HandlerDescriptor
     {
         private readonly ConcurrentDictionary<object, object> properties = new ConcurrentDictionary<object, object>();
@@ -25,6 +28,12 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerDescriptor"/> class.
+        /// </summary>
+        /// <param name="configuration">The <see cref="ProcessorConfiguration"/>.</param>
+        /// <param name="messageType">The type of the message.</param>
+        /// <param name="handlerType">The type of thr handler.</param>
         protected HandlerDescriptor(ProcessorConfiguration configuration, Type messageType, Type handlerType)
         {
             if (configuration == null)
@@ -54,8 +63,16 @@
             this.Lifetime = this.GetHandlerLifetime();
         }
 
+        /// <summary>
+        /// Gets or sets the processor configuration.
+        /// </summary>
+        /// <value>The processor configuration.</value>
         protected ProcessorConfiguration Configuration { get; set; }
 
+        /// <summary>
+        /// Gets the attributes of the handler.
+        /// </summary>
+        /// <value>The attributes of the handler.</value>
         protected ICollection<object> AttributesCached
         {
             get
@@ -106,6 +123,10 @@
         /// <value>The handler lifetime.</value>
         public HandlerLifetime Lifetime { get; private set; }
 
+        /// <summary>
+        /// Adds attributes to the attributes cache.
+        /// </summary>
+        /// <param name="attributes">A list of attributes to add.</param>
         protected void AddAttributesToCache(IEnumerable<object> attributes)
         {
             this.attributesCached = this.attributesCached.Concat(attributes).ToArray();
