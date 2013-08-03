@@ -63,7 +63,7 @@
 
                 try
                 {
-                    exportedTypes = assembly.GetExportedTypes();
+                    exportedTypes = assembly.GetTypes();
                 }
                 catch (ReflectionTypeLoadException ex)
                 {
@@ -77,11 +77,17 @@
 
                 if (exportedTypes != null)
                 {
-                    result.AddRange(exportedTypes.Where(type => this.isHandlerTypePredicate(type)));
+                    result.AddRange(exportedTypes.Where(type => TypeIsVisible(type) && this.isHandlerTypePredicate(type)));
                 }
             }
 
             return result;
-        }
+        } 
+       
+           private static bool TypeIsVisible(Type type)   
+           {   
+               return (type != null && type.IsVisible);   
+           }  
+
     }
 }

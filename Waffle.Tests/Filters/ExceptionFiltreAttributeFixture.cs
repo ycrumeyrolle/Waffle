@@ -14,7 +14,7 @@
         public void WhenExecuteExceptionFilterAsyncThenReturnsCompletedTask()
         {
             // Arrange
-            Mock<CommandProcessorFixture.ISpy> spy = new Mock<CommandProcessorFixture.ISpy>();
+            Mock<MessageProcessorFixture.ISpy> spy = new Mock<MessageProcessorFixture.ISpy>();
             IExceptionFilter filter = new CustomExceptionFilterAttribute(spy.Object);
             CommandHandlerContext handlerContext = new CommandHandlerContext();
             Exception exception = new Exception();
@@ -34,7 +34,7 @@
         public void WhenExecuteExceptionFilterAsyncWithoutContextThenThrowsArgumentNullException()
         {
             // Arrange
-            Mock<CommandProcessorFixture.ISpy> spy = new Mock<CommandProcessorFixture.ISpy>();
+            Mock<MessageProcessorFixture.ISpy> spy = new Mock<MessageProcessorFixture.ISpy>();
             IExceptionFilter filter = new CustomExceptionFilterAttribute(spy.Object);
         
             CancellationToken cancellationToken = new CancellationToken();
@@ -49,9 +49,9 @@
         [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
         private class CustomExceptionFilterAttribute : ExceptionFilterAttribute
         {
-            private readonly CommandProcessorFixture.ISpy spy;
+            private readonly MessageProcessorFixture.ISpy spy;
 
-            public CustomExceptionFilterAttribute(CommandProcessorFixture.ISpy spy)
+            public CustomExceptionFilterAttribute(MessageProcessorFixture.ISpy spy)
             {
                 this.spy = spy;
             }

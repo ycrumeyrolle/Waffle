@@ -15,7 +15,7 @@
     using Waffle.Tests.Helpers;
 
     [TestClass]
-    public sealed class CommandProcessorFixture : IDisposable
+    public sealed class MessageProcessorFixture : IDisposable
     {
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
 

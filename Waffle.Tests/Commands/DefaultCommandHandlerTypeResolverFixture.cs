@@ -143,7 +143,7 @@
 
         private class ValidAssembly : Assembly
         {
-            public override Type[] GetExportedTypes()
+            public override Type[] GetTypes()
             {
                 return CreateTypeCollection().ToArray();
             }
@@ -151,7 +151,7 @@
 
         private class EmptyAssembly : Assembly
         {
-            public override Type[] GetExportedTypes()
+            public override Type[] GetTypes()
             {
                 return Type.EmptyTypes;
             }
@@ -159,7 +159,7 @@
 
         private class ThrowingReflectionTypeLoadExceptionAssembly : Assembly
         {
-            public override Type[] GetExportedTypes()
+            public override Type[] GetTypes()
             {
                 throw new ReflectionTypeLoadException(CreateTypeCollection().ToArray(), null);
             }
@@ -167,7 +167,7 @@
 
         private class ThrowingExceptionAssembly : Assembly
         {
-            public override Type[] GetExportedTypes()
+            public override Type[] GetTypes()
             {
                 throw new InvalidOperationException("YOUSHOULDNOTSEEME");
             }
