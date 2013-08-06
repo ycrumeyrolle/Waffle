@@ -9,6 +9,7 @@
     using Waffle.Dependencies;
     using Waffle.Events;
     using Waffle.Internal;
+    using Waffle.Tasks;
 
     /// <summary>
     /// Represents a processor of commands and events. 
@@ -96,12 +97,21 @@
         /// <returns>The result of the event.</returns>
         internal Task PublishAsync(IEvent @event, HandlerRequest currentRequest)
         {
+            CancellationToken cancellationToken = new CancellationToken();
+            IEventStore eventStore = this.Configuration.Services.GetServiceOrThrow<IEventStore>();
+
+            Task storeTask = eventStore.StoreAsync(@event, cancellationToken);
+            return storeTask.Then(() => this.ExecutePublishAsync(@event, currentRequest, cancellationToken), cancellationToken);
+        }
+
+        private Task ExecutePublishAsync(IEvent @event, HandlerRequest currentRequest, CancellationToken cancellationToken)
+        {
             IEventWorker eventWorker = this.Configuration.Services.GetEventWorker();
 
             using (EventHandlerRequest request = new EventHandlerRequest(this.Configuration, @event, currentRequest))
             {
                 request.Processor = new MessageProcessorWrapper(this, request);
-                return eventWorker.PublishAsync(request);
+                return eventWorker.PublishAsync(request, cancellationToken);
             }
         }
 

@@ -20,10 +20,9 @@
         /// Stores an event.
         /// </summary>
         /// <param name="event">The <see cref="IEvent"/> to store.</param>
-        /// <param name="eventName">The event name.</param>
         /// <param name="cancellationToken">A cancellation token.</param>
         /// <returns>A <see cref="Task"/> of the storing.</returns>
-        public Task StoreAsync(IEvent @event, string eventName, CancellationToken cancellationToken)
+        public Task StoreAsync(IEvent @event, CancellationToken cancellationToken)
         {
             this.queue.Enqueue(@event);
             return TaskHelpers.Completed();

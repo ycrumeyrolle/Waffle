@@ -37,7 +37,7 @@
         /// </summary>
         /// <param name="request">The <see cref="EventHandlerRequest"/> to execute.</param>
         /// <returns>The <see cref="Task"/> of the event.</returns>
-        public Task PublishAsync(EventHandlerRequest request)
+        public Task PublishAsync(EventHandlerRequest request, CancellationToken cancellationToken)
         {
             if (request == null)
             {
@@ -47,13 +47,8 @@
             IEventHandlerSelector handlerSelector = this.Configuration.Services.GetEventHandlerSelector();
 
             EventHandlersDescriptor eventDescriptor = handlerSelector.SelectHandlers(request);
-            
-            CancellationToken cancellationToken = new CancellationToken();
-            IEventStore eventStore = this.Configuration.Services.GetServiceOrThrow<IEventStore>();
-            Task storeTask = eventStore.StoreAsync(request.Event, eventDescriptor.EventName, cancellationToken);
             IEnumerable<Task> invokeHandlerTasks = eventDescriptor.EventHandlerDescriptors.Select(descriptor => this.InvokeHandlerAsync(descriptor, request, cancellationToken));
-            IEnumerable<Task> tasks = new[] { storeTask }.Concat(invokeHandlerTasks);
-            Task result = TaskHelpers.Iterate(tasks, cancellationToken);
+            Task result = TaskHelpers.Iterate(invokeHandlerTasks, cancellationToken);
 
             return result;
         }
@@ -71,7 +66,7 @@
             EventFilterGrouping filterGrouping = descriptor.GetFilterGrouping();
 
             Func<Task> invokeFunc = InvokeHandlerWithHandlerFiltersAsync(context, cancellationToken, filterGrouping.EventHandlerFilters, () => InvokeHandlerAsync(handler, context, cancellationToken));
-            Task result = invokeFunc();
+            Task result = descriptor.RetryPolicy.ExecuteAsync(invokeFunc, cancellationToken);
             return result;
         }
 

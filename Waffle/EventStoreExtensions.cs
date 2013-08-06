@@ -17,16 +17,15 @@
         /// </summary>
         /// <param name="eventStore">The <see cref="IEventStore"/>.</param>
         /// <param name="event">The <see cref="IEvent"/> to store.</param>
-        /// <param name="eventName">The event name.</param>
         /// <param name="cancellationToken">A cancellation token.</param>
-        public static void Store(this IEventStore eventStore, IEvent @event, string eventName, CancellationToken cancellationToken)
+        public static void Store(this IEventStore eventStore, IEvent @event, CancellationToken cancellationToken)
         {
             if (eventStore == null)
             {
                 throw Error.ArgumentNull("eventStore");
             }
 
-            Task task = eventStore.StoreAsync(@event, eventName, cancellationToken);
+            Task task = eventStore.StoreAsync(@event, cancellationToken);
             task.Wait(cancellationToken);
         }
 

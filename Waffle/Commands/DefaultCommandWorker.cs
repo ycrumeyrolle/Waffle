@@ -68,7 +68,8 @@
             CancellationToken cancellationToken = new CancellationToken();
 
             Func<Task<object>> invokeFunc = InvokeHandlerWithHandlerFiltersAsync(context, cancellationToken, commandFilterGrouping.CommandHandlerFilters, () => InvokeHandlerAsync(context, commandHandler, cancellationToken));
-            Task<object> result = invokeFunc();
+           
+            Task<object> result = descriptor.RetryPolicy.ExecuteAsync(invokeFunc, cancellationToken);
 
             result = InvokeHandlerWithExceptionFiltersAsync(result, context, cancellationToken, commandFilterGrouping.ExceptionFilters);
 

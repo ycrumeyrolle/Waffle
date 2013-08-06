@@ -238,4 +238,10 @@ The request for '{0}' has found the following matching handlers : {1}</value>
   <data name="QueryService_NoQueryContextFactory" xml:space="preserve">
     <value>IQueryContext factory for '{0}' return null.</value>
   </data>
+  <data name="TaskCannotBeNull" xml:space="preserve">
+    <value>The specified argument '{0}' cannot return a null task when invoked.</value>
+  </data>
+  <data name="TaskMustBeScheduled" xml:space="preserve">
+    <value>The specified argument '{0}' must return a scheduled task (also known as "hot" task) when invoked.</value>
+  </data>
 </root>

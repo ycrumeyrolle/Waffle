@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using Waffle.Internal;
 
     /// <summary>
     /// Extension methods for <see cref="IDictionary{TKey,TValue}"/>.
@@ -23,7 +24,7 @@
         {
             if (collection == null)
             {
-                throw new ArgumentNullException("collection");
+                throw Error.ArgumentNull("collection");
             }
 
             object valueObj;
@@ -44,12 +45,12 @@
         {
             if (dictionary == null)
             {
-                throw new ArgumentNullException("dictionary");
+                throw Error.ArgumentNull("dictionary");
             }
 
             if (prefix == null)
             {
-                throw new ArgumentNullException("prefix");
+                throw Error.ArgumentNull("prefix");
             }
 
             TValue exactMatchValue;

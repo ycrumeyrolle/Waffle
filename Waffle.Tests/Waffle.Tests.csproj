@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Caching\CacheAttributeFixture.cs" />
-    <Compile Include="CommandProcessorFixture.cs" />
+    <Compile Include="MessageProcessorFixture.cs" />
     <Compile Include="Dependencies\DependencyResolverExtensionsResolverFixture.cs" />
     <Compile Include="Filters\ExceptionFiltreAttributeFixture.cs" />
     <Compile Include="Filters\TransactionAttributeFixture.cs" />

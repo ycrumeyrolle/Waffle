@@ -130,6 +130,11 @@
     <Compile Include="Commands\CommandHandlerDescriptor.cs" />
     <Compile Include="Commands\CommandHandlerRequest.cs" />
     <Compile Include="Commands\HandleCommandFunc.cs" />
+    <Compile Include="Retrying\ExponentialBackoff.cs" />
+    <Compile Include="Retrying\FixedInterval.cs" />
+    <Compile Include="Retrying\Incremental.cs" />
+    <Compile Include="Retrying\ITransientErrorDetectionStrategy.cs" />
+    <Compile Include="Retrying\RetryAttribute.cs" />
     <Compile Include="Events\EventHandler.cs" />
     <Compile Include="HandlerActivator.cs" />
     <Compile Include="Commands\VoidCommandAction.cs" />
@@ -161,6 +166,17 @@
     <Compile Include="Events\IEventHandler.cs" />
     <Compile Include="Events\IEventWorker.cs" />
     <Compile Include="MessageHandler.cs" />
+    <Compile Include="Retrying\RetryingEventArgs.cs" />
+    <Compile Include="Retrying\RetryPolicy.cs" />
+    <Compile Include="Retrying\RetryPolicy`1.cs" />
+    <Compile Include="Retrying\RetryStrategy.cs" />
+    <Compile Include="Retrying\ShouldRetry.cs" />
+    <Compile Include="Retrying\AsyncExecution`1.cs" />
+    <Compile Include="Retrying\TransientErrorCatchAllStrategy.cs" />
+    <Compile Include="Retrying\TransientErrorCatchExceptionStrategy.cs" />
+    <Compile Include="Retrying\TransientErrorIgnoreStrategy.cs" />
+    <Compile Include="Retrying\AsyncExecution.cs" />
+    <Compile Include="Retrying\TimerManager.cs" />
     <Compile Include="Tracing\EventHandlerFilterTracer.cs" />
     <Compile Include="Tracing\EventHandlerFilterAttributeTracer.cs" />
     <Compile Include="Tracing\EventHandlerActivatorTracer.cs" />
@@ -326,6 +342,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

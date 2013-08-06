@@ -8,6 +8,7 @@
     using System.Linq;
     using Waffle.Internal;
     using Waffle.Metadata;
+    using Waffle.Retrying;
 
     /// <summary>
     /// Represents a descriptor for an handler.
@@ -61,6 +62,7 @@
             this.Name = metadata.GetDisplayName();
             this.Description = metadata.Description;
             this.Lifetime = this.GetHandlerLifetime();
+            this.RetryPolicy = this.GetRetryPolicy();
         }
 
         /// <summary>
@@ -122,6 +124,12 @@
         /// </summary>
         /// <value>The handler lifetime.</value>
         public HandlerLifetime Lifetime { get; private set; }
+        
+        /// <summary>
+        /// Gets the <see cref="RetryPolicy"/>.
+        /// </summary>
+        /// <value>The <see cref="RetryPolicy"/>.</value>
+        public RetryPolicy RetryPolicy { get; private set; }
 
         /// <summary>
         /// Adds attributes to the attributes cache.
@@ -225,6 +233,22 @@
 
             // No attribute were found. Default lifetime is per-request
             return HandlerLifetime.PerRequest;
+        }
+
+        private RetryPolicy GetRetryPolicy()
+        {
+            int length = this.attributesCached.Length;
+            for (int i = 0; i < length; i++)
+            {
+                RetryAttribute retryAttribute = this.attributesCached[i] as RetryAttribute;
+                if (retryAttribute != null)
+                {
+                    return retryAttribute.RetryPolicy;
+                }
+            }
+
+            // No attribute were found. Default is no retry
+            return RetryPolicy.NoRetry;
         }
     }
 }

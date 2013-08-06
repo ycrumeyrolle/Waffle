@@ -14,6 +14,8 @@
 
         internal static readonly Type EventHandlerType = typeof(IEventHandler);
 
+        internal static readonly Type ExceptionType = typeof(Exception);
+
         internal static ReadOnlyCollection<T> OfType<T>(object[] objects) where T : class
         {
             int num = objects.Length;

@@ -12,6 +12,7 @@
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Filters;
+    using Waffle.Retrying;
     using Waffle.Tests.Helpers;
 
     [TestClass]
@@ -63,7 +64,7 @@
             var handler = this.SetupHandler<ValidCommand, string>(null, "OK");
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
-            
+
             // Act
             var result = processor.Process<string>(command);
 
@@ -86,7 +87,7 @@
             // Assert
             handler.Verify(h => h.Handle(It.IsAny<ICommand>(), It.IsAny<CommandHandlerContext>()), Times.Once());
         }
-        
+
         [TestMethod]
         public void WhenProcessingMultipleCommandThenCommandsAreProcessed()
         {
@@ -105,7 +106,7 @@
             processor.Process<string>(command1);
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Never());
-            
+
             // Handler must be configured now to avoid incorrect descriptor creation
             this.SetupHandler<MultipleCommand2, string>(commandCommandHandler);
             processor.Process<string>(command2);
@@ -117,7 +118,7 @@
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Exactly(2));
         }
-        
+
         [TestMethod]
         public void WhenProcessingThrowExceptionWithoutFilterThenThrowsException()
         {
@@ -328,7 +329,7 @@
                 {
                     if (c.Exception == null)
                     {
-                        c.Result +=  value;
+                        c.Result += value;
                     }
 
                     executedCallback(c);
@@ -375,7 +376,7 @@
                 .Returns(descriptor);
 
             config.Services.Replace(typeof(ICommandHandlerSelector), selector.Object);
-            
+
             return commandHandler;
         }
 
@@ -431,7 +432,7 @@
             handler.Setup(h => h.Handle(It.IsAny<ICommand>(), It.IsAny<CommandHandlerContext>()));
             return handler;
         }
-        
+
         private ICommandHandler<TCommand, TResult> SetupHandler<TCommand, TResult>(CommandHandler commandHandler)
             where TCommand : ICommand
         {
@@ -570,7 +571,7 @@
             // With the cache results are the same
             Assert.AreEqual(result1, result2);
         }
-        
+
         [TestMethod]
         public void WhenProcessingDifferentCyclicCommandsWithCacheThenReturnValueInCacheBecauseItIsNotManaged()
         {
@@ -598,6 +599,45 @@
             // Without cache result 1 would be different from result2
             // With the cache results are the same
             Assert.AreEqual(result1, result2);
+        }
+
+        [TestMethod]
+        public void WhenProcessingRetringCommandButAlwayFailsThenThrowsInvalidOperationException()
+        {
+            // Arrange
+            Mock<ISpy> spy = new Mock<ISpy>(MockBehavior.Strict);
+            spy.Setup(s => s.Spy("Trying"));
+            RetryHandler commandCommandHandler = new RetryHandler(spy.Object);
+            this.SetupHandler<RetryCommand, object>(commandCommandHandler);
+
+            MessageProcessor processor = this.CreatTestableProcessor();
+            RetryCommand command = new RetryCommand(10);
+
+            // Act
+            ExceptionAssert.Throws<InvalidOperationException>(() => processor.Process(command));
+
+            // Assert
+            spy.Verify(s => s.Spy("Trying"), Times.Exactly(6));
+        }
+
+        [TestMethod]
+        public void WhenProcessingRetringCommandThenReturnResult()
+        {
+            // Arrange
+            Mock<ISpy> spy = new Mock<ISpy>(MockBehavior.Strict);
+            spy.Setup(s => s.Spy("Trying"));
+            RetryHandler commandCommandHandler = new RetryHandler(spy.Object);
+            this.SetupHandler<RetryCommand, string>(commandCommandHandler);
+
+            MessageProcessor processor = this.CreatTestableProcessor();
+            RetryCommand command = new RetryCommand(2);
+
+            // Act
+            string result = processor.Process<string>(command);
+
+            // Assert
+            Assert.AreEqual("OK", result);
+            spy.Verify(s => s.Spy("Trying"), Times.Exactly(3));
         }
 
         [TestMethod]
@@ -653,7 +693,7 @@
             try
             {
                 config = config ?? this.configuration;
-             //   config.EnableDefaultTracing();
+                //   config.EnableDefaultTracing();
                 this.dependencyResolver.Setup(r => r.BeginScope()).Returns(this.dependencyResolver.Object);
                 config.DependencyResolver = this.dependencyResolver.Object;
                 MessageProcessor processor = new MessageProcessor(config);
@@ -791,7 +831,7 @@
 
         public class MultipleCommand2 : Command
         {
-            
+
         }
 
         public class MultipleCommandCommandHandler : CommandHandler, ICommandHandler<MultipleCommand1, string>, ICommandHandler<MultipleCommand2, string>
@@ -813,6 +853,38 @@
             {
                 this.spy.Spy("MultipleCommand2");
                 return string.Empty;
+            }
+        }
+
+        public class RetryCommand : Command
+        {
+            public RetryCommand(int retryCount)
+            {
+                this.RetryCount = retryCount;
+            }
+
+            public int RetryCount { get; set; }
+        }
+
+        [Retry(5)]
+        public class RetryHandler : CommandHandler, ICommandHandler<RetryCommand, string>
+        {
+            private readonly ISpy spy;
+
+            public RetryHandler(ISpy spy)
+            {
+                this.spy = spy;
+            }
+
+            public string Handle(RetryCommand command, CommandHandlerContext context)
+            {
+                this.spy.Spy("Trying");
+                if (command.RetryCount-- > 0)
+                {
+                    throw new InvalidOperationException("Try again !");
+                }
+
+                return "OK";
             }
         }
 

@@ -4,15 +4,17 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
+    using System.Runtime.InteropServices;
     using System.Threading;
     using System.Threading.Tasks;
+    using Waffle.Retrying;
 
     /// <summary>
     /// Helpers for safely using Task libraries. 
     /// </summary>
     internal static class TaskHelpers
     {
-        private static readonly Task DefaultCompleted = FromResult(default(AsyncVoid));
+        private static readonly Task DefaultCompleted = FromResult(default(VoidTaskResult));
 
         private static readonly Task<object> CompletedTaskReturningNull = FromResult<object>(null);
 
@@ -21,7 +23,7 @@
         /// </summary>
         internal static Task Canceled()
         {
-            return CancelCache<AsyncVoid>.Canceled;
+            return CancelCache<VoidTaskResult>.Canceled;
         }
 
         /// <summary>
@@ -53,7 +55,7 @@
         /// </summary>
         internal static Task FromError(Exception exception)
         {
-            return FromError<AsyncVoid>(exception);
+            return FromError<VoidTaskResult>(exception);
         }
 
         /// <summary>
@@ -72,7 +74,7 @@
         /// </summary>
         internal static Task FromErrors(IEnumerable<Exception> exceptions)
         {
-            return FromErrors<AsyncVoid>(exceptions);
+            return FromErrors<VoidTaskResult>(exceptions);
         }
 
         /// <summary>
@@ -93,6 +95,16 @@
             TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
             tcs.SetResult(result);
             return tcs.Task;
+        }
+
+        internal static Task FromCancellation(CancellationToken cancellationToken)
+        {
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                throw new ArgumentOutOfRangeException("cancellationToken");
+            }
+
+            return new Task(null, true, cancellationToken, TaskCreationOptions.None);
         }
 
         internal static Task<object> NullResult()
@@ -122,7 +134,7 @@
             }
             catch (Exception ex)
             {
-                return TaskHelpers.FromError(ex);
+                return FromError(ex);
             }
         }
 
@@ -140,13 +152,13 @@
                     // short-circuit: iteration canceled
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        return TaskHelpers.Canceled();
+                        return Canceled();
                     }
 
                     // short-circuit: iteration complete
                     if (!enumerator.MoveNext())
                     {
-                        return TaskHelpers.Completed();
+                        return Completed();
                     }
 
                     // fast case: Task completed synchronously & successfully
@@ -168,7 +180,7 @@
             }
             catch (Exception ex)
             {
-                return TaskHelpers.FromError(ex);
+                return FromError(ex);
             }
         }
 
@@ -276,7 +288,7 @@
                     return tcs.TrySetResult(taskOfResult);
                 }
 
-                return tcs.TrySetResult(TaskHelpers.FromResult(default(TResult)));
+                return tcs.TrySetResult(FromResult(default(TResult)));
             }
 
             return false;
@@ -285,7 +297,8 @@
         /// <summary>
         /// Used as the T in a "conversion" of a Task into a Task{T}.
         /// </summary>
-        private struct AsyncVoid
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        internal struct VoidTaskResult
         {
         }
 
@@ -302,6 +315,101 @@
                 tcs.SetCanceled();
                 return tcs.Task;
             }
+        }
+
+        /// <summary>Starts a Task that will complete after the specified due time.</summary>
+        /// <param name="dueTime">The delay in milliseconds before the returned task completes.</param>
+        /// <returns>The timed Task.</returns>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        /// The <paramref name="dueTime" /> argument must be non-negative or -1 and less than or equal to Int32.MaxValue.
+        /// </exception>
+        public static Task Delay(int dueTime)
+        {
+            return TaskHelpers.Delay(dueTime, CancellationToken.None);
+        }
+
+        /// <summary>Starts a Task that will complete after the specified due time.</summary>
+        /// <param name="dueTime">The delay before the returned task completes.</param>
+        /// <returns>The timed Task.</returns>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        /// The <paramref name="dueTime" /> argument must be non-negative or -1 and less than or equal to Int32.MaxValue.
+        /// </exception>
+        public static Task Delay(TimeSpan dueTime)
+        {
+            return TaskHelpers.Delay(dueTime, CancellationToken.None);
+        }
+
+        /// <summary>Starts a Task that will complete after the specified due time.</summary>
+        /// <param name="dueTime">The delay before the returned task completes.</param>
+        /// <param name="cancellationToken">A CancellationToken that may be used to cancel the task before the due time occurs.</param>
+        /// <returns>The timed Task.</returns>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        /// The <paramref name="dueTime" /> argument must be non-negative or -1 and less than or equal to Int32.MaxValue.
+        /// </exception>
+        public static Task Delay(TimeSpan dueTime, CancellationToken cancellationToken)
+        {
+            long num = (long)dueTime.TotalMilliseconds;
+            if (num < -1L || num > int.MaxValue)
+            {
+                throw new ArgumentOutOfRangeException("dueTime", "The timeout must be non-negative or -1, and it must be less than or equal to Int32.MaxValue.");
+            }
+
+            Contract.EndContractBlock();
+            return TaskHelpers.Delay((int)num, cancellationToken);
+        }
+
+        /// <summary>Starts a Task that will complete after the specified due time.</summary>
+        /// <param name="dueTime">The delay in milliseconds before the returned task completes.</param>
+        /// <param name="cancellationToken">A CancellationToken that may be used to cancel the task before the due time occurs.</param>
+        /// <returns>The timed Task.</returns>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        /// The <paramref name="dueTime" /> argument must be non-negative or -1 and less than or equal to Int32.MaxValue.
+        /// </exception>
+        public static Task Delay(int dueTime, CancellationToken cancellationToken)
+        {
+            if (dueTime < -1)
+            {
+                throw new ArgumentOutOfRangeException("dueTime", "The timeout must be non-negative or -1, and it must be less than or equal to Int32.MaxValue.");
+            }
+
+            Contract.EndContractBlock();
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return new Task(() => { }, cancellationToken);
+            }
+
+            if (dueTime == 0)
+            {
+                return TaskHelpers.Completed();
+            }
+
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            CancellationTokenRegistration ctr = default(CancellationTokenRegistration);
+            Timer timer = null;
+            timer = new Timer(
+                state =>
+                {
+                    ctr.Dispose();
+                    timer.Dispose();
+                    tcs.TrySetResult(true);
+                    TimerManager.Remove(timer);
+                },
+            null,
+            -1,
+            -1);
+            TimerManager.Add(timer);
+            if (cancellationToken.CanBeCanceled)
+            {
+                ctr = cancellationToken.Register(() =>
+                {
+                    timer.Dispose();
+                    tcs.TrySetCanceled();
+                    TimerManager.Remove(timer);
+                });
+            }
+
+            timer.Change(dueTime, -1);
+            return tcs.Task;
         }
     }
 }

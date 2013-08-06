@@ -33,12 +33,12 @@
         {
         }
 
-        public Task StoreAsync(IEvent @event, string eventName, CancellationToken cancellationToken)
+        public Task StoreAsync(IEvent @event, CancellationToken cancellationToken)
         {
             try
             {
                 MongoCollection<EventWrapper> collection = this.GetCollection();
-                collection.Insert(new EventWrapper(eventName, @event));
+                collection.Insert(new EventWrapper(@event));
 
                 return TaskHelpers.Completed();
             }

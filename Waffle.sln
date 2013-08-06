@@ -82,33 +82,33 @@ Global
 		SccAuxPath5 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
 		SccLocalPath5 = Waffle.Tests.Integration
 		SccProvider5 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName6 = Waffle.Tests.Console\\Waffle.Tests.Console.csproj
-		SccProjectTopLevelParentUniqueName6 = Waffle.sln
-		SccProjectName6 = Waffle.Tests.Console
+		SccProjectUniqueName6 = Waffle.Queries.Data\\Waffle.Queries.Data.csproj
+		SccProjectName6 = Waffle.Queries.Data
 		SccAuxPath6 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath6 = Waffle.Tests.Console
+		SccLocalPath6 = Waffle.Queries.Data
 		SccProvider6 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName7 = Waffle.Queries.Data\\Waffle.Queries.Data.csproj
-		SccProjectName7 = Waffle.Queries.Data
+		SccProjectUniqueName7 = Waffle.Queries.Data.Tests\\Waffle.Queries.Data.Tests.csproj
+		SccProjectTopLevelParentUniqueName7 = Waffle.sln
+		SccProjectName7 = Waffle.Queries.Data.Tests
 		SccAuxPath7 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath7 = Waffle.Queries.Data
+		SccLocalPath7 = Waffle.Queries.Data.Tests
 		SccProvider7 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName8 = Waffle.Queries.Data.Tests\\Waffle.Queries.Data.Tests.csproj
-		SccProjectTopLevelParentUniqueName8 = Waffle.sln
-		SccProjectName8 = Waffle.Queries.Data.Tests
+		SccProjectUniqueName8 = Waffle.Events.MongoDb\\Waffle.Events.MongoDb.csproj
+		SccProjectName8 = Waffle.Events.MongoDb
 		SccAuxPath8 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath8 = Waffle.Queries.Data.Tests
+		SccLocalPath8 = Waffle.Events.MongoDb
 		SccProvider8 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName9 = Waffle.Events.MongoDb\\Waffle.Events.MongoDb.csproj
-		SccProjectName9 = Waffle.Events.MongoDb
+		SccProjectUniqueName9 = Waffle.Events.MongoDb.Tests\\Waffle.Events.MongoDb.Tests.csproj
+		SccProjectTopLevelParentUniqueName9 = Waffle.sln
+		SccProjectName9 = Waffle.Events.MongoDb.Tests
 		SccAuxPath9 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath9 = Waffle.Events.MongoDb
+		SccLocalPath9 = Waffle.Events.MongoDb.Tests
 		SccProvider9 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName10 = Waffle.Events.MongoDb.Tests\\Waffle.Events.MongoDb.Tests.csproj
+		SccProjectUniqueName10 = Waffle.Tests.Console\\Waffle.Tests.Console.csproj
 		SccProjectTopLevelParentUniqueName10 = Waffle.sln
-		SccProjectName10 = Waffle.Events.MongoDb.Tests
+		SccProjectName10 = Waffle.Tests.Console
 		SccAuxPath10 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath10 = Waffle.Events.MongoDb.Tests
+		SccLocalPath10 = Waffle.Tests.Console
 		SccProvider10 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -247,5 +247,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

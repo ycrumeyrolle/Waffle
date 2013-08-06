@@ -19,7 +19,7 @@
             StubStore eventStore = new StubStore("mongodb://localhost:27017", "eventsTest");
             EventTest1 event1 = new EventTest1 { Test1 = "test", SourceId = Guid.NewGuid() };
             EventTest2 event2 = new EventTest2 { Test2 = "test", SourceId = Guid.NewGuid() };
-            EventWrapper[] events = { new EventWrapper("ev1", event1), new EventWrapper("ev2", event2) };
+            EventWrapper[] events = { new EventWrapper(event1), new EventWrapper(event2) };
 
             eventStore.MoqCollection
                 .Setup(c => c.Find(It.IsAny<IMongoQuery>()))
@@ -37,7 +37,7 @@
             StubStore eventStore = new StubStore("mongodb://localhost:27017", "eventsTest");
             EventTest1 @event1 = new EventTest1 { Test1 = "test", SourceId = Guid.NewGuid() };
             
-            eventStore.StoreAsync(@event1, "eventTest", default(CancellationToken)).Wait();
+            eventStore.StoreAsync(@event1, default(CancellationToken)).Wait();
 
             eventStore.MoqCollection.Verify(c => c.Insert(It.IsAny<EventWrapper>()), Times.Once());
         }

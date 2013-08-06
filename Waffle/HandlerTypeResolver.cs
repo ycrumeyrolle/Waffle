@@ -10,10 +10,10 @@
     /// <summary>
     /// Represents a resolver of types according a predicate.
     /// </summary>
-    public class HandlerTypeResolver 
+    public class HandlerTypeResolver
     {
         private readonly Predicate<Type> isHandlerTypePredicate;
-     
+
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerTypeResolver"/> class using a predicate to filter handler types.
         /// </summary>
@@ -82,12 +82,11 @@
             }
 
             return result;
-        } 
-       
-           private static bool TypeIsVisible(Type type)   
-           {   
-               return (type != null && type.IsVisible);   
-           }  
+        }
 
+        private static bool TypeIsVisible(Type type)
+        {
+            return type != null && type.IsVisible;
+        }
     }
 }
