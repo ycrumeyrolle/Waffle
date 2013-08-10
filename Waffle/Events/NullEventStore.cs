@@ -1,20 +1,18 @@
 ﻿namespace Waffle.Events
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Tasks;
 
     /// <summary>
-    /// Default implementation of the <see cref="IEventStore"/>.
+    /// Null implementation of the <see cref="IEventStore"/>.
+    /// 
     /// </summary>
-    public class DefaultEventStore : IEventStore
+    public class NullEventStore : IEventStore
     {
-        private readonly ConcurrentQueue<IEvent> queue = new ConcurrentQueue<IEvent>();
+        private static readonly IEvent[] EmptyEvents = new IEvent[0];
 
         /// <summary>
         /// Stores an event.
@@ -24,7 +22,6 @@
         /// <returns>A <see cref="Task"/> of the storing.</returns>
         public Task StoreAsync(IEvent @event, CancellationToken cancellationToken)
         {
-            this.queue.Enqueue(@event);
             return TaskHelpers.Completed();
         }
 
@@ -36,8 +33,7 @@
         /// <returns>A <see cref="Task"/> of <see cref="ICollection{IEvent}"/> containing the <see cref="IEvent"/>.</returns>
         public Task<ICollection<IEvent>> LoadAsync(Guid sourceId, CancellationToken cancellationToken)
         {
-            IEnumerable<IEvent> value = this.queue.Where(e => e.SourceId == sourceId);
-            return TaskHelpers.FromResult<ICollection<IEvent>>(new ReadOnlyCollection<IEvent>(value.ToList()));
+            return TaskHelpers.FromResult<ICollection<IEvent>>(EmptyEvents);
         }
     }
 }

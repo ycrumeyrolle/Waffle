@@ -123,7 +123,7 @@
 
             this.SetSingle<IPrincipalProvider>(new DefaultPrincipalProvider());
 
-            this.SetSingle<IEventStore>(new DefaultEventStore());
+            this.SetSingle<IEventStore>(new NullEventStore());
 
             // Validation
             this.SetMultiple<ModelValidatorProvider>(new DataAnnotationsModelValidatorProvider());

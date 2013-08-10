@@ -130,6 +130,7 @@
     <Compile Include="Commands\CommandHandlerDescriptor.cs" />
     <Compile Include="Commands\CommandHandlerRequest.cs" />
     <Compile Include="Commands\HandleCommandFunc.cs" />
+    <Compile Include="Events\NullEventStore.cs" />
     <Compile Include="Retrying\ExponentialBackoff.cs" />
     <Compile Include="Retrying\FixedInterval.cs" />
     <Compile Include="Retrying\Incremental.cs" />
@@ -139,7 +140,6 @@
     <Compile Include="HandlerActivator.cs" />
     <Compile Include="Commands\VoidCommandAction.cs" />
     <Compile Include="EventStoreExtensions.cs" />
-    <Compile Include="Events\DefaultEventStore.cs" />
     <Compile Include="Events\EventHandlersDescriptor.cs" />
     <Compile Include="Events\EventHandlerFilterAttribute.cs" />
     <Compile Include="Events\DefaultEventHandlerTypeResolver.cs" />
