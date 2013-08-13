@@ -175,7 +175,7 @@
             return new DependencyScope(container);
         }
 
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The object is return to caller.")]
         private static LifetimeManager GetLifetimeManager(HandlerLifetime handlerLifetime)
         {
             switch (handlerLifetime)

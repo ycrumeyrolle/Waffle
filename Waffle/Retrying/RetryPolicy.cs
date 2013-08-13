@@ -11,13 +11,13 @@
     /// </summary>
     public class RetryPolicy
     {
-        private static readonly RetryPolicy noRetry = new RetryPolicy(new TransientErrorIgnoreStrategy(), RetryStrategy.NoRetry);
+        private static readonly RetryPolicy NoRetryInstance = new RetryPolicy(new TransientErrorIgnoreStrategy(), RetryStrategy.NoRetry);
 
-        private static readonly RetryPolicy defaultFixed = new RetryPolicy(new TransientErrorCatchAllStrategy(), RetryStrategy.DefaultFixed);
+        private static readonly RetryPolicy DefaultFixedInstance = new RetryPolicy(new TransientErrorCatchAllStrategy(), RetryStrategy.DefaultFixed);
 
-        private static readonly RetryPolicy defaultProgressive = new RetryPolicy(new TransientErrorCatchAllStrategy(), RetryStrategy.DefaultProgressive);
+        private static readonly RetryPolicy DefaultProgressiveInstance = new RetryPolicy(new TransientErrorCatchAllStrategy(), RetryStrategy.DefaultProgressive);
 
-        private static readonly RetryPolicy defaultExponential = new RetryPolicy(new TransientErrorCatchAllStrategy(), RetryStrategy.DefaultExponential);
+        private static readonly RetryPolicy DefaultExponentialInstance = new RetryPolicy(new TransientErrorCatchAllStrategy(), RetryStrategy.DefaultExponential);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RetryPolicy" /> class with the specified number of retry attempts and parameters defining the progressive delay between retries.
@@ -98,7 +98,7 @@
         {
             get
             {
-                return RetryPolicy.noRetry;
+                return RetryPolicy.NoRetryInstance;
             }
         }
 
@@ -110,7 +110,7 @@
         {
             get
             {
-                return RetryPolicy.defaultFixed;
+                return RetryPolicy.DefaultFixedInstance;
             }
         }
 
@@ -122,7 +122,7 @@
         {
             get
             {
-                return RetryPolicy.defaultProgressive;
+                return RetryPolicy.DefaultProgressiveInstance;
             }
         }
 
@@ -134,7 +134,7 @@
         {
             get
             {
-                return RetryPolicy.defaultExponential;
+                return RetryPolicy.DefaultExponentialInstance;
             }
         }
 

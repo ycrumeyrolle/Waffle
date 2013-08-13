@@ -153,6 +153,5 @@
             cursor.Setup(x => x.SetOptions(It.IsAny<BsonDocument>())).Returns(cursor.Object);
             return cursor.Object;
         }
-
     }
 }

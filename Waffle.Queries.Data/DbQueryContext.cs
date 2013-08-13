@@ -6,6 +6,9 @@
     using Waffle.Internal;
     using Waffle.Queries;
 
+    /// <summary>
+    /// Represents a context to query with EntityFramework. 
+    /// </summary>
     public class DbQueryContext : IQueryContext
     {
         private readonly DbContext innerContext;

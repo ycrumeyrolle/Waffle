@@ -43,10 +43,10 @@
         /// whereas subsequent retries will remain subject to the retry interval.
         /// </summary>
         public static readonly bool DefaultFirstFastRetry = true;
-        private static readonly RetryStrategy noRetry = new FixedInterval(0, RetryStrategy.DefaultRetryInterval);
-        private static readonly RetryStrategy defaultFixed = new FixedInterval(RetryStrategy.DefaultClientRetryCount, RetryStrategy.DefaultRetryInterval);
-        private static readonly RetryStrategy defaultProgressive = new Incremental(RetryStrategy.DefaultClientRetryCount, RetryStrategy.DefaultRetryInterval, RetryStrategy.DefaultRetryIncrement);
-        private static readonly RetryStrategy defaultExponential = new ExponentialBackOff(RetryStrategy.DefaultClientRetryCount, RetryStrategy.DefaultMinBackOff, RetryStrategy.DefaultMaxBackOff, RetryStrategy.DefaultClientBackOff);
+        private static readonly RetryStrategy NoRetryInstance = new FixedInterval(0, RetryStrategy.DefaultRetryInterval);
+        private static readonly RetryStrategy DefaultFixedInstance = new FixedInterval(RetryStrategy.DefaultClientRetryCount, RetryStrategy.DefaultRetryInterval);
+        private static readonly RetryStrategy DefaultProgressiveInstance = new Incremental(RetryStrategy.DefaultClientRetryCount, RetryStrategy.DefaultRetryInterval, RetryStrategy.DefaultRetryIncrement);
+        private static readonly RetryStrategy DefaultExponentialInstance = new ExponentialBackOff(RetryStrategy.DefaultClientRetryCount, RetryStrategy.DefaultMinBackOff, RetryStrategy.DefaultMaxBackOff, RetryStrategy.DefaultClientBackOff);
         
         /// <summary>
         /// Initializes a new instance of the <see cref="RetryStrategy" /> class. 
@@ -66,7 +66,7 @@
         {
             get
             {
-                return RetryStrategy.noRetry;
+                return RetryStrategy.NoRetryInstance;
             }
         }
 
@@ -78,7 +78,7 @@
         {
             get
             {
-                return RetryStrategy.defaultFixed;
+                return RetryStrategy.DefaultFixedInstance;
             }
         }
 
@@ -90,7 +90,7 @@
         {
             get
             {
-                return RetryStrategy.defaultProgressive;
+                return RetryStrategy.DefaultProgressiveInstance;
             }
         }
 
@@ -102,7 +102,7 @@
         {
             get
             {
-                return RetryStrategy.defaultExponential;
+                return RetryStrategy.DefaultExponentialInstance;
             }
         }
 

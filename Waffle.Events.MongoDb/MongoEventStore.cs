@@ -10,29 +10,53 @@
     using MongoDB.Driver.Builders;
     using Waffle.Tasks;
 
+    /// <summary>
+    /// Represents a store with MongoDB.
+    /// </summary>
     public class MongoEventStore : IEventStore
     {
         private readonly string databaseName;
 
         private readonly Func<MongoClient> clientFactory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoEventStore"/> class.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="databaseName">The database name.</param>
         public MongoEventStore(string connectionString, string databaseName)
         {
             this.clientFactory = () => new MongoClient(connectionString);
             this.databaseName = databaseName;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoEventStore"/> class.
+        /// </summary>
+        /// <param name="clientSettings">The <see cref="MongoClientSettings"/>.</param>
+        /// <param name="databaseName">The database name.</param>
         public MongoEventStore(MongoClientSettings clientSettings, string databaseName)
         {
             this.clientFactory = () => new MongoClient(clientSettings);
             this.databaseName = databaseName;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoEventStore"/> class.
+        /// </summary>
+        /// <param name="url">The MongoURL.</param>
+        /// <param name="databaseName">The database name.</param>
         public MongoEventStore(MongoUrl url, string databaseName)
             : this(MongoClientSettings.FromUrl(url), databaseName)
         {
         }
 
+        /// <summary>
+        /// Stores an event.
+        /// </summary>
+        /// <param name="event">The <see cref="IEvent"/> to store.</param>
+        /// <param name="cancellationToken">A cancellation token.</param>
+        /// <returns>A <see cref="Task"/> of the storing.</returns>
         public Task StoreAsync(IEvent @event, CancellationToken cancellationToken)
         {
             try
@@ -48,6 +72,12 @@
             }
         }
 
+        /// <summary>
+        /// Load a collection of events.
+        /// </summary>
+        /// <param name="sourceId">The event source identifier.</param>
+        /// <param name="cancellationToken">A cancellation token.</param>
+        /// <returns>A <see cref="Task"/> of <see cref="ICollection{IEvent}"/> containing the <see cref="IEvent"/>.</returns>
         public Task<ICollection<IEvent>> LoadAsync(Guid sourceId, CancellationToken cancellationToken)
         {
             try
@@ -65,6 +95,10 @@
             }
         }
 
+        /// <summary>
+        /// Retrives the <see cref="MongoCollection"/>.
+        /// </summary>
+        /// <returns>The <see cref="MongoCollection"/>.</returns>
         protected virtual MongoCollection<EventWrapper> GetCollection()
         {
             MongoClient client = this.clientFactory();
