@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+    <metadata>
+        <id>Waffle.Events.MongoDb</id>
+        <version>1.0.0</version>
+        <title>Event sourcing with MongoDB for Waffle</title>
+        <authors>Yann Crumeyrolle</authors>
+        <owners>Yann Crumeyrolle</owners>
+        <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+        <projectUrl>https://github.com/Murk59/Waffle</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>MongoDB implementation for event sourcing with Waffle.</description>
+        <summary />
+        <copyright />
+        <tags>command event pattern processor processing CQRS NoSQL Mongodb sourcing</tags>
+        <dependencies>
+            <dependency id="Waffle" />
+            <dependency id="mongocsharpdriver" version="1.8.1" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="Waffle.Unity\bin\Release\Waffle.Events.MongoDb.dll" target="lib\net40\Waffle.Events.MongoDb.dll" />
+        <file src="Waffle.Unity\bin\Release\Waffle.Events.MongoDb.XML" target="lib\net40\Waffle.Events.MongoDb.XML" />
+    </files>
+</package>

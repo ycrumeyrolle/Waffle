@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+    <metadata>
+        <id>Waffle.Queries.Data</id>
+        <version>1.0.0</version>
+        <title>Queries with Entity Frameword for Waffle</title>
+        <authors>Yann Crumeyrolle</authors>
+        <owners>Yann Crumeyrolle</owners>
+        <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+        <projectUrl>https://github.com/Murk59/Waffle</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Entity Framework implementation for Queries with Waffle.</description>
+        <summary />
+        <copyright />
+        <tags>command event pattern processor processing CQRS Entity Framework EF query</tags>
+        <dependencies>
+            <dependency id="Waffle" />
+            <dependency id="EntityFramework" version="5.0.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="Waffle.Unity\bin\Release\Waffle.Queries.Data.dll" target="lib\net40\Waffle.Queries.Data.dll" />
+        <file src="Waffle.Unity\bin\Release\Waffle.Queries.Data.XML" target="lib\net40\Waffle.Queries.Data.XML" />
+    </files>
+</package>
