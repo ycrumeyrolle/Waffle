@@ -1,23 +1,24 @@
-CommandProcessor
+Waffle
 ================
-The command processor aims to implement the command pattern in an extensible way. 
+This command processor aims to implement the command pattern in an extensible way. 
 
 
 Features
 ========
 * Command validation, based on DataAnnotations and IValidatableObject
 * Command handling, with children handlers possiblity
-* Dependency scope management
+* Fully configurable dependency scope management (default implementation with Unity)
 * Asynchronous execution
 * Handler filtering to wrap generic behaviour
 * Result caching possibilities
 * Transactionnal execution possibilities
 * Events messaging possibilities
-* Event sourcing (coming soon... with replay capability)
+* Event sourcing (default implementation with MongoDB)
+* Retry capability with policy configuration
 
 Usage
 =====
-<pre>
+```C#
 // Command without return value
 var command = new SendEmailCommand
 {
@@ -33,9 +34,9 @@ using (CommandProcessor processor = new CommandProcessor())
   // The processor will find the handler and delegates to it the action
   processor.Process(command);
 }
-</pre>
+```
 
-<pre>
+```C#
 // Command with return value
 var command = new ComputePricingCommand
 {
@@ -49,5 +50,5 @@ using (CommandProcessor processor = new CommandProcessor())
   Pricing result = processor.Process<Pricing>(command);
   Console.WriteLine("The pricing is : " + result.Amount);
 }
-</pre>
+```
 
