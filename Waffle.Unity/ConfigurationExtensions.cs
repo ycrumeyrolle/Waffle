@@ -77,7 +77,7 @@
                 case HandlerLifetime.PerRequest:
                     return new HierarchicalLifetimeManager();
 
-                case HandlerLifetime.Processor:
+                case HandlerLifetime.Singleton:
                     return new ContainerControlledLifetimeManager();
 
                 default:

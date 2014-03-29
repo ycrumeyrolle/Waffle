@@ -170,7 +170,7 @@
             DependencyScope scope = this.CreateDependencyScope();
 
             // Act
-            scope.RegisterHandlers(config);
+            config.RegisterHandlers(container.Object);
         }
 
         private DependencyScope CreateDependencyScope()
@@ -279,9 +279,8 @@
             /// Handle the command.
             /// </summary>
             /// <param name="command">The <see cref="ICommand"/> to process.</param>
-            /// <param name="context">The <see cref="CommandHandlerContext"/>.</param>
             /// <returns>The result object.</returns>
-            public void Handle(FakeCommand command, CommandHandlerContext context)
+            public void Handle(FakeCommand command)
             {
                 throw new NotImplementedException();
             }
@@ -290,14 +289,13 @@
             /// Handle the event.
             /// </summary>
             /// <param name="event">The <see cref="IEvent"/> to handle.</param>
-            /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
-            public void Handle(FakeEvent @event, EventHandlerContext context)
+            public void Handle(FakeEvent @event)
             {
                 throw new NotImplementedException();
             }
         }
 
-        [HandlerLifetime(HandlerLifetime.Processor)]
+        [HandlerLifetime(HandlerLifetime.Singleton)]
         private class FakeProcessorHandler : MessageHandler,
             IEventHandler<FakeEvent>
         {
@@ -305,8 +303,7 @@
             /// Handle the event.
             /// </summary>
             /// <param name="event">The <see cref="IEvent"/> to handle.</param>
-            /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
-            public void Handle(FakeEvent @event, EventHandlerContext context)
+            public void Handle(FakeEvent @event)
             {
                 throw new NotImplementedException();
             }
@@ -320,8 +317,7 @@
             /// Handle the event.
             /// </summary>
             /// <param name="event">The <see cref="IEvent"/> to handle.</param>
-            /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
-            public void Handle(FakeEvent @event, EventHandlerContext context)
+            public void Handle(FakeEvent @event)
             {
                 throw new NotImplementedException();
             }

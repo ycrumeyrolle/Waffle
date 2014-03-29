@@ -7,7 +7,7 @@
     /// <summary>
     /// Represents a base implementation of the command handler and the event handler. 
     /// </summary>
-    public abstract class MessageHandler : ICommandHandler
+    public abstract class MessageHandler : ICommandHandler, IEventHandler
     {
         public CommandHandlerContext CommandContext { get; set; }
 
