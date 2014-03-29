@@ -122,7 +122,7 @@
         /// <summary>
         /// Releases the unmanaged resources used by the <see cref="DependencyScope"/> and optionally releases the managed resources.
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources. </param>
+        /// <param name="disposing"><see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources. </param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -186,9 +186,9 @@
                 case HandlerLifetime.PerRequest:
                     return new HierarchicalLifetimeManager();
 
-                case HandlerLifetime.Processor:
+                case HandlerLifetime.Singleton:
                     return new ContainerControlledLifetimeManager();
-
+                    
                 default:
                     throw new InvalidEnumArgumentException("handlerLifetime", (int)handlerLifetime, typeof(HandlerLifetime));
             }

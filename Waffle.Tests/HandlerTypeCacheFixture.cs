@@ -77,7 +77,7 @@
             CommandHandlerTypeCache cache = new CommandHandlerTypeCache(this.defaultConfig);
 
             // Act 
-            var result = cache.GetHandlerTypes(typeof(Command));
+            var result = cache.GetHandlerTypes(typeof(ICommand));
 
             // Assert
             Assert.IsNotNull(result);

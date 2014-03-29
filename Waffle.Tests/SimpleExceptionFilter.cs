@@ -22,12 +22,12 @@ namespace Waffle.Tests
             this.handle = handle;
         }
 
-        public override void OnException(HandlerExecutedContext handlerExecutedContext)
+        public override void OnException(CommandHandlerExecutedContext handlerExecutedContext)
         {
             base.OnException(handlerExecutedContext);
             if (this.handle)
             {
-                handlerExecutedContext.Result = true;
+                handlerExecutedContext.Response = handlerExecutedContext.Request.CreateResponse(true);
                 Trace.WriteLine("Exception handled by  " + this.name);
             }
         }

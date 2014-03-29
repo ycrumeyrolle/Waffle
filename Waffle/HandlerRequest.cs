@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using Waffle.Dependencies;
     using Waffle.Internal;
 
@@ -32,11 +33,13 @@
             }
 
             this.Configuration = configuration;
+            this.Properties = new Dictionary<string, object>();
 
             this.ParentRequest = parentRequest;
             if (parentRequest != null)
             {
                 this.Processor = parentRequest.Processor;
+                this.CancellationToken = parentRequest.CancellationToken;
             }
         }
 
@@ -75,6 +78,10 @@
         /// </summary>
         /// <value>The message <see cref="System.Type"/>.</value>
         public Type MessageType { get; protected set; }
+
+        public CancellationToken CancellationToken { get; private set; }
+
+        public Dictionary<string, object> Properties { get; private set; }
 
         /// <summary>
         /// Provides a <see cref="IDependencyScope"/> for the request.
@@ -116,7 +123,7 @@
         /// <summary>
         /// Releases the unmanaged resources that are used by the object and releases the managed resources.
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources. </param>
+        /// <param name="disposing"><see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources. </param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -166,6 +173,21 @@
             {
                 HandlerRequest request = this.GetRootRequest(useDeepestRequest);
                 request.disposableResources.Add(disposableResource);
+            }
+        }
+        
+        /// <summary>
+        /// Unregisters a resource to be disposed at the end of the request.
+        /// </summary>
+        /// <param name="resource">The resource previously registered for dispose.</param> 
+        /// <param name="useDeepestRequest">Indicate whether to use the deepest request to find the the object registered.</param>
+        public void UnregisterForDispose(object resource, bool useDeepestRequest)
+        {
+            IDisposable disposableResource = resource as IDisposable;
+            if (disposableResource != null)
+            {
+                HandlerRequest request = this.GetRootRequest(useDeepestRequest);
+                request.disposableResources.Remove(disposableResource);
             }
         }
     }

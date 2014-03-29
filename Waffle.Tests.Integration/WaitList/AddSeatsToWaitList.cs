@@ -2,7 +2,7 @@
 {
     using Waffle.Commands;
 
-    public class AddSeatsToWaitList : Command
+    public class AddSeatsToWaitList : ICommand
     {
         public AddSeatsToWaitList()
         {

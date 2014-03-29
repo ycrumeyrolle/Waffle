@@ -13,7 +13,7 @@
         public void WhenInstanciatingDbQueryContextWithoutDbContextThenThrowsArgumentNullException()
         {
             // Act & assert
-            ExceptionAssert.ThrowsArgumentNull(() => new DbQueryContext(null), "innerContext");
+            ExceptionAssert.ThrowsArgumentNull(() => new DbQueryContext<FakeDbContext>(null), "innerContext");
         }
 
         [TestMethod]
@@ -23,7 +23,7 @@
             FakeDbContext context = CreateDbContext();
 
             // Act
-            DbQueryContext queryContext = new DbQueryContext(context);
+            DbQueryContext<FakeDbContext> queryContext = new DbQueryContext<FakeDbContext>(context);
 
             // Assert
             Assert.IsNotNull(queryContext);
@@ -34,7 +34,7 @@
         {
             // Arrange
             FakeDbContext context = CreateDbContext(10);
-            DbQueryContext queryContext = new DbQueryContext(context);
+            DbQueryContext<FakeDbContext> queryContext = new DbQueryContext<FakeDbContext>(context);
 
             // Act
             FakeEntity result = queryContext.Find<FakeEntity>("test3");
@@ -50,7 +50,7 @@
         {
             // Arrange
             FakeDbContext context = CreateDbContext(10);
-            DbQueryContext queryContext = new DbQueryContext(context);
+            DbQueryContext<FakeDbContext> queryContext = new DbQueryContext<FakeDbContext>(context);
 
             // Act
             var query = queryContext.Query<FakeEntity>();
@@ -68,7 +68,7 @@
         {
             // Arrange
             FakeDbContext context = CreateDbContext(10);
-            DbQueryContext queryContext = new DbQueryContext(context);
+            DbQueryContext<FakeDbContext> queryContext = new DbQueryContext<FakeDbContext>(context);
 
             // Act
             queryContext.Dispose();

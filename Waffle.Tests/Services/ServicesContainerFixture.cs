@@ -7,7 +7,6 @@
     using Moq;
     using Waffle.Commands;
     using Waffle.Dependencies;
-    using Waffle.Dispatcher;
     using Waffle.Filters;
     using Waffle.Interception;
     using Waffle.Services;

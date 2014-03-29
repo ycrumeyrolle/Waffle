@@ -16,7 +16,7 @@
         /// Raises the exception event.
         /// </summary>
         /// <param name="handlerExecutedContext">The context for the handler..</param>
-        public virtual void OnException(HandlerExecutedContext handlerExecutedContext)
+        public virtual void OnException(CommandHandlerExecutedContext handlerExecutedContext)
         {
         }
 
@@ -26,7 +26,7 @@
         /// <param name="handlerExecutedContext">The handler executed context.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>An asynchronous exception filter.</returns>
-        Task IExceptionFilter.ExecuteExceptionFilterAsync(HandlerExecutedContext handlerExecutedContext, CancellationToken cancellationToken)
+        Task IExceptionFilter.ExecuteExceptionFilterAsync(CommandHandlerExecutedContext handlerExecutedContext, CancellationToken cancellationToken)
         {
             if (handlerExecutedContext == null)
             {

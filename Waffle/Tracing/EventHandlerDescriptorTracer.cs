@@ -21,8 +21,8 @@
 
         public EventHandlerDescriptorTracer(EventHandlerDescriptor innerDescriptor, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerDescriptor != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerDescriptor != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerDescriptor = innerDescriptor;
             this.traceWriter = traceWriter;

@@ -4,7 +4,6 @@
     using System.Reflection;
     using Waffle;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Waffle.Dispatcher;
 
     [TestClass]
     public class DefaultAssembliesResolverFixture

@@ -1,13 +1,14 @@
 ﻿namespace Waffle.Tests
 {
     using System.Diagnostics;
+    using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Filters;
     using Waffle.Tests.Commands;
 
-    public class ResultingCommandHandler : CommandHandler<ResultingCommand, string>
+    public class ResultingCommandHandler : MessageHandler, ICommandHandler<ResultingCommand, string>
     {
-        public override string Handle(ResultingCommand command, CommandHandlerContext context)
+        public  string Handle(ResultingCommand command)
         {
             Trace.WriteLine("Property1 : " + command.Property1);
 

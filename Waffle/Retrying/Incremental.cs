@@ -50,7 +50,7 @@
         /// <param name="retryCount">The number of retry attempts.</param>
         /// <param name="initialInterval">The initial interval that will apply for the first retry.</param>
         /// <param name="increment">The incremental time value that will be used to calculate the progressive delay between retries.</param>
-        /// <param name="firstFastRetry"><c>true</c> to immediately retry in the first attempt; otherwise, <c>false</c>. The subsequent retries will remain subject to the configured retry interval.</param>
+        /// <param name="firstFastRetry"><see langword="true"/> to immediately retry in the first attempt; otherwise, <see langword="false"/>. The subsequent retries will remain subject to the configured retry interval.</param>
         public Incremental(string name, int retryCount, TimeSpan initialInterval, TimeSpan increment, bool firstFastRetry)
             : base(name, firstFastRetry)
         {

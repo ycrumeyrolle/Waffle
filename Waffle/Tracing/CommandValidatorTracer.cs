@@ -15,8 +15,8 @@
 
         public CommandValidatorTracer(ICommandValidator innerValidator, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerValidator != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerValidator != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerValidator = innerValidator;
             this.traceWriter = traceWriter;

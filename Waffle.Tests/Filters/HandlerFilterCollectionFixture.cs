@@ -97,14 +97,10 @@
         [TestMethod]
         public void WhenEnumeratingThenIterates()
         {
-            int counter = 0;
             this.collection.Add(this.filter);
             this.collection.Add(this.filter);
 
-            foreach (var item in (IEnumerable)this.collection)
-            {
-                counter++;
-            }
+            int counter = this.collection.Cast<object>().Count();
 
             Assert.AreEqual(2, counter);
         }

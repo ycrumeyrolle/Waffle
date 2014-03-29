@@ -10,6 +10,7 @@
     using Waffle;
     using Waffle.Commands;
     using Waffle.Filters;
+    using System.Threading.Tasks;
 
     [TestClass]
     public sealed class CommandProcessorWithUnityFixture : IDisposable
@@ -23,7 +24,7 @@
         private readonly Mock<ICommandHandlerTypeResolver> resolver = new Mock<ICommandHandlerTypeResolver>();
 
         [TestMethod]
-        public void WhenProcessingValidCommandThenCommandIsProcessed()
+        public async void WhenProcessingValidCommandThenCommandIsProcessed()
         {
             // Arrange
             this.resolver
@@ -37,10 +38,10 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = processor.Process<string>(command);
+            var result = await processor.ProcessAsync<string>(command);
 
             // Assert
-            Assert.AreEqual("OK", result);
+            Assert.AreEqual("OK", result.Value);
             service.Verify(s => s.Execute(), Times.Once());
         }
         
@@ -85,13 +86,13 @@
             }
         }
 
-        public class InvalidCommand : Command
+        public class InvalidCommand : ICommand
         {
             [Required]
             public string Property { get; set; }
         }
 
-        public class ValidCommand : Command
+        public class ValidCommand : ICommand
         {
             public ValidCommand()
             {
@@ -102,7 +103,7 @@
             public string Property { get; set; }
         }
 
-        public class ValidCommandHandler : CommandHandler<ValidCommand, string>
+        public class ValidCommandHandler : CommandHandler, ICommandHandler<ValidCommand, string>
         {
             public ValidCommandHandler(ISimpleService service)
             {
@@ -111,14 +112,14 @@
 
             public ISimpleService Service { get; set; }
 
-            public override string Handle(ValidCommand command, CommandHandlerContext context)
+            public string Handle(ValidCommand command)
             {
                 this.Service.Execute();
                 return "OK";
             }
         }
 
-        public class ValidCommandHandlerWithoutResult : CommandHandler<ValidCommand>
+        public class ValidCommandHandlerWithoutResult : CommandHandler, ICommandHandler<ValidCommand>
         {
             public ValidCommandHandlerWithoutResult(ISimpleService service)
             {
@@ -127,7 +128,7 @@
 
             public ISimpleService Service { get; set; }
 
-            public override void Handle(ValidCommand command, CommandHandlerContext context)
+            public void Handle(ValidCommand command)
             {
                 this.Service.Execute();
             }

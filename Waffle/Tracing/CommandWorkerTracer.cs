@@ -16,8 +16,8 @@
 
         public CommandWorkerTracer(ICommandWorker innerWorker, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerWorker != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerWorker != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerWorker = innerWorker;
             this.traceWriter = traceWriter;
@@ -36,7 +36,7 @@
             }
         }
 
-        public Task<TResult> ExecuteAsync<TResult>(CommandHandlerRequest request)
+        public Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request)
         {
             return this.TraceWriter.TraceBeginEnd(
                request,
@@ -45,7 +45,7 @@
                this.Inner.GetType().Name,
                ExecuteMethodName,
                beginTrace: null,
-               execute: () => this.Inner.ExecuteAsync<TResult>(request),
+               execute: () => this.Inner.ExecuteAsync(request),
                endTrace: null,
                errorTrace: null);
         }

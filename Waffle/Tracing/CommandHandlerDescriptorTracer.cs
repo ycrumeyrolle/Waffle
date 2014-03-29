@@ -5,8 +5,12 @@
     using System.Collections.ObjectModel;
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
+    using System.Globalization;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Filters;
+    using Waffle.Internal;
     using Waffle.Properties;
 
     /// <summary>
@@ -16,13 +20,15 @@
     {
         private const string CreateHandlerMethodName = "CreateHandler";
 
+        private const string ExecuteAsyncMethodName = "ExecuteAsync";
+
         private readonly CommandHandlerDescriptor innerDescriptor;
         private readonly ITraceWriter traceWriter;
 
         public CommandHandlerDescriptorTracer(CommandHandlerDescriptor innerDescriptor, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerDescriptor != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerDescriptor != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerDescriptor = innerDescriptor;
             this.traceWriter = traceWriter;
@@ -118,6 +124,28 @@
             }
 
             return new Collection<FilterInfo>(returnFilters);
+        }
+
+        public override Task<object> ExecuteAsync(CommandHandlerContext context, CancellationToken cancellationToken)
+        {
+            if (context == null)
+            {
+                throw Error.ArgumentNull("context");
+            }
+
+            return this.traceWriter.TraceBeginEndAsync(
+                 context.Request,
+                 TraceCategories.HandlersCategory,
+                 TraceLevel.Info,
+                 this.innerDescriptor.GetType().Name,
+                 ExecuteAsyncMethodName,
+                 beginTrace: null,
+                 execute: () => this.innerDescriptor.ExecuteAsync(context, cancellationToken),
+                 endTrace: (tr, value) => 
+                     {
+                         tr.Message = Error.Format("Handler returnd '{0}'.", FormattingUtilities.ValueToString(value, CultureInfo.CurrentCulture));
+                     },
+                 errorTrace: null);
         }
     }
 }

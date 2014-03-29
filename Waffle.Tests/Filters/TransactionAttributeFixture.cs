@@ -1,13 +1,21 @@
 ﻿namespace Waffle.Tests.Filters
 {
     using System;
+    using System.Runtime.ExceptionServices;
     using System.Transactions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Waffle.Filters;
 
     [TestClass]
-    public class TransactionttributeFixture
+    public class TransactionttributeFixture : IDisposable
     {
+        private ProcessorConfiguration config;
+
+        public TransactionttributeFixture()
+        {
+            this.config = new ProcessorConfiguration();
+        }
+
         [TestMethod]
         public void WhenCreatingInstanceThenPropertiesAreDefined()
         {
@@ -25,9 +33,11 @@
         {
             // Arrange
             TransactionFilterAttribute filter = new TransactionFilterAttribute();
+            HandlerRequest request = new HandlerRequest(this.config, null);
             CommandHandlerContext executingContext = new CommandHandlerContext();
-            executingContext.Result = "OK";
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, null);
+
+            executingContext.SetResponse("OK");
+            CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(executingContext, null);
 
             // Act
             filter.OnCommandExecuting(executingContext);
@@ -44,7 +54,9 @@
             // Arrange
             TransactionFilterAttribute filter = new TransactionFilterAttribute();
             CommandHandlerContext executingContext = new CommandHandlerContext();
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, new Exception());
+            Exception exception = new Exception();
+            ExceptionDispatchInfo exceptionInfo = ExceptionDispatchInfo.Capture(exception);
+            CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(executingContext, exceptionInfo);
 
             // Act
             filter.OnCommandExecuting(executingContext);
@@ -54,23 +66,33 @@
             // Assert
             Assert.AreEqual(TransactionStatus.Aborted, transaction.TransactionInformation.Status);
         }
-        
+
         [TestMethod]
         public void WhenInvokingFilterWithHandledExceptionThenTransactionCompletes()
         {
             // Arrange
             TransactionFilterAttribute filter = new TransactionFilterAttribute();
             CommandHandlerContext executingContext = new CommandHandlerContext();
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(executingContext, new Exception());
-            executedContext.Result = "Exception handled";
+            Exception exception = new Exception();
+            ExceptionDispatchInfo exceptionInfo = ExceptionDispatchInfo.Capture(exception);
+            CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(executingContext, exceptionInfo);
+            executingContext.SetResponse("Exception handled");
 
             // Act
             filter.OnCommandExecuting(executingContext);
-            Transaction transaction = Transaction.Current.Clone(); 
+            Transaction transaction = Transaction.Current.Clone();
             filter.OnCommandExecuted(executedContext);
 
             // Assert 
             Assert.AreEqual(TransactionStatus.Committed, transaction.TransactionInformation.Status);
+        }
+
+        public void Dispose()
+        {
+            if (this.config != null)
+            {
+                this.config.Dispose();
+            }
         }
     }
 }

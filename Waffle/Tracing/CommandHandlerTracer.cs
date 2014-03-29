@@ -21,8 +21,8 @@
 
         public CommandHandlerTracer(HandlerRequest request, ICommandHandler innerCommandHandler, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerCommandHandler != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerCommandHandler != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerCommandHandler = innerCommandHandler;
             this.request = request;
@@ -40,6 +40,12 @@
             {
                 return this.traceWriter;
             }
+        }
+
+        public CommandHandlerContext CommandContext
+        {
+            get { return this.innerCommandHandler.CommandContext; }
+            set { this.innerCommandHandler.CommandContext = value; }
         }
 
         void IDisposable.Dispose()
@@ -64,23 +70,50 @@
         /// Handle the command.
         /// </summary>
         /// <param name="command">The <see cref="ICommand"/> to process.</param>
-        /// <param name="context">The <see cref="CommandHandlerContext"/>.</param>
         /// <returns>The result object.</returns>
-        public object Handle(ICommand command, CommandHandlerContext context)
+        public void Handle(ICommand command)
         {
-            return this.TraceWriter.TraceBeginEnd<object>(
-                context.Request,
+            this.TraceWriter.TraceBeginEnd<object>(
+                this.innerCommandHandler.CommandContext.Request,
                 TraceCategories.HandlersCategory,
                 TraceLevel.Info,
                 this.Inner.GetType().Name,
                 HandleMethodName,
                 beginTrace: null,
-                execute: () => ((dynamic)this.Inner).Handle(command, context),
+                execute: () =>
+                {
+                    // Critical to allow wrapped handler to have itself in CommandContext
+                    this.innerCommandHandler.CommandContext.Handler = ActualHandler(this.innerCommandHandler.CommandContext.Handler);
+                    return ExecuteCore(command, this.innerCommandHandler.CommandContext);
+                },
                 endTrace: tr =>
                     {
                         tr.Message = Error.Format(Resources.TraceHandlerExecutedMessage, request.MessageType.FullName);
                     },
                 errorTrace: null);
+        }
+
+        public static ICommandHandler ActualHandler(ICommandHandler handler)
+        {
+            CommandHandlerTracer tracer = handler as CommandHandlerTracer;
+            return tracer == null ? handler : tracer.innerCommandHandler;
+        }
+
+        private dynamic ExecuteCore(ICommand command, CommandHandlerContext context)
+        {
+            try
+            {
+                return ((dynamic)this.Inner).Handle(command, context);
+            }
+            finally
+            {
+                IDisposable disposable = this.Inner as IDisposable;
+
+                if (disposable != null)
+                {
+                    this.request.UnregisterForDispose(disposable, true);
+                }
+            }
         }
     }
 }

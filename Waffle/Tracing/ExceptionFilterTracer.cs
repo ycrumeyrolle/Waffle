@@ -59,7 +59,7 @@
         /// <param name="handlerExecutedContext">The handler executed context.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>An asynchronous exception filter.</returns>
-        public Task ExecuteExceptionFilterAsync(HandlerExecutedContext handlerExecutedContext, CancellationToken cancellationToken)
+        public Task ExecuteExceptionFilterAsync(CommandHandlerExecutedContext handlerExecutedContext, CancellationToken cancellationToken)
         {
             return this.TraceWriter.TraceBeginEndAsync(
                 handlerExecutedContext.Request, 
@@ -67,9 +67,9 @@
                 TraceLevel.Info, 
                 this.InnerExceptionFilter.GetType().Name, 
                 ExecuteExceptionFilterAsyncMethodName,
-                beginTrace: tr => tr.Exception = handlerExecutedContext.Exception,
+                beginTrace: tr => tr.Exception = handlerExecutedContext.ExceptionInfo.SourceException,
                 execute: () => this.InnerExceptionFilter.ExecuteExceptionFilterAsync(handlerExecutedContext, cancellationToken),
-                endTrace: tr => tr.Exception = handlerExecutedContext.Exception, 
+                endTrace: tr => tr.Exception = handlerExecutedContext.ExceptionInfo.SourceException, 
                 errorTrace: null);
         }
     }

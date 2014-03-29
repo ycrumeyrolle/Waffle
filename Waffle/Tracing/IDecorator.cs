@@ -5,7 +5,7 @@
     /// </summary>
     /// <typeparam name="T">
     /// </typeparam>
-    public interface IDecorator<T>
+    public interface IDecorator<out T>
     {
         /// <summary>
         /// Gets the inner.

@@ -2,7 +2,7 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
+    using System.Runtime.ExceptionServices;
     using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Filters;
@@ -20,6 +20,9 @@
         /// Occurs before the handle method is invoked.
         /// </summary>
         /// <param name="handlerContext">The handler context.</param>
+        /// <remarks>
+        /// Overrides this method to add a behaviour before a command in a non-asynchronous way.
+        /// </remarks>
         public virtual void OnCommandExecuting(CommandHandlerContext handlerContext)
         {
         }
@@ -28,20 +31,67 @@
         /// Occurs after the handle method is invoked.
         /// </summary>
         /// <param name="handlerExecutedContext">The handler executed context.</param>
-        public virtual void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)
+        /// <remarks>
+        /// Overrides this method to add a behaviour after a command in a non-asynchronous way.
+        /// </remarks>
+        public virtual void OnCommandExecuted(CommandHandlerExecutedContext handlerExecutedContext)
         {
         }
 
         /// <summary>
+        /// Occurs before the handle method is invoked.
+        /// </summary>
+        /// <param name="handlerContext">The handler context.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+        /// <remarks>
+        /// Overrides this method to add a behaviour before a command in a asynchronous way.
+        /// </remarks>
+       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "exception is flowed through the task")]
+        public virtual Task OnCommandExecutingAsync(CommandHandlerContext handlerContext, CancellationToken cancellationToken)
+        {
+            try
+            {
+                this.OnCommandExecuting(handlerContext);
+            }
+            catch (Exception ex)
+            {
+                return TaskHelpers.FromError(ex);
+            }
+
+            return TaskHelpers.Completed();
+        }
+
+        /// <summary>
+        /// Occurs after the handle method is invoked.
+        /// </summary>
+        /// <param name="handlerExecutedContext">The handler context.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+       /// <remarks>
+       /// Overrides this method to add a behaviour after a command in a asynchronous way.
+       /// </remarks>
+       [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "exception is flowed through the task")]
+        public virtual Task OnCommandExecutedAsync(CommandHandlerExecutedContext handlerExecutedContext, CancellationToken cancellationToken)
+        {
+            try
+            {
+                this.OnCommandExecuted(handlerExecutedContext);
+            }
+            catch (Exception ex)
+            {
+                return TaskHelpers.FromError(ex);
+            }
+
+            return TaskHelpers.Completed();
+        }
+        
+        /// <summary>
         /// Executes the filter handler asynchronously.
         /// </summary>
-        /// <typeparam name="TResult">The handler result type.</typeparam>
         /// <param name="handlerContext">The handler context.</param>
         /// <param name="cancellationToken">The cancellation token assigned for this task.</param>
         /// <param name="continuation">The delegate function to continue after the handler method is invoked.</param>
         /// <returns>The newly created task for this operation.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We want to intercept all exceptions")]
-        public Task<TResult> ExecuteHandlerFilterAsync<TResult>(CommandHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<TResult>> continuation)
+        public Task<HandlerResponse> ExecuteHandlerFilterAsync(CommandHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<HandlerResponse>> continuation)
         {
             if (handlerContext == null)
             {
@@ -52,75 +102,79 @@
             {
                 throw Error.ArgumentNull("continuation");
             }
+            
+            return this.ExecuteHandlerFilterAsyncCore(handlerContext, cancellationToken, continuation);
+        }
+
+        private async Task<HandlerResponse> ExecuteHandlerFilterAsyncCore(CommandHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<HandlerResponse>> continuation)
+        {
+            await this.OnCommandExecutingAsync(handlerContext, cancellationToken);
+
+            if (handlerContext.Response != null)
+            {
+                return handlerContext.Response;
+            }
+
+            return await this.CallOnHandlerExecutedAsync(handlerContext, cancellationToken, continuation);
+        }
+
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We want to intercept all exceptions")]
+        private async Task<HandlerResponse> CallOnHandlerExecutedAsync(CommandHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<HandlerResponse>> continuation)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            HandlerResponse response = null;
+            ExceptionDispatchInfo exceptionInfo = null;
+            try
+            {
+                response = await continuation();
+            }
+            catch (Exception e)
+            {
+                exceptionInfo = ExceptionDispatchInfo.Capture(e);
+            }
+
+            CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(handlerContext, exceptionInfo)
+            {
+                Response = response
+            };
 
             try
             {
-                this.OnCommandExecuting(handlerContext);
+                await this.OnCommandExecutedAsync(executedContext, cancellationToken);
             }
-            catch (Exception exception)
+            catch
             {
-                return TaskHelpers.FromError<TResult>(exception);
+                // Catch is running because OnCommandExecuted threw an exception, so we just want to re-throw.
+                // We also need to reset the response to forget about it since a filter threw an exception.
+                handlerContext.Response = null;
+                throw;
             }
 
-            if (handlerContext.Result != null)
+            if (executedContext.Response != null)
             {
-                return TaskHelpers.FromResult((TResult)handlerContext.Result);
+                return executedContext.Response;
             }
 
-            Task<TResult> task = continuation();
-            bool calledOnActionExecuted = false;
-
-            return task.Then(
-                response =>
+            if (executedContext.ExceptionInfo != null)
+            {
+                if (exceptionInfo == null)
                 {
-                    calledOnActionExecuted = true;
-                    Tuple<object, Exception> tuple = this.CallOnHandlerExecuted<TResult>(handlerContext, response);
-
-                    if (tuple.Item1 == null)
-                    {
-                        return TaskHelpers.FromError<TResult>(tuple.Item2);
-                    }
-
-                    return TaskHelpers.FromResult((TResult)tuple.Item1);
-                },
-                cancellationToken).Catch(
-                info =>
+                    executedContext.ExceptionInfo.Throw();
+                }
+                else
                 {
-                    // If we've already called OnActionExecuted, that means this catch is running because
-                    // OnActionExecuted threw an exception, so we just want to re-throw the exception rather
-                    // that calling OnActionExecuted again. We also need to reset the response to forget about it
-                    // since a filter threw an exception.
-                    if (calledOnActionExecuted)
+                    Exception newException = executedContext.ExceptionInfo.SourceException;
+                    Exception exception = exceptionInfo.SourceException;
+                    if (newException == exception)
                     {
-                        handlerContext.Result = null;
-                        return info.Throw();
+                        exceptionInfo.Throw();
                     }
-
-                    Tuple<object, Exception> result = this.CallOnHandlerExecuted<TResult>(handlerContext, null, info.Exception);
-                    return result.Item1 != null ? info.Handled((TResult)result.Item1) : info.Throw(result.Item2);
-                },
-                cancellationToken);
-        }
-
-        private Tuple<object, Exception> CallOnHandlerExecuted<TResult>(CommandHandlerContext handlerContext, object response = null, Exception exception = null)
-        {
-            Contract.Requires(handlerContext != null);
-            Contract.Requires(response != null || exception != null);
-
-            HandlerExecutedContext handlerExecutedContext = new HandlerExecutedContext(handlerContext, exception)
-            {
-                Result = response
-            };
-
-            this.OnCommandExecuted(handlerExecutedContext);
-            if (handlerExecutedContext.Result != null)
-            {
-                return new Tuple<object, Exception>(handlerExecutedContext.Result, null);
-            }
-
-            if (handlerExecutedContext.Exception != null)
-            {
-                return new Tuple<object, Exception>(default(TResult), handlerExecutedContext.Exception);
+                    else
+                    {
+                        executedContext.ExceptionInfo.Throw();
+                    }
+                }
             }
 
             throw Error.InvalidOperation(Resources.HandlerFilterAttribute_MustSupplyResponseOrException, this.GetType().Name);

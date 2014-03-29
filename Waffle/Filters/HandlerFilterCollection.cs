@@ -2,6 +2,7 @@
 {
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using Waffle.Internal;
 
@@ -85,6 +86,8 @@
 
         private void AddInternal(FilterInfo filter)
         {
+            Contract.Requires(this.filters != null);
+
             this.filters.Add(filter);
         }
     }

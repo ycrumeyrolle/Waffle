@@ -19,11 +19,7 @@
         {
             Contract.Requires(values != null);
 
-            T[] array = values as T[];
-            if (array == null)
-            {
-                array = values.ToArray();
-            }
+            T[] array = values as T[] ?? values.ToArray();
 
             return array;
         }
@@ -43,11 +39,7 @@
             }
 
             // Check for IList so that collection can wrap it instead of copying
-            IList<T> list = enumerable as IList<T>;
-            if (list == null)
-            {
-                list = new List<T>(enumerable);
-            }
+            IList<T> list = enumerable as IList<T> ?? new List<T>(enumerable);
 
             return new Collection<T>(list);
         }

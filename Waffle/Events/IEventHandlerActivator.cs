@@ -1,6 +1,5 @@
 namespace Waffle.Events
 {
-    using Waffle.Commands;
     using Waffle.Filters;
 
     /// <summary>

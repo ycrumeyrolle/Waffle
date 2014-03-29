@@ -14,16 +14,16 @@
         /// <summary>
         /// The handlers category.
         /// </summary>
-        public static readonly string HandlersCategory = "Handlers";
+        public const string HandlersCategory = "Handlers";
 
         /// <summary>
         /// The filters category.
         /// </summary>
-        public static readonly string FiltersCategory = "Filters";
+        public const string FiltersCategory = "Filters";
 
         /// <summary>
         /// The request category.
         /// </summary>
-        public static readonly string RequestsCategory = "Requests";
+        public const string RequestsCategory = "Requests";
     }
 }

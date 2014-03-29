@@ -19,7 +19,7 @@
         {
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
-            Command command = new UnvalidatableCommand { Property1 = "01234567" };
+            ICommand command = new UnvalidatableCommand { Property1 = "01234567" };
             CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
@@ -27,7 +27,7 @@
 
             // Assert
             Assert.IsTrue(result);
-            Assert.IsTrue(command.IsValid);
+            Assert.AreEqual(0, request.ModelState.Count);
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@
         {
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
-            Command command = new DataAnnotationsValidatableCommand { Property1 = "01234567" };
+            ICommand command = new DataAnnotationsValidatableCommand { Property1 = "01234567" };
             CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
@@ -43,8 +43,7 @@
 
             // Assert
             Assert.IsTrue(result);
-            Assert.IsTrue(command.IsValid);
-            Assert.AreEqual(0, command.ModelState.Count);
+            Assert.AreEqual(0, request.ModelState.Count);
         }
 
         [TestMethod]
@@ -52,7 +51,7 @@
         {
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
-            Command command = new DataAnnotationsValidatableCommand { Property1 = "01234567890123456789" };
+            ICommand command = new DataAnnotationsValidatableCommand { Property1 = "01234567890123456789" };
             CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
@@ -60,8 +59,7 @@
 
             // Assert
             Assert.IsFalse(result);
-            Assert.IsFalse(command.IsValid);
-            Assert.AreEqual(1, command.ModelState.Count);
+            Assert.AreEqual(1, request.ModelState.Count);
         }
         
         [TestMethod]
@@ -69,7 +67,7 @@
         {
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
-            Command command = new ValidatableObjectCommand(true);
+            ICommand command = new ValidatableObjectCommand(true);
             CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
@@ -77,8 +75,7 @@
 
             // Assert
             Assert.IsTrue(result);
-            Assert.IsTrue(command.IsValid);
-            Assert.AreEqual(0, command.ModelState.Count);
+            Assert.AreEqual(0, request.ModelState.Count);
         }
 
         [TestMethod]
@@ -86,7 +83,7 @@
         {
             // Assign
             ICommandValidator validator = new DefaultCommandValidator();
-            Command command = new ValidatableObjectCommand(false);
+            ICommand command = new ValidatableObjectCommand(false);
             CommandHandlerRequest request = new CommandHandlerRequest(this.configuration, command);
 
             // Act
@@ -94,8 +91,7 @@
 
             // Assert
             Assert.IsFalse(result);
-            Assert.IsFalse(command.IsValid);
-            Assert.AreEqual(2, command.ModelState.Sum(kvp => kvp.Value.Errors.Count));
+            Assert.AreEqual(2, request.ModelState.Sum(kvp => kvp.Value.Errors.Count));
         }
 
         [TestMethod]
@@ -112,8 +108,7 @@
 
             // Assert
             Assert.IsTrue(result);
-            Assert.IsTrue(command.IsValid);
-            Assert.AreEqual(0, command.ModelState.Count);
+            Assert.AreEqual(0, request.ModelState.Count);
         }
 
         [TestMethod]
@@ -132,8 +127,7 @@
             Assert.IsFalse(result);
 
             // Validator ignore IValidatableObject validation until DataAnnotations succeed.
-            Assert.IsFalse(command.IsValid);
-            Assert.AreEqual(1, command.ModelState.Count);
+            Assert.AreEqual(1, request.ModelState.Count);
         }
         
         [TestMethod]
@@ -151,22 +145,21 @@
             // Assert
             // A lots of properties of Uri throw exceptions but its still valid
             Assert.IsTrue(result);
-            Assert.IsTrue(command.IsValid);
-            Assert.AreEqual(0, command.ModelState.Count);
+            Assert.AreEqual(0, request.ModelState.Count);
         }
-        
-        private class UnvalidatableCommand : Command
+
+        private class UnvalidatableCommand : ICommand
         {
             public string Property1 { get; set; }
         }
 
-        private class DataAnnotationsValidatableCommand : Command
+        private class DataAnnotationsValidatableCommand : ICommand
         {
             [StringLength(15)]
             public string Property1 { get; set; }
         }
-        
-        private class ValidatableObjectCommand : Command, IValidatableObject
+
+        private class ValidatableObjectCommand : ICommand, IValidatableObject
         {
             private readonly bool valid;
 
@@ -187,7 +180,7 @@
             }
         }
 
-        private class MixedValidatableCommand : Command, IValidatableObject
+        private class MixedValidatableCommand : ICommand, IValidatableObject
         {
             private readonly bool valid;
 
@@ -211,7 +204,7 @@
             }
         }
 
-        private class CommandWithUriProperty : Command
+        private class CommandWithUriProperty : ICommand
         {
             [Required]
             public Uri Property1 { get; set; }

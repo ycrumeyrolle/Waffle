@@ -89,6 +89,8 @@ namespace Waffle.Metadata
 
         private TypeInformation GetTypeInformation(Type type)
         {
+            Contract.Requires(this.typeInfoCache != null);
+
             // This retrieval is implemented as a TryGetValue/TryAdd instead of a GetOrAdd to avoid the performance cost of creating instance delegates
             TypeInformation typeInfo;
             if (!this.typeInfoCache.TryGetValue(type, out typeInfo))
@@ -124,6 +126,8 @@ namespace Waffle.Metadata
 
         private PropertyInformation CreatePropertyInformation(Type containerType, PropertyDescriptor property)
         {
+            Contract.Requires(property != null);
+
             PropertyInformation info = new PropertyInformation();
             info.ValueAccessor = CreatePropertyValueAccessor(property);
             info.Prototype = this.CreateMetadataPrototype(AsAttributes(property.Attributes), containerType, property.PropertyType, property.Name);
@@ -141,6 +145,9 @@ namespace Waffle.Metadata
 
         private static Func<object, object> CreatePropertyValueAccessor(PropertyDescriptor property)
         {
+            Contract.Requires(property != null);
+            Contract.Requires(property.ComponentType != null);
+
             Type declaringType = property.ComponentType;
             if (declaringType.IsVisible)
             {
@@ -166,7 +173,8 @@ namespace Waffle.Metadata
         // e.g. generates (object o) => (Person)o.Id
         private static Func<object, object> CreateDynamicValueAccessor(MethodInfo getMethodInfo, Type declaringType, string propertyName)
         {
-            Contract.Assert(getMethodInfo != null && getMethodInfo.IsPublic && !getMethodInfo.IsStatic);
+            Contract.Requires(declaringType != null);
+            Contract.Requires(getMethodInfo != null);
 
             Type propertyType = getMethodInfo.ReturnType;
             DynamicMethod dynamicMethod = new DynamicMethod("Get" + propertyName + "From" + declaringType.Name, typeof(object), new[] { typeof(object) });

@@ -1,5 +1,6 @@
 ﻿namespace Waffle
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Events;
@@ -16,14 +17,16 @@
         /// <param name="processor">The message processor.</param>
         /// <param name="command">The command to process.</param>
         /// <returns>The <see cref="Task"/> returning the result of the command.</returns>
-        public static Task ProcessAsync(this IMessageProcessor processor, ICommand command)
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Nesting is required to return Task.")]
+        public static async Task<HandlerResponse<TResult>> ProcessAsync<TResult>(this IMessageProcessor processor, ICommand command)
         {
             if (processor == null)
             {
                 throw Error.ArgumentNull("processor");
             }
 
-            return processor.ProcessAsync<VoidResult>(command);
+            var response = await processor.ProcessAsync(command);
+            return new HandlerResponse<TResult>(response);
         }
 
         /// <summary>
@@ -32,49 +35,48 @@
         /// <param name="processor">The message processor.</param>
         /// <param name="command">The command to process.</param>
         /// <returns>The result of the command.</returns>
-        public static void Process(this IMessageProcessor processor, ICommand command)
+        public static HandlerResponse<TResult> Process<TResult>(this IMessageProcessor processor, ICommand command)
         {
             if (processor == null)
             {
                 throw Error.ArgumentNull("processor");
             }
 
-            Task task = processor.ProcessAsync(command);
-            task.Wait();
-        }
-
-        /// <summary>
-        /// Process the command. 
-        /// </summary>
-        /// <param name="processor">The message processor.</param>
-        /// <param name="command">The command to process.</param>
-        /// <returns>The result of the command.</returns>
-        public static TResult Process<TResult>(this IMessageProcessor processor, ICommand command)
-        {
-            if (processor == null)
-            {
-                throw Error.ArgumentNull("processor");
-            }
-
-            Task<TResult> task = processor.ProcessAsync<TResult>(command);
+            Task<HandlerResponse<TResult>> task = processor.ProcessAsync<TResult>(command);
             return task.Result;
         }
-        
+
+        /// <summary>
+        /// Process the command. 
+        /// </summary>
+        /// <param name="processor">The message processor.</param>
+        /// <param name="command">The command to process.</param>
+        /// <returns>The result of the command.</returns>
+        public static HandlerResponse Process(this IMessageProcessor processor, ICommand command)
+        {
+            if (processor == null)
+            {
+                throw Error.ArgumentNull("processor");
+            }
+
+            Task<HandlerResponse> task = processor.ProcessAsync(command);
+            return task.Result;
+        }
+
         /// <summary>
         /// Publish the event. 
         /// </summary>
         /// <param name="processor">The message processor.</param>
         /// <param name="event">The event to publish.</param>
         /// <returns>The result of the command.</returns>
-        public static void Publish(this IMessageProcessor processor, IEvent @event)
+        public static async void Publish(this IMessageProcessor processor, IEvent @event)
         {
             if (processor == null)
             {
                 throw Error.ArgumentNull("processor");
             }
 
-            Task task = processor.PublishAsync(@event);
-            task.Wait();
+            await processor.PublishAsync(@event);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace Waffle.Tracing
 {
-    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using Waffle.Filters;
@@ -29,8 +28,8 @@
         /// </param>
         public ExceptionFilterAttributeTracer(ExceptionFilterAttribute innerFilter, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerFilter != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerFilter != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerFilter = innerFilter;
             this.traceStore = traceWriter;
@@ -83,7 +82,7 @@
         /// Returns a value that indicates whether this instance is equal to a specified object.
         /// </summary>
         /// <returns>
-        /// <c>true</c> if <paramref name="obj"/> equals the type and value of this instance; otherwise, <c>false</c>.
+        /// <see langword="true"/> if <paramref name="obj"/> equals the type and value of this instance; otherwise, <see langword="false"/>.
         /// </returns>
         /// <param name="obj">An <see cref="T:System.Object"/> to compare with this instance or null. </param><filterpriority>2</filterpriority>
         public override bool Equals(object obj)
@@ -107,7 +106,7 @@
         /// When overridden in a derived class, indicates whether the value of this instance is the default value for the derived class.
         /// </summary>
         /// <returns>
-        /// <c>true</c>  if this instance is the default attribute for the class; otherwise, <c>false</c>.
+        /// <see langword="true"/>  if this instance is the default attribute for the class; otherwise, <see langword="false"/>.
         /// </returns>
         /// <filterpriority>2</filterpriority>
         public override bool IsDefaultAttribute()
@@ -119,7 +118,7 @@
         /// When overridden in a derived class, returns a value that indicates whether this instance equals a specified object.
         /// </summary>
         /// <returns>
-        /// <c>true</c> if this instance equals <paramref name="obj"/>; otherwise, <c>false</c>.
+        /// <see langword="true"/> if this instance equals <paramref name="obj"/>; otherwise, <see langword="false"/>.
         /// </returns>
         /// <param name="obj">An <see cref="T:System.Object"/> to compare with this instance of <see cref="T:System.Attribute"/>. </param><filterpriority>2</filterpriority>
         public override bool Match(object obj)
@@ -133,7 +132,7 @@
         /// <param name="handlerExecutedContext">
         /// The handler executed context.
         /// </param>
-        public override void OnException(HandlerExecutedContext handlerExecutedContext)
+        public override void OnException(CommandHandlerExecutedContext handlerExecutedContext)
         {
             if (handlerExecutedContext == null)
             {
@@ -150,9 +149,16 @@
                 execute: () => this.innerFilter.OnException(handlerExecutedContext), 
                 endTrace: tr =>
                     {
-                        Exception returnedException = handlerExecutedContext.Exception;
-                        tr.Level = returnedException == null ? TraceLevel.Info : TraceLevel.Error;
-                        tr.Exception = returnedException;
+                        if (handlerExecutedContext.ExceptionInfo != null)
+                        {
+                            tr.Level = TraceLevel.Info;
+                            tr.Exception = null;
+                        }
+                        else
+                        {
+                            tr.Level = TraceLevel.Error;
+                            tr.Exception = handlerExecutedContext.ExceptionInfo.SourceException;
+                        }
                     }, 
                 errorTrace: null);
         }

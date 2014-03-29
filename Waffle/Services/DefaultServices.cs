@@ -7,16 +7,16 @@
     using System.Linq;
     using Waffle.Commands;
     using Waffle.Dependencies;
-    using Waffle.Dispatcher;
     using Waffle.Events;
+    using Waffle.ExceptionHandling;
     using Waffle.Filters;
     using Waffle.Interception;
     using Waffle.Internal;
     using Waffle.Metadata;
     using Waffle.Properties;
+    using Waffle.Queries;
     using Waffle.Tracing;
     using Waffle.Validation;
-    using Waffle.Validation.Providers;
 
     /// <summary>
     ///     <para>
@@ -50,6 +50,7 @@
     ///         <item><see cref="ModelMetadataProvider"/></item>
     ///         <item><see cref="IModelFlattener"/></item>
     ///         <item><see cref="IEventStore"/></item>
+    ///         <item><see cref="IQueryService"/></item>
     ///     </list>
     ///     <para>
     ///         Passing any type which is not on this to any method on this interface will cause
@@ -108,16 +109,18 @@
             this.SetSingle<IEventHandlerDescriptorProvider>(eventHandlerSelector);
             this.SetSingle<IEventHandlerActivator>(new DefaultEventHandlerActivator());
             this.SetSingle<IEventHandlerTypeResolver>(new DefaultEventHandlerTypeResolver());
+            this.SetSingle<ICommandHandlerInvoker>(new DefaultCommandHandlerInvoker());
+            this.SetSingle<IEventHandlerInvoker>(new DefaultEventHandlerInvoker());
 
             this.SetMultiple<IFilterProvider>(new ConfigurationFilterProvider(), new HandlerFilterProvider());
 
             this.SetSingle<IAssembliesResolver>(new DefaultAssembliesResolver());
-            
+
             this.SetSingle<IProxyBuilder>(new DefaultProxyBuilder());
             this.SetSingle<IInterceptionProvider>(new DefaultInterceptionProvider(this.configuration));
             this.SetMultiple<IInterceptor>(new IInterceptor[0]);
             this.SetSingle<ICommandValidator>(new DefaultCommandValidator());
-            
+
             this.SetSingle<ModelMetadataProvider>(new DataAnnotationsModelMetadataProvider());
             this.SetSingle<IModelFlattener>(new DefaultModelFlattener());
 
@@ -138,6 +141,12 @@
             this.SetSingle<IEventWorker>(new DefaultEventWorker(configuration));
             this.SetSingle<IMessageProcessor>(null);
 
+            this.SetSingle<IQueryService>(new DefaultQueryService());
+
+            // Exception handling
+            this.SetSingle<IExceptionHandler>(null);
+            this.SetMultiple<IExceptionLogger>();
+
             this.serviceTypesSingle = new HashSet<Type>(this.defaultServicesSingle.Keys);
             this.serviceTypesMulti = new HashSet<Type>(this.defaultServicesMulti.Keys);
 
@@ -152,7 +161,7 @@
         /// Type of service to query.
         /// </param>
         /// <returns>
-        /// <c>true</c> if the service type has at most one instance, or <c>false</c> if the service type supports multiple instances.
+        /// <see langword="true"/> if the service type has at most one instance, or <see langword="false"/> if the service type supports multiple instances.
         /// </returns>
         public override bool IsSingleService(Type serviceType)
         {
@@ -201,10 +210,10 @@
             if (!this.cacheSingle.TryGetValue(serviceType, out result))
             {
                 result = dependencyService ?? this.defaultServicesSingle[serviceType];
-                this.cacheSingle.TryAdd(serviceType, result); 
+                this.cacheSingle.TryAdd(serviceType, result);
             }
-            
-            return result; 
+
+            return result;
         }
 
         /// <summary>

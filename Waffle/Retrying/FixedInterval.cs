@@ -55,7 +55,7 @@
         /// <param name="name">The retry strategy name.</param>
         /// <param name="retryCount">The number of retry attempts.</param>
         /// <param name="retryInterval">The time interval between retries.</param>
-        /// <param name="firstFastRetry"><c>true</c> to immediately retry in the first attempt; otherwise, <c>false</c>. The subsequent retries will remain subject to the configured retry interval.</param>
+        /// <param name="firstFastRetry"><see langword="true"/> to immediately retry in the first attempt; otherwise, <see langword="false"/>. The subsequent retries will remain subject to the configured retry interval.</param>
         public FixedInterval(string name, int retryCount, TimeSpan retryInterval, bool firstFastRetry)
             : base(name, firstFastRetry)
         {

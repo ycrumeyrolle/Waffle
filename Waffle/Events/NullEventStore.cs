@@ -33,7 +33,7 @@
         /// <returns>A <see cref="Task"/> of <see cref="ICollection{IEvent}"/> containing the <see cref="IEvent"/>.</returns>
         public Task<ICollection<IEvent>> LoadAsync(Guid sourceId, CancellationToken cancellationToken)
         {
-            return TaskHelpers.FromResult<ICollection<IEvent>>(EmptyEvents);
+            return Task.FromResult<ICollection<IEvent>>(EmptyEvents);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿namespace Waffle.Retrying
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Internal;
-    using Waffle.Tasks;
 
     /// <summary>
     /// Provides the base implementation of the retry mechanism for unreliable actions and transient conditions.
@@ -147,74 +147,7 @@
         /// Gets the instance of the error detection strategy.
         /// </summary>
         public ITransientErrorDetectionStrategy ErrorDetectionStrategy { get; private set; }
-
-        /// <summary>
-        /// Repetitively executes the specified action while it satisfies the current retry policy.
-        /// </summary>
-        /// <param name="action">A delegate that represents the executable action that doesn't return any results.</param>
-        public virtual void ExecuteAction(Action action)
-        {
-            if (action == null)
-            {
-                throw Error.ArgumentNull("action");
-            }
-
-            this.ExecuteAction<object>(() =>
-            {
-                action();
-                return null;
-            });
-        }
-
-        /// <summary>
-        /// Repetitively executes the specified action while it satisfies the current retry policy.
-        /// </summary>
-        /// <typeparam name="TResult">The type of result expected from the executable action.</typeparam>
-        /// <param name="func">A delegate that represents the executable action that returns the result of type <typeparamref name="TResult" />.</param>
-        /// <returns>The result from the action.</returns>
-        public virtual TResult ExecuteAction<TResult>(Func<TResult> func)
-        {
-            if (func == null)
-            {
-                throw Error.ArgumentNull("func");
-            }
-
-            int retryCount = 0;
-            ShouldRetry shouldRetry = this.RetryStrategy.GetShouldRetry();
-            TResult result;
-            while (true)
-            {
-                Exception ex;
-                TimeSpan time;
-                try
-                {
-                    result = func();
-                    break;
-                }
-                catch (Exception ex3)
-                {
-                    ex = ex3;
-                    if (!this.ErrorDetectionStrategy.IsTransient(ex) || !shouldRetry(retryCount++, ex, out time))
-                    {
-                        throw;
-                    }
-                }
-
-                if (time.TotalMilliseconds < 0.0)
-                {
-                    time = TimeSpan.Zero;
-                }
-
-                this.OnRetrying(retryCount, ex, time);
-                if (retryCount > 1 || !this.RetryStrategy.FastFirstRetry)
-                {
-                    TaskHelpers.Delay(time).Wait();
-                }
-            }
-
-            return result;
-        }
-
+        
         /// <summary>
         /// Repetitively executes the specified asynchronous task while it satisfies the current retry policy.
         /// </summary>
@@ -245,6 +178,7 @@
         /// first time or after retrying transient failures). If the task fails with a non-transient error or
         /// the retry limit is reached, the returned task will transition to a faulted state and the exception must be observed.
         /// </returns>
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Required for Task<TResult> pattern.")]
         public Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> taskFunc, CancellationToken cancellationToken)
         {
             if (taskFunc == null)

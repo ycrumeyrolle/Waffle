@@ -52,5 +52,35 @@ namespace Waffle.Metadata
         {
             return this.PrototypeCache.IgnoreCaching != null || base.ComputeIgnoreCaching();
         }
+
+        public override string GetDisplayName()
+        {
+            // DisplayName could be provided by either the DisplayAttribute, or DisplayNameAttribute. If neither of
+            // those supply a name, then we fall back to the property name (in base.GetDisplayName()).
+            // 
+            // DisplayName has lower precedence than Display.Name.
+
+            // DisplayAttribute doesn't require you to set a name, so this could be null. 
+            if (PrototypeCache.Display != null)
+            {
+                string name = PrototypeCache.Display.GetName();
+                if (name != null)
+                {
+                    return name;
+                }
+            }
+
+            if (PrototypeCache.DisplayName != null)
+            {
+                string name = PrototypeCache.DisplayName.DisplayName;
+                if (name != null)
+                {
+                    return name;
+                }
+            }
+
+            // If neither attribute specifies a name, we'll fall back to the property name.
+            return base.GetDisplayName();
+        }
     }
 }

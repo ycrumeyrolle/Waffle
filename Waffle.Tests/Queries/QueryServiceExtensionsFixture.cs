@@ -17,7 +17,7 @@
         public void WhenRegisteringWithNullServiceThenThrowsArgumentNullException()
         {
             // Act & assert
-            ExceptionAssert.ThrowsArgumentNull(() => QueryServiceExtensions.RegisterContextFactory<IQueryContext>(null, () => this.queryContext.Object), "queryService");
+            ExceptionAssert.ThrowsArgumentNull(() => QueryServiceExtensions.RegisterContextFactory<IQueryContext>((IQueryService)null, () => this.queryContext.Object), "queryService");
         }
 
         [TestMethod]

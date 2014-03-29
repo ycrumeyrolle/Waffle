@@ -31,7 +31,7 @@
         /// <summary>
         /// Gets or sets whether the command should be aborted on invalid command.
         /// </summary>
-        /// <value><c>true</c> if the command should be aborted on invalid command ; false otherwise.</value>
+        /// <value><see langword="true"/> if the command should be aborted on invalid command ; false otherwise.</value>
         public bool AbortOnInvalidCommand { get; set; }
 
         /// <summary>

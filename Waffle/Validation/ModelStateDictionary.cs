@@ -55,7 +55,7 @@
         /// Gets a value indicating whether the <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
         /// </summary>
         /// <returns>
-        /// <c>true</c> if the <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only; otherwise, <c>false</c>.
+        /// <see langword="true"/> if the <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only; otherwise, <see langword="false"/>.
         /// </returns>
         /// <value>A value indicating whether the <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</value>
         public bool IsReadOnly
@@ -167,7 +167,7 @@
         /// Determines whether the <see cref="T:System.Collections.Generic.ICollection`1"/> contains a specific value.
         /// </summary>
         /// <value>
-        /// <c>true</c> if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, <c>false</c>.
+        /// <see langword="true"/> if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, <see langword="false"/>.
         /// </value>
         /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
         public bool Contains(KeyValuePair<string, ModelState> item)
@@ -179,7 +179,7 @@
         /// Determines whether the <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the specified key.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the key; otherwise, <c>false</c>.
+        /// <see langword="true"/> if the <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the key; otherwise, <see langword="false"/>.
         /// </value>
         /// <param name="key">The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
         public bool ContainsKey(string key)
@@ -229,7 +229,7 @@
         /// Determines whether there are any <see cref="ModelError"/> objects that are associated with or prefixed with the specified key.
         /// </summary>
         /// <param name="key">The key to check.</param>
-        /// <returns><c>true</c> if the model-state dictionary contains a value that is associated with the specified key; otherwise, <c>false</c>.</returns>
+        /// <returns><see langword="true"/> if the model-state dictionary contains a value that is associated with the specified key; otherwise, <see langword="false"/>.</returns>
         public bool IsValidField(string key)
         {
             if (key == null)
@@ -270,7 +270,7 @@
         /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </summary>
         /// <returns>
-        /// <c>true</c> if <paramref name="item"/> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, <c>false</c>. This method also returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// <see langword="true"/> if <paramref name="item"/> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, <see langword="false"/>. This method also returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </returns>
         /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
         public bool Remove(KeyValuePair<string, ModelState> item)
@@ -282,7 +282,7 @@
         /// Removes the element with the specified key from the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
         /// </summary>
         /// <returns>
-        /// <c>true</c> if the element is successfully removed; otherwise, <c>false</c>.  This method also returns false if <paramref name="key"/> was not found in the original <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+        /// <see langword="true"/> if the element is successfully removed; otherwise, <see langword="false"/>.  This method also returns false if <paramref name="key"/> was not found in the original <see cref="T:System.Collections.Generic.IDictionary`2"/>.
         /// </returns>
         /// <param name="key">The key of the element to remove.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.</exception>
         public bool Remove(string key)
@@ -294,7 +294,7 @@
         /// Gets the value associated with the specified key.
         /// </summary>
         /// <returns>
-        /// <c>true</c> if the object that implements <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the specified key; otherwise, <c>false</c>.
+        /// <see langword="true"/> if the object that implements <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the specified key; otherwise, <see langword="false"/>.
         /// </returns>
         /// <param name="key">The key whose value to get.</param><param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
         public bool TryGetValue(string key, out ModelState value)
@@ -316,7 +316,7 @@
 
         private IEnumerable<KeyValuePair<string, ModelState>> FindKeysWithPrefix(string prefix)
         {
-            Contract.Assert(prefix != null);
+            Contract.Requires(prefix != null);
 
             ModelState exactMatchValue;
             if (this.TryGetValue(prefix, out exactMatchValue))

@@ -78,5 +78,11 @@ namespace Waffle.Events
         /// </summary>
         /// <value>The <see cref="IPrincipal"/>.</value>
         public IPrincipal User { get; internal set; }
+
+        /// <summary>
+        /// Gets the <see cref="IEventHandler"/>.
+        /// </summary>
+        /// <value>The <see cref="IEventHandler"/>.</value>
+        public IEventHandler Handler { get; internal set; }
     }
 }

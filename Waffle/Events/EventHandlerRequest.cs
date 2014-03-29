@@ -1,6 +1,5 @@
 ﻿namespace Waffle.Events
 {
-    using System;
     using Waffle.Internal;
 
     /// <summary>
@@ -22,6 +21,12 @@
             if (@event == null)
             {
                 throw Error.ArgumentNull("event");
+            }
+
+            // Events cannot be called without a parent request
+            if (parentRequest == null)
+            {
+                throw Error.ArgumentNull("parentRequest");
             }
 
             this.Event = @event;

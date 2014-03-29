@@ -1,6 +1,7 @@
 ﻿namespace Waffle.Retrying
 {
     using System;
+    using System.Diagnostics.Contracts;
     using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Internal;
@@ -20,6 +21,8 @@
 
         public AsyncExecution(Func<Task<TResult>> taskFunc, ShouldRetry shouldRetry, Func<Exception, bool> isTransient, Action<int, Exception, TimeSpan> onRetrying, bool fastFirstRetry, CancellationToken cancellationToken)
         {
+            Contract.Requires(taskFunc != null);
+
             this.taskFunc = taskFunc;
             this.shouldRetry = shouldRetry;
             this.isTransient = isTransient;
@@ -30,10 +33,10 @@
 
         internal Task<TResult> ExecuteAsync()
         {
-            return this.ExecuteAsyncImpl(null);
+            return this.ExecuteAsyncImpl();
         }
 
-        private Task<TResult> ExecuteAsyncImpl(Task ignore)
+        private Task<TResult> ExecuteAsyncImpl()
         {
             if (this.cancellationToken.IsCancellationRequested)
             {
@@ -42,9 +45,7 @@
                     return this.previousTask;
                 }
 
-                TaskCompletionSource<TResult> taskCompletionSource = new TaskCompletionSource<TResult>();
-                taskCompletionSource.TrySetCanceled();
-                return taskCompletionSource.Task;
+                return TaskHelpers.Canceled<TResult>();
             }
 
             Task<TResult> task;
@@ -59,9 +60,7 @@
                     throw;
                 }
 
-                TaskCompletionSource<TResult> taskCompletionSource2 = new TaskCompletionSource<TResult>();
-                taskCompletionSource2.TrySetException(ex);
-                task = taskCompletionSource2.Task;
+                task = TaskHelpers.FromError<TResult>(ex);
             }
 
             if (task == null)
@@ -78,12 +77,14 @@
             {
                 throw Error.Argument("taskFunc", Resources.TaskMustBeScheduled);
             }
-
+                        
             return task.ContinueWith<Task<TResult>>(this.ExecuteAsyncContinueWith, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default).Unwrap<TResult>();
         }
 
         private Task<TResult> ExecuteAsyncContinueWith(Task<TResult> runningTask)
         {
+            Contract.Requires(runningTask != null);
+
             if (!runningTask.IsFaulted || this.cancellationToken.IsCancellationRequested)
             {
                 return runningTask;
@@ -106,10 +107,16 @@
             this.previousTask = runningTask;
             if (time > TimeSpan.Zero && (this.retryCount > 1 || !this.fastFirstRetry))
             {
-                return TaskHelpers.Delay(time, this.cancellationToken).ContinueWith<Task<TResult>>(this.ExecuteAsyncImpl, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default).Unwrap<TResult>();
+                return this.WaitAndExecuteAsync(time);
             }
 
-            return this.ExecuteAsyncImpl(null);
+            return this.ExecuteAsyncImpl();
+        }
+
+        private async Task<TResult> WaitAndExecuteAsync(TimeSpan time)
+        {
+            await Task.Delay(time, this.cancellationToken);
+            return await this.ExecuteAsyncImpl();
         }
     }
 }

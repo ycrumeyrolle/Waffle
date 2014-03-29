@@ -32,12 +32,12 @@
         }
 
         [TestMethod]
-        public void StoreAsync_InsertIntoCollection()
+        public async void StoreAsync_InsertIntoCollection()
         {
             StubStore eventStore = new StubStore("mongodb://localhost:27017", "eventsTest");
             EventTest1 @event1 = new EventTest1 { Test1 = "test", SourceId = Guid.NewGuid() };
             
-            eventStore.StoreAsync(@event1, default(CancellationToken)).Wait();
+            await eventStore.StoreAsync(@event1, default(CancellationToken));
 
             eventStore.MoqCollection.Verify(c => c.Insert(It.IsAny<EventWrapper>()), Times.Once());
         }

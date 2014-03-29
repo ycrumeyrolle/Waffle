@@ -74,7 +74,7 @@
        [TestMethod]
        public void WhenGettingServiceWithDependencyInjectionThenReturnsFromDependencyInjection()
        {
-           // Setting on Controller config overrides the DI container. 
+           // Setting on Handler config overrides the DI container. 
            ProcessorConfiguration config = new ProcessorConfiguration();
 
            ICommandHandlerTypeResolver newDiService = new Mock<ICommandHandlerTypeResolver>().Object;
@@ -100,7 +100,7 @@
        [TestMethod]
        public void WhenAddingServiceToOverrideThenOriginalIsNotMutated()
        {
-           // Controller Services has "copy on write" semantics for inherited list. 
+           // Handler Services has "copy on write" semantics for inherited list. 
            // It can get the inherited list and mutate it. 
            ProcessorConfiguration config = new ProcessorConfiguration();
            ServicesContainer global = config.Services;

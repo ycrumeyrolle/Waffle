@@ -1,6 +1,7 @@
 ﻿namespace Waffle.Filters
 {
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using Waffle.Events;
     using Waffle.Internal;
@@ -30,6 +31,7 @@
         
         private static IEnumerable<T> SelectAvailable<T>(IEnumerable<FilterInfo> filters)
         {
+            Contract.Requires(filters != null); 
             return filters.Where(f => (f.Instance is T)).Select(f => (T)f.Instance);
         }
     }

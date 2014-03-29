@@ -22,10 +22,9 @@ namespace Waffle
         /// <summary>
         /// Process the command. 
         /// </summary>
-        /// <typeparam name="TResult">The result type.</typeparam>
         /// <param name="command">The command to process.</param>
         /// <returns>The result of the command.</returns>
-        Task<TResult> ProcessAsync<TResult>(ICommand command);
+        Task<HandlerResponse> ProcessAsync(ICommand command);
 
         /// <summary>
         /// Publish the event. 
@@ -38,11 +37,11 @@ namespace Waffle
         /// <summary>
         /// Asks the the processor to supply a service.
         /// The service will be created by the <see cref="IDependencyResolver"/>.
-        /// If the ServiceProxyCreationEnabled is <c>true</c>, the service will be a proxy.
+        /// If the ServiceProxyCreationEnabled is <see langword="true"/>, the service will be a proxy.
         /// </summary>
         /// <typeparam name="TService">The type of the service to supply.</typeparam>
         /// <returns>The service.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Using", Justification = "An other term could be found...")]
-        TService Using<TService>() where TService : class;
+        TService Use<TService>() where TService : class;
     }
 }

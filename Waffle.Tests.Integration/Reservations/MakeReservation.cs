@@ -2,7 +2,7 @@
 {
     using Waffle.Commands;
 
-    public class MakeReservation : Command
+    public class MakeReservation : ICommand
     {
         public MakeReservation()
         {;

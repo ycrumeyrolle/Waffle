@@ -2,6 +2,8 @@
 {
     using System;
     using System.Diagnostics.Contracts;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Events;
     using Waffle.Internal;
@@ -10,7 +12,7 @@
     /// <summary>
     /// Tracer for <see cref="ICommandHandler"/>.
     /// </summary>
-    internal class EventHandlerTracer : IEventHandler, IDisposable, IDecorator<IEventHandler>
+    internal class EventHandlerTracer : IAsyncEventHandler<IEvent>, IDisposable, IDecorator<IEventHandler>
     {
         private const string DisposeMethodName = "Dispose";
         private const string HandleMethodName = "Handle";
@@ -21,8 +23,8 @@
 
         public EventHandlerTracer(HandlerRequest request, IEventHandler innerHandler, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerHandler != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerHandler != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerHandler = innerHandler;
             this.request = request;
@@ -40,6 +42,12 @@
             {
                 return this.traceWriter;
             }
+        }
+
+        public EventHandlerContext EventContext
+        {
+            get { return this.innerHandler.EventContext; }
+            set { this.innerHandler.EventContext = value; }
         }
 
         void IDisposable.Dispose()
@@ -64,18 +72,17 @@
         /// Handle the command.
         /// </summary>
         /// <param name="event">The <see cref="IEvent"/> to process.</param>
-        /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
         /// <returns>The result object.</returns>
-        public void Handle(IEvent @event, EventHandlerContext context)
+        public Task HandleAsync(IEvent @event)
         {
-            this.TraceWriter.TraceBeginEnd(
-                context.Request,
+            return this.TraceWriter.TraceBeginEndAsync(
+                this.innerHandler.EventContext.Request,
                 TraceCategories.HandlersCategory,
                 TraceLevel.Info,
                 this.Inner.GetType().Name,
                 HandleMethodName,
                 beginTrace: null,
-                execute: () => context.Descriptor.HandleMethod(this.Inner, @event, context),
+                execute: () => this.innerHandler.EventContext.Descriptor.ExecuteAsync(this.innerHandler.EventContext, default(CancellationToken)),
                 endTrace: tr =>
                     {
                         tr.Message = Error.Format(Resources.TraceHandlerExecutedMessage, request.MessageType.FullName);

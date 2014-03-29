@@ -1,7 +1,6 @@
 ﻿namespace Waffle.Tracing
 {
     using System.Diagnostics.Contracts;
-    using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Events;
 
@@ -17,8 +16,8 @@
 
         public EventWorkerTracer(IEventWorker innerWorker, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerWorker != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerWorker != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerWorker = innerWorker;
             this.traceWriter = traceWriter;
@@ -37,7 +36,7 @@
             }
         }
 
-        public Task PublishAsync(EventHandlerRequest request, CancellationToken cancellationToken)
+        public Task PublishAsync(EventHandlerRequest request)
         {
             return this.TraceWriter.TraceBeginEnd(
                request,
@@ -46,7 +45,7 @@
                this.Inner.GetType().Name,
                ExecuteMethodName,
                beginTrace: null,
-               execute: () => this.Inner.PublishAsync(request, cancellationToken),
+               execute: () => this.Inner.PublishAsync(request),
                endTrace: null,
                errorTrace: null);
         }

@@ -6,7 +6,7 @@
     public enum HandlerLifetime
     {
         /// <summary>
-        /// The handler will be always newly instanciated.
+        /// The handler will be always instanciated.
         /// </summary>
         Transient,
 
@@ -16,8 +16,8 @@
         PerRequest,
 
         /// <summary>
-        /// The handler will be instancied only once per processor. 
+        /// The handler will be instanciated only once.
         /// </summary>
-        Processor
+        Singleton
     }
 }

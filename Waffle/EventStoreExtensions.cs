@@ -18,15 +18,14 @@
         /// <param name="eventStore">The <see cref="IEventStore"/>.</param>
         /// <param name="event">The <see cref="IEvent"/> to store.</param>
         /// <param name="cancellationToken">A cancellation token.</param>
-        public static void Store(this IEventStore eventStore, IEvent @event, CancellationToken cancellationToken)
+        public static async void Store(this IEventStore eventStore, IEvent @event, CancellationToken cancellationToken)
         {
             if (eventStore == null)
             {
                 throw Error.ArgumentNull("eventStore");
             }
 
-            Task task = eventStore.StoreAsync(@event, cancellationToken);
-            task.Wait(cancellationToken);
+            await eventStore.StoreAsync(@event, cancellationToken);
         }
 
         /// <summary>
@@ -43,8 +42,13 @@
                 throw Error.ArgumentNull("eventStore");
             }
 
-            Task<ICollection<IEvent>> task = eventStore.LoadAsync(sourceId, cancellationToken);
+            var task = LoadAsyncCore(eventStore, sourceId, cancellationToken);
             return task.Result;
+        }
+
+        private static async Task<ICollection<IEvent>> LoadAsyncCore(IEventStore eventStore, Guid sourceId, CancellationToken cancellationToken)
+        {
+            return await eventStore.LoadAsync(sourceId, cancellationToken);
         }
     }
 }

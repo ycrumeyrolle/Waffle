@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using Waffle.Internal;
     using Waffle.Metadata;
@@ -124,7 +125,7 @@
         /// </summary>
         /// <value>The handler lifetime.</value>
         public HandlerLifetime Lifetime { get; private set; }
-        
+
         /// <summary>
         /// Gets the <see cref="RetryPolicy"/>.
         /// </summary>
@@ -172,6 +173,8 @@
 
         private static void RemoveDuplicates(List<FilterInfo> filters)
         {
+            Contract.Requires(filters != null);
+
             HashSet<Type> hashSet = new HashSet<Type>();
             for (int i = filters.Count - 1; i >= 0; i--)
             {
@@ -221,18 +224,17 @@
 
         private HandlerLifetime GetHandlerLifetime()
         {
-            int length = this.attributesCached.Length;
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < this.attributesCached.Length; i++)
             {
-                HandlerLifetimeAttribute handlerLifetimeAttribute = this.attributesCached[i] as HandlerLifetimeAttribute;
-                if (handlerLifetimeAttribute != null)
+                IHandlerLifetimeProvider handlerLifetimeProvider = this.attributesCached[i] as IHandlerLifetimeProvider;
+                if (handlerLifetimeProvider != null)
                 {
-                    return handlerLifetimeAttribute.HandlerLifetime;
+                    return handlerLifetimeProvider.HandlerLifetime;
                 }
             }
 
-            // No attribute were found. Default lifetime is per-request
-            return HandlerLifetime.PerRequest;
+            // No attribute were found. Default lifetime is used
+            return this.Configuration.DefaultHandlerLifetime;
         }
 
         private RetryPolicy GetRetryPolicy()

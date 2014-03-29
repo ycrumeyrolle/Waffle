@@ -1,16 +1,12 @@
 ﻿namespace Waffle.Events
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
-    using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Filters;
     using Waffle.Internal;
-    using Waffle.Tasks;
+    using Waffle.Results;
+    using Waffle.Services;
 
     /// <summary>
     /// Default implementation of the <see cref="IEventWorker"/>.
@@ -36,9 +32,8 @@
         /// Execute the request via the worker. 
         /// </summary>
         /// <param name="request">The <see cref="EventHandlerRequest"/> to execute.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <returns>The <see cref="Task"/> of the event.</returns>
-        public Task PublishAsync(EventHandlerRequest request, CancellationToken cancellationToken)
+        public async Task PublishAsync(EventHandlerRequest request)
         {
             if (request == null)
             {
@@ -48,86 +43,41 @@
             IEventHandlerSelector handlerSelector = this.Configuration.Services.GetEventHandlerSelector();
 
             EventHandlersDescriptor eventDescriptor = handlerSelector.SelectHandlers(request);
-            IEnumerable<Task> invokeHandlerTasks = eventDescriptor.EventHandlerDescriptors.Select(descriptor => this.InvokeHandlerAsync(descriptor, request, cancellationToken));
-            Task result = TaskHelpers.Iterate(invokeHandlerTasks, cancellationToken);
 
-            return result;
+            var descriptors = eventDescriptor.EventHandlerDescriptors;
+            for (int i = 0; i < descriptors.Count; i++)
+            {
+                await InvokeHandlerAsync(descriptors[i], request);
+            }
         }
 
-        private Task InvokeHandlerAsync(EventHandlerDescriptor descriptor, EventHandlerRequest request, CancellationToken cancellationToken)
+        private static Task InvokeHandlerAsync(EventHandlerDescriptor descriptor, EventHandlerRequest request)
         {
+            Contract.Requires(descriptor != null);
+            Contract.Requires(request != null);
+
             IEventHandler handler = descriptor.CreateHandler(request);
             if (handler == null)
             {
                 throw CreateHandlerNotFoundException(descriptor);
             }
 
-            this.RegisterForDispose(request, descriptor.Lifetime, handler);
+            request.RegisterForDispose(handler, true);
             EventHandlerContext context = new EventHandlerContext(request, descriptor);
+            context.Handler = handler;
+            handler.EventContext = context;
             EventFilterGrouping filterGrouping = descriptor.GetFilterGrouping();
+     
+            ServicesContainer servicesContainer = request.Configuration.Services;
+            IEventHandlerResult result = new EventHandlerFilterResult(context, servicesContainer, filterGrouping.EventHandlerFilters);
 
-            Func<Task> invokeFunc = InvokeHandlerWithHandlerFiltersAsync(context, cancellationToken, filterGrouping.EventHandlerFilters, () => InvokeHandlerAsync(handler, context, cancellationToken));
-            Task result = descriptor.RetryPolicy.ExecuteAsync(invokeFunc, cancellationToken);
-            return result;
-        }
-
-        private static Func<Task> InvokeHandlerWithHandlerFiltersAsync(EventHandlerContext context, CancellationToken cancellationToken, IEventHandlerFilter[] eventFilters, Func<Task> innerAction)
-        {
-            Contract.Requires(context != null);
-            Contract.Requires(eventFilters != null);
-            Contract.Requires(innerAction != null);
-
-            Func<Task> result = innerAction;
-            for (int i = eventFilters.Length - 1; i >= 0; i--)
-            {
-                IEventHandlerFilter commandFilter = eventFilters[i];
-                Func<Func<Task>, IEventHandlerFilter, Func<Task>> chainContinuation = (continuation, innerFilter) =>
-                {
-                    return () => innerFilter.ExecuteHandlerFilterAsync(context, cancellationToken, continuation);
-                };
-
-                result = chainContinuation(result, commandFilter);
-            }
-
-            return result;
-        }
-
-        private void RegisterForDispose(HandlerRequest request, HandlerLifetime lifetime, IEventHandler handler)
-        {
-            if (lifetime == HandlerLifetime.Processor)
-            {
-                // Per-processor lifetime will be disposed only on processor disposing
-                this.Configuration.RegisterForDispose(handler as IDisposable);
-            }
-            else
-            {
-                // Per-request and transcient lifetime will be disposed on main request disposing
-                request.RegisterForDispose(handler, true);
-            }
-        }
-
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "The caught exception type is reflected into a faulted task.")]
-        private static Task InvokeHandlerAsync(IEventHandler handler, EventHandlerContext context, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return TaskHelpers.Canceled();
-            }
-
-            try
-            {
-                handler.Handle(context.Event, context);
-            }
-            catch (Exception e)
-            {
-                return TaskHelpers.FromError(e);
-            }
-
-            return TaskHelpers.Completed();
+            return result.ExecuteAsync(request.CancellationToken);
         }
 
         private static CommandHandlerNotFoundException CreateHandlerNotFoundException(EventHandlerDescriptor descriptor)
         {
+            Contract.Requires(descriptor != null);
+
             return new CommandHandlerNotFoundException(descriptor.MessageType);
         }
     }

@@ -7,6 +7,7 @@
     using Waffle.Commands;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
+    using System.Threading.Tasks;
 
     [TestClass]
     public sealed class DefaultCommandHandlerSelectorFixture : IDisposable
@@ -67,7 +68,6 @@
             // Assign
             DefaultCommandHandlerSelector resolver = this.CreateTestableService();
             CommandHandlerRequest request = new CommandHandlerRequest(this.config, new BadCommand());
-            this.config.Services.Replace(typeof(ICommandHandlerTypeResolver), new BadCommandHandlerTypeResolver());
 
             // Act & assert
             ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
@@ -109,45 +109,45 @@
             return new DefaultCommandHandlerSelector(this.config);
         }
 
-        private class SimpleCommand : Command
+        private class SimpleCommand : ICommand
         {
         }
 
-        private class SimpleCommand2 : Command
+        private class SimpleCommand2 : ICommand
         {
         }
 
-        private class BadCommand : Command
+        private class BadCommand : ICommand
         {
         }
 
-        private class SimpleHandler1 : CommandHandler<SimpleCommand>
+        private class SimpleHandler1 : MessageHandler, ICommandHandler<SimpleCommand>
         {
-            public override void Handle(SimpleCommand command, CommandHandlerContext context)
+            public void Handle(SimpleCommand command)
             {
                 throw new NotImplementedException();
             }
         }
 
-        private class SimpleHandler2 : CommandHandler<SimpleCommand>
+        private class SimpleHandler2 : MessageHandler, ICommandHandler<SimpleCommand>
         {
-            public override void Handle(SimpleCommand command, CommandHandlerContext context)
+            public void Handle(SimpleCommand command)
             {
                 throw new NotImplementedException();
             }
         }
 
-        private class SimpleHandler3 : CommandHandler<SimpleCommand2>
+        private class SimpleHandler3 : MessageHandler, ICommandHandler<SimpleCommand2>
         {
-            public override void Handle(SimpleCommand2 command, CommandHandlerContext context)
+            public void Handle(SimpleCommand2 command)
             {
                 throw new NotImplementedException();
             }
         }
 
-        private class BadCommandHandler : CommandHandler<BadCommand, string>
+        private class BadCommandHandler : MessageHandler, ICommandHandler<BadCommand, string>
         {
-            public override string Handle(BadCommand command, CommandHandlerContext context)
+            public string Handle(BadCommand command)
             {
                 throw new NotImplementedException();
             }

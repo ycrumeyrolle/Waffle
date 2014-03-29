@@ -2,7 +2,7 @@
 {
     using Waffle.Commands;
 
-    public class MakePayment : Command
+    public class MakePayment : ICommand
     {
         public MakePayment()
         {

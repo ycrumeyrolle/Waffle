@@ -44,7 +44,7 @@
         /// Occurs after the handle method is invoked.
         /// </summary>
         /// <param name="handlerExecutedContext">The handler executed context.</param>
-        public override void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)
+        public override void OnCommandExecuted(CommandHandlerExecutedContext handlerExecutedContext)
         {
             if (handlerExecutedContext == null)
             {

@@ -17,8 +17,8 @@
 
         public CommandHandlerSelectorTracer(ICommandHandlerSelector innerSelector, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerSelector != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerSelector != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerSelector = innerSelector;
             this.traceWriter = traceWriter;

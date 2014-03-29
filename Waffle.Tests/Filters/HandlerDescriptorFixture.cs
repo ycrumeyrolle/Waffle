@@ -8,6 +8,7 @@
     using Waffle.Filters;
     using Waffle.Interception;
     using Waffle.Tests.Commands;
+    using System.Threading.Tasks;
 
     [TestClass]
     public sealed class HandlerDescriptorFixture : IDisposable
@@ -53,7 +54,7 @@
             Mock<ICommandHandlerActivator> activator = new Mock<ICommandHandlerActivator>(MockBehavior.Strict);
             this.config.Services.Replace(typeof(ICommandHandlerActivator), activator.Object);
             CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
-            Mock<CommandHandler> expectedHandler = new Mock<CommandHandler>();
+            Mock<MessageHandler> expectedHandler = new Mock<MessageHandler>();
             activator
                 .Setup(a => a.Create(It.IsAny<CommandHandlerRequest>(), It.IsAny<CommandHandlerDescriptor>()))
                 .Returns(expectedHandler.Object);
@@ -79,13 +80,13 @@
             CommandHandlerDescriptor defaultDescriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             CommandHandlerDescriptor transcientDescriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(TranscientCommandHandler));
             CommandHandlerDescriptor perRequestDescriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(PerRequestCommandHandler));
-            CommandHandlerDescriptor perProcessorDescriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(PerProcessorCommandHandler));
+            CommandHandlerDescriptor singletonDescriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SingletonCommandHandler));
 
             // Assert
-            Assert.AreEqual(HandlerLifetime.PerRequest, defaultDescriptor.Lifetime);
+            Assert.AreEqual(this.config.DefaultHandlerLifetime, defaultDescriptor.Lifetime);
             Assert.AreEqual(HandlerLifetime.Transient, transcientDescriptor.Lifetime);
             Assert.AreEqual(HandlerLifetime.PerRequest, perRequestDescriptor.Lifetime);
-            Assert.AreEqual(HandlerLifetime.Processor, perProcessorDescriptor.Lifetime);
+            Assert.AreEqual(HandlerLifetime.Singleton, singletonDescriptor.Lifetime);
         }
 
         [SimpleExceptionFilter("filter1")]
@@ -94,40 +95,41 @@
         [SimpleCommandHandlerFilter]
         [HandlerConfiguration]
         [FakeHandlerConfiguration]
-        private class SimpleCommandHandler : CommandHandler<SimpleCommand>
+        private class SimpleCommandHandler : MessageHandler, ICommandHandler<SimpleCommand>
         {
-            public override void Handle(SimpleCommand command, CommandHandlerContext context)
+            public void Handle(SimpleCommand command)
             {
                 throw new NotImplementedException();
             }
         }
 
-        [HandlerLifetime(HandlerLifetime.Transient)]
-        private class TranscientCommandHandler : CommandHandler<SimpleCommand>
+        [TransientHandler]
+        private class TranscientCommandHandler : MessageHandler, ICommandHandler<SimpleCommand>
         {
-            public override void Handle(SimpleCommand command, CommandHandlerContext context)
+            public void Handle(SimpleCommand command)
             {
                 throw new NotImplementedException();
             }
         }
 
-        [HandlerLifetime(HandlerLifetime.PerRequest)]
-        private class PerRequestCommandHandler : CommandHandler<SimpleCommand>
+        [PerRequestHandler]
+        private class PerRequestCommandHandler : MessageHandler, ICommandHandler<SimpleCommand>
         {
-            public override void Handle(SimpleCommand command, CommandHandlerContext context)
+            public void Handle(SimpleCommand command)
             {
                 throw new NotImplementedException();
             }
         }
 
-        [HandlerLifetime(HandlerLifetime.Processor)]
-        private class PerProcessorCommandHandler : CommandHandler<SimpleCommand>
+        [SingletonHandler]
+        private class SingletonCommandHandler : MessageHandler, ICommandHandler<SimpleCommand>
         {
-            public override void Handle(SimpleCommand command, CommandHandlerContext context)
+            public void Handle(SimpleCommand command)
             {
                 throw new NotImplementedException();
             }
         }
+
 
         [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
         public class SimpleCommandHandlerFilter : CommandHandlerFilterAttribute

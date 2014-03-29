@@ -3,9 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.Linq;
     using Waffle.Dependencies;
+    using Waffle.ExceptionHandling;
     using Waffle.Internal;
     using Waffle.Properties;
 
@@ -17,6 +17,20 @@
     /// </summary>
     public abstract class ServicesContainer : IDisposable
     {
+        // Wrapped/composite versions of the exception service interfaces designed for consumption in catch blocks.
+        // See ExceptionServices.GetLogger/Handler for how these internal services are used.
+        // These instances must be stored separately and not provided via GetService because existing stores for 
+        // GetService do not provide concurrency control and these two wrappers are potentially initialized late.
+        internal readonly Lazy<IExceptionLogger> ExceptionServicesLogger;
+        internal readonly Lazy<IExceptionHandler> ExceptionServicesHandler;
+
+        /// <summary>Initializes a new instance of the <see cref="ServicesContainer"/> class.</summary>
+        protected ServicesContainer()
+        {
+            this.ExceptionServicesLogger = new Lazy<IExceptionLogger>(this.CreateExceptionServicesLogger);
+            this.ExceptionServicesHandler = new Lazy<IExceptionHandler>(this.CreateExceptionServicesHandler);
+        }
+
         /// <summary>
         /// Try to get a service of the given type.
         /// </summary>
@@ -198,7 +212,7 @@
         /// </summary>
         /// <param name="serviceType">The service type.</param>
         /// <param name="service">The service instance to remove.</param>
-        /// <returns> <c>true</c> if the item is successfully removed; otherwise, <c>false</c>.</returns>
+        /// <returns> <see langword="true"/> if the item is successfully removed; otherwise, <see langword="false"/>.</returns>
         public bool Remove(Type serviceType, object service)
         {
             if (serviceType == null)
@@ -252,7 +266,6 @@
         /// <param name="index">The zero-based index of the service to remove.</param>
         public void RemoveAt(Type serviceType, int index)
         {
-            Contract.Requires(index >= 0);
             if (serviceType == null)
             {
                 throw Error.ArgumentNull("serviceType");
@@ -372,6 +385,16 @@
         {
             this.RemoveAll(serviceType, _ => true);
             this.Insert(serviceType, 0, service);
+        }
+
+        private IExceptionLogger CreateExceptionServicesLogger()
+        {
+            return ExceptionServices.CreateLogger(this);
+        }
+
+        private IExceptionHandler CreateExceptionServicesHandler()
+        {
+            return ExceptionServices.CreateHandler(this);
         }
     }
 }

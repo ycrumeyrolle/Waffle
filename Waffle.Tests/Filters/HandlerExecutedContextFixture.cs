@@ -1,7 +1,7 @@
 ﻿namespace Waffle.Tests.Filters
 {
     using System;
-
+    using System.Runtime.ExceptionServices;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Waffle.Filters;
 
@@ -14,14 +14,15 @@
             // Arrange
             CommandHandlerContext preContext = new CommandHandlerContext();
             Exception exception = new Exception();
+            ExceptionDispatchInfo exceptionInfo = ExceptionDispatchInfo.Capture(exception);
 
             // Act
-            HandlerExecutedContext context = new HandlerExecutedContext(preContext, exception);
+            CommandHandlerExecutedContext context = new CommandHandlerExecutedContext(preContext, exceptionInfo);
 
             // Assert
-            Assert.IsNull(context.Result);
-            Assert.IsNotNull(context.Exception);
-            Assert.AreSame(context.Exception, exception);
+            Assert.IsNull(context.Response);
+            Assert.IsNotNull(context.ExceptionInfo.SourceException);
+            Assert.AreSame(context.ExceptionInfo.SourceException, exception);
         }
 
         [TestMethod]
@@ -30,14 +31,15 @@
             // Arrange
             CommandHandlerContext preContext = new CommandHandlerContext();
             Exception exception = new Exception();
-            HandlerExecutedContext context = new HandlerExecutedContext(preContext, exception);
+            ExceptionDispatchInfo exceptionInfo = ExceptionDispatchInfo.Capture(exception);
+            CommandHandlerExecutedContext context = new CommandHandlerExecutedContext(preContext, exceptionInfo);
             var value = "test";
 
             // Act
-            context.Result = "test";
+            context.Response = context.Request.CreateResponse("test");
 
             // Assert
-            Assert.AreEqual(context.Result, value);
+            Assert.AreEqual(context.Response.Value, value);
         }
     }
 }

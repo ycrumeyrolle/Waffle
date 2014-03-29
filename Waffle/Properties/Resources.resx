@@ -244,4 +244,40 @@ The request for '{0}' has found the following matching handlers : {1}</value>
   <data name="TaskMustBeScheduled" xml:space="preserve">
     <value>The specified argument '{0}' must return a scheduled task (also known as "hot" task) when invoked.</value>
   </data>
+  <data name="ActionExecutor_UnexpectedTaskInstance" xml:space="preserve">
+    <value>The method '{0}' on type '{1}' returned a Task instance even though it is not an asynchronous method.</value>
+  </data>
+  <data name="ActionExecutor_WrappedTaskInstance" xml:space="preserve">
+    <value>The method '{0}' on type '{1}' returned an instance of '{2}'. Make sure to call Unwrap on the returned value to avoid unobserved faulted Task.</value>
+  </data>
+  <data name="CommandHandlerDescriptor_CannotCallOpenGenericMethods" xml:space="preserve">
+    <value>Cannot call method '{0}' on handler '{1}' because the action method is a generic method.</value>
+  </data>
+  <data name="CommandHandlerDescriptor_NoConverterForGenericParamterTypeExists" xml:space="preserve">
+    <value>No action result converter could be constructed for a generic parameter type '{0}'.</value>
+  </data>
+  <data name="DefaultHandlerInvoker_InvalidHandlerResult" xml:space="preserve">
+    <value>An object of type '{0}' was returned where an instance of IHttpActionResult was expected.</value>
+  </data>
+  <data name="DefaultHandlerInvoker_NullHandlerResponse" xml:space="preserve">
+    <value>A null value was returned where an instance of HttpResponseMessage was expected.</value>
+  </data>
+  <data name="DefaultHandlerInvoker_NullHandlerResult" xml:space="preserve">
+    <value>A null value was returned where an instance of IHttpActionResult was expected.</value>
+  </data>
+  <data name="TypeInstanceMustNotBeNull" xml:space="preserve">
+    <value>The {0} instance must not be null.</value>
+  </data>
+  <data name="TypePropertyMustNotBeNull" xml:space="preserve">
+    <value>{0}.{1} must not be null.</value>
+  </data>
+  <data name="TypeMethodMustNotReturnNull" xml:space="preserve">
+    <value>{0}.{1} must not return null.</value>
+  </data>
+  <data name="HandlerResponseExceptionMessage" xml:space="preserve">
+    <value>Processing of the request resulted in an exception. Please see the response returned by the 'Response' property of this exception for details.</value>
+  </data>
+  <data name="UnreachableCode" xml:space="preserve">
+    <value>Unreachable code !</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Transactions;
     using Waffle.Commands;
     using Waffle.Internal;
@@ -71,7 +72,7 @@
         /// Occurs after the handle method is invoked.
         /// </summary>
         /// <param name="handlerExecutedContext">The handler executed context.</param>
-        public override void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)
+        public override void OnCommandExecuted(CommandHandlerExecutedContext handlerExecutedContext)
         {
             if (handlerExecutedContext == null)
             {
@@ -83,7 +84,7 @@
             {
                 using (var scope = stack.Pop())
                 {
-                    if (null != scope && handlerExecutedContext.Result != null)
+                    if (null != scope && handlerExecutedContext.Response != null)
                     {
                         scope.Complete();
                     }
@@ -93,6 +94,9 @@
 
         private static Stack<TransactionScope> GetStack(CommandHandlerContext context)
         {
+            Contract.Requires(context != null);
+            Contract.Requires(context.Items != null);
+
             object value;
             if (context.Items.TryGetValue(Key, out value))
             {

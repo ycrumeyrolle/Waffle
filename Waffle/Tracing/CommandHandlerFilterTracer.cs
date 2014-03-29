@@ -48,7 +48,7 @@
             }
         }
 
-        Task<TResult> ICommandHandlerFilter.ExecuteHandlerFilterAsync<TResult>(CommandHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<TResult>> continuation)
+        Task<HandlerResponse> ICommandHandlerFilter.ExecuteHandlerFilterAsync(CommandHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<HandlerResponse>> continuation)
         {
             return this.TraceWriter.TraceBeginEndAsync(
                 handlerContext.Request, 

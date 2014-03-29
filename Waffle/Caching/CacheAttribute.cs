@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Globalization;
     using System.Linq;
     using System.Runtime.Caching;
@@ -18,8 +19,7 @@
     /// </summary>
     /// <remarks>Be aware that the attribute will cache command execution, so events will not be raised.</remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    [SuppressMessage("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes", Justification = "NoCacheAttri")]
-    public class CacheAttribute : CommandHandlerFilterAttribute
+    public sealed class CacheAttribute : CommandHandlerFilterAttribute
     {
         private const string CacheKey = "__CacheAttribute";
 
@@ -98,7 +98,7 @@
         /// <summary>
         /// Gets or sets whether the cache must vary by user.
         /// </summary>
-        /// <value><c>true</c> if the cache is specific for each user ; <c>false</c> if the cache is shared among users.</value>
+        /// <value><see langword="true"/> if the cache is specific for each user ; <see langword="false"/> if the cache is shared among users.</value>
         public bool VaryByUser { get; set; }
 
         /// <summary>
@@ -121,7 +121,7 @@
             CacheEntry entry = this.cache.Get(key) as CacheEntry;
             if (entry != null)
             {
-                handlerContext.Result = entry.Value;
+                handlerContext.Response = new HandlerResponse(handlerContext.Request, entry.Value);
                 return;
             }
 
@@ -132,14 +132,14 @@
         /// Occurs after the handle method is invoked.
         /// </summary>
         /// <param name="handlerExecutedContext">The handler executed context.</param>
-        public override void OnCommandExecuted(HandlerExecutedContext handlerExecutedContext)
+        public override void OnCommandExecuted(CommandHandlerExecutedContext handlerExecutedContext)
         {
             if (handlerExecutedContext == null)
             {
                 throw Error.ArgumentNull("handlerExecutedContext");
             }
 
-            if (handlerExecutedContext.Exception != null)
+            if (handlerExecutedContext.ExceptionInfo != null)
             {
                 return;
             }
@@ -162,11 +162,14 @@
 
             DateTimeOffset expiration = this.CreateExpiration();
 
-            this.cache.Add(key, new CacheEntry(handlerExecutedContext.Result), expiration); 
+            CacheEntry entry = handlerExecutedContext.Response == null ? CacheEntry.Empty : new CacheEntry(handlerExecutedContext.Response.Value);
+            this.cache.Add(key, entry, expiration); 
         }
 
         private static bool ShouldIgnoreCache(CommandHandlerDescriptor descriptor)
         {
+            Contract.Requires(descriptor != null);
+
             return descriptor.GetCustomAttributes<NoCacheAttribute>().Count > 0;
         }
 
@@ -182,8 +185,11 @@
 
         private string GetUniqueId(CommandHandlerContext filterContext)
         {
+            Contract.Requires(filterContext != null);
+            Contract.Requires(filterContext.Descriptor != null);
+
             StringBuilder uniqueIdBuilder = new StringBuilder();
-            
+
             // Unique ID of the handler description
             AppendPartToUniqueIdBuilder(uniqueIdBuilder, filterContext.Descriptor.HandlerType);
 
@@ -191,7 +197,7 @@
             {
                 AppendPartToUniqueIdBuilder(uniqueIdBuilder, filterContext.User.Identity.Name);
             }
-            
+
             // Unique ID from the VaryByParams settings, if any
             uniqueIdBuilder.Append(this.GetUniqueIdFromCommand(filterContext));
 
@@ -203,10 +209,14 @@
                 return Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(uniqueIdBuilder.ToString())));
             }
         }
-        
+
         // Generate a unique ID of normalized key names + key values
         private string GetUniqueIdFromCommand(CommandHandlerContext filterContext)
         {
+            Contract.Requires(filterContext != null);
+            Contract.Requires(filterContext.Configuration != null);
+            Contract.Requires(filterContext.Command != null);
+
             IModelFlattener flattener = filterContext.Configuration.Services.GetModelFlattener();
             ModelMetadataProvider metadataProvider = filterContext.Configuration.Services.GetModelMetadataProvider();
             ModelDictionary parameters = flattener.Flatten(filterContext.Command, filterContext.Command.GetType(), metadataProvider, string.Empty);
@@ -240,6 +250,8 @@
 
         private static void AppendPartToUniqueIdBuilder(StringBuilder builder, object part)
         {
+            Contract.Requires(builder != null);
+
             if (part == null)
             {
                 builder.Append("[-1]");
@@ -250,9 +262,11 @@
                 builder.AppendFormat("[{0}]{1}", partString.Length, partString);
             }
         }
-        
+
         private static string CreateUniqueId(IEnumerable<object> parts)
         {
+            Contract.Requires(parts != null);
+
             // returns a unique string made up of the pieces passed in
             StringBuilder builder = new StringBuilder();
             foreach (object part in parts)
@@ -268,6 +282,8 @@
         /// </summary>
         internal class CacheEntry
         {
+            internal static readonly CacheEntry Empty = new CacheEntry(null);
+
             private readonly object value;
 
             public CacheEntry(object value)

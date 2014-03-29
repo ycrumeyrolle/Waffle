@@ -2,15 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using Waffle.Internal;
 
     internal sealed class CommandHandlerTypeCache
     {
-        private static readonly Type CommandHandlerInterfaceType2 = typeof(ICommandHandler<,>);
-
-        private static readonly Type CommandHandlerInterfaceType1 = typeof(ICommandHandler<>);
-
         private readonly ProcessorConfiguration configuration;
 
         private readonly Lazy<Dictionary<Type, ILookup<Type, Type>>> cache;
@@ -54,32 +51,12 @@
             return matchingTypes;
         }
 
-        private static bool IsAssignableFromGenericType(Type givenType, Type genericType)
-        {
-            if (genericType == null)
-            {
-                return false;
-            }
-
-            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
-            {
-                return true;
-            }
-
-            Type baseType = givenType.BaseType;
-            if (baseType == null)
-            {
-                return false;
-            }
-
-            return IsAssignableFromGenericType(baseType, genericType);
-        }
-
         private static IEnumerable<Tuple<Type, Type>> GetCommandType(Type handlerType)
         {
-            return handlerType
-                .GetInterfaces()
-                .Where(i => i.IsGenericType && (IsAssignableFromGenericType(CommandHandlerInterfaceType1, i.GetGenericTypeDefinition()) || IsAssignableFromGenericType(CommandHandlerInterfaceType2, i.GetGenericTypeDefinition())))
+            Contract.Requires(handlerType != null);
+
+            return handlerType.GetInterfaces()
+                .Where(i => i.IsGenericType && i.GetCustomAttributes<HandlerAttribute>(true).Length != 0)
                 .Select(i => Tuple.Create(i.GetGenericArguments()[0], handlerType));
         }
 
@@ -88,11 +65,11 @@
             IAssembliesResolver assembliesResolver = this.configuration.Services.GetAssembliesResolver();
             ICommandHandlerTypeResolver commandHandlerTypeResolver = this.configuration.Services.GetCommandHandlerTypeResolver();
             ICollection<Type> handlerTypes = commandHandlerTypeResolver.GetCommandHandlerTypes(assembliesResolver);
-            
+
             var source = handlerTypes
                 .SelectMany(GetCommandType)
                 .GroupBy(i => i.Item1, i => i.Item2);
-    
+
             return source.ToDictionary(g => g.Key, g => g.ToLookup(t => t));
         }
     }

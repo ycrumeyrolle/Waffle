@@ -17,8 +17,8 @@
 
         public EventHandlerActivatorTracer(IEventHandlerActivator innerActivator, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerActivator != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerActivator != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerActivator = innerActivator;
             this.traceWriter = traceWriter;
@@ -44,12 +44,12 @@
                 endTrace: tr => tr.Message = eventHandler == null ? Resources.TraceNoneObjectMessage : eventHandler.GetType().FullName,
                 errorTrace: null);
 
-            if (eventHandler != null && !(eventHandler is EventHandlerTracer))
+            if (eventHandler == null || eventHandler is EventHandlerTracer)
             {
-                eventHandler = new EventHandlerTracer(request, eventHandler, this.traceWriter);
+                return eventHandler;
             }
 
-            return eventHandler;
+            return new EventHandlerTracer(request, eventHandler, this.traceWriter);
         }
     }
 }

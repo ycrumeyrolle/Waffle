@@ -14,6 +14,6 @@
         /// <param name="handlerExecutedContext">The handler executed context.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>An asynchronous exception filter.</returns>
-        Task ExecuteExceptionFilterAsync(HandlerExecutedContext handlerExecutedContext, CancellationToken cancellationToken);
+        Task ExecuteExceptionFilterAsync(CommandHandlerExecutedContext handlerExecutedContext, CancellationToken cancellationToken);
     }
 }

@@ -178,7 +178,7 @@
         /// </summary>
         /// <returns>The display name for the model.</returns>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method is a delegating helper to choose among multiple property values")]
-        public string GetDisplayName()
+        public virtual string GetDisplayName()
         {
             return this.PropertyName ?? this.ModelType.Name;
         }

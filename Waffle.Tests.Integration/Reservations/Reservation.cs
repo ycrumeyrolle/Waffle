@@ -1,16 +1,22 @@
 ﻿namespace Waffle.Tests.Integration.Reservations
 {
     using System;
+    using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Events;
     using Waffle.Filters;
     using Waffle.Tests.Integration.Orders;
 
     public class Reservation : MessageHandler,
-        ICommandHandler<MakeReservation>,
-        IEventHandler<OrderConfirmed>
+        IAsyncCommandHandler<MakeReservation>,
+        IAsyncEventHandler<OrderConfirmed>
     {
         private readonly ISpy spy;
+
+        public Reservation()
+            : this(new NullSpy())
+        {
+        }
 
         public Reservation(ISpy spy)
         {
@@ -21,17 +27,18 @@
 
         public Guid Id { get; set; }
 
-        public void Handle(MakeReservation command, CommandHandlerContext context)
+        public Task HandleAsync(MakeReservation command)
         {
             this.spy.Spy("MakeReservation");
 
             SeatsReserved seatsReserved = new SeatsReserved(this.Id);
-            context.Request.Processor.Publish(seatsReserved);
+            return this.CommandContext.Request.Processor.PublishAsync(seatsReserved);
         }
 
-        public void Handle(OrderConfirmed @event, EventHandlerContext context)
+        public Task HandleAsync(OrderConfirmed @event)
         {
             this.spy.Spy("OrderConfirmed");
+            return Task.FromResult(0);
         }
     }
 }

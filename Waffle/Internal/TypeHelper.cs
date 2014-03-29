@@ -5,19 +5,39 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Diagnostics.Contracts;
+    using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Events;
 
     internal static class TypeHelper
     {
+        private static readonly Type TaskGenericType = typeof(Task<>);
+
         internal static readonly Type CommandHandlerType = typeof(ICommandHandler);
 
         internal static readonly Type EventHandlerType = typeof(IEventHandler);
 
         internal static readonly Type ExceptionType = typeof(Exception);
+        
+        internal static Type GetTaskInnerTypeOrNull(Type type)
+        {
+            Contract.Requires(type != null);
+            if (type.IsGenericType && !type.IsGenericTypeDefinition)
+            {
+                Type genericTypeDefinition = type.GetGenericTypeDefinition();
+
+                if (TaskGenericType == genericTypeDefinition)
+                {
+                    return type.GetGenericArguments()[0];
+                }
+            }
+
+            return null;
+        }
 
         internal static ReadOnlyCollection<T> OfType<T>(object[] objects) where T : class
         {
+            Contract.Requires(objects != null); 
             int num = objects.Length;
             List<T> list = new List<T>(num);
             int count = 0;
@@ -49,6 +69,7 @@
 
         internal static bool IsSimpleType(Type type)
         {
+            Contract.Requires(type != null); 
             return type.IsPrimitive ||
                    type == typeof(string) ||
                    type == typeof(DateTime) ||

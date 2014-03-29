@@ -45,7 +45,7 @@
                     MetadataProvider = metadataProvider,
                     ValidatorProviders = validatorProviders,
                     ValidatorCache = request.Configuration.Services.GetModelValidatorCache(),
-                    ModelState = request.Command.ModelState,
+                    ModelState = request.ModelState,
                     Visited = new HashSet<object>(ReferenceEqualityComparer.Instance),
                     KeyBuilders = new Stack<IKeyBuilder>(),
                     RootPrefix = string.Empty
@@ -56,6 +56,8 @@
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "See comment below")]
         private bool ValidateNodeAndChildren(ModelMetadata metadata, ValidationContext validationContext, object container)
         {
+            Contract.Requires(metadata != null);
+
             object model;
             try
             {
@@ -110,6 +112,9 @@
 
         private bool ValidateProperties(ModelMetadata metadata, ValidationContext validationContext)
         {
+            Contract.Requires(validationContext != null);
+            Contract.Requires(metadata != null);
+
             bool isValid = true;
             PropertyScope propertyScope = new PropertyScope();
             validationContext.KeyBuilders.Push(propertyScope);
@@ -128,6 +133,9 @@
 
         private bool ValidateElements(IEnumerable model, ValidationContext validationContext)
         {
+            Contract.Requires(model != null);
+            Contract.Requires(validationContext != null);
+
             bool isValid = true;
             Type elementType = this.GetElementType(model.GetType());
             ModelMetadata elementMetadata = validationContext.MetadataProvider.GetMetadataForType(null, elementType);
@@ -153,6 +161,8 @@
         // Returns true if validation passes successfully
         private static bool ShallowValidate(ModelMetadata metadata, ValidationContext validationContext, object container)
         {
+            Contract.Requires(validationContext != null);
+
             bool isValid = true;
             string key = null;
             IModelValidatorCache validatorCache = validationContext.ValidatorCache;

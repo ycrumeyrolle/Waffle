@@ -1,5 +1,6 @@
 ﻿namespace Waffle.Tracing
 {
+    using System.Diagnostics.Contracts;
     using Waffle.Commands;
     using Waffle.Events;
     using Waffle.Internal;
@@ -38,11 +39,15 @@
         // Get services from the global config. These are normally per-handler services, but we're getting the global fallbacks.
         private static TService GetService<TService>(ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return (TService)services.GetService(typeof(TService));
         }
 
         private static void CreateCommandHandlerSelectorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
+            Contract.Requires(configuration != null);
+
             ICommandHandlerSelector selector = GetService<ICommandHandlerSelector>(configuration.Services);
             if (selector != null && !(selector is CommandHandlerSelectorTracer))
             {
@@ -53,6 +58,8 @@
 
         private static void CreateCommandHandlerActivatorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
+            Contract.Requires(configuration != null);
+
             ICommandHandlerActivator activator = GetService<ICommandHandlerActivator>(configuration.Services);
             if (activator != null && !(activator is CommandHandlerActivatorTracer))
             {
@@ -63,6 +70,8 @@
 
         private static void CreateHandlerValidatorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
+            Contract.Requires(configuration != null);
+
             ICommandValidator activator = GetService<ICommandValidator>(configuration.Services);
             if (activator != null && !(activator is CommandValidatorTracer))
             {
@@ -73,6 +82,8 @@
 
         private static void CreateCommandWorkerTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
+            Contract.Requires(configuration != null);
+
             ICommandWorker worker = GetService<ICommandWorker>(configuration.Services);
             if (worker != null && !(worker is CommandWorkerTracer))
             {
@@ -83,6 +94,8 @@
         
         private static void CreateEventHandlerSelectorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
+            Contract.Requires(configuration != null); 
+            
             IEventHandlerSelector selector = GetService<IEventHandlerSelector>(configuration.Services);
             if (selector != null && !(selector is EventHandlerSelectorTracer))
             {
@@ -93,6 +106,8 @@
 
         private static void CreateEventHandlerActivatorTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
+            Contract.Requires(configuration != null);
+
             IEventHandlerActivator activator = GetService<IEventHandlerActivator>(configuration.Services);
             if (activator != null && !(activator is EventHandlerActivatorTracer))
             {
@@ -103,6 +118,8 @@
 
         private static void CreateEventWorkerTracer(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
+            Contract.Requires(configuration != null);
+
             IEventWorker worker = GetService<IEventWorker>(configuration.Services);
             if (worker != null && !(worker is EventWorkerTracer))
             {

@@ -2,11 +2,17 @@
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
+    using System.Linq.Expressions;
     using System.Reflection;
-    using System.Reflection.Emit;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Filters;
+    using Waffle.Internal;
+    using Waffle.Properties;
+    using Waffle.Tasks;
 
     /// <summary>
     /// Provides information about the handler method.
@@ -15,6 +21,7 @@
     {
         private EventFilterGrouping filterGrouping;
         private Collection<FilterInfo> filterPipelineForGrouping;
+        private readonly Lazy<ActionExecutor> actionExecutor;
 
         /// <summary>
         /// Gets the <see cref="IEventHandlerActivator"/> associated with this instance.
@@ -28,61 +35,41 @@
         public EventHandlerDescriptor()
         {
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EventHandlerDescriptor"/> class.
         /// </summary>
         /// <param name="configuration">The <see cref="ProcessorConfiguration"/>.</param>
         /// <param name="eventType">The type of the message.</param>
-        /// <param name="handlerType">The type of thr handler.</param>
-        public EventHandlerDescriptor(ProcessorConfiguration configuration, Type eventType, Type handlerType)
+        /// <param name="handlerType">The type of the handler.</param>
+        /// <param name="handleMethod">The <see cref="MethodInfo"/> of the "Handle" method.</param>
+        public EventHandlerDescriptor(ProcessorConfiguration configuration, Type eventType, Type handlerType, MethodInfo handleMethod)
             : base(configuration, eventType, handlerType)
         {
-            var handleMethod = handlerType.GetMethod("Handle", new[] { eventType, typeof(EventHandlerContext) });
             this.AddAttributesToCache(handleMethod.GetCustomAttributes(true));
-            this.HandleMethod = this.CreateDynamicHandleMethod(handleMethod);
-
+            this.actionExecutor = new Lazy<ActionExecutor>(() => InitializeActionExecutor(handleMethod, eventType));
             this.handlerActivator = this.Configuration.Services.GetEventHandlerActivator();
-            
+
             this.Initialize();
         }
 
         /// <summary>
-        /// Gets the Handle method.
+        /// Initializes a new instance of the <see cref="EventHandlerDescriptor"/> class.
         /// </summary>
-        /// <value>The Handle method.</value>
-        public HandleEventAction HandleMethod { get; private set; }
-
-        private HandleEventAction CreateDynamicHandleMethod(MethodInfo handleMethod)
+        /// <param name="configuration">The <see cref="ProcessorConfiguration"/>.</param>
+        /// <param name="eventType">The type of the message.</param>
+        /// <param name="handlerType">The type of the handler.</param>
+        public EventHandlerDescriptor(ProcessorConfiguration configuration, Type eventType, Type handlerType)
+            : base(configuration, eventType, handlerType)
         {
-            DynamicMethod dynamicMethod = new DynamicMethod("Handle", typeof(void), new[] { typeof(IEventHandler), typeof(IEvent), typeof(EventHandlerContext) });
-            ILGenerator ilg = dynamicMethod.GetILGenerator();
+            var handleMethod = handlerType.GetMethod("Handle", new[] { eventType }) ?? handlerType.GetMethod("HandleAsync", new[] { eventType });
+            this.AddAttributesToCache(handleMethod.GetCustomAttributes(true));
+            this.actionExecutor = new Lazy<ActionExecutor>(() => InitializeActionExecutor(handleMethod, eventType));
+            this.handlerActivator = this.Configuration.Services.GetEventHandlerActivator();
 
-            // Load the container onto the stack, convert from object => declaring type for the property
-            ilg.Emit(OpCodes.Ldarg_0);
-            ilg.Emit(OpCodes.Castclass, this.HandlerType);
-            ilg.Emit(OpCodes.Ldarg_1);
-            ilg.Emit(OpCodes.Castclass, this.MessageType);
-            ilg.Emit(OpCodes.Ldarg_2);
-            ilg.Emit(OpCodes.Castclass, typeof(EventHandlerContext));
-
-            // if declaring type is value type, we use Call : structs don't have inheritance
-            // if get method is sealed or isn't virtual, we use Call : it can't be overridden
-            if (this.HandlerType.IsValueType || !handleMethod.IsVirtual || handleMethod.IsFinal)
-            {
-                ilg.Emit(OpCodes.Call, handleMethod);
-            }
-            else
-            {
-                ilg.Emit(OpCodes.Callvirt, handleMethod);
-            }
-            
-            // Return property value
-            ilg.Emit(OpCodes.Ret);
-
-            return (HandleEventAction)dynamicMethod.CreateDelegate(typeof(HandleEventAction));
+            this.Initialize();
         }
-        
+
         /// <summary>
         /// Creates a handler instance for the given <see cref="HandlerRequest"/>.
         /// </summary>
@@ -112,6 +99,41 @@
             return this.filterGrouping;
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Exception is flowed through the task.")]
+        public virtual Task ExecuteAsync(EventHandlerContext context, CancellationToken cancellationToken)
+        {
+            if (context == null)
+            {
+                throw Error.ArgumentNull("context");
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return TaskHelpers.Canceled();
+            }
+
+            try
+            {
+                return this.actionExecutor.Value.Execute(context);
+            }
+            catch (Exception e)
+            {
+                return TaskHelpers.FromError(e);
+            }
+        }
+
+        private static ActionExecutor InitializeActionExecutor(MethodInfo methodInfo, Type eventType)
+        {
+            Contract.Requires(methodInfo != null);
+
+            if (methodInfo.ContainsGenericParameters)
+            {
+                throw Error.InvalidOperation(Resources.CommandHandlerDescriptor_CannotCallOpenGenericMethods, methodInfo, methodInfo.ReflectedType.FullName);
+            }
+
+            return new ActionExecutor(methodInfo, eventType);
+        }
+
         // Helper to invoke any handler config attributes on this handler type or its base classes.
         private static void InvokeAttributesOnHandlerType(EventHandlerDescriptor descriptor, Type type)
         {
@@ -137,6 +159,114 @@
                     CommandHandlerSettings settings = new CommandHandlerSettings(originalConfig);
                     //// handlerConfig.Initialize(settings, descriptor);
                     descriptor.Configuration = ProcessorConfiguration.ApplyHandlerSettings(settings, originalConfig);
+                }
+            }
+        }
+
+        private sealed class ActionExecutor
+        {
+            private readonly Func<object, IEvent, Task> executor;
+
+            public ActionExecutor(MethodInfo methodInfo, Type eventType)
+            {
+                Contract.Requires(methodInfo != null);
+                Contract.Requires(eventType != null);
+
+                this.executor = GetExecutor(methodInfo, eventType);
+            }
+
+            public Task Execute(EventHandlerContext context)
+            {
+                Contract.Requires(context != null);
+
+                return this.executor(context.Handler, context.Event);
+            }
+            
+            // Method called via reflection.
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Method called via reflection.")]
+            private static Task Convert<T>(object taskAsObject)
+            {
+                Task<T> task = (Task<T>)taskAsObject;
+                return task.CastToObject();
+            }
+            
+            private static Func<object, IEvent, Task> GetExecutor(MethodInfo methodInfo, Type eventType)
+            {
+                Contract.Requires(methodInfo != null);
+                Contract.Requires(eventType != null);
+
+                // Parameters to executor
+                ParameterExpression instanceParameter = Expression.Parameter(typeof(object), "instance");
+                ParameterExpression eventParameter = Expression.Parameter(typeof(IEvent), "event");
+
+                // Call method
+                UnaryExpression instanceCast = (!methodInfo.IsStatic) ? Expression.Convert(instanceParameter, methodInfo.ReflectedType) : null;
+                Expression eventCast = Expression.Convert(eventParameter, eventType);
+                MethodCallExpression methodCall = Expression.Call(instanceCast, methodInfo, eventCast);
+
+                // methodCall is "((MethodInstanceType) instance).Handle(event, context)"
+                // Create function
+                if (methodCall.Type == typeof(void))
+                {
+                    // for: public void Action()
+                    Expression<Action<object, IEvent>> lambda = Expression.Lambda<Action<object, IEvent>>(methodCall, instanceParameter, eventParameter);
+                    Action<object, IEvent> voidExecutor = lambda.Compile();
+                    return (instance, @event) =>
+                    {
+                        voidExecutor(instance, @event);
+                        return TaskHelpers.NullResult();
+                    };
+                }
+                else
+                {
+                    // must coerce methodCall to match Func<object, object[], object> signature
+                    UnaryExpression castMethodCall = Expression.Convert(methodCall, typeof(object));
+                    Expression<Func<object, IEvent, object>> lambda = Expression.Lambda<Func<object, IEvent, object>>(castMethodCall, instanceParameter, eventParameter);
+                    Func<object, IEvent, object> compiled = lambda.Compile();
+                    if (methodCall.Type == typeof(Task))
+                    {
+                        // for: public Task Action()
+                        return (instance, @event) =>
+                        {
+                            Task task = (Task)compiled(instance, @event);
+                            ThrowIfWrappedTaskInstance(methodInfo, task.GetType());
+                            return task;
+                        };
+                    }
+
+                    // for: public T Action()
+                    return (instance, command) =>
+                    {
+                        var result = compiled(instance, command);
+
+                        // Throw when the result of a method is Task. Asynchronous methods need to declare that they
+                        // return a Task.
+                        Task resultAsTask = result as Task;
+                        if (resultAsTask != null)
+                        {
+                            throw Error.InvalidOperation(Resources.ActionExecutor_UnexpectedTaskInstance, methodInfo.Name, methodInfo.DeclaringType.Name);
+                        }
+
+                        return Task.FromResult(result);
+                    };
+                }
+            }
+
+            private static void ThrowIfWrappedTaskInstance(MethodInfo method, Type type)
+            {
+                // Throw if a method declares a return type of Task and returns an instance of Task<Task> or Task<Task<T>>
+                // This most likely indicates that the developer forgot to call Unwrap() somewhere.
+                Contract.Requires(method != null);
+                Contract.Assert(method.ReturnType == typeof(Task));
+
+                // Fast path: check if type is exactly Task first.
+                if (type != typeof(Task))
+                {
+                    Type innerTaskType = TypeHelper.GetTaskInnerTypeOrNull(type);
+                    if (innerTaskType != null && typeof(Task).IsAssignableFrom(innerTaskType))
+                    {
+                        throw Error.InvalidOperation(Resources.ActionExecutor_WrappedTaskInstance, method.Name, method.DeclaringType.Name, type.FullName);
+                    }
                 }
             }
         }

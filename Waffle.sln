@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle", "Waffle\Waffle.csproj", "{289D3B8B-D8A2-44AF-931C-9B3DF7E319B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Tests", "Waffle.Tests\Waffle.Tests.csproj", "{302CA73F-4D47-4DEC-BE2C-803B210A8B46}"
@@ -9,6 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
 		Local.testsettings = Local.testsettings
+		Performance1.psess = Performance1.psess
+		Performance2.psess = Performance2.psess
+		Performance3.psess = Performance3.psess
 		Settings.StyleCop = Settings.StyleCop
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 		Waffle.nuspec = Waffle.nuspec
@@ -44,76 +49,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Events.MongoDb.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Tests.Integration", "Waffle.Tests.Integration\Waffle.Tests.Integration.csproj", "{6412E848-713F-4F3B-BB83-179D7BC6818F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Sample", "Waffle.Sample\Waffle.Sample.csproj", "{AAE77B4D-5668-42DD-8128-5C64B2F0606B}"
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccProjectUniqueName0 = Waffle\\Waffle.csproj
-		SccProjectName0 = Waffle
-		SccAuxPath0 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath0 = Waffle
-		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName1 = Waffle.Tests\\Waffle.Tests.csproj
-		SccProjectTopLevelParentUniqueName1 = Waffle.sln
-		SccProjectName1 = Waffle.Tests
-		SccAuxPath1 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath1 = Waffle.Tests
-		SccProvider1 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName2 = Waffle.Unity\\Waffle.Unity.csproj
-		SccProjectName2 = Waffle.Unity
-		SccAuxPath2 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath2 = Waffle.Unity
-		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName3 = Waffle.Unity.Tests\\Waffle.Unity.Tests.csproj
-		SccProjectTopLevelParentUniqueName3 = Waffle.sln
-		SccProjectName3 = Waffle.Unity.Tests
-		SccAuxPath3 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath3 = Waffle.Unity.Tests
-		SccProvider3 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName4 = Waffle.MiniProfiler\\Waffle.MiniProfiler.csproj
-		SccProjectName4 = Waffle.MiniProfiler
-		SccAuxPath4 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath4 = Waffle.MiniProfiler
-		SccProvider4 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName5 = Waffle.Tests.Integration\\Waffle.Tests.Integration.csproj
-		SccProjectTopLevelParentUniqueName5 = Waffle.sln
-		SccProjectName5 = Waffle.Tests.Integration
-		SccAuxPath5 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath5 = Waffle.Tests.Integration
-		SccProvider5 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName6 = Waffle.Tests.Console\\Waffle.Tests.Console.csproj
-		SccProjectTopLevelParentUniqueName6 = Waffle.sln
-		SccProjectName6 = Waffle.Tests.Console
-		SccAuxPath6 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath6 = Waffle.Tests.Console
-		SccProvider6 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName7 = Waffle.Queries.Data\\Waffle.Queries.Data.csproj
-		SccProjectName7 = Waffle.Queries.Data
-		SccAuxPath7 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath7 = Waffle.Queries.Data
-		SccProvider7 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName8 = Waffle.Queries.Data.Tests\\Waffle.Queries.Data.Tests.csproj
-		SccProjectTopLevelParentUniqueName8 = Waffle.sln
-		SccProjectName8 = Waffle.Queries.Data.Tests
-		SccAuxPath8 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath8 = Waffle.Queries.Data.Tests
-		SccProvider8 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName9 = Waffle.Events.MongoDb\\Waffle.Events.MongoDb.csproj
-		SccProjectName9 = Waffle.Events.MongoDb
-		SccAuxPath9 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath9 = Waffle.Events.MongoDb
-		SccProvider9 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccProjectUniqueName10 = Waffle.Events.MongoDb.Tests\\Waffle.Events.MongoDb.Tests.csproj
-		SccProjectTopLevelParentUniqueName10 = Waffle.sln
-		SccProjectName10 = Waffle.Events.MongoDb.Tests
-		SccAuxPath10 = https://yanncrumeyrolle.visualstudio.com/defaultcollection
-		SccLocalPath10 = Waffle.Events.MongoDb.Tests
-		SccProvider10 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = Waffle.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -233,6 +171,16 @@ Global
 		{6412E848-713F-4F3B-BB83-179D7BC6818F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6412E848-713F-4F3B-BB83-179D7BC6818F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6412E848-713F-4F3B-BB83-179D7BC6818F}.Release|x86.ActiveCfg = Release|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -247,5 +195,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Waffle.vsmdi
 	EndGlobalSection
 EndGlobal

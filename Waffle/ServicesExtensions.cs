@@ -3,9 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Events;
+    using Waffle.ExceptionHandling;
     using Waffle.Filters;
     using Waffle.Interception;
     using Waffle.Internal;
@@ -39,6 +42,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerActivator"/> service is not registered.</exception>
         public static ICommandHandlerActivator GetHandlerActivator(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<ICommandHandlerActivator>();
         }
 
@@ -50,6 +55,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerActivator"/> service is not registered.</exception>
         public static IEventHandlerActivator GetEventHandlerActivator(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IEventHandlerActivator>();
         }
 
@@ -61,6 +68,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IAssembliesResolver"/> service is not registered.</exception>
         public static IAssembliesResolver GetAssembliesResolver(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IAssembliesResolver>();
         }
 
@@ -72,6 +81,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerSelector"/> service is not registered.</exception>
         public static ICommandHandlerSelector GetHandlerSelector(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<ICommandHandlerSelector>();
         }
 
@@ -83,6 +94,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerSelector"/> service is not registered.</exception>
         public static IEventHandlerSelector GetEventHandlerSelector(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IEventHandlerSelector>();
         }
 
@@ -94,6 +107,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerDescriptorProvider"/> service is not registered.</exception>
         public static ICommandHandlerDescriptorProvider GetCommandHandlerDescriptorProvider(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<ICommandHandlerDescriptorProvider>();
         }
 
@@ -105,6 +120,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerDescriptorProvider"/> service is not registered.</exception>
         public static IEventHandlerDescriptorProvider GetEventHandlerDescriptorProvider(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IEventHandlerDescriptorProvider>();
         }
 
@@ -116,6 +133,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerTypeResolver"/> service is not registered.</exception>
         public static ICommandHandlerTypeResolver GetCommandHandlerTypeResolver(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<ICommandHandlerTypeResolver>();
         }
 
@@ -127,6 +146,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerTypeResolver"/> service is not registered.</exception>
         public static IEventHandlerTypeResolver GetEventHandlerTypeResolver(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IEventHandlerTypeResolver>();
         }
 
@@ -138,6 +159,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IProxyBuilder"/> service is not registered.</exception>
         public static IProxyBuilder GetProxyBuilder(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IProxyBuilder>();
         }
 
@@ -149,6 +172,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IInterceptionProvider"/> service is not registered.</exception>
         public static IInterceptionProvider GetInterceptorProvider(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IInterceptionProvider>();
         }
         
@@ -160,6 +185,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="ModelMetadataProvider"/> service is not registered.</exception>
         public static ModelMetadataProvider GetModelMetadataProvider(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<ModelMetadataProvider>();
         }
 
@@ -171,6 +198,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IModelFlattener"/> services are not registered.</exception>
         public static IModelFlattener GetModelFlattener(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IModelFlattener>();
         }
 
@@ -182,6 +211,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IPrincipalProvider"/> service is not registered.</exception>
         public static IPrincipalProvider GetPrincipalProvider(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IPrincipalProvider>();
         }
 
@@ -193,6 +224,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="ICommandWorker"/> service is not registered.</exception>
         public static ICommandWorker GetCommandWorker(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<ICommandWorker>();
         }
 
@@ -204,6 +237,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IEventWorker"/> service is not registered.</exception>
         public static IEventWorker GetEventWorker(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IEventWorker>();
         }
 
@@ -215,6 +250,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IMessageProcessor"/> service is not registered.</exception>
         public static IMessageProcessor GetProcessor(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<IMessageProcessor>();
         }
 
@@ -225,6 +262,8 @@
         /// <returns>The <see cref="ITraceManager"/> service.</returns>
         public static ITraceManager GetTraceManager(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetService<ITraceManager>();
         }
 
@@ -235,6 +274,8 @@
         /// <returns>The <see cref="ITraceWriter"/> service.</returns>
         public static ITraceWriter GetTraceWriter(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetService<ITraceWriter>();
         }
 
@@ -246,6 +287,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IInterceptor"/> services are not registered.</exception>
         public static IInterceptor[] GetInterceptors(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServices<IInterceptor>();
         }
 
@@ -258,6 +301,8 @@
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Validators", Justification = "False positive.")]
         public static ICommandValidator GetCommandValidator(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServiceOrThrow<ICommandValidator>();
         }
         
@@ -269,6 +314,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="IFilterProvider"/> services are not registered.</exception>
         public static IFilterProvider[] GetFilterProviders(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServices<IFilterProvider>();
         }
 
@@ -280,6 +327,8 @@
         /// <exception cref="InvalidOperationException">The <see cref="ModelValidatorProvider"/> services are not registered.</exception>
         public static ModelValidatorProvider[] GetModelValidatorProviders(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetServices<ModelValidatorProvider>();
         }      
         
@@ -291,11 +340,63 @@
         /// <exception cref="InvalidOperationException">The <see cref="IModelValidatorCache"/> services are not registered.</exception>
         internal static IModelValidatorCache GetModelValidatorCache(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return services.GetService<IModelValidatorCache>();
+        }
+
+        /// <summary>
+        /// Gets the list of <see cref="ICommandHandlerInvoker"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ICommandHandlerInvoker"/> services.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerInvoker"/> service is not registered.</exception>
+        internal static ICommandHandlerInvoker GetCommandHandlerInvoker(this ServicesContainer services)
+        {
+            Contract.Requires(services != null);
+
+            return services.GetService<ICommandHandlerInvoker>();
+        }
+
+        /// <summary>
+        /// Gets the list of <see cref="IEventHandlerInvoker"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="IEventHandlerInvoker"/> services.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerInvoker"/> service is not registered.</exception>
+        internal static IEventHandlerInvoker GetEventHandlerInvoker(this ServicesContainer services)
+        {
+            Contract.Requires(services != null);
+
+            return services.GetService<IEventHandlerInvoker>();
+        }
+        
+        /// <summary>Returns the registered unhandled exception handler, if any.</summary>
+        /// <param name="services">The services container.</param>
+        /// <returns>
+        /// The registered unhandled exception hander, if present; otherwise, <see langword="null"/>.
+        /// </returns>
+        public static IExceptionHandler GetExceptionHandler(this ServicesContainer services)
+        {
+            Contract.Requires(services != null);
+
+            return services.GetService<IExceptionHandler>();
+        }
+
+        /// <summary>Returns the collection of registered unhandled exception loggers.</summary>
+        /// <param name="services">The services container.</param>
+        /// <returns>The collection of registered unhandled exception loggers.</returns>
+        public static IEnumerable<IExceptionLogger> GetExceptionLoggers(this ServicesContainer services)
+        {
+            Contract.Requires(services != null);
+
+            return services.GetServices<IExceptionLogger>();
         }
 
         internal static T GetServiceOrThrow<T>(this ServicesContainer services) where T : class
         {
+            Contract.Requires(services != null);
+
             T service = services.GetService<T>();
             if (service == null)
             {
@@ -307,6 +408,8 @@
 
         internal static T GetServiceOrThrow<T>(this IDependencyResolver services) where T : class
         {
+            Contract.Requires(services != null);
+
             T service = services.GetService<T>();
             if (service == null)
             {
@@ -318,12 +421,16 @@
 
         private static TService GetService<TService>(this ServicesContainer services)
         {
+            Contract.Requires(services != null);
+
             return (TService)services.GetService(typeof(TService));
         }
 
         private static TService[] GetServices<TService>(this ServicesContainer services)
         {
-            return services.GetServices(typeof(TService)).AsArray<TService>();
+            Contract.Requires(services != null);
+
+            return services.GetServices(typeof(TService)).Cast<TService>().ToArray<TService>();
         }
     }
 }

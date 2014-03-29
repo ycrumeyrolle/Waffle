@@ -87,7 +87,7 @@
                 IMongoQuery query = Query.EQ("SourceId", sourceId);
                 MongoCursor<EventWrapper> cursor = collection.Find(query);
                 ReadOnlyCollection<IEvent> result = new ReadOnlyCollection<IEvent>(cursor.Select(e => e.Payload).ToList());
-                return TaskHelpers.FromResult<ICollection<IEvent>>(result);
+                return Task.FromResult<ICollection<IEvent>>(result);
             }
             catch (Exception exception)
             {

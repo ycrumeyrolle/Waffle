@@ -70,6 +70,9 @@ namespace Waffle.Metadata
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "See comment below")]
         private void VisitNodeAndChildren(ModelMetadata metadata, VisitContext visitContext)
         {
+            Contract.Requires(metadata != null);
+            Contract.Requires(visitContext != null);
+
             // Do not traverse the model if caching must be ignored
             if (metadata.IgnoreCaching)
             {
@@ -123,6 +126,9 @@ namespace Waffle.Metadata
 
         private void VisitProperties(ModelMetadata metadata, VisitContext visitContext)
         {
+            Contract.Requires(metadata != null);
+            Contract.Requires(visitContext != null);
+
             PropertyScope propertyScope = new PropertyScope();
             visitContext.KeyBuilders.Push(propertyScope);
             foreach (ModelMetadata childMetadata in metadata.Properties)
@@ -136,6 +142,9 @@ namespace Waffle.Metadata
 
         private void VisitElements(IEnumerable model, VisitContext visitContext)
         {
+            Contract.Requires(model != null);
+            Contract.Requires(visitContext != null);
+
             Type elementType = this.GetElementType(model.GetType());
             ModelMetadata elementMetadata = visitContext.MetadataProvider.GetMetadataForType(null, elementType);
 
@@ -156,6 +165,9 @@ namespace Waffle.Metadata
         private static void ShallowVisit(ModelMetadata metadata, VisitContext visitContext)
         {
             Contract.Requires(visitContext.KeyBuilders != null);
+
+            Contract.Requires(visitContext != null); 
+            
             string key = visitContext.RootPrefix;
             foreach (IKeyBuilder keyBuilder in visitContext.KeyBuilders.Reverse())
             {
@@ -170,8 +182,8 @@ namespace Waffle.Metadata
 
         private Type GetElementType(Type type)
         {
-            Contract.Assert(typeof(IEnumerable).IsAssignableFrom(type));
-          
+            Contract.Requires(typeof(IEnumerable).IsAssignableFrom(type));
+            
             // Avoid to use reflection when it is possible
             Type elementType;
             if (this.elementTypeCache.TryGetValue(type, out elementType))

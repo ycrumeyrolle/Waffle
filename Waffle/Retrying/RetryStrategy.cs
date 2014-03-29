@@ -11,7 +11,13 @@
         /// <summary>
         /// Represents the default number of retry attempts.
         /// </summary>
-        public static readonly int DefaultClientRetryCount = 10;
+        public const int DefaultClientRetryCount = 10;
+
+        /// <summary>
+        /// Represents the default flag indicating whether the first retry attempt will be made immediately,
+        /// whereas subsequent retries will remain subject to the retry interval.
+        /// </summary>
+        public const bool DefaultFirstFastRetry = true;
 
         /// <summary>
         /// Represents the default amount of time used when calculating a random delta in the exponential delay between retries.
@@ -38,11 +44,6 @@
         /// </summary>
         public static readonly TimeSpan DefaultRetryIncrement = TimeSpan.FromSeconds(1.0);
 
-        /// <summary>
-        /// Represents the default flag indicating whether the first retry attempt will be made immediately,
-        /// whereas subsequent retries will remain subject to the retry interval.
-        /// </summary>
-        public static readonly bool DefaultFirstFastRetry = true;
         private static readonly RetryStrategy NoRetryInstance = new FixedInterval(0, RetryStrategy.DefaultRetryInterval);
         private static readonly RetryStrategy DefaultFixedInstance = new FixedInterval(RetryStrategy.DefaultClientRetryCount, RetryStrategy.DefaultRetryInterval);
         private static readonly RetryStrategy DefaultProgressiveInstance = new Incremental(RetryStrategy.DefaultClientRetryCount, RetryStrategy.DefaultRetryInterval, RetryStrategy.DefaultRetryIncrement);
@@ -52,7 +53,7 @@
         /// Initializes a new instance of the <see cref="RetryStrategy" /> class. 
         /// </summary>
         /// <param name="name">The name of the retry strategy.</param>
-        /// <param name="firstFastRetry"><c>true</c> to immediately retry in the first attempt; otherwise, <c>false</c>. The subsequent retries will remain subject to the configured retry interval.</param>
+        /// <param name="firstFastRetry"><see langword="true"/> to immediately retry in the first attempt; otherwise, <see langword="false"/>. The subsequent retries will remain subject to the configured retry interval.</param>
         protected RetryStrategy(string name, bool firstFastRetry)
         {
             this.Name = name;

@@ -1,7 +1,6 @@
 ﻿namespace Waffle.Events
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
 
     /// <summary>
     /// Provides information about the list of event handler descriptors.
@@ -12,11 +11,20 @@
         /// Initializes a new instance of the <see cref="EventHandlersDescriptor"/> class.
         /// </summary>
         /// <param name="eventName"></param>
+        public EventHandlersDescriptor(string eventName)
+            : this(eventName, new List<EventHandlerDescriptor>())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventHandlersDescriptor"/> class.
+        /// </summary>
+        /// <param name="eventName"></param>
         /// <param name="eventHandlerDescriptors"></param>
         public EventHandlersDescriptor(string eventName, IList<EventHandlerDescriptor> eventHandlerDescriptors)
         {
             this.EventName = eventName;
-            this.EventHandlerDescriptors = new ReadOnlyCollection<EventHandlerDescriptor>(eventHandlerDescriptors);
+            this.EventHandlerDescriptors = eventHandlerDescriptors;
         }
 
         /// <summary>
@@ -29,6 +37,6 @@
         /// Gets the collection of <see cref="EventHandlerDescriptor"/>.
         /// </summary>
         /// <value>The collection of <see cref="EventHandlerDescriptor"/>.</value>
-        public ICollection<EventHandlerDescriptor> EventHandlerDescriptors { get; private set; }
+        public IList<EventHandlerDescriptor> EventHandlerDescriptors { get; private set; }
     }
 }

@@ -7,6 +7,7 @@
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Tests.Helpers;
+    using Waffle.Filters;
 
     [TestClass]
     public sealed class DefaultCommandHandlerActivatorFixture : IDisposable
@@ -63,26 +64,6 @@
         }
 
         [TestMethod]
-        public void WhenCreatingHandlerFromDependencyResolverTwiceThenFastCacheIsUsed()
-        {
-            // Assign
-            ICommandHandlerActivator activator = new DefaultCommandHandlerActivator();
-            CommandHandlerRequest request = new CommandHandlerRequest(this.config, this.command.Object);
-            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
-            this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleCommandHandler))).Returns(null);
-
-            // Act
-            activator.Create(request, descriptor);
-            ICommandHandler commandHandler = activator.Create(request, descriptor);
-
-            // Assert
-            Assert.IsNotNull(commandHandler);
-            Assert.IsInstanceOfType(commandHandler, typeof(SimpleCommandHandler));
-            Assert.AreEqual(0, descriptor.Properties.Count);
-            this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleCommandHandler)), Times.Once());
-        }
-
-        [TestMethod]
         public void WhenCreatingHandlerFromActivatorThenReturnsHandler()
         {
             // Assign
@@ -126,14 +107,15 @@
         {
             // Assign
             ICommandHandlerActivator activator = new DefaultCommandHandlerActivator();
-            CommandHandlerRequest request = new CommandHandlerRequest(this.config, this.command.Object);
+            CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, this.command.Object);
+            CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, this.command.Object);
             CommandHandlerDescriptor descriptor1 = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             CommandHandlerDescriptor descriptor2 = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleCommandHandler))).Returns(null);
 
             // Act
-            activator.Create(request, descriptor1);
-            ICommandHandler commandHandler = activator.Create(request, descriptor2);
+            activator.Create(request1, descriptor1);
+            ICommandHandler commandHandler = activator.Create(request2, descriptor2);
 
             // Assert
             Assert.IsNotNull(commandHandler);
@@ -147,15 +129,16 @@
         {
             // Assign
             ICommandHandlerActivator activator = new DefaultCommandHandlerActivator();
-            CommandHandlerRequest request = new CommandHandlerRequest(this.config, this.command.Object);
+            CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, this.command.Object);
+            CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, this.command.Object);
             CommandHandlerDescriptor descriptor1 = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             CommandHandlerDescriptor descriptor2 = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             this.dependencyResolver.Setup(resolver => resolver.GetService(typeof(SimpleCommandHandler))).Returns(null);
 
             // Act
-            activator.Create(request, descriptor1);
-            activator.Create(request, descriptor2);
-            ICommandHandler commandHandler = activator.Create(request, descriptor2);
+            activator.Create(request1, descriptor1);
+            activator.Create(request2, descriptor2);
+            ICommandHandler commandHandler = activator.Create(request2, descriptor2);
 
             // Assert
             Assert.IsNotNull(commandHandler);
@@ -197,7 +180,7 @@
         [TestMethod]
         public void WhenCreatingHandlerThrowExceptionThenRethowsInvalidOperationException()
         {
-            // Assign
+            // Arrange
             ICommandHandlerActivator activator = new DefaultCommandHandlerActivator();
             CommandHandlerRequest request = new CommandHandlerRequest(this.config, this.command.Object);
             CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
@@ -219,6 +202,94 @@
 
             // Assert
             Assert.IsTrue(exceptionRaised);
+        }
+
+
+        [TestMethod]
+        public void CreateSingletonHandler_InstancianteOnce()
+        {
+            // Arrange
+            var config = new ProcessorConfiguration();
+            config.DefaultHandlerLifetime = HandlerLifetime.Singleton;
+            ICommandHandlerActivator activator = new DefaultCommandHandlerActivator();
+            CommandHandlerRequest request1 = new CommandHandlerRequest(config, this.command.Object);
+            CommandHandlerRequest request2 = new CommandHandlerRequest(config, this.command.Object);
+            CommandHandlerDescriptor descriptor1 = new CommandHandlerDescriptor(config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerDescriptor descriptor2 = new CommandHandlerDescriptor(config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+
+            // Act
+            var handler1 = activator.Create(request1, descriptor1);
+            var handler2 = activator.Create(request1, descriptor1);
+            var handler3 = activator.Create(request2, descriptor1);
+            var handler4 = activator.Create(request1, descriptor2);
+
+            // Assert
+            Assert.IsNotNull(handler1);
+            Assert.IsNotNull(handler2);
+            Assert.IsNotNull(handler3);
+            Assert.IsNotNull(handler4);
+            Assert.AreSame(handler1, handler2);
+            Assert.AreSame(handler1, handler3);
+            Assert.AreSame(handler1, handler4);
+        }
+
+        [TestMethod]
+        public void CreatePerRequestHandler_InstancianteOncePerRequest()
+        {
+            // Arrange
+            var config = new ProcessorConfiguration();
+            config.DefaultHandlerLifetime = HandlerLifetime.PerRequest;
+            ICommandHandlerActivator activator = new DefaultCommandHandlerActivator();
+            CommandHandlerRequest request1 = new CommandHandlerRequest(config, this.command.Object);
+            CommandHandlerRequest request2 = new CommandHandlerRequest(config, this.command.Object);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerDescriptor descriptor2 = new CommandHandlerDescriptor(config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+
+            // Act
+            var handler1 = activator.Create(request1, descriptor);
+            var handler2 = activator.Create(request1, descriptor);
+            var handler3 = activator.Create(request2, descriptor);
+            var handler4 = activator.Create(request1, descriptor2);
+
+            // Assert
+            Assert.IsNotNull(handler1);
+            Assert.IsNotNull(handler2);
+            Assert.IsNotNull(handler3);
+            Assert.IsNotNull(handler4);
+            Assert.AreSame(handler1, handler2);
+            Assert.AreNotSame(handler1, handler3);
+            Assert.AreSame(handler1, handler4);
+        }
+
+        [TestMethod]
+        public void CreateTranscientHandler_InstancianteEachTime()
+        {
+            // Arrange
+            var config = new ProcessorConfiguration();
+            config.DefaultHandlerLifetime = HandlerLifetime.Transient;
+            ICommandHandlerActivator activator = new DefaultCommandHandlerActivator();
+            CommandHandlerRequest request1 = new CommandHandlerRequest(config, this.command.Object);
+            CommandHandlerRequest request2 = new CommandHandlerRequest(config, this.command.Object);
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerDescriptor descriptor2 = new CommandHandlerDescriptor(config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+
+            // Act
+            var handler1 = activator.Create(request1, descriptor);
+            var handler2 = activator.Create(request1, descriptor);
+            var handler3 = activator.Create(request2, descriptor);
+            var handler4 = activator.Create(request1, descriptor2);
+
+            // Assert
+            Assert.IsNotNull(handler1);
+            Assert.IsNotNull(handler2);
+            Assert.IsNotNull(handler3);
+            Assert.IsNotNull(handler4);
+            Assert.AreNotSame(handler1, handler2);
+            Assert.AreNotSame(handler1, handler3);
+            Assert.AreNotSame(handler1, handler4);
+            Assert.AreNotSame(handler2, handler3);
+            Assert.AreNotSame(handler2, handler4);
+            Assert.AreNotSame(handler3, handler4);
         }
 
         [TestCleanup]

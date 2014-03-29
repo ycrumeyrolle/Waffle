@@ -1,6 +1,8 @@
 ﻿namespace Waffle
 {
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Threading;
     using Waffle.Filters;
@@ -13,9 +15,13 @@
     /// <typeparam name="THandler"></typeparam>
     public class HandlerActivator<THandler> where THandler : class
     {
+        private const string HandlerInstanceKey = "Waffle_HandlerInstance";
+
         private readonly object cacheKey = new object();
 
         private Tuple<HandlerDescriptor, Func<THandler>> fastCache;
+
+        private readonly ConcurrentDictionary<Type, Func<THandler>> activatorRepository = new ConcurrentDictionary<Type, Func<THandler>>();
 
         /// <summary>
         /// Creates the handler specified by <paramref name="descriptor"/> using the given <paramref name="request"/>.
@@ -67,7 +73,7 @@
         /// <returns>
         /// The handler.
         /// </returns>
-        private static THandler GetInstanceOrActivator(HandlerRequest request, HandlerDescriptor descriptor, out Func<THandler> activator)
+        private THandler GetInstanceOrActivator(HandlerRequest request, HandlerDescriptor descriptor, out Func<THandler> activator)
         {
             Contract.Requires(request != null);
             Contract.Requires(descriptor != null);
@@ -82,18 +88,69 @@
 
             switch (descriptor.Lifetime)
             {
-                case HandlerLifetime.Transient:
+                case HandlerLifetime.Singleton:
+                    activator = this.CreateSingletonActivator(descriptor.HandlerType);
+                    return null;
+
                 case HandlerLifetime.PerRequest:
-                case HandlerLifetime.Processor:
-                    // Otherwise create a delegate for creating a new instance of the type
+                    activator = CreatePerRequestActivator(request, descriptor);
+                    return null;
+
+                case HandlerLifetime.Transient:
                     activator = TypeActivator.Create<THandler>(descriptor.HandlerType);
-                    break;
+                    return null;
 
                 default:
                     throw Error.InvalidEnumArgument("descriptor", (int)descriptor.Lifetime, typeof(HandlerLifetime));
             }
+        }
 
-            return null;
+        private Func<THandler> CreateSingletonActivator(Type handlerType)
+        {
+            Func<THandler> activator;
+            if (this.activatorRepository.TryGetValue(handlerType, out activator))
+            {
+                return activator;
+            }
+
+            activator = CreateDelegatingActivator(handlerType);
+            this.activatorRepository.TryAdd(handlerType, activator);
+            return activator;
+        }
+
+        private static Func<THandler> CreatePerRequestActivator(HandlerRequest request, HandlerDescriptor descriptor)
+        {
+            Contract.Requires(request != null);
+            Contract.Requires(descriptor != null);
+
+            Func<THandler> activator;
+            Dictionary<Type, Func<THandler>> activators;
+            if (request.Properties.TryGetValue(HandlerInstanceKey, out activators))
+            {
+                if (activators.TryGetValue(descriptor.HandlerType, out activator))
+                {
+                    return activator;
+                }
+
+                activator = CreateDelegatingActivator(descriptor.HandlerType);
+                activators.Add(descriptor.HandlerType, activator);
+                return activator;
+            }
+
+            activator = CreateDelegatingActivator(descriptor.HandlerType);
+            activators = new Dictionary<Type, Func<THandler>>();
+            activators.Add(descriptor.HandlerType, activator);
+            request.Properties.Add(HandlerInstanceKey, activators);
+            return activator;
+        }
+
+        private static Func<THandler> CreateDelegatingActivator(Type handlerType)
+        {
+            Contract.Requires(handlerType != null);
+
+            Func<THandler> activator = TypeActivator.Create<THandler>(handlerType);
+            THandler instance = activator();
+            return () => instance;
         }
 
         private THandler TryCreate(HandlerRequest request, HandlerDescriptor descriptor)
@@ -103,11 +160,20 @@
 
             Func<THandler> activator;
 
-            // First check in the local fast cache and if not a match then look in the broader 
-            // CommandHandlerDescriptor.Properties cache
-            if (this.fastCache == null)
+            if (descriptor.Lifetime != HandlerLifetime.Transient)
             {
-                THandler commandHandler = GetInstanceOrActivator(request, descriptor, out activator);
+                THandler commandHandler = this.GetInstanceOrActivator(request, descriptor, out activator);
+                if (commandHandler != null)
+                {
+                    // we have a handler registered with the dependency resolver for this handler type                      
+                    return commandHandler;
+                }
+            }
+            else if (this.fastCache == null)
+            {
+                // First check in the local fast cache and if not a match then look in the broader 
+                // HandlerDescriptor.Properties cache
+                THandler commandHandler = this.GetInstanceOrActivator(request, descriptor, out activator);
                 if (commandHandler != null)
                 {
                     // we have a handler registered with the dependency resolver for this handler type                      
@@ -133,7 +199,7 @@
                 }
                 else
                 {
-                    THandler commandHandler = GetInstanceOrActivator(request, descriptor, out activator);
+                    THandler commandHandler = this.GetInstanceOrActivator(request, descriptor, out activator);
                     if (commandHandler != null)
                     {
                         // we have a handler registered with the dependency resolver for this handler type
@@ -144,7 +210,9 @@
                 }
             }
 
-            return activator();
+            var instance = activator();
+
+            return instance;
         }
     }
 }

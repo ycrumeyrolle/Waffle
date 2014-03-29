@@ -2,10 +2,13 @@
 {
     using Waffle.Commands;
 
-    public class PlaceOrder : Command
+    public class PlaceOrder : ICommand
     {
-        public PlaceOrder()
+        public PlaceOrder(int count)
         {
+            this.Count = count;
         }
+
+        public int Count { get; private set; }
     }
 }

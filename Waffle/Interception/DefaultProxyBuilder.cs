@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Diagnostics.Contracts;
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
@@ -84,6 +85,9 @@
 
         private void EmitMethod(FieldBuilder innerFieldBuilder, MethodInfo method, TypeBuilder typeBuilder)
         {
+            Contract.Requires(method != null);
+            Contract.Requires(typeBuilder != null);
+
             MethodBuilder methodBuilder = typeBuilder.DefineMethod(method.Name, MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual, method.ReturnType, method.GetParameters().Select(pi => pi.ParameterType).ToArray());
 
             ILGenerator il = methodBuilder.GetILGenerator();
@@ -135,6 +139,9 @@
 
         private FieldBuilder EmitDefaultCtor(Type type, TypeBuilder typeBuilder)
         {
+            Contract.Requires(type != null);
+            Contract.Requires(typeBuilder != null);
+
             ConstructorInfo ctor = type.GetConstructor(Type.EmptyTypes);
             if (ctor == null)
             {
@@ -160,6 +167,8 @@
 
         private void EmitOnExceptionMethodCall(LocalBuilder exception, ILGenerator il)
         {
+            Contract.Requires(il != null); 
+            
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, this.interceptorFieldBuilder);
             il.Emit(OpCodes.Ldloc_S, exception);
@@ -168,6 +177,8 @@
 
         private void EmitOnExecutedMethodCall(ILGenerator il)
         {
+            Contract.Requires(il != null); 
+            
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, this.interceptorFieldBuilder);
             il.Emit(OpCodes.Callvirt, this.executedMethod);
@@ -175,6 +186,8 @@
 
         private void EmitOnExecutingMethodCall(ILGenerator il)
         {
+            Contract.Requires(il != null); 
+
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, this.interceptorFieldBuilder);
             il.Emit(OpCodes.Callvirt, this.executingMethod);
@@ -194,6 +207,9 @@
 
         private static void EmitInnerMethodCall(MethodInfo method, FieldBuilder innerFieldBuilder, ILGenerator il)
         {
+            Contract.Requires(il != null); 
+            Contract.Requires(method != null);
+            
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, innerFieldBuilder);
 

@@ -1,19 +1,24 @@
 ﻿namespace Waffle.Tests.Integration.Orders
 {
     using System;
+    using System.Threading.Tasks;
     using Waffle.Events;
     using Waffle.Tests.Integration.Payments;
     using Waffle.Tests.Integration.Reservations;
     using Waffle.Tests.Integration.WaitList;
 
-    [HandlerLifetime(Filters.HandlerLifetime.PerRequest)]
     public class OrderProcessManager : MessageHandler,
-        IEventHandler<OrderCreated>,
-        IEventHandler<SeatsReserved>,
-        IEventHandler<SeatsNotReserved>,
-        IEventHandler<PaymentAccepted>
+        IAsyncEventHandler<OrderCreated>,
+        IAsyncEventHandler<SeatsReserved>,
+        IAsyncEventHandler<SeatsNotReserved>,
+        IAsyncEventHandler<PaymentAccepted>
     {
         private readonly ISpy spy;
+
+        public OrderProcessManager()
+            : this(new NullSpy())
+        {
+        }
 
         public OrderProcessManager(ISpy spy)
         {
@@ -28,48 +33,49 @@
         /// Handle the event.
         /// </summary>
         /// <param name="event">The <see cref="IEvent"/> to handle.</param>
-        /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
-        public void Handle(OrderCreated @event, EventHandlerContext context)
+        public Task HandleAsync(OrderCreated @event)
         {
             this.spy.Spy("OrderCreated");
+            if (@event.Count == -1)
+            {
+                throw new InvalidOperationException("Exception on Event");
+            }
+
             MakeReservation makeReservation = new MakeReservation();
-            context.Request.Processor.Process(makeReservation); 
+            return this.EventContext.Request.Processor.ProcessAsync(makeReservation); 
         }
 
         /// <summary>
         /// Handle the event.
         /// </summary>
         /// <param name="event">The <see cref="IEvent"/> to handle.</param>
-        /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
-        public void Handle(SeatsReserved @event, EventHandlerContext context)
+        public Task HandleAsync(SeatsReserved @event)
         {
             this.spy.Spy("SeatsReserved");
             MakePayment makePayment = new MakePayment();
-            context.Request.Processor.Process(makePayment); 
+            return this.EventContext.Request.Processor.ProcessAsync(makePayment); 
         }
 
         /// <summary>
         /// Handle the event.
         /// </summary>
         /// <param name="event">The <see cref="IEvent"/> to handle.</param>
-        /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
-        public void Handle(SeatsNotReserved @event, EventHandlerContext context)
+        public Task HandleAsync(SeatsNotReserved @event)
         {
             this.spy.Spy("SeatsNotReserved");
             AddSeatsToWaitList addSeatsToWaitList = new AddSeatsToWaitList();
-            context.Request.Processor.Process(addSeatsToWaitList);
+            return this.EventContext.Request.Processor.ProcessAsync(addSeatsToWaitList);
         }
 
         /// <summary>
         /// Handle the event.
         /// </summary>
         /// <param name="event">The <see cref="IEvent"/> to handle.</param>
-        /// <param name="context">The <see cref="EventHandlerContext"/>.</param>
-        public void Handle(PaymentAccepted @event, EventHandlerContext context)
+        public Task HandleAsync(PaymentAccepted @event)
         {
             this.spy.Spy("PaymentAccepted");
             OrderConfirmed orderConfirmed = new OrderConfirmed(this.Id);
-            context.Request.Processor.Publish(orderConfirmed);
+            return this.EventContext.Request.Processor.PublishAsync(orderConfirmed);
         }
     }
 }

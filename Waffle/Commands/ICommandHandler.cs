@@ -1,20 +1,21 @@
 ﻿namespace Waffle.Commands
 {
+    using System.Threading.Tasks;
     using Waffle.Filters;
 
     /// <summary>
     /// Represents a command handler. 
     /// </summary>
     /// <typeparam name="TCommand">The command type.</typeparam>
+    [Handler]
     public interface ICommandHandler<in TCommand> : ICommandHandler where TCommand : ICommand
     {
         /// <summary>
         /// Handle the command.
         /// </summary>
         /// <param name="command">The <see cref="ICommand"/> to process.</param>
-        /// <param name="context">The <see cref="CommandHandlerContext"/>.</param>
         /// <returns>The result object.</returns>
-        void Handle(TCommand command, CommandHandlerContext context);
+        void Handle(TCommand command);
     }
 
     /// <summary>
@@ -22,15 +23,15 @@
     /// </summary>
     /// <typeparam name="TCommand">The command type.</typeparam>
     /// <typeparam name="TResult">The result type.</typeparam>
+    [Handler]
     public interface ICommandHandler<in TCommand, out TResult> : ICommandHandler where TCommand : ICommand
     {
         /// <summary>
         /// Handle the command.
         /// </summary>
-        /// <param name="command">The <see cref="ICommand"/> to process.</param>
-        /// <param name="context">The <see cref="CommandHandlerContext"/>.</param>
+        /// <param name="command">The command to process.</param>
         /// <returns>The result object.</returns>
-        TResult Handle(TCommand command, CommandHandlerContext context);
+        TResult Handle(TCommand command);
     }
 
     /// <summary>
@@ -39,11 +40,22 @@
     public interface ICommandHandler
     {
         /// <summary>
+        /// Gets or sets the current <see cref="CommandHandlerContext"/>
+        /// </summary>
+        CommandHandlerContext CommandContext { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a command handler. 
+    /// </summary>
+    [Handler]
+    public interface IAsyncCommandHandler<in TCommand, TResult> : ICommandHandler where TCommand : ICommand
+    {
+        /// <summary>
         /// Handle the command.
         /// </summary>
         /// <param name="command">The <see cref="ICommand"/> to process.</param>
-        /// <param name="context">The <see cref="CommandHandlerContext"/>.</param>
         /// <returns>The result object.</returns>
-        object Handle(ICommand command, CommandHandlerContext context);
+        Task<TResult> HandleAsync(TCommand command);
     }
 }

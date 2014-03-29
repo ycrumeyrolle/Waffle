@@ -13,12 +13,11 @@
         /// <summary>
         /// Executes the filter handler asynchronously.
         /// </summary>
-        /// <typeparam name="TResult">The handler result type.</typeparam>
         /// <param name="handlerContext">The handler context.</param>
         /// <param name="cancellationToken">The cancellation token assigned for this task.</param>
         /// <param name="continuation">The delegate function to continue after the handler method is invoked.</param>
         /// <returns>The newly created task for this operation.</returns>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "It is only a two level nesting.")]
-        Task<TResult> ExecuteHandlerFilterAsync<TResult>(CommandHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<TResult>> continuation);
+        Task<HandlerResponse> ExecuteHandlerFilterAsync(CommandHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task<HandlerResponse>> continuation);
     }
 }

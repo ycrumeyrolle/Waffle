@@ -67,9 +67,9 @@
         /// should be the verbose format, meaning it displays all fields
         /// of the <see cref="TraceRecord"/>.
         /// </summary>
-        /// <value><c>true</c> means all <see cref="TraceRecord"/> fields
-        /// will be traced, <c>false</c> means only minimal information
-        /// will be traced. The default value is <c>false</c>.</value>
+        /// <value><see langword="true"/> means all <see cref="TraceRecord"/> fields
+        /// will be traced, <see langword="false"/> means only minimal information
+        /// will be traced. The default value is <see langword="false"/>.</value>
         public bool IsVerbose { get; set; }
 
         /// <summary>

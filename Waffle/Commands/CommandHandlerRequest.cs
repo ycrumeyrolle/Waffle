@@ -1,7 +1,7 @@
 ﻿namespace Waffle.Commands
 {
-    using System;
     using Waffle.Internal;
+    using Waffle.Validation;
 
     /// <summary>
     /// Represents a request for an handler.    
@@ -10,37 +10,13 @@
     /// </summary>
     public sealed class CommandHandlerRequest : HandlerRequest
     {
-        private static readonly Type VoidType = typeof(VoidResult);
-
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerRequest"/> class. 
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="command">The command.</param>
         public CommandHandlerRequest(ProcessorConfiguration configuration, ICommand command)
-            : this(configuration, command, VoidType, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HandlerRequest"/> class. 
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="command">The command.</param>
-        /// <param name="parentRequest">The parent request. </param>
-        public CommandHandlerRequest(ProcessorConfiguration configuration, ICommand command, HandlerRequest parentRequest)
-            : this(configuration, command, VoidType, parentRequest)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HandlerRequest"/> class. 
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="command">The command.</param>
-        /// <param name="resultType">The result type.</param>
-        public CommandHandlerRequest(ProcessorConfiguration configuration, ICommand command, Type resultType)
-            : this(configuration, command, resultType, null)
+            : this(configuration, command, null)
         {
         }
 
@@ -50,24 +26,18 @@
         /// </summary> 
         /// <param name="configuration">The configuration.</param>
         /// <param name="command">The command.</param>
-        /// <param name="resultType">The result type.</param>
         /// <param name="parentRequest">The parent request. </param>
-        public CommandHandlerRequest(ProcessorConfiguration configuration, ICommand command, Type resultType, HandlerRequest parentRequest)
+        public CommandHandlerRequest(ProcessorConfiguration configuration, ICommand command, HandlerRequest parentRequest)
             : base(configuration, parentRequest)
         {
             if (command == null)
             {
                 throw Error.ArgumentNull("command");
             }
-
-            if (resultType == null)
-            {
-                throw Error.ArgumentNull("resultType");
-            }
-
+            
             this.Command = command;
             this.MessageType = command.GetType();
-            this.ResultType = resultType;
+            this.ModelState = new ModelStateDictionary();
         }
 
         /// <summary>
@@ -79,9 +49,11 @@
         public ICommand Command { get; private set; }
 
         /// <summary>
-        /// Gets the result type.
+        /// Gets or sets the ModelState.
         /// </summary>
-        /// <value>The result <see cref="System.Type"/>.</value>
-        public Type ResultType { get; private set; }
+        /// <value>
+        /// The ModelState.
+        /// </value>
+        public ModelStateDictionary ModelState { get; private set; }
     }
 }

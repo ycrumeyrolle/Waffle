@@ -1,15 +1,21 @@
 ﻿namespace Waffle.Tests.Integration.Orders
 {
     using System;
+    using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Events;
     using Waffle.Filters;
 
     public class Order : MessageHandler,
-        ICommandHandler<PlaceOrder>,
-        IEventHandler<OrderConfirmed>
+        IAsyncCommandHandler<PlaceOrder>,
+        IAsyncEventHandler<OrderConfirmed>
     {
         private readonly ISpy spy;
+
+        public Order()
+            : this(new NullSpy())
+        {
+        }
 
         public Order(ISpy spy)
         {
@@ -19,17 +25,33 @@
         }
 
         public Guid Id { get; set; }
-
-        public void Handle(PlaceOrder command, CommandHandlerContext context)
+        private class ExceptionHandlerAttribute : ExceptionFilterAttribute
         {
-            this.spy.Spy("PlaceOrder");
-            OrderCreated orderCreated = new OrderCreated(this.Id);
-            context.Request.Processor.Publish(orderCreated);
+            public override void OnException(CommandHandlerExecutedContext handlerExecutedContext)
+            {
+                base.OnException(handlerExecutedContext);
+
+            }
         }
 
-        public void Handle(OrderConfirmed @event, EventHandlerContext context)
+        [ExceptionHandler]
+        public Task HandleAsync(PlaceOrder command)
+        {            
+            this.spy.Spy("PlaceOrder");
+
+            if (command.Count > 100)
+            {
+                throw new ArgumentOutOfRangeException("command", "Too much orders !");
+            }
+
+            OrderCreated orderCreated = new OrderCreated(this.Id, command.Count);
+            return this.CommandContext.Request.Processor.PublishAsync(orderCreated);
+        }
+
+        public Task HandleAsync(OrderConfirmed @event)
         {
             this.spy.Spy("OrderConfirmed");
+            return Task.FromResult(0);
         }
     }
 }

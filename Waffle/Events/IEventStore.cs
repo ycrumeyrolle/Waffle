@@ -17,6 +17,7 @@
         /// <param name="event">The <see cref="IEvent"/> to store.</param>
         /// <param name="cancellationToken">A cancellation token.</param>
         /// <returns>A <see cref="Task"/> of the storing.</returns>
+        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "event", Justification = "By design.")]
         Task StoreAsync(IEvent @event, CancellationToken cancellationToken);
 
         /// <summary>

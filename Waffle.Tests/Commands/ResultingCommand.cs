@@ -3,7 +3,7 @@
     using System.ComponentModel.DataAnnotations;
     using Waffle.Commands;
 
-    public class ResultingCommand : Command
+    public class ResultingCommand : ICommand
     {
         public int Property1 { get; set; }
 

@@ -36,7 +36,7 @@ namespace Waffle.Metadata
         /// <param name="modelAccessor">The model accessor.</param>
         /// <remarks>Constructor for creating real instances of the metadata class based on a prototype.</remarks>
         protected CachedModelMetadata(CachedModelMetadata<TPrototypeCache> prototype, Func<object> modelAccessor)
-            : base(prototype.Provider, prototype.ContainerType, modelAccessor, prototype.ModelType, prototype.PropertyName)
+            : base(GetProvider(prototype), GetContainerType(prototype), modelAccessor, GetModelType(prototype), GetPropertyName(prototype))
         {
             if (prototype == null)
             {
@@ -151,7 +151,8 @@ namespace Waffle.Metadata
         /// <returns>The property IsComplexType.</returns>
         private bool ComputeIsComplexType()
         {
-            Contract.Requires(this.ModelType != null);
+            Contract.Requires(this.ModelType != null); 
+            
             return base.IsComplexType;
         }
 
@@ -162,6 +163,46 @@ namespace Waffle.Metadata
         protected virtual bool ComputeIgnoreCaching()
         {
             return base.IgnoreCaching;
+        }
+
+        private static ModelMetadataProvider GetProvider(CachedModelMetadata<TPrototypeCache> prototype)
+        {
+            if (prototype == null)
+            {
+                throw Error.ArgumentNull("prototype");
+            }
+
+            return prototype.Provider;
+        }
+
+        private static Type GetContainerType(CachedModelMetadata<TPrototypeCache> prototype)
+        {
+            if (prototype == null)
+            {
+                throw Error.ArgumentNull("prototype");
+            }
+
+            return prototype.ContainerType;
+        }
+
+        private static Type GetModelType(CachedModelMetadata<TPrototypeCache> prototype)
+        {
+            if (prototype == null)
+            {
+                throw Error.ArgumentNull("prototype");
+            }
+
+            return prototype.ModelType;
+        }
+
+        private static string GetPropertyName(CachedModelMetadata<TPrototypeCache> prototype)
+        {
+            if (prototype == null)
+            {
+                throw Error.ArgumentNull("prototype");
+            }
+
+            return prototype.PropertyName;
         }
     }
 }

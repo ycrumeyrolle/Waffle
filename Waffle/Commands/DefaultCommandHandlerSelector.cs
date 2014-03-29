@@ -15,10 +15,6 @@
     /// </summary>
     public class DefaultCommandHandlerSelector : ICommandHandlerSelector, ICommandHandlerDescriptorProvider
     {
-        private static readonly Type VoidType = typeof(void);
-
-        private static readonly Type VoidResultType = typeof(VoidResult);
-
         private readonly Lazy<ConcurrentDictionary<Type, CommandHandlerDescriptor>> handlerInfoCache;
 
         private readonly CommandHandlerTypeCache commandHandlerTypeCache;
@@ -56,11 +52,6 @@
             CommandHandlerDescriptor result;
             if (this.handlerInfoCache.Value.TryGetValue(request.MessageType, out result))
             {
-                if (!request.ResultType.IsAssignableFrom(result.ResultType) && !(request.ResultType == VoidResultType && result.ResultType == VoidType))
-                {
-                    throw Error.InvalidOperation(Resources.DefaultHandlerSelector_HandlerNotFound, request.MessageType.Name);
-                }
-
                 return result;
             }
 

@@ -6,7 +6,7 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright © 2013")]
+[assembly: AssemblyCopyright("Copyright © 2014")]
 [assembly: AssemblyTrademark("")]
 
 [assembly: NeutralResourcesLanguage("en-US")]

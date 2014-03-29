@@ -54,7 +54,7 @@
         /// <param name="minBackOff">The minimum backOff time.</param>
         /// <param name="maxBackOff">The maximum backOff time.</param>
         /// <param name="deltaBackOff">The value that will be used to calculate a random delta in the exponential delay between retries.</param>
-        /// <param name="firstFastRetry"><c>true</c> to immediately retry in the first attempt; otherwise, <c>false</c>. The subsequent retries will remain subject to the configured retry interval.</param>
+        /// <param name="firstFastRetry"><see langword="true"/> to immediately retry in the first attempt; otherwise, <see langword="false"/>. The subsequent retries will remain subject to the configured retry interval.</param>
         public ExponentialBackOff(string name, int retryCount, TimeSpan minBackOff, TimeSpan maxBackOff, TimeSpan deltaBackOff, bool firstFastRetry)
             : base(name, firstFastRetry)
         {

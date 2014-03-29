@@ -17,8 +17,8 @@
 
         public CommandHandlerActivatorTracer(ICommandHandlerActivator innerActivator, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerActivator != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerActivator != null);
+            Contract.Requires(traceWriter != null);
 
             this.innerActivator = innerActivator;
             this.traceWriter = traceWriter;
@@ -44,12 +44,12 @@
                 endTrace: tr => tr.Message = commandHandler == null ? Resources.TraceNoneObjectMessage : commandHandler.GetType().FullName,
                 errorTrace: null);
 
-            if (commandHandler != null && !(commandHandler is CommandHandlerTracer))
+            if (commandHandler == null || commandHandler is CommandHandlerTracer)
             {
-                commandHandler = new CommandHandlerTracer(request, commandHandler, this.traceWriter);
+                return commandHandler;
             }
 
-            return commandHandler;
+            return new CommandHandlerTracer(request, commandHandler, this.traceWriter);
         }
     }
 }

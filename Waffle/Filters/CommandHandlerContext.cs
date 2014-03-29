@@ -2,8 +2,10 @@ namespace Waffle.Filters
 {
     using System.Collections.Generic;
     using System.Security.Principal;
+    using System.Threading;
     using Waffle.Commands;
     using Waffle.Internal;
+    using Waffle.Validation;
 
     /// <summary>
     /// Contains information for the executing handler.
@@ -41,6 +43,7 @@ namespace Waffle.Filters
             this.Command = request.Command;
             this.Descriptor = descriptor;
             this.User = this.Configuration.Services.GetPrincipalProvider().Principal;
+            this.CancellationToken = new CancellationToken();
         }
 
         /// <summary>
@@ -52,7 +55,7 @@ namespace Waffle.Filters
         /// <value>
         /// The result.
         /// </value>
-        public object Result { get; set; }
+        public HandlerResponse Response { get; set; }
 
         /// <summary>
         /// Gets the processor configuration.
@@ -89,5 +92,18 @@ namespace Waffle.Filters
         /// </summary>
         /// <value>The <see cref="IPrincipal"/>.</value>
         public IPrincipal User { get; internal set; }
+
+        /// <summary>
+        /// Gets the <see cref="ICommandHandler"/>.
+        /// </summary>
+        /// <value>The <see cref="ICommandHandler"/>.</value>
+        public ICommandHandler Handler { get; internal set; }
+
+        public CancellationToken CancellationToken { get; internal set; }
+
+        public ModelStateDictionary ModelState
+        {
+            get { return this.Request.ModelState; }
+        }
     }
 }

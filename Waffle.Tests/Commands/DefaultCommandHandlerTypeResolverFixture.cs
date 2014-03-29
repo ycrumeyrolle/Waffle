@@ -10,6 +10,7 @@
     using Waffle.Commands;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
+    using System.Threading.Tasks;
 
     [TestClass]
     public class DefaultCommandHandlerTypeResolverFixture
@@ -115,11 +116,10 @@
             return new[] 
             { 
                 null,
-                typeof(CommandHandler),
+                typeof(MessageHandler),
                 typeof(AbstractCommandHandler),
                 typeof(PrivateCommandHandler),
                 typeof(ICommand),
-                typeof(Command),
                 typeof(SimpleCommandHandler)
             };
         }
@@ -129,13 +129,13 @@
             return new DefaultCommandHandlerTypeResolver();
         }
 
-        public abstract class AbstractCommandHandler : CommandHandler
+        public abstract class AbstractCommandHandler : MessageHandler
         {
         }
 
-        private class PrivateCommandHandler : CommandHandler<SimpleCommand>
+        private class PrivateCommandHandler : MessageHandler, ICommandHandler<SimpleCommand>
         {
-            public override void Handle(SimpleCommand command, CommandHandlerContext context)
+            public void Handle(SimpleCommand command)
             {
                 throw new NotImplementedException();
             }

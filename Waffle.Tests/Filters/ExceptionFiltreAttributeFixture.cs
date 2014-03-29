@@ -1,6 +1,7 @@
 ﻿namespace Waffle.Tests.Filters
 {
     using System;
+    using System.Runtime.ExceptionServices;
     using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
@@ -18,7 +19,8 @@
             IExceptionFilter filter = new CustomExceptionFilterAttribute(spy.Object);
             CommandHandlerContext handlerContext = new CommandHandlerContext();
             Exception exception = new Exception();
-            HandlerExecutedContext handlerExecutedContext = new HandlerExecutedContext(handlerContext, exception);
+            ExceptionDispatchInfo exceptionInfo = ExceptionDispatchInfo.Capture(exception);
+            CommandHandlerExecutedContext handlerExecutedContext = new CommandHandlerExecutedContext(handlerContext, exceptionInfo);
             CancellationToken cancellationToken = new CancellationToken();
 
             // Act
@@ -56,7 +58,7 @@
                 this.spy = spy;
             }
 
-            public override void OnException(HandlerExecutedContext handlerExecutedContext)
+            public override void OnException(CommandHandlerExecutedContext handlerExecutedContext)
             {
                 this.spy.Spy("OnException");
                 base.OnException(handlerExecutedContext);

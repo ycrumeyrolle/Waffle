@@ -18,8 +18,10 @@
         private readonly HashSet<IDisposable> resourcesToDispose = new HashSet<IDisposable>();
         
         private readonly HandlerFilterCollection filters = new HandlerFilterCollection();
+
+        private bool disposed;
         
-        private bool disposed; 
+        private bool initialized;
 
         private Action<ProcessorConfiguration> initializer = DefaultInitializer;
 
@@ -32,12 +34,14 @@
         {
             this.Services = new DefaultServices(this);
             this.AbortOnInvalidCommand = true;
+            this.DefaultHandlerLifetime = HandlerLifetime.Transient;
         }
 
         private ProcessorConfiguration(ProcessorConfiguration configuration, CommandHandlerSettings settings)
         {
             this.filters = configuration.Filters;
             this.dependencyResolver = configuration.DependencyResolver;
+            this.DefaultHandlerLifetime = configuration.DefaultHandlerLifetime;
 
             // per-handler settings
             this.Services = settings.Services;
@@ -52,16 +56,16 @@
         /// <summary>
         /// Gets or sets whether the command should be aborted on invalid command.
         /// </summary>
-        /// <value><c>true</c> if the command should be aborted on invalid command;  false otherwise.</value>
+        /// <value><see langword="true"/> if the command should be aborted on invalid command;  false otherwise.</value>
         public bool AbortOnInvalidCommand { get; set; }
      
         /// <summary>
-        /// Gets or sets whether the services created with the Using method of the <see cref="MessageProcessor"/> 
+        /// Gets or sets whether the services created with the Use method of the <see cref="MessageProcessor"/> 
         /// shoud be a proxy.
         /// </summary>
-        /// <value><c>true</c> if the service should be a proxy ; false otherwise.</value>
+        /// <value><see langword="true"/> if the service should be a proxy ; false otherwise.</value>
         public bool ServiceProxyCreationEnabled { get; set; }
-
+              
         /// <summary>
         /// Gets the global <see cref="HandlerFilterCollection"/>.
         /// </summary>
@@ -139,6 +143,26 @@
         }
 
         /// <summary>
+        /// Gets or sets the default handler lifetime.
+        /// </summary>
+        /// <remarks>
+        /// This value is <see cref="HandlerLifetime.Transient"/> per default.
+        /// </remarks>
+        public HandlerLifetime DefaultHandlerLifetime { get; set; }
+
+        /// <summary>Invoke the Intializer hook. It is considered immutable from this point forward. It's safe to call this multiple times.</summary>
+        public void EnsureInitialized()
+        {
+            if (this.initialized)
+            {
+                return;
+            }
+
+            this.initialized = true;
+            this.Initializer(this);
+        }
+
+        /// <summary>
         /// Releases the unmanaged resources that are used by the object and releases the managed resources.
         /// </summary>
         public void Dispose()
@@ -158,6 +182,9 @@
 
         internal static ProcessorConfiguration ApplyHandlerSettings(CommandHandlerSettings settings, ProcessorConfiguration configuration)
         {
+            Contract.Requires(settings != null);
+            Contract.Requires(configuration != null);
+
             if (!settings.IsServiceCollectionInitialized)
             {
                 return configuration;
@@ -175,6 +202,14 @@
             if (resource != null)
             {
                 this.resourcesToDispose.Add(resource);
+            }
+        }
+
+        internal void UnregisterForDispose(IDisposable resource)
+        {
+            if (resource != null)
+            {
+                this.resourcesToDispose.Remove(resource);
             }
         }
 

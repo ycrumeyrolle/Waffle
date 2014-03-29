@@ -23,8 +23,8 @@
         /// </param>
         public FilterTracer(IFilter innerFilter, ITraceWriter traceWriter)
         {
-            Contract.Assert(innerFilter != null);
-            Contract.Assert(traceWriter != null);
+            Contract.Requires(innerFilter != null);
+            Contract.Requires(traceWriter != null);
 
             this.InnerFilter = innerFilter;
             this.TraceWriter = traceWriter;
@@ -157,6 +157,8 @@
         /// </returns>
         public static IEnumerable<FilterInfo> CreateFilterTracers(FilterInfo filter, ITraceWriter traceWriter)
         {
+            Contract.Requires(filter != null);
+
             IFilter filterInstance = filter.Instance;
             IEnumerable<IFilter> filterTracers = CreateFilterTracers(filterInstance, traceWriter);
             List<FilterInfo> filters = new List<FilterInfo>();
@@ -175,7 +177,7 @@
         /// The filter.
         /// </param>
         /// <returns>
-        /// <c>true</c> if <paramref name="filter"/> is a tracer; otherwise, <c>false</c>.
+        /// <see langword="true"/> if <paramref name="filter"/> is a tracer; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool IsFilterTracer(IFilter filter)
         {

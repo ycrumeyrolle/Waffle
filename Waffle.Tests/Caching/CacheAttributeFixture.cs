@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.Caching;
+    using System.Runtime.ExceptionServices;
     using System.Security.Principal;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
@@ -39,7 +40,7 @@
 
             // Assert
             this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
-            Assert.IsNull(context.Result);
+            Assert.IsNull(context.Response);
         }
 
         [TestMethod]
@@ -59,8 +60,8 @@
 
             // Assert
             this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
-            Assert.IsNotNull(context.Result);
-            Assert.AreEqual(cachedCommand, context.Result);
+            Assert.IsNotNull(context.Response.Value);
+            Assert.AreEqual(cachedCommand, context.Response.Value);
         }
 
         [TestMethod]
@@ -90,7 +91,7 @@
 
             // Assert
             this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
-            Assert.IsNull(context.Result);
+            Assert.IsNull(context.Response);
         }
 
         [TestMethod]
@@ -102,14 +103,16 @@
             CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
             CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(context, new Exception());
+            Exception exception = new Exception();
+            ExceptionDispatchInfo exceptionInfo = ExceptionDispatchInfo.Capture(exception);
+            CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(context, exceptionInfo);
 
             // Act
             filter.OnCommandExecuted(executedContext);
 
             // Assert
             this.cache.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<DateTimeOffset>(), It.IsAny<string>()), Times.Never());
-            Assert.IsNull(context.Result);
+            Assert.IsNull(context.Response);
         }
 
         [TestMethod]
@@ -132,7 +135,7 @@
             CommandHandlerRequest request = new CommandHandlerRequest(this.config, command);
             CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(NotCachedCommand), typeof(NotCachedCommandHandler));
             CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
+            CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(context, null);
             this.cache.Setup(c => c.Get(It.IsAny<string>(), It.IsAny<string>())).Returns(new CacheAttribute.CacheEntry(cachedCommand));
 
             // Act
@@ -140,7 +143,7 @@
 
             // Assert
             this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
-            Assert.IsNull(context.Result);
+            Assert.IsNull(context.Response);
         }
 
         [TestMethod]
@@ -153,7 +156,7 @@
             CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
             CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
 
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
+            CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(context, null);
 
             // Act
             filter.OnCommandExecuted(executedContext);
@@ -173,7 +176,7 @@
             CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
             filter.OnCommandExecuting(context);
             context.Items["__CacheAttribute"] = null;
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
+            CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(context, null);
 
             // Act
             filter.OnCommandExecuted(executedContext);
@@ -193,7 +196,7 @@
             CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
             filter.OnCommandExecuting(context);
 
-            HandlerExecutedContext executedContext = new HandlerExecutedContext(context, null);
+            CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(context, null);
 
             // Act
             filter.OnCommandExecuted(executedContext);
@@ -214,20 +217,20 @@
             SimpleCommand command1 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
             CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, command1);
             CommandHandlerContext context1 = new CommandHandlerContext(request1, descriptor);
-            HandlerExecutedContext executedContext1 = new HandlerExecutedContext(context1, null);
-            executedContext1.Result = "result1";
+            CommandHandlerExecutedContext executedContext1 = new CommandHandlerExecutedContext(context1, null);
+            executedContext1.Response = request1.CreateResponse("result1");
 
             SimpleCommand command2 = new SimpleCommand { Property1 = 2, Property2 = "test2" };
             CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, command2);
             CommandHandlerContext context2 = new CommandHandlerContext(request2, descriptor);
-            HandlerExecutedContext executedContext2 = new HandlerExecutedContext(context2, null);
-            executedContext2.Result = "result2";
+            CommandHandlerExecutedContext executedContext2 = new CommandHandlerExecutedContext(context2, null);
+            executedContext2.Response = request2.CreateResponse("result2");
 
             SimpleCommand command3 = new SimpleCommand { Property1 = 2, Property2 = "test3" };
             CommandHandlerRequest request3 = new CommandHandlerRequest(this.config, command3);
             CommandHandlerContext context3 = new CommandHandlerContext(request3, descriptor);
-            HandlerExecutedContext executedContext3 = new HandlerExecutedContext(context3, null);
-            executedContext3.Result = "result3";
+            CommandHandlerExecutedContext executedContext3 = new CommandHandlerExecutedContext(context3, null);
+            executedContext3.Response = request3.CreateResponse("result3");
 
             // Act
             filter.OnCommandExecuting(context1);
@@ -238,9 +241,9 @@
             filter.OnCommandExecuted(executedContext3);
 
             // Assert
-            Assert.AreEqual("result1", executedContext1.Result);
-            Assert.AreEqual("result2", executedContext2.Result);
-            Assert.AreEqual("result2", executedContext3.Result);
+            Assert.AreEqual("result1", executedContext1.Response.Value);
+            Assert.AreEqual("result2", executedContext2.Response.Value);
+            Assert.AreEqual("result2", executedContext3.Response.Value);
         }
 
         [TestMethod]
@@ -251,24 +254,24 @@
             filter.Duration = 10;
             filter.VaryByParams = "none";
 
-            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SimpleCommandHandler));
+            CommandHandlerDescriptor descriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand2), typeof(SimpleCommandHandler2));
             SimpleCommand command1 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
             CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, command1);
             CommandHandlerContext context1 = new CommandHandlerContext(request1, descriptor);
-            HandlerExecutedContext executedContext1 = new HandlerExecutedContext(context1, null);
-            executedContext1.Result = "result1";
+            CommandHandlerExecutedContext executedContext1 = new CommandHandlerExecutedContext(context1, null);
+            executedContext1.SetResponse("result1");
 
             SimpleCommand command2 = new SimpleCommand { Property1 = 2, Property2 = "test2" };
             CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, command2);
             CommandHandlerContext context2 = new CommandHandlerContext(request2, descriptor);
-            HandlerExecutedContext executedContext2 = new HandlerExecutedContext(context2, null);
-            executedContext2.Result = "result2";
+            CommandHandlerExecutedContext executedContext2 = new CommandHandlerExecutedContext(context2, null);
+            executedContext2.SetResponse("result2");
 
             SimpleCommand command3 = new SimpleCommand { Property1 = 2, Property2 = "test3" };
             CommandHandlerRequest request3 = new CommandHandlerRequest(this.config, command3);
             CommandHandlerContext context3 = new CommandHandlerContext(request3, descriptor);
-            HandlerExecutedContext executedContext3 = new HandlerExecutedContext(context3, null);
-            executedContext3.Result = "result3";
+            CommandHandlerExecutedContext executedContext3 = new CommandHandlerExecutedContext(context3, null);
+            executedContext3.SetResponse( "result3");
 
             // Act
             filter.OnCommandExecuting(context1);
@@ -279,9 +282,9 @@
             filter.OnCommandExecuted(executedContext3);
 
             // Assert
-            Assert.AreEqual("result1", executedContext1.Result);
-            Assert.AreEqual("result1", executedContext2.Result);
-            Assert.AreEqual("result1", executedContext3.Result);
+            Assert.AreEqual("result1", executedContext1.Response.Value);
+            Assert.AreEqual("result1", executedContext2.Response.Value);
+            Assert.AreEqual("result1", executedContext3.Response.Value);
         }
 
         [TestMethod]
@@ -296,20 +299,20 @@
             SimpleCommand command1 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
             CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, command1);
             CommandHandlerContext context1 = new CommandHandlerContext(request1, descriptor);
-            HandlerExecutedContext executedContext1 = new HandlerExecutedContext(context1, null);
-            executedContext1.Result = "result1";
+            CommandHandlerExecutedContext executedContext1 = new CommandHandlerExecutedContext(context1, null);
+            executedContext1.SetResponse("result1");
 
             SimpleCommand command2 = new SimpleCommand { Property1 = 2, Property2 = "test2" };
             CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, command2);
             CommandHandlerContext context2 = new CommandHandlerContext(request2, descriptor);
-            HandlerExecutedContext executedContext2 = new HandlerExecutedContext(context2, null);
-            executedContext2.Result = "result2";
+            CommandHandlerExecutedContext executedContext2 = new CommandHandlerExecutedContext(context2, null);
+            executedContext2.SetResponse( "result2");
 
             SimpleCommand command3 = new SimpleCommand { Property1 = 2, Property2 = "test3" };
             CommandHandlerRequest request3 = new CommandHandlerRequest(this.config, command3);
             CommandHandlerContext context3 = new CommandHandlerContext(request3, descriptor);
-            HandlerExecutedContext executedContext3 = new HandlerExecutedContext(context3, null);
-            executedContext3.Result = "result3";
+            CommandHandlerExecutedContext executedContext3 = new CommandHandlerExecutedContext(context3, null);
+            executedContext3.SetResponse("result3");
 
             // Act
             filter.OnCommandExecuting(context1);
@@ -320,9 +323,9 @@
             filter.OnCommandExecuted(executedContext3);
 
             // Assert
-            Assert.AreEqual("result1", executedContext1.Result);
-            Assert.AreEqual("result1", executedContext2.Result);
-            Assert.AreEqual("result1", executedContext3.Result);
+            Assert.AreEqual("result1", executedContext1.Response.Value);
+            Assert.AreEqual("result1", executedContext2.Response.Value);
+            Assert.AreEqual("result1", executedContext3.Response.Value);
         }
 
         [TestMethod]
@@ -349,22 +352,22 @@
             CommandHandlerRequest request1 = new CommandHandlerRequest(this.config, command1);
             CommandHandlerContext context1 = new CommandHandlerContext(request1, descriptor);
             context1.User = new GenericPrincipal(new GenericIdentity("user1"), null);
-            HandlerExecutedContext executedContext1 = new HandlerExecutedContext(context1, null);
-            executedContext1.Result = "result1";
+            CommandHandlerExecutedContext executedContext1 = new CommandHandlerExecutedContext(context1, null);
+            executedContext1.Response = new HandlerResponse(request1, "result1");
 
             SimpleCommand command2 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
             CommandHandlerRequest request2 = new CommandHandlerRequest(this.config, command2);
             CommandHandlerContext context2 = new CommandHandlerContext(request2, descriptor);
             context2.User = new GenericPrincipal(new GenericIdentity("user2"), null);
-            HandlerExecutedContext executedContext2 = new HandlerExecutedContext(context2, null);
-            executedContext2.Result = "result2";
+            CommandHandlerExecutedContext executedContext2 = new CommandHandlerExecutedContext(context2, null);
+            executedContext2.Response = new HandlerResponse(request2, "result2");
 
             SimpleCommand command3 = new SimpleCommand { Property1 = 1, Property2 = "test1" };
             CommandHandlerRequest request3 = new CommandHandlerRequest(this.config, command3);
             CommandHandlerContext context3 = new CommandHandlerContext(request3, descriptor);
             context3.User = new GenericPrincipal(new GenericIdentity("user1"), null);
-            HandlerExecutedContext executedContext3 = new HandlerExecutedContext(context3, null);
-            executedContext3.Result = "result3";
+            CommandHandlerExecutedContext executedContext3 = new CommandHandlerExecutedContext(context3, null);
+            executedContext3.Response = new HandlerResponse(request3, "result3");
 
             // Act
             filter.OnCommandExecuting(context1);
@@ -375,9 +378,9 @@
             filter.OnCommandExecuted(executedContext3);
 
             // Assert
-            Assert.AreEqual("result1", executedContext1.Result);
-            Assert.AreEqual("result2", executedContext2.Result);
-            Assert.AreEqual("result1", executedContext3.Result);
+            Assert.AreEqual("result1", executedContext1.Response.Value);
+            Assert.AreEqual("result2", executedContext2.Response.Value);
+            Assert.AreEqual("result1", executedContext3.Response.Value);
         }
 
         private CacheAttribute CreateAttribute(ObjectCache innerCache = null)

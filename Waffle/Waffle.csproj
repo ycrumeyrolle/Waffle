@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Waffle</RootNamespace>
     <AssemblyName>Waffle</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
     <SccProjectName>SAK</SccProjectName>
@@ -29,7 +29,56 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\Waffle.ruleset</CodeAnalysisRuleSet>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>False</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsDisjunctiveRequires>False</CodeContractsDisjunctiveRequires>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile>..\..\baseline.xml</CodeContractsBaseLineFile>
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>2</CodeContractsAnalysisWarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsSQLServerOption />
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Waffle.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\Waffle.ruleset</CodeAnalysisRuleSet>
     <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
@@ -59,60 +108,21 @@
     <CodeContractsLibPaths />
     <CodeContractsExtraRewriteOptions />
     <CodeContractsExtraAnalysisOptions />
-    <CodeContractsBaseLineFile>..\..\baseline.xml</CodeContractsBaseLineFile>
-    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
-    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
-    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
-    <CodeContractsAnalysisWarningLevel>2</CodeContractsAnalysisWarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Waffle.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
-    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
-    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
-    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
-    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
-    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
-    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
-    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
-    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
-    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
-    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
-    <CodeContractsInferRequires>False</CodeContractsInferRequires>
-    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
-    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
-    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
-    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
-    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
-    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
-    <CodeContractsDisjunctiveRequires>False</CodeContractsDisjunctiveRequires>
-    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
-    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
-    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
-    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
-    <CodeContractsCustomRewriterAssembly />
-    <CodeContractsCustomRewriterClass />
-    <CodeContractsLibPaths />
-    <CodeContractsExtraRewriteOptions />
-    <CodeContractsExtraAnalysisOptions />
     <CodeContractsBaseLineFile />
     <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsSQLServerOption />
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -127,16 +137,71 @@
     <Compile Include="Caching\CacheAttribute.cs" />
     <Compile Include="Caching\IgnoreCachingAttribute.cs" />
     <Compile Include="Caching\NoCacheAttribute.cs" />
+    <Compile Include="CollectionExtensions.cs" />
+    <Compile Include="CommandHandler.cs" />
     <Compile Include="Commands\CommandHandlerDescriptor.cs" />
+    <Compile Include="Commands\CommandHandlerDescriptor`1.cs" />
+    <Compile Include="Commands\DefaultCommandHandlerInvoker.cs" />
     <Compile Include="Commands\CommandHandlerRequest.cs" />
-    <Compile Include="Commands\HandleCommandFunc.cs" />
+    <Compile Include="Commands\FuncCommandHandler.cs" />
+    <Compile Include="Commands\IAsyncCommandHandler.cs" />
+    <Compile Include="Commands\ICommandHandlerInvoker.cs" />
+    <Compile Include="Commands\IHandlerResultConverter.cs" />
+    <Compile Include="Commands\ResponseMessageResultConverter.cs" />
+    <Compile Include="Commands\ValueResultConverter.cs" />
+    <Compile Include="Commands\VoidResultConverter.cs" />
+    <Compile Include="DefaultAssembliesResolver.cs" />
+    <Compile Include="Dependencies\IDependencyContainer.cs" />
+    <Compile Include="Events\EventHandlerDescriptor`1.cs" />
+    <Compile Include="Events\FuncEventHandler.cs" />
+    <Compile Include="Events\IAsyncEventHandler.cs" />
+    <Compile Include="Events\IEventHandlerInvoker.cs" />
+    <Compile Include="ExceptionHandling\ExceptionLoggerContext.cs" />
+    <Compile Include="Filters\EventHandlerOccuredContext.cs" />
+    <Compile Include="HandlerRegistrationExtensions.cs" />
+    <Compile Include="HandlerResponse`1.cs" />
+    <Compile Include="IAssembliesResolver.cs" />
+    <Compile Include="IHandlerLifetimeProvider.cs" />
+    <Compile Include="PerRequestHandlerAttribute.cs" />
+    <Compile Include="ProcessorConfigurationErrorHandlingExtensions.cs" />
+    <Compile Include="Results\ICommandHandlerResult.cs" />
+    <Compile Include="Results\ResponseMessageResult.cs" />
+    <Compile Include="Results\RetryHandlerResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Description\RaiseEventAttribute.cs" />
+    <Compile Include="Events\DefaultEventHandlerInvoker.cs" />
+    <Compile Include="HandlerAttribute.cs" />
+    <Compile Include="HandlerResponseException.cs" />
+    <Compile Include="Results\EventHandlerFilterResult.cs" />
     <Compile Include="Events\NullEventStore.cs" />
+    <Compile Include="ExceptionHandling\CompositeExceptionLogger.cs" />
+    <Compile Include="ExceptionHandling\DefaultExceptionHandler.cs" />
+    <Compile Include="ExceptionHandling\EmptyExceptionHandler.cs" />
+    <Compile Include="ExceptionHandling\ExceptionCatchBlocks.cs" />
+    <Compile Include="ExceptionHandling\ExceptionContext.cs" />
+    <Compile Include="ExceptionHandling\ExceptionContextCatchBlock.cs" />
+    <Compile Include="ExceptionHandling\ExceptionHandler.cs" />
+    <Compile Include="ExceptionHandling\ExceptionHandlerContext.cs" />
+    <Compile Include="ExceptionHandling\ExceptionHandlerExtensions.cs" />
+    <Compile Include="ExceptionHandling\ExceptionLogger.cs" />
+    <Compile Include="ExceptionHandling\ExceptionLoggerExtensions.cs" />
+    <Compile Include="ExceptionHandling\ExceptionServices.cs" />
+    <Compile Include="ExceptionHandling\IExceptionHandler.cs" />
+    <Compile Include="ExceptionHandling\IExceptionLogger.cs" />
+    <Compile Include="ExceptionHandling\LastChanceExceptionHandler.cs" />
+    <Compile Include="GlobalProcessorConfiguration.cs" />
+    <Compile Include="HandlerRequestExtensions.cs" />
+    <Compile Include="Results\CommandHandlerFilterResult.cs" />
+    <Compile Include="Results\ExceptionFilterResult.cs" />
+    <Compile Include="Results\ExceptionResult.cs" />
+    <Compile Include="HandlerResponse.cs" />
+    <Compile Include="Results\IEventHandlerResult.cs" />
     <Compile Include="Retrying\ExponentialBackoff.cs" />
     <Compile Include="Retrying\FixedInterval.cs" />
     <Compile Include="Retrying\Incremental.cs" />
     <Compile Include="Retrying\ITransientErrorDetectionStrategy.cs" />
     <Compile Include="Retrying\RetryAttribute.cs" />
-    <Compile Include="Events\EventHandler.cs" />
     <Compile Include="HandlerActivator.cs" />
     <Compile Include="Commands\VoidCommandAction.cs" />
     <Compile Include="EventStoreExtensions.cs" />
@@ -155,7 +220,7 @@
     <Compile Include="Events\EventHandlerContext.cs" />
     <Compile Include="Events\EventHandlerRequest.cs" />
     <Compile Include="Events\IEventHandlerActivator.cs" />
-    <Compile Include="Events\IHandlerDescriptorProvider.cs" />
+    <Compile Include="Events\IEventHandlerDescriptorProvider.cs" />
     <Compile Include="Events\EventHandlerDescriptor.cs" />
     <Compile Include="Events\IEventHandlerSelector.cs" />
     <Compile Include="Filters\EventFilterGrouping.cs" />
@@ -176,7 +241,9 @@
     <Compile Include="Retrying\TransientErrorCatchExceptionStrategy.cs" />
     <Compile Include="Retrying\TransientErrorIgnoreStrategy.cs" />
     <Compile Include="Retrying\AsyncExecution.cs" />
-    <Compile Include="Retrying\TimerManager.cs" />
+    <Compile Include="SingletonHandlerAttribute.cs" />
+    <Compile Include="Tasks\TaskExtensions.cs" />
+    <Compile Include="Tracing\TraceWriterExceptionMapper.cs" />
     <Compile Include="Tracing\EventHandlerFilterTracer.cs" />
     <Compile Include="Tracing\EventHandlerFilterAttributeTracer.cs" />
     <Compile Include="Tracing\EventHandlerActivatorTracer.cs" />
@@ -184,7 +251,8 @@
     <Compile Include="Tracing\EventHandlerTracer.cs" />
     <Compile Include="Tracing\EventHandlerDescriptorTracer.cs" />
     <Compile Include="Tracing\EventWorkerTracer.cs" />
-    <Compile Include="Validation\CollectionExtensions.cs" />
+    <Compile Include="TransientHandlerAttribute.cs" />
+    <Compile Include="Validation\AssociatedValidatorProvider.cs" />
     <Compile Include="MessageProcessorWrapper.cs" />
     <Compile Include="Commands\DefaultCommandWorker.cs" />
     <Compile Include="Commands\ICommandHandlerDescriptorProvider.cs" />
@@ -196,7 +264,6 @@
     <Compile Include="Internal\CollectionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Commands\Command.cs" />
     <Compile Include="MessageProcessorExtensions.cs" />
     <Compile Include="Internal\Error.cs" />
     <Compile Include="Filters\ExceptionFilterAttribute.cs" />
@@ -205,24 +272,22 @@
     <Compile Include="Filters\IHandlerConfiguration.cs" />
     <Compile Include="Filters\TransactionFilterAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Commands\CommandHandler.cs" />
-    <Compile Include="Commands\CommandHandler`1.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
-    <Compile Include="Interception\DefaultInterceptorProvider.cs" />
+    <Compile Include="Interception\DefaultInterceptionProvider.cs" />
     <Compile Include="Interception\IInterceptionProvider.cs" />
     <Compile Include="ListWrapperCollection.cs" />
     <Compile Include="Metadata\ElementScope.cs" />
     <Compile Include="Metadata\IKeyBuilder.cs" />
     <Compile Include="Metadata\PropertyScope.cs" />
-    <Compile Include="QueryServiceExtensions.cs" />
+    <Compile Include="Queries\QueryServiceExtensions.cs" />
     <Compile Include="Queries\DefaultQueryService.cs" />
     <Compile Include="Queries\IQueryContext.cs" />
     <Compile Include="Queries\IQueryService.cs" />
-    <Compile Include="Tasks\CatchInfo.cs" />
-    <Compile Include="Tasks\CatchInfo`1.cs" />
-    <Compile Include="Tasks\CatchInfoBase.cs" />
     <Compile Include="Tasks\TaskHelpers.cs" />
-    <Compile Include="Tasks\TaskHelpersExtensions.cs" />
+    <Compile Include="Validation\DataAnnotationsModelValidationFactory.cs" />
+    <Compile Include="Validation\DataAnnotationsModelValidator.cs" />
+    <Compile Include="Validation\DataAnnotationsModelValidatorProvider.cs" />
+    <Compile Include="Validation\DataAnnotationsValidatableObjectAdapterFactory.cs" />
     <Compile Include="Validation\DefaultCommandValidator.cs" />
     <Compile Include="Validation\IModelValidatorCache.cs" />
     <Compile Include="Validation\ModelError.cs" />
@@ -234,14 +299,10 @@
     <Compile Include="Validation\ModelValidator.cs" />
     <Compile Include="Validation\ModelValidatorCache.cs" />
     <Compile Include="Validation\ModelValidatorProvider.cs" />
-    <Compile Include="Validation\Providers\AssociatedValidatorProvider.cs" />
-    <Compile Include="Validation\Providers\DataAnnotationsModelValidatorProvider.cs" />
     <Compile Include="Validation\ReferenceEqualityComparer.cs" />
-    <Compile Include="Validation\Validators\DataAnnotationsModelValidator.cs" />
-    <Compile Include="Validation\Validators\ValidatableObjectAdapter.cs" />
+    <Compile Include="Validation\ValidatableObjectAdapter.cs" />
     <Compile Include="Commands\VoidResult.cs" />
     <Compile Include="Filters\CommandHandlerContext.cs" />
-    <Compile Include="Commands\CommandHandler`2.cs" />
     <Compile Include="HandlerRequest.cs" />
     <Compile Include="Commands\CommandHandlerSettings.cs" />
     <Compile Include="Interception\IInterceptor.cs" />
@@ -268,15 +329,13 @@
     <Compile Include="Commands\DefaultCommandHandlerTypeResolver.cs" />
     <Compile Include="Commands\CommandHandlerTypeCache.cs" />
     <Compile Include="Commands\ICommandHandlerSelector.cs" />
-    <Compile Include="Dispatcher\DefaultAssembliesResolver.cs" />
     <Compile Include="Commands\DefaultCommandHandlerActivator.cs" />
     <Compile Include="Services\DefaultServices.cs" />
-    <Compile Include="Dispatcher\IAssembliesResolver.cs" />
     <Compile Include="Commands\ICommandHandlerActivator.cs" />
     <Compile Include="Dependencies\IDependencyResolver.cs" />
     <Compile Include="Dependencies\EmptyResolver.cs" />
     <Compile Include="Dependencies\IDependencyScope.cs" />
-    <Compile Include="Filters\HandlerExecutedContext.cs" />
+    <Compile Include="Filters\CommandHandlerExecutedContext.cs" />
     <Compile Include="Commands\CommandHandlerNotFoundException.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="Filters\HandlerFilterCollection.cs" />
@@ -285,7 +344,7 @@
     <Compile Include="Filters\CommandFilterGrouping.cs" />
     <Compile Include="Filters\FilterInfo.cs" />
     <Compile Include="Filters\FilterAttribute.cs" />
-    <Compile Include="Dependencies\DepencyResolverExtensions.cs" />
+    <Compile Include="Dependencies\DependencyResolverExtensions.cs" />
     <Compile Include="Filters\HandlerDescriptor.cs" />
     <Compile Include="Filters\HandlerFilterProvider.cs" />
     <Compile Include="Filters\IExceptionFilter.cs" />
@@ -341,6 +400,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
   </ItemGroup>
