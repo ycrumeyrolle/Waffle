@@ -135,37 +135,6 @@
         }
 
         /// <summary>
-        /// Register handlers into the Unity container.
-        /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        public void RegisterHandlers(ProcessorConfiguration configuration)
-        {
-            if (configuration == null)
-            {
-                throw Error.ArgumentNull("configuration");
-            }
-
-            ICommandHandlerDescriptorProvider commandDescriptorProvider = configuration.Services.GetCommandHandlerDescriptorProvider();
-            IDictionary<Type, CommandHandlerDescriptor> commandDescriptorsMapping = commandDescriptorProvider.GetHandlerMapping();
-            foreach (KeyValuePair<Type, CommandHandlerDescriptor> description in commandDescriptorsMapping)
-            {
-                LifetimeManager lifetime = GetLifetimeManager(description.Value.Lifetime);
-                this.container.RegisterType(description.Value.HandlerType, lifetime);
-            }
-
-            IEventHandlerDescriptorProvider eventDescriptorProvider = configuration.Services.GetEventHandlerDescriptorProvider();
-            IDictionary<Type, EventHandlersDescriptor> eventDescriptorsMapping = eventDescriptorProvider.GetHandlerMapping();
-            foreach (KeyValuePair<Type, EventHandlersDescriptor> descriptor in eventDescriptorsMapping)
-            {
-                foreach (EventHandlerDescriptor eventHandlerDescriptor in descriptor.Value.EventHandlerDescriptors)
-                {
-                    LifetimeManager lifetime = GetLifetimeManager(eventHandlerDescriptor.Lifetime);
-                    this.container.RegisterType(eventHandlerDescriptor.HandlerType, lifetime);
-                }
-            }
-        }
-
-        /// <summary>
         /// Creates a new <see cref="DependencyScope"/>.
         /// </summary>
         /// <param name="container"></param>

@@ -19,7 +19,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="Waffle.Unity\bin\Release\Waffle.Queries.Data.dll" target="lib\net40\Waffle.Queries.Data.dll" />
-        <file src="Waffle.Unity\bin\Release\Waffle.Queries.Data.XML" target="lib\net40\Waffle.Queries.Data.XML" />
+        <file src="Waffle.Queries.Data\bin\Release\Waffle.Queries.Data.dll" target="lib\net40\Waffle.Queries.Data.dll" />
+        <file src="Waffle.Queries.Data\bin\Release\Waffle.Queries.Data.XML" target="lib\net40\Waffle.Queries.Data.XML" />
     </files>
 </package>
