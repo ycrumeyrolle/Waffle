@@ -8,7 +8,6 @@
     using Waffle.Results;
     using Waffle.Retrying;
     using Waffle.Services;
-    using Waffle.Validation;
 
     /// <summary>
     /// Default implementation of the <see cref="ICommandWorker"/>.
@@ -40,7 +39,7 @@
             if (request == null)
             {
                 throw Error.ArgumentNull("request");
-            }
+            }            
 
             ServicesContainer servicesContainer = request.Configuration.Services;
             ICommandHandlerSelector handlerSelector = servicesContainer.GetHandlerSelector();
@@ -54,13 +53,6 @@
             }
 
             request.RegisterForDispose(commandHandler, true);
-
-            if (!ValidateCommand(request) && request.Configuration.AbortOnInvalidCommand)
-            {
-                HandlerResponse reponse = new HandlerResponse(request);
-                return Task.FromResult(reponse);
-            }
-
             CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
             context.Handler = commandHandler;
             commandHandler.CommandContext = context;
@@ -82,17 +74,6 @@
             }
 
             return result.ExecuteAsync(context.CancellationToken);
-        }
-
-        private static bool ValidateCommand(CommandHandlerRequest request)
-        {
-            Contract.Requires(request != null);
-            Contract.Requires(request.Configuration != null);
-
-            ICommandValidator validator = request.Configuration.Services.GetCommandValidator();
-            bool valid = validator.Validate(request);
-
-            return valid;
         }
 
         private static CommandHandlerNotFoundException CreateHandlerNotFoundException(CommandHandlerDescriptor descriptor)

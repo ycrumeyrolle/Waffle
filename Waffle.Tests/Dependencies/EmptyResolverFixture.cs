@@ -4,16 +4,17 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Waffle;
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Filters;
+    using Xunit.Extensions;
 
-    [TestClass]
+    
     public class EmptyResolverFixture
     {
-        [TestMethod]
+        [Fact]
         public void WhenBeginningScopeThenReturnsItself()
         {
             // Assign
@@ -23,9 +24,12 @@
             IDependencyScope scope = resolver.BeginScope();
 
             // Assert
-            Assert.AreSame(resolver, scope);
+            Assert.Same(resolver, scope);
         }
 
+        [Theory]
+        [PropertyData("KnowTypes")]
+        [PropertyData("AnyTypes")]
         public void WhenGettingAnyServiceThenReturnsNull(Type serviceType)
         {
             // Assign
@@ -35,18 +39,12 @@
             object service = resolver.GetService(serviceType);
 
             // Assert
-            Assert.IsNull(service);
+            Assert.Null(service);
         }
 
-        [TestMethod]
-        public void WhenGettingAnyServiceThenReturnsNull()
-        {
-            foreach (Type type in KnowTypes.Concat(AnyTypes).Select(t => t[0]))
-            {
-                this.WhenGettingAnyServiceThenReturnsNull(type);
-            }
-        }
-        
+        [Theory]
+        [PropertyData("KnowTypes")]
+        [PropertyData("AnyTypes")]
         public void WhenGettingAnyServiceThenReturnsEmptySequence(Type serviceType)
         {
             // Assign
@@ -56,19 +54,10 @@
             IEnumerable<object> services = resolver.GetServices(serviceType);
 
             // Assert
-            Assert.IsNotNull(services);
-            Assert.AreEqual(0, services.Count());
+            Assert.NotNull(services);
+            Assert.Equal(0, services.Count());
         }
-
-        [TestMethod]
-        public void WhenGettingAnyServicesThenReturnsEmptySequence()
-        {
-            foreach (Type type in KnowTypes.Concat(AnyTypes).Select(t => t[0]))
-            {
-                this.WhenGettingAnyServiceThenReturnsEmptySequence(type);
-            }
-        }
-
+        
         public static IEnumerable<object[]> KnowTypes
         {
             get

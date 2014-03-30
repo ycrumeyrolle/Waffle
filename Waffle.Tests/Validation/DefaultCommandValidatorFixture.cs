@@ -5,16 +5,16 @@
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using Waffle;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Waffle.Commands;
     using Waffle.Validation;
 
-    [TestClass]
+    
     public sealed class DefaultCommandValidatorFixture : IDisposable
     {
         private readonly ProcessorConfiguration configuration = new ProcessorConfiguration();
 
-        [TestMethod]
+        [Fact]
         public void WhenValidatingUnvalidatableObjectThenReturnsTrue()
         {
             // Assign
@@ -26,11 +26,11 @@
             bool result = validator.Validate(request);
 
             // Assert
-            Assert.IsTrue(result);
-            Assert.AreEqual(0, request.ModelState.Count);
+            Assert.True(result);
+            Assert.Equal(0, request.ModelState.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenValidatingValidDataAnnotationsValidatableCommandThenReturnsTrue()
         {
             // Assign
@@ -42,11 +42,11 @@
             bool result = validator.Validate(request);
 
             // Assert
-            Assert.IsTrue(result);
-            Assert.AreEqual(0, request.ModelState.Count);
+            Assert.True(result);
+            Assert.Equal(0, request.ModelState.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenValidatingInvalidDataAnnotationsValidatableCommandThenReturnsFalse()
         {
             // Assign
@@ -58,11 +58,11 @@
             bool result = validator.Validate(request);
 
             // Assert
-            Assert.IsFalse(result);
-            Assert.AreEqual(1, request.ModelState.Count);
+            Assert.False(result);
+            Assert.Equal(1, request.ModelState.Count);
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenValidatingValidValidatableObjectCommandThenReturnsTrue()
         {
             // Assign
@@ -74,11 +74,11 @@
             bool result = validator.Validate(request);
 
             // Assert
-            Assert.IsTrue(result);
-            Assert.AreEqual(0, request.ModelState.Count);
+            Assert.True(result);
+            Assert.Equal(0, request.ModelState.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenValidatingInvalidValidatableObjectCommandThenReturnsFalse()
         {
             // Assign
@@ -90,11 +90,11 @@
             bool result = validator.Validate(request);
 
             // Assert
-            Assert.IsFalse(result);
-            Assert.AreEqual(2, request.ModelState.Sum(kvp => kvp.Value.Errors.Count));
+            Assert.False(result);
+            Assert.Equal(2, request.ModelState.Sum(kvp => kvp.Value.Errors.Count));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenValidatingValidMixedValidatableCommandThenReturnsTrue()
         {
             // Assign
@@ -107,11 +107,11 @@
             bool result = validator.Validate(request);
 
             // Assert
-            Assert.IsTrue(result);
-            Assert.AreEqual(0, request.ModelState.Count);
+            Assert.True(result);
+            Assert.Equal(0, request.ModelState.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenValidatingInvalidMixedValidatableCommandThenReturnsFalse()
         {
             // Assign
@@ -124,13 +124,13 @@
             bool result = validator.Validate(request);
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
 
             // Validator ignore IValidatableObject validation until DataAnnotations succeed.
-            Assert.AreEqual(1, request.ModelState.Count);
+            Assert.Equal(1, request.ModelState.Count);
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenValidatingCommandWithUriThenReturnsTrue()
         {
             // Assign
@@ -144,8 +144,8 @@
 
             // Assert
             // A lots of properties of Uri throw exceptions but its still valid
-            Assert.IsTrue(result);
-            Assert.AreEqual(0, request.ModelState.Count);
+            Assert.True(result);
+            Assert.Equal(0, request.ModelState.Count);
         }
 
         private class UnvalidatableCommand : ICommand

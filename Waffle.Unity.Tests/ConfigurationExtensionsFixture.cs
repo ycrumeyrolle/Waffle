@@ -1,18 +1,17 @@
 ﻿namespace Waffle.Unity.Tests
 {
-    using System;
-    using Waffle;
     using Microsoft.Practices.Unity;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
-    using Waffle.Tests.Helpers;
+    using System;
     using System.Collections.Generic;
+    using Waffle;
     using Waffle.Commands;
-    using Waffle.Validation;
     using Waffle.Events;
     using Waffle.Filters;
-
-    [TestClass]
+    using Waffle.Tests.Helpers;
+    using Waffle.Validation;
+    using Xunit;
+    
     public sealed class ConfigurationExtensionsFixture : IDisposable
     {
         private readonly ProcessorConfiguration configuration = new ProcessorConfiguration();
@@ -22,14 +21,14 @@
             this.configuration = new ProcessorConfiguration();
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenRegisteringNullConfigurationThenThrowsArgumentNullException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => ConfigurationExtensions.RegisterContainer(null, null), "configuration");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenRegisteringContainerThenReturnsResolver()
         {
             // Arrange
@@ -39,12 +38,10 @@
             var resolver = this.configuration.RegisterContainer(container.Object);
 
             // Assert
-            Assert.IsNotNull(resolver);
+            Assert.NotNull(resolver);
         }
-
-
-
-        [TestMethod]
+                
+        [Fact]
         public void RegisterHandlers_()
         {
             Mock<IUnityContainer> container = new Mock<IUnityContainer>();
@@ -75,9 +72,7 @@
             this.configuration.Services.Replace(typeof(IEventHandlerDescriptorProvider), eventDescProvider.Object);
             this.configuration.RegisterHandlers(container.Object);
         }
-
-
-        [TestCleanup]
+        
         public void Dispose()
         {
             this.configuration.Dispose();

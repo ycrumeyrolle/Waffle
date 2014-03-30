@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Runtime.ExceptionServices;
     using System.Security.Principal;
     using System.Threading;
@@ -11,6 +12,7 @@
     using Waffle.Events;
     using Waffle.ExceptionHandling;
     using Waffle.Internal;
+    using Waffle.Validation;
 
     /// <summary>
     /// Represents a processor of commands and events. 
@@ -123,7 +125,6 @@
             }
 
             this.EnsureInitialized();
-            ICommandWorker commandWorker = this.Configuration.Services.GetCommandWorker();
 
             using (CommandHandlerRequest request = new CommandHandlerRequest(this.Configuration, command, currentRequest))
             {
@@ -133,6 +134,13 @@
 
                 try
                 {
+                    if (!ValidateCommand(request) && request.Configuration.AbortOnInvalidCommand)
+                    {
+                        HandlerResponse reponse = new HandlerResponse(request);
+                        return reponse;
+                    }
+
+                    ICommandWorker commandWorker = this.Configuration.Services.GetCommandWorker();
                     return await commandWorker.ExecuteAsync(request);
                 }
                 catch (HandlerResponseException exception)
@@ -265,6 +273,17 @@
 
             this.Configuration.EnsureInitialized();
             this.Configuration.Services.Replace(typeof(IMessageProcessor), this);
+        }
+
+        private static bool ValidateCommand(CommandHandlerRequest request)
+        {
+            Contract.Requires(request != null);
+            Contract.Requires(request.Configuration != null);
+
+            ICommandValidator validator = request.Configuration.Services.GetCommandValidator();
+            bool valid = validator.Validate(request);
+
+            return valid;
         }
     }
 }

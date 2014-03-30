@@ -1,22 +1,21 @@
 ﻿namespace Waffle.Queries.Data.Tests
 {
+    using Effort;
     using System.Data.Common;
     using System.Linq;
-    using Effort;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Waffle.Tests.Helpers;
-
-    [TestClass]
+    using Xunit;
+    
     public class DbQueryContextFixture
     {
-        [TestMethod]
+        [Fact]
         public void WhenInstanciatingDbQueryContextWithoutDbContextThenThrowsArgumentNullException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => new DbQueryContext<FakeDbContext>(null), "innerContext");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenInstanciatingDbQueryContextThenReturnsObject()
         {
             // Arrange
@@ -26,10 +25,10 @@
             DbQueryContext<FakeDbContext> queryContext = new DbQueryContext<FakeDbContext>(context);
 
             // Assert
-            Assert.IsNotNull(queryContext);
+            Assert.NotNull(queryContext);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenFindingItemThenRetunsEntity()
         {
             // Arrange
@@ -40,12 +39,12 @@
             FakeEntity result = queryContext.Find<FakeEntity>("test3");
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(3, result.Property2);
-            Assert.AreEqual("test3", result.Property1);
+            Assert.NotNull(result);
+            Assert.Equal(3, result.Property2);
+            Assert.Equal("test3", result.Property1);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenQueryingItemsThenReturnsEntities()
         {
             // Arrange
@@ -56,14 +55,14 @@
             var query = queryContext.Query<FakeEntity>();
 
             // Assert
-            Assert.IsNotNull(query);
-            Assert.AreEqual(context.Entities.Count(), query.Count());
-            Assert.IsNotNull(query.FirstOrDefault());
-            Assert.AreEqual(context.Entities.FirstOrDefault(), query.FirstOrDefault());
-            Assert.AreEqual(context.Entities.Count(item => item.Property2 >= 5), query.Count(item => item.Property2 >= 5));
+            Assert.NotNull(query);
+            Assert.Equal(context.Entities.Count(), query.Count());
+            Assert.NotNull(query.FirstOrDefault());
+            Assert.Equal(context.Entities.FirstOrDefault(), query.FirstOrDefault());
+            Assert.Equal(context.Entities.Count(item => item.Property2 >= 5), query.Count(item => item.Property2 >= 5));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenDisposingQueryContexthenDisposeInnerDbContext()
         {
             // Arrange
@@ -74,7 +73,7 @@
             queryContext.Dispose();
 
             // Assert
-            Assert.IsTrue(context.Disposed);
+            Assert.True(context.Disposed);
         }
 
         private static FakeDbContext CreateDbContext(int count = 0)

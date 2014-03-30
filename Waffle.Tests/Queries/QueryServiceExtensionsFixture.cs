@@ -1,26 +1,26 @@
 ﻿namespace Waffle.Tests.Queries
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Queries;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class QueryServiceExtensionsFixture
     {
         private readonly Mock<IQueryService> queryService = new Mock<IQueryService>(MockBehavior.Strict);
 
         private readonly Mock<IQueryContext> queryContext = new Mock<IQueryContext>(MockBehavior.Strict);
 
-        [TestMethod]
+        [Fact]
         public void WhenRegisteringWithNullServiceThenThrowsArgumentNullException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => QueryServiceExtensions.RegisterContextFactory<IQueryContext>((IQueryService)null, () => this.queryContext.Object), "queryService");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenRegisteringContextFactoryThenRegistrationIsDelegated()
         {
             // Arrange
@@ -33,14 +33,14 @@
             this.queryService.Verify(s => s.RegisterContextFactory(It.IsAny<Type>(), It.IsAny<Func<IQueryContext>>()), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingContextWithNullServiceThenThrowInvalidOperationException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => QueryServiceExtensions.CreateContext<IQueryContext>(null), "queryService");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingContextThenCreationIsDelegated()
         {
             // Arrange
@@ -50,8 +50,8 @@
             IQueryContext result = QueryServiceExtensions.CreateContext<IQueryContext>(this.queryService.Object);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, this.queryContext.Object.GetType());
+            Assert.NotNull(result);
+            Assert.IsType(this.queryContext.Object.GetType(), result);
             this.queryService.Verify(s => s.CreateContext(It.IsAny<Type>()), Times.Once());
         }
     }

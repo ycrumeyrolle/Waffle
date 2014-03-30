@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Waffle;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Commands;
     using Waffle.Dependencies;
@@ -13,17 +13,17 @@
     using Waffle.Tests.Helpers;
     using Waffle.Validation;
 
-    [TestClass]
+    
     public class DefaultServicesFixture
     {
-        [TestMethod]
+        [Fact]
         public void Constructor_GuardClauses()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => new DefaultServices(null), "configuration");
         }
 
-        [TestMethod]
+        [Fact]
         public void Constructor_DefaultServicesInContainer()
         {
             // Arrange
@@ -33,24 +33,24 @@
             var defaultServices = new DefaultServices(config);
 
             // Assert
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandHandlerSelector)), typeof(DefaultCommandHandlerSelector));
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandHandlerActivator)), typeof(DefaultCommandHandlerActivator));
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandHandlerTypeResolver)), typeof(DefaultCommandHandlerTypeResolver));
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(IAssembliesResolver)), typeof(DefaultAssembliesResolver));
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(IInterceptionProvider)), typeof(DefaultInterceptionProvider));
+            Assert.IsType(typeof(DefaultCommandHandlerSelector), defaultServices.GetService(typeof(ICommandHandlerSelector)));
+            Assert.IsType(typeof(DefaultCommandHandlerActivator), defaultServices.GetService(typeof(ICommandHandlerActivator)));
+            Assert.IsType(typeof(DefaultCommandHandlerTypeResolver), defaultServices.GetService(typeof(ICommandHandlerTypeResolver)));
+            Assert.IsType(typeof(DefaultAssembliesResolver), defaultServices.GetService(typeof(IAssembliesResolver)));
+            Assert.IsType(typeof(DefaultInterceptionProvider), defaultServices.GetService(typeof(IInterceptionProvider)));
 
             object[] filterProviders = defaultServices.GetServices(typeof(IFilterProvider)).ToArray();
-            Assert.AreEqual(2, filterProviders.Length);
-            Assert.IsInstanceOfType(filterProviders[0], typeof(ConfigurationFilterProvider));
-            Assert.IsInstanceOfType(filterProviders[1], typeof(HandlerFilterProvider));
+            Assert.Equal(2, filterProviders.Length);
+            Assert.IsType(typeof(ConfigurationFilterProvider), filterProviders[0]);
+            Assert.IsType(typeof(HandlerFilterProvider), filterProviders[1]);
 
-            Assert.IsInstanceOfType(defaultServices.GetService(typeof(ICommandValidator)), typeof(DefaultCommandValidator));
+            Assert.IsType(typeof(DefaultCommandValidator), defaultServices.GetService(typeof(ICommandValidator)));
 
             object[] interceptors = defaultServices.GetServices(typeof(IInterceptor)).ToArray();
-            Assert.AreEqual(0, interceptors.Length);
+            Assert.Equal(0, interceptors.Length);
         }
 
-        [TestMethod]
+        [Fact]
         public void Add_GuardClauses()
         {
             // Arrange
@@ -64,7 +64,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.Add(typeof(IFilterProvider), new object()), "service");
         }
 
-        [TestMethod]
+        [Fact]
         public void Add_AddsServiceToEndOfServicesList()
         {
             // Arrange
@@ -78,10 +78,10 @@
 
             // Assert
             IEnumerable<object> servicesAfter = defaultServices.GetServices(typeof(IFilterProvider));
-            CollectionAssert.AreEqual(servicesBefore.Concat(new[] { filterProvider }).ToArray(), servicesAfter.ToArray());
+            Assert.Equal(servicesBefore.Concat(new[] { filterProvider }).ToArray(), servicesAfter.ToArray());
         }
 
-        [TestMethod]
+        [Fact]
         public void AddRange_GuardClauses()
         {
             // Arrange
@@ -95,7 +95,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.AddRange(typeof(IFilterProvider), new[] { new object() }), "services");
         }
 
-        [TestMethod]
+        [Fact]
         public void AddRange_AddsServicesToEndOfServicesList()
         {
             // Arrange
@@ -109,10 +109,10 @@
 
             // Assert
             IEnumerable<object> servicesAfter = defaultServices.GetServices(typeof(IFilterProvider));
-            CollectionAssert.AreEqual(servicesBefore.Concat(new[] { filterProvider }).ToArray(), servicesAfter.ToArray());
+            Assert.Equal(servicesBefore.Concat(new[] { filterProvider }).ToArray(), servicesAfter.ToArray());
         }
 
-        [TestMethod]
+        [Fact]
         public void AddRange_SkipsNullObjects()
         {
             // Arrange
@@ -125,10 +125,10 @@
 
             // Assert
             IEnumerable<object> servicesAfter = defaultServices.GetServices(typeof(IFilterProvider));
-            CollectionAssert.AreEqual(servicesBefore.ToArray(), servicesAfter.ToArray());
+            Assert.Equal(servicesBefore.ToArray(), servicesAfter.ToArray());
         }
 
-        [TestMethod]
+        [Fact]
         public void Clear_GuardClauses()
         {
             // Arrange
@@ -140,7 +140,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.Clear(typeof(object)), "serviceType");
         }
 
-        [TestMethod]
+        [Fact]
         public void Clear_RemovesAllServices()
         {
             // Arrange
@@ -151,10 +151,10 @@
             defaultServices.Clear(typeof(IFilterProvider));
 
             // Assert
-            Assert.AreEqual(0, defaultServices.GetServices(typeof(IFilterProvider)).Count());
+            Assert.Equal(0, defaultServices.GetServices(typeof(IFilterProvider)).Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void FindIndex_GuardClauses()
         {
             // Arrange
@@ -167,7 +167,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.FindIndex(typeof(object), _ => true), "serviceType");
         }
 
-        [TestMethod]
+        [Fact]
         public void FindIndex_SuccessfulFind()
         {
             // Arrange
@@ -178,10 +178,10 @@
             int index = defaultServices.FindIndex(typeof(IFilterProvider), _ => true);
 
             // Assert
-            Assert.AreEqual(0, index);
+            Assert.Equal(0, index);
         }
 
-        [TestMethod]
+        [Fact]
         public void FindIndex_FailedFind()
         {
             // Arrange
@@ -192,10 +192,10 @@
             int index = defaultServices.FindIndex(typeof(IFilterProvider), _ => false);
 
             // Assert
-            Assert.AreEqual(-1, index);
+            Assert.Equal(-1, index);
         }
 
-        [TestMethod]
+        [Fact]
         public void FindIndex_EmptyServiceListAlwaysReturnsFailure()
         {
             // Arrange
@@ -207,10 +207,10 @@
             int index = defaultServices.FindIndex(typeof(IFilterProvider), _ => true);
 
             // Assert
-            Assert.AreEqual(-1, index);
+            Assert.Equal(-1, index);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetService_GuardClauses()
         {
             // Arrange
@@ -222,7 +222,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.GetService(typeof(object)), "serviceType");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetService_ReturnsNullWhenServiceListEmpty()
         {
             // Arrange
@@ -234,10 +234,10 @@
             object service = defaultServices.GetService(typeof(ICommandHandlerSelector));
 
             // Assert
-            Assert.IsNull(service);
+            Assert.Null(service);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetService_PrefersServiceInDependencyInjectionContainer()
         {
             // Arrange
@@ -252,10 +252,10 @@
             object service = defaultServices.GetService(typeof(ICommandHandlerSelector));
 
             // Assert
-            Assert.AreSame(filterProvider, service);
+            Assert.Same(filterProvider, service);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetService_CachesResultFromDependencyInjectionContainer()
         {
             // Arrange
@@ -272,7 +272,7 @@
             mockDependencyResolver.Verify(dr => dr.GetService(typeof(ICommandHandlerSelector)), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetServices_GuardClauses()
         {
             // Arrange
@@ -284,7 +284,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.GetServices(typeof(object)), "serviceType");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetServices_ReturnsEmptyEnumerationWhenServiceListEmpty()
         {
             // Arrange
@@ -296,10 +296,10 @@
             IEnumerable<object> services = defaultServices.GetServices(typeof(IFilterProvider));
 
             // Assert
-            Assert.AreEqual(0, services.Count());
+            Assert.Equal(0, services.Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetServices_PrependsServiceInDependencyInjectionContainer()
         {
             // Arrange
@@ -315,10 +315,10 @@
             IEnumerable<object> servicesAfter = defaultServices.GetServices(typeof(IFilterProvider));
 
             // Assert
-            CollectionAssert.AreEqual(new[] { filterProvider }.Concat(servicesBefore).ToArray(), servicesAfter.ToArray());
+            Assert.Equal(new[] { filterProvider }.Concat(servicesBefore).ToArray(), servicesAfter.ToArray());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetServices_CachesResultFromDependencyInjectionContainer()
         {
             // Arrange
@@ -335,7 +335,7 @@
             mockDependencyResolver.Verify(dr => dr.GetServices(typeof(IFilterProvider)), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void Insert_GuardClauses()
         {
             // Arrange
@@ -350,7 +350,7 @@
             ExceptionAssert.ThrowsArgumentOutOfRange(() => defaultServices.Insert(typeof(IFilterProvider), -1, new Mock<IFilterProvider>().Object), "index");
         }
 
-        [TestMethod]
+        [Fact]
         public void Insert_AddsElementAtTheRequestedLocation()
         {
             // Arrange
@@ -365,10 +365,10 @@
             defaultServices.Insert(typeof(IFilterProvider), 1, newFilterProvider);
 
             // Assert
-            CollectionAssert.AreEqual(new[] { filterProvider1, newFilterProvider, filterProvider2 }.ToArray(), defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
+            Assert.Equal(new[] { filterProvider1, newFilterProvider, filterProvider2 }, defaultServices.GetServices(typeof(IFilterProvider)));
         }
 
-        [TestMethod]
+        [Fact]
         public void InsertRange_GuardClauses()
         {
             // Arrange
@@ -383,7 +383,7 @@
             ExceptionAssert.ThrowsArgumentOutOfRange(() => defaultServices.InsertRange(typeof(IFilterProvider), -1, new[] { new Mock<IFilterProvider>().Object }), "index");
         }
 
-        [TestMethod]
+        [Fact]
         public void InsertRange_AddsElementAtTheRequestedLocation()
         {
             // Arrange
@@ -399,10 +399,10 @@
             defaultServices.InsertRange(typeof(IFilterProvider), 1, new[] { newFilterProvider1, newFilterProvider2 });
 
             // Assert
-            CollectionAssert.AreEqual(new[] { filterProvider1, newFilterProvider1, newFilterProvider2, filterProvider2 }.ToArray(), defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
+            Assert.Equal(new[] { filterProvider1, newFilterProvider1, newFilterProvider2, filterProvider2 }, defaultServices.GetServices(typeof(IFilterProvider)));
         }
 
-        [TestMethod]
+        [Fact]
         public void Remove_GuardClauses()
         {
             // Arrange
@@ -415,7 +415,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.Remove(typeof(object), new object()), "serviceType");
         }
 
-        [TestMethod]
+        [Fact]
         public void Remove_ObjectFound()
         {
             // Arrange
@@ -429,10 +429,10 @@
             defaultServices.Remove(typeof(IFilterProvider), filterProvider1);
 
             // Assert
-            CollectionAssert.AreEqual(new[] { filterProvider2 }.ToArray(), defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
+            Assert.Equal(new[] { filterProvider2 }, defaultServices.GetServices(typeof(IFilterProvider)));
         }
 
-        [TestMethod]
+        [Fact]
         public void Remove_ObjectNotFound()
         {
             // Arrange
@@ -447,10 +447,10 @@
             defaultServices.Remove(typeof(IFilterProvider), notPresentFilterProvider);
 
             // Assert
-            CollectionAssert.AreEqual(new[] { filterProvider1, filterProvider2 }.ToArray(), defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
+            Assert.Equal(new[] { filterProvider1, filterProvider2 }, defaultServices.GetServices(typeof(IFilterProvider)));
         }
 
-        [TestMethod]
+        [Fact]
         public void RemoveAll_GuardClauses()
         {
             // Arrange
@@ -463,7 +463,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.RemoveAll(typeof(object), _ => true), "serviceType");
         }
 
-        [TestMethod]
+        [Fact]
         public void RemoveAll_SuccessfulMatch()
         {
             // Arrange
@@ -477,10 +477,10 @@
             defaultServices.RemoveAll(typeof(IFilterProvider), _ => true);
 
             // Assert
-            Assert.AreEqual(0, defaultServices.GetServices(typeof(IFilterProvider)).Count());
+            Assert.Equal(0, defaultServices.GetServices(typeof(IFilterProvider)).Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void RemoveAll_PartialMatch()
         {
             // Arrange
@@ -494,10 +494,10 @@
             defaultServices.RemoveAll(typeof(IFilterProvider), obj => obj == filterProvider2);
 
             // Assert
-            CollectionAssert.AreEqual(new[] { filterProvider1 }.ToArray(), defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
+            Assert.Equal(new[] { filterProvider1 }, defaultServices.GetServices(typeof(IFilterProvider)));
         }
 
-        [TestMethod]
+        [Fact]
         public void RemoveAt_GuardClauses()
         {
             // Arrange
@@ -510,7 +510,7 @@
             ExceptionAssert.ThrowsArgumentOutOfRange(() => defaultServices.RemoveAt(typeof(IFilterProvider), -1), "index");
         }
 
-        [TestMethod]
+        [Fact]
         public void RemoteAt_RemovesService()
         {
             // Arrange
@@ -524,10 +524,10 @@
             defaultServices.RemoveAt(typeof(IFilterProvider), 1);
 
             // Assert
-            CollectionAssert.AreEqual(new[] { filterProvider1 }, defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
+            Assert.Equal(new[] { filterProvider1 }, defaultServices.GetServices(typeof(IFilterProvider)));
         }
 
-        [TestMethod]
+        [Fact]
         public void Replace_GuardClauses()
         {
             // Arrange
@@ -541,7 +541,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.Replace(typeof(IFilterProvider), new object()), "service");
         }
 
-        [TestMethod]
+        [Fact]
         public void Replace_ReplacesAllValuesWithTheGivenService()
         {
             // Arrange
@@ -556,10 +556,10 @@
             defaultServices.Replace(typeof(IFilterProvider), newFilterProvider);
 
             // Assert
-            CollectionAssert.AreEqual(new[] { newFilterProvider }, defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
+            Assert.Equal(new[] { newFilterProvider }, defaultServices.GetServices(typeof(IFilterProvider)));
         }
 
-        [TestMethod]
+        [Fact]
         public void ReplaceRange_GuardClauses()
         {
             // Arrange
@@ -573,7 +573,7 @@
             ExceptionAssert.ThrowsArgument(() => defaultServices.ReplaceRange(typeof(IFilterProvider), new[] { new object() }), "services");
         }
 
-        [TestMethod]
+        [Fact]
         public void ReplaceRange_ReplacesAllValuesWithTheGivenServices()
         {
             // Arrange
@@ -586,7 +586,7 @@
             defaultServices.ReplaceRange(typeof(IFilterProvider), new[] { filterProvider1, filterProvider2 });
 
             // Assert
-            CollectionAssert.AreEqual(new[] { filterProvider1, filterProvider2 }, defaultServices.GetServices(typeof(IFilterProvider)).ToArray());
+            Assert.Equal(new[] { filterProvider1, filterProvider2 }, defaultServices.GetServices(typeof(IFilterProvider)));
         }
     }
 }

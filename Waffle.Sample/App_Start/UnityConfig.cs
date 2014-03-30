@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
+using Waffle.Queries;
 
 namespace Waffle.Sample.App_Start
 {
@@ -37,6 +38,8 @@ namespace Waffle.Sample.App_Start
 
             // TODO: Register your types here
             // container.RegisterType<IProductRepository, ProductRepository>();
+            container.RegisterInstance<IMessageProcessor>(GlobalProcessorConfiguration.DefaultProcessor);
+            container.RegisterInstance<IQueryService>(GlobalProcessorConfiguration.Configuration.Services.GetService<IQueryService>());
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Waffle.Tests.Helpers
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
     public static class ExceptionAssert
     {
@@ -17,7 +17,7 @@
                 exception = UnwrapException(e);
             }
 
-            Assert.IsNull(exception);
+            Assert.Null(exception);
         }
 
         public static TException Throws<TException>(Action action) where TException : Exception
@@ -32,7 +32,7 @@
                 exception = UnwrapException(e) as TException;
             }
 
-            Assert.IsNotNull(exception);
+            Assert.NotNull(exception);
             return exception;
         }
 
@@ -51,13 +51,13 @@
         public static void ThrowsArgumentNull(Action action, string paramName)
         {
             ArgumentNullException exception = Throws<ArgumentNullException>(action);
-            Assert.AreEqual(paramName, exception.ParamName);
+            Assert.Equal(paramName, exception.ParamName);
         }
 
         public static void ThrowsArgument(Action action, string paramName)
         {
             ArgumentException exception = Throws<ArgumentException>(action);
-            Assert.AreEqual(paramName, exception.ParamName);
+            Assert.Equal(paramName, exception.ParamName);
         }    
         
         /// <summary>
@@ -72,7 +72,7 @@
 
             if (paramName != null)
             {
-                Assert.AreEqual(paramName, ex.ParamName);
+                Assert.Equal(paramName, ex.ParamName);
             }
 
             return ex;

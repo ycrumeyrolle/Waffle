@@ -1,7 +1,6 @@
 ﻿namespace Waffle.Queries.Data.Tests
 {
     using System.ComponentModel.DataAnnotations;
-
     public class FakeEntity
     {
         [Key]

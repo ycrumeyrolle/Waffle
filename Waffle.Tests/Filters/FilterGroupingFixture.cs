@@ -1,14 +1,14 @@
 ﻿namespace Waffle.Tests.Filters
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class FilterGroupingFixture
     {
-        [TestMethod]
+        [Fact]
         public void WhenGroupingFiltersThenFiltersAreCategorized()
         {
             // Arrange
@@ -19,14 +19,14 @@
             var handlerFilters = group.CommandHandlerFilters;
 
             // Assert
-            Assert.IsNotNull(exceptionFilters);
-            Assert.AreEqual(5, exceptionFilters.Length);
+            Assert.NotNull(exceptionFilters);
+            Assert.Equal(5, exceptionFilters.Length);
 
-            Assert.IsNotNull(handlerFilters);
-            Assert.AreEqual(4, handlerFilters.Length);
+            Assert.NotNull(handlerFilters);
+            Assert.Equal(4, handlerFilters.Length);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingWithNullParameterThenThrowsException()
         {   
             // Assert

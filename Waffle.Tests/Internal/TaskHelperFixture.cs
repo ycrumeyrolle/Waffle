@@ -5,99 +5,99 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Tasks;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class TaskHelperFixture
     {
         // -----------------------------------------------------------------
         //  TaskHelpers.Canceled
 
-        [TestMethod]
+        [Fact]
         public void Canceled_ReturnsCanceledTask()
         {
             Task result = TaskHelpers.Canceled();
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.IsCanceled);
+            Assert.NotNull(result);
+            Assert.True(result.IsCanceled);
         }
 
         // -----------------------------------------------------------------
         //  TaskHelpers.Canceled<T>
 
-        [TestMethod]
+        [Fact]
         public void Canceled_Generic_ReturnsCanceledTask()
         {
             Task<string> result = TaskHelpers.Canceled<string>();
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.IsCanceled);
+            Assert.NotNull(result);
+            Assert.True(result.IsCanceled);
         }
 
         // -----------------------------------------------------------------
         //  TaskHelpers.Completed
 
-        [TestMethod]
+        [Fact]
         public void Completed_ReturnsCompletedTask()
         {
             Task result = TaskHelpers.Completed();
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(TaskStatus.RanToCompletion, result.Status);
+            Assert.NotNull(result);
+            Assert.Equal(TaskStatus.RanToCompletion, result.Status);
         }
 
         // -----------------------------------------------------------------
         //  TaskHelpers.FromError
 
-        [TestMethod]
+        [Fact]
         public void FromError_ReturnsFaultedTaskWithGivenException()
         {
             var exception = new Exception();
 
             Task result = TaskHelpers.FromError(exception);
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.IsFaulted);
-            Assert.AreSame(exception, result.Exception.InnerException);
+            Assert.NotNull(result);
+            Assert.True(result.IsFaulted);
+            Assert.Same(exception, result.Exception.InnerException);
         }
 
         // -----------------------------------------------------------------
         //  TaskHelpers.FromError<T>
 
-        [TestMethod]
+        [Fact]
         public void FromError_Generic_ReturnsFaultedTaskWithGivenException()
         {
             var exception = new Exception();
 
             Task<string> result = TaskHelpers.FromError<string>(exception);
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.IsFaulted);
-            Assert.AreSame(exception, result.Exception.InnerException);
+            Assert.NotNull(result);
+            Assert.True(result.IsFaulted);
+            Assert.Same(exception, result.Exception.InnerException);
         }
 
         // -----------------------------------------------------------------
         //  Task.FromResult<T>
 
-        [TestMethod]
+        [Fact]
         public void FromResult_ReturnsCompletedTaskWithGivenResult()
         {
             string s = "ABC";
 
             Task<string> result = Task.FromResult(s);
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Status == TaskStatus.RanToCompletion);
-            Assert.AreSame(s, result.Result);
+            Assert.NotNull(result);
+            Assert.True(result.Status == TaskStatus.RanToCompletion);
+            Assert.Same(s, result.Result);
         }
    
         // ----------------------------------------------------------------
         //   Task<object> Task<T>.CastToObject()
 
-        [TestMethod]
+        [Fact]
         public void ConvertFromTaskOfStringShouldSucceed()
         {
             // Arrange
@@ -109,12 +109,12 @@
             // Assert
                 .ContinueWith(task =>
                 {
-                    Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
-                    Assert.AreEqual("StringResult", (string)task.Result);
+                    Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+                    Assert.Equal("StringResult", (string)task.Result);
                 });
         }
 
-        [TestMethod]
+        [Fact]
         public void ConvertFromTaskOfIntShouldSucceed()
         {
             // Arrange
@@ -126,12 +126,12 @@
             // Assert
                 .ContinueWith(task =>
                 {
-                    Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
-                    Assert.AreEqual(123, (int)task.Result);
+                    Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+                    Assert.Equal(123, (int)task.Result);
                 });
         }
 
-        [TestMethod]
+        [Fact]
         public void ConvertFromFaultedTaskOfObjectShouldBeHandled()
         {
             // Arrange
@@ -143,12 +143,12 @@
             // Assert
                 .ContinueWith(task =>
                 {
-                    Assert.AreEqual(TaskStatus.Faulted, task.Status);
-                    Assert.IsInstanceOfType(task.Exception.GetBaseException(), typeof(InvalidOperationException));
+                    Assert.Equal(TaskStatus.Faulted, task.Status);
+                    Assert.IsType(typeof(InvalidOperationException), task.Exception.GetBaseException());
                 });
         }
 
-        [TestMethod]
+        [Fact]
         public void ConvertFromCancelledTaskOfStringShouldBeHandled()
         {
             // Arrange
@@ -160,14 +160,14 @@
             // Assert
                 .ContinueWith(task =>
                 {
-                    Assert.AreEqual(TaskStatus.Canceled, task.Status);
+                    Assert.Equal(TaskStatus.Canceled, task.Status);
                 });
         }
 
         // ----------------------------------------------------------------
         //   Task<object> Task.CastToObject()
 
-        [TestMethod]
+        [Fact]
         public void ConvertFromTaskShouldSucceed()
         {
             // Arrange
@@ -179,12 +179,12 @@
             // Assert
                 .ContinueWith(task =>
                 {
-                    Assert.AreEqual(TaskStatus.RanToCompletion, task.Status);
-                    Assert.AreEqual(null, task.Result);
+                    Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+                    Assert.Equal(null, task.Result);
                 });
         }
 
-        [TestMethod]
+        [Fact]
         public void ConvertFromFaultedTaskShouldBeHandled()
         {
             // Arrange
@@ -196,12 +196,12 @@
             // Assert
                 .ContinueWith(task =>
                 {
-                    Assert.AreEqual(TaskStatus.Faulted, task.Status);
-                    Assert.IsInstanceOfType(task.Exception.GetBaseException(), typeof(InvalidOperationException));
+                    Assert.Equal(TaskStatus.Faulted, task.Status);
+                    Assert.IsType(typeof(InvalidOperationException), task.Exception.GetBaseException());
                 });
         }
 
-        [TestMethod]
+        [Fact]
         public void ConvertFromCancelledTaskShouldBeHandled()
         {
             // Arrange
@@ -213,11 +213,10 @@
             // Assert
                 .ContinueWith(task =>
                 {
-                    Assert.AreEqual(TaskStatus.Canceled, task.Status);
+                    Assert.Equal(TaskStatus.Canceled, task.Status);
                 });
         }
 
-        [TestCleanup]
         public void ForceGC()
         {
             GC.Collect(99);

@@ -34,8 +34,8 @@
         /// Initializes a new instance of the <see cref="RetryAttribute"/> class with the specified number of retry attempts and fixed time interval between retries.
         /// </summary>        
         /// <param name="retryCount">The number of retry attempts.</param>
-        /// <param name="retryInterval">The interval between retries.</param>
-        public RetryAttribute(int retryCount, TimeSpan retryInterval) :
+        /// <param name="retryInterval">The interval between retries, in milliseconds.</param>
+        public RetryAttribute(int retryCount, double retryInterval) :
             this(new TransientErrorCatchAllStrategy(), retryCount, retryInterval)
         {
         }
@@ -44,10 +44,10 @@
         /// Initializes a new instance of the <see cref="RetryAttribute"/> class with the specified number of retry attempts and backOff parameters for calculating the exponential delay between retries.
         /// </summary>
         /// <param name="retryCount">The number of retry attempts.</param>
-        /// <param name="minBackOff">The minimum backOff time.</param>
-        /// <param name="maxBackOff">The maximum backOff time.</param>
-        /// <param name="deltaBackOff">The time value that will be used to calculate a random delta in the exponential delay between retries.</param>
-        public RetryAttribute(int retryCount, TimeSpan minBackOff, TimeSpan maxBackOff, TimeSpan deltaBackOff) :
+        /// <param name="minBackOff">The minimum backOff time. In milliseconds.</param>
+        /// <param name="maxBackOff">The maximum backOff time. In milliseconds.</param>
+        /// <param name="deltaBackOff">The time value that will be used to calculate a random delta in the exponential delay between retries. In milliseconds.</param>
+        public RetryAttribute(int retryCount, double minBackOff, double maxBackOff, double deltaBackOff) :
             this(new TransientErrorCatchAllStrategy(), retryCount, minBackOff, maxBackOff, deltaBackOff)
         {
         }
@@ -56,10 +56,10 @@
         /// Initializes a new instance of the <see cref="RetryAttribute"/> class with the specified number of retry attempts and parameters defining the progressive delay between retries.
         /// </summary>
         /// <param name="retryCount">The number of retry attempts.</param>
-        /// <param name="initialInterval">The initial interval that will apply for the first retry.</param>
-        /// <param name="increment">The incremental time value that will be used to calculate the progressive delay between retries.</param>
-        public RetryAttribute(int retryCount, TimeSpan initialInterval, TimeSpan increment) :
-            this(new TransientErrorCatchAllStrategy(), retryCount, initialInterval, increment)
+        /// <param name="initialInterval">The initial interval that will apply for the first retry. In milliseconds.</param>
+        /// <param name="increment">The incremental time value that will be used to calculate the progressive delay between retries. In milliseconds.</param>
+        public RetryAttribute(int retryCount, double retryInterval, double increment) :
+            this(new TransientErrorCatchAllStrategy(), retryCount, retryInterval, increment)
         {
         }
 
@@ -78,9 +78,9 @@
         /// </summary>        
         /// <param name="errorDetectionStrategy">The <see cref="ITransientErrorDetectionStrategy" /> that is responsible for detecting transient conditions.</param>
         /// <param name="retryCount">The number of retry attempts.</param>
-        /// <param name="retryInterval">The interval between retries.</param>
-        public RetryAttribute(ITransientErrorDetectionStrategy errorDetectionStrategy, int retryCount, TimeSpan retryInterval) :
-            this(new RetryPolicy(errorDetectionStrategy, retryCount, retryInterval))
+        /// <param name="retryInterval">The interval between retries. In milliseconds.</param>
+        public RetryAttribute(ITransientErrorDetectionStrategy errorDetectionStrategy, int retryCount, double retryInterval) :
+            this(new RetryPolicy(errorDetectionStrategy, retryCount, TimeSpan.FromMilliseconds(retryInterval)))
         {
         }
 
@@ -89,11 +89,11 @@
         /// </summary>
         /// <param name="errorDetectionStrategy">The <see cref="ITransientErrorDetectionStrategy" /> that is responsible for detecting transient conditions.</param>
         /// <param name="retryCount">The number of retry attempts.</param>
-        /// <param name="minBackOff">The minimum backOff time.</param>
-        /// <param name="maxBackOff">The maximum backOff time.</param>
-        /// <param name="deltaBackOff">The time value that will be used to calculate a random delta in the exponential delay between retries.</param>
-        public RetryAttribute(ITransientErrorDetectionStrategy errorDetectionStrategy, int retryCount, TimeSpan minBackOff, TimeSpan maxBackOff, TimeSpan deltaBackOff) :
-            this(new RetryPolicy(errorDetectionStrategy, retryCount, minBackOff, maxBackOff, deltaBackOff))
+        /// <param name="minBackOff">The minimum backOff time. In milliseconds.</param>
+        /// <param name="maxBackOff">The maximum backOff time. In milliseconds.</param>
+        /// <param name="deltaBackOff">The time value that will be used to calculate a random delta in the exponential delay between retries. In milliseconds.</param>
+        public RetryAttribute(ITransientErrorDetectionStrategy errorDetectionStrategy, int retryCount, double minBackOff, double maxBackOff, double deltaBackOff) :
+            this(new RetryPolicy(errorDetectionStrategy, retryCount, TimeSpan.FromMilliseconds(minBackOff), TimeSpan.FromMilliseconds(maxBackOff), TimeSpan.FromMilliseconds(deltaBackOff)))
         {
         }
 
@@ -102,10 +102,10 @@
         /// </summary>
         /// <param name="errorDetectionStrategy">The <see cref="ITransientErrorDetectionStrategy" /> that is responsible for detecting transient conditions.</param>
         /// <param name="retryCount">The number of retry attempts.</param>
-        /// <param name="initialInterval">The initial interval that will apply for the first retry.</param>
-        /// <param name="increment">The incremental time value that will be used to calculate the progressive delay between retries.</param>
-        public RetryAttribute(ITransientErrorDetectionStrategy errorDetectionStrategy, int retryCount, TimeSpan initialInterval, TimeSpan increment) :
-            this(new RetryPolicy(errorDetectionStrategy, retryCount, initialInterval, increment))
+        /// <param name="initialInterval">The initial interval that will apply for the first retry. In milliseconds.</param>
+        /// <param name="increment">The incremental time value that will be used to calculate the progressive delay between retries. In milliseconds.</param>
+        public RetryAttribute(ITransientErrorDetectionStrategy errorDetectionStrategy, int retryCount, double initialInterval, double increment) :
+            this(new RetryPolicy(errorDetectionStrategy, retryCount, TimeSpan.FromMilliseconds(initialInterval), TimeSpan.FromMilliseconds(increment)))
         {
         }
 

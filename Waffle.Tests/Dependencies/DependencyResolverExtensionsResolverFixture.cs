@@ -1,31 +1,31 @@
 ﻿namespace Waffle.Tests.Dependencies
 {
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Dependencies;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class DependencyResolverExtensionsResolverFixture
     {
         readonly private Mock<IDependencyScope> resolver = new Mock<IDependencyScope>();
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingServiceWithoutResolverThenThrowsArgumentNullException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => DependencyResolverExtensions.GetService<IService>(null), "resolver");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingServicesWithoutResolverThenThrowsArgumentNullException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => DependencyResolverExtensions.GetServices<IService>(null), "resolver");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingServiceThenDelegatesToResolver()
         {
             // Arrange
@@ -38,12 +38,12 @@
             var result = DependencyResolverExtensions.GetService<IService>(this.resolver.Object);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreSame(service.Object, result);
+            Assert.NotNull(result);
+            Assert.Same(service.Object, result);
             this.resolver.Verify(r => r.GetService(typeof(IService)), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingServicesThenDelegatesToResolver()
         {
             // Arrange
@@ -57,11 +57,11 @@
             var result = DependencyResolverExtensions.GetServices<IService>(this.resolver.Object);
 
             // Assert
-            Assert.IsNotNull(result);
+            Assert.NotNull(result);
             var resultArray = result.ToArray();
-            Assert.AreEqual(2, resultArray.Length);
-            Assert.AreSame(service1.Object, resultArray[0]);
-            Assert.AreSame(service2.Object, resultArray[1]);
+            Assert.Equal(2, resultArray.Length);
+            Assert.Same(service1.Object, resultArray[0]);
+            Assert.Same(service2.Object, resultArray[1]);
             this.resolver.Verify(r => r.GetServices(typeof(IService)), Times.Once());
         }
 

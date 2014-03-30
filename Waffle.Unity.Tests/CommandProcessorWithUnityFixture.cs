@@ -1,18 +1,15 @@
 ﻿namespace Waffle.Unity.Tests
 {
+    using Microsoft.Practices.Unity;
+    using Moq;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
-    using Microsoft.Practices.Unity;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Moq;
     using Waffle;
     using Waffle.Commands;
-    using Waffle.Filters;
-    using System.Threading.Tasks;
+    using Xunit;
 
-    [TestClass]
     public sealed class CommandProcessorWithUnityFixture : IDisposable
     {
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
@@ -23,7 +20,7 @@
 
         private readonly Mock<ICommandHandlerTypeResolver> resolver = new Mock<ICommandHandlerTypeResolver>();
 
-        [TestMethod]
+        [Fact]
         public async void WhenProcessingValidCommandThenCommandIsProcessed()
         {
             // Arrange
@@ -41,11 +38,11 @@
             var result = await processor.ProcessAsync<string>(command);
 
             // Assert
-            Assert.AreEqual("OK", result.Value);
+            Assert.Equal("OK", result.Value);
             service.Verify(s => s.Execute(), Times.Once());
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenProcessingCommandWithoutResultThenCommandIsProcessed()
         {
             // Arrange
@@ -146,7 +143,6 @@
             }
         }
 
-        [TestCleanup]
         public void Dispose()
         {
             this.configuration.Dispose();

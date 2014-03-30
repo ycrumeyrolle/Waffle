@@ -346,10 +346,36 @@
         }
 
         /// <summary>
-        /// Gets the list of <see cref="ICommandHandlerInvoker"/> service.
+        /// Gets the <see cref="ICommandSender"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
-        /// <returns>The <see cref="ICommandHandlerInvoker"/> services.</returns>
+        /// <returns>The <see cref="ICommandHandlerInvoker"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerInvoker"/> service is not registered.</exception>
+        internal static ICommandSender GetCommandSender(this ServicesContainer services)
+        {
+            Contract.Requires(services != null);
+
+            return services.GetService<ICommandSender>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="ICommandReceiver"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ICommandReceiver"/> service.</returns>
+        /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerInvoker"/> service is not registered.</exception>
+        internal static ICommandReceiver GetCommandReceiver(this ServicesContainer services)
+        {
+            Contract.Requires(services != null);
+
+            return services.GetService<ICommandReceiver>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="ICommandHandlerInvoker"/> service.
+        /// </summary>
+        /// <param name="services">The <see cref="ServicesContainer"/>.</param>
+        /// <returns>The <see cref="ICommandHandlerInvoker"/> service.</returns>
         /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerInvoker"/> service is not registered.</exception>
         internal static ICommandHandlerInvoker GetCommandHandlerInvoker(this ServicesContainer services)
         {
@@ -359,7 +385,7 @@
         }
 
         /// <summary>
-        /// Gets the list of <see cref="IEventHandlerInvoker"/> service.
+        /// Gets the <see cref="IEventHandlerInvoker"/> service.
         /// </summary>
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
         /// <returns>The <see cref="IEventHandlerInvoker"/> services.</returns>
@@ -419,9 +445,12 @@
             return service;
         }
 
-        private static TService GetService<TService>(this ServicesContainer services)
+        public static TService GetService<TService>(this ServicesContainer services)
         {
-            Contract.Requires(services != null);
+            if (services == null)
+            {
+                throw Error.ArgumentNull("services");
+            }
 
             return (TService)services.GetService(typeof(TService));
         }

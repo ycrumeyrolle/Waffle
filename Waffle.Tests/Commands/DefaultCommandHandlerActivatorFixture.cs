@@ -1,7 +1,7 @@
 ﻿namespace Waffle.Tests.Commands
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle;
     using Waffle.Commands;
@@ -9,7 +9,7 @@
     using Waffle.Tests.Helpers;
     using Waffle.Filters;
 
-    [TestClass]
+    
     public sealed class DefaultCommandHandlerActivatorFixture : IDisposable
     {
         private readonly ProcessorConfiguration config;
@@ -29,7 +29,7 @@
             this.config.DependencyResolver = this.dependencyResolver.Object;
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerWithoutParametersThenThrowsArgumentNullException()
         {
             // Assign
@@ -44,7 +44,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => activator.Create(request, null), "descriptor");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerFromDependencyResolverThenReturnsHandler()
         {
             // Assign
@@ -57,13 +57,13 @@
             ICommandHandler commandHandler = activator.Create(request, descriptor);
 
             // Assert
-            Assert.IsNotNull(commandHandler);
-            Assert.IsInstanceOfType(commandHandler, typeof(SimpleCommandHandler));
-            Assert.AreEqual(0, descriptor.Properties.Count);
+            Assert.NotNull(commandHandler);
+            Assert.IsType(typeof(SimpleCommandHandler), commandHandler);
+            Assert.Equal(0, descriptor.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleCommandHandler)), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerFromActivatorThenReturnsHandler()
         {
             // Assign
@@ -76,13 +76,13 @@
             ICommandHandler commandHandler = activator.Create(request, descriptor);
 
             // Assert
-            Assert.IsNotNull(commandHandler);
-            Assert.IsInstanceOfType(commandHandler, typeof(SimpleCommandHandler));
-            Assert.AreEqual(0, descriptor.Properties.Count);
+            Assert.NotNull(commandHandler);
+            Assert.IsType(typeof(SimpleCommandHandler), commandHandler);
+            Assert.Equal(0, descriptor.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleCommandHandler)), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerFromSameTypeTwiceThenFastCacheIsUsed()
         {
             // Assign
@@ -96,13 +96,13 @@
             ICommandHandler commandHandler = activator.Create(request, descriptor);
 
             // Assert
-            Assert.IsNotNull(commandHandler);
-            Assert.IsInstanceOfType(commandHandler, typeof(SimpleCommandHandler));
-            Assert.AreEqual(0, descriptor.Properties.Count);
+            Assert.NotNull(commandHandler);
+            Assert.IsType(typeof(SimpleCommandHandler), commandHandler);
+            Assert.Equal(0, descriptor.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleCommandHandler)), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerFromTwoDescriptorsThenFastCacheIsNotUsed()
         {
             // Assign
@@ -118,13 +118,13 @@
             ICommandHandler commandHandler = activator.Create(request2, descriptor2);
 
             // Assert
-            Assert.IsNotNull(commandHandler);
-            Assert.IsInstanceOfType(commandHandler, typeof(SimpleCommandHandler));
-            Assert.AreEqual(1, descriptor2.Properties.Count);
+            Assert.NotNull(commandHandler);
+            Assert.IsType(typeof(SimpleCommandHandler), commandHandler);
+            Assert.Equal(1, descriptor2.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleCommandHandler)), Times.Exactly(2));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerFromTwoDescriptorsThenGetActivatorFromProperties()
         {
             // Assign
@@ -141,13 +141,13 @@
             ICommandHandler commandHandler = activator.Create(request2, descriptor2);
 
             // Assert
-            Assert.IsNotNull(commandHandler);
-            Assert.IsInstanceOfType(commandHandler, typeof(SimpleCommandHandler));
-            Assert.AreEqual(1, descriptor2.Properties.Count);
+            Assert.NotNull(commandHandler);
+            Assert.IsType(typeof(SimpleCommandHandler), commandHandler);
+            Assert.Equal(1, descriptor2.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleCommandHandler)), Times.Exactly(2));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerFromTwoDescriptorsAndDependencyResolverThenGetActivatorDepencyResolver()
         {
             // Assign
@@ -171,13 +171,13 @@
             ICommandHandler commandHandler = activator.Create(request, descriptor2);
 
             // Assert
-            Assert.IsNotNull(commandHandler);
-            Assert.IsInstanceOfType(commandHandler, typeof(SimpleCommandHandler));
-            Assert.AreEqual(0, descriptor2.Properties.Count);
+            Assert.NotNull(commandHandler);
+            Assert.IsType(typeof(SimpleCommandHandler), commandHandler);
+            Assert.Equal(0, descriptor2.Properties.Count);
             this.dependencyResolver.Verify(resolver => resolver.GetService(typeof(SimpleCommandHandler)), Times.Exactly(2));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerThrowExceptionThenRethowsInvalidOperationException()
         {
             // Arrange
@@ -201,11 +201,11 @@
             }
 
             // Assert
-            Assert.IsTrue(exceptionRaised);
+            Assert.True(exceptionRaised);
         }
 
 
-        [TestMethod]
+        [Fact]
         public void CreateSingletonHandler_InstancianteOnce()
         {
             // Arrange
@@ -224,16 +224,16 @@
             var handler4 = activator.Create(request1, descriptor2);
 
             // Assert
-            Assert.IsNotNull(handler1);
-            Assert.IsNotNull(handler2);
-            Assert.IsNotNull(handler3);
-            Assert.IsNotNull(handler4);
-            Assert.AreSame(handler1, handler2);
-            Assert.AreSame(handler1, handler3);
-            Assert.AreSame(handler1, handler4);
+            Assert.NotNull(handler1);
+            Assert.NotNull(handler2);
+            Assert.NotNull(handler3);
+            Assert.NotNull(handler4);
+            Assert.Same(handler1, handler2);
+            Assert.Same(handler1, handler3);
+            Assert.Same(handler1, handler4);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreatePerRequestHandler_InstancianteOncePerRequest()
         {
             // Arrange
@@ -252,16 +252,16 @@
             var handler4 = activator.Create(request1, descriptor2);
 
             // Assert
-            Assert.IsNotNull(handler1);
-            Assert.IsNotNull(handler2);
-            Assert.IsNotNull(handler3);
-            Assert.IsNotNull(handler4);
-            Assert.AreSame(handler1, handler2);
-            Assert.AreNotSame(handler1, handler3);
-            Assert.AreSame(handler1, handler4);
+            Assert.NotNull(handler1);
+            Assert.NotNull(handler2);
+            Assert.NotNull(handler3);
+            Assert.NotNull(handler4);
+            Assert.Same(handler1, handler2);
+            Assert.NotSame(handler1, handler3);
+            Assert.Same(handler1, handler4);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateTranscientHandler_InstancianteEachTime()
         {
             // Arrange
@@ -280,19 +280,18 @@
             var handler4 = activator.Create(request1, descriptor2);
 
             // Assert
-            Assert.IsNotNull(handler1);
-            Assert.IsNotNull(handler2);
-            Assert.IsNotNull(handler3);
-            Assert.IsNotNull(handler4);
-            Assert.AreNotSame(handler1, handler2);
-            Assert.AreNotSame(handler1, handler3);
-            Assert.AreNotSame(handler1, handler4);
-            Assert.AreNotSame(handler2, handler3);
-            Assert.AreNotSame(handler2, handler4);
-            Assert.AreNotSame(handler3, handler4);
+            Assert.NotNull(handler1);
+            Assert.NotNull(handler2);
+            Assert.NotNull(handler3);
+            Assert.NotNull(handler4);
+            Assert.NotSame(handler1, handler2);
+            Assert.NotSame(handler1, handler3);
+            Assert.NotSame(handler1, handler4);
+            Assert.NotSame(handler2, handler3);
+            Assert.NotSame(handler2, handler4);
+            Assert.NotSame(handler3, handler4);
         }
 
-        [TestCleanup]
         public void Dispose()
         {
             this.config.Dispose();

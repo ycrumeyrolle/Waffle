@@ -2,7 +2,7 @@
 {
     using System;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Commands;
     using Waffle.Filters;
@@ -10,12 +10,12 @@
     using Waffle.Tests.Commands;
     using System.Threading.Tasks;
 
-    [TestClass]
+    
     public sealed class HandlerDescriptorFixture : IDisposable
     {
         private readonly ProcessorConfiguration config = new ProcessorConfiguration();
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingFiltersThenReturnsValues()
         {
             // Arrange
@@ -25,13 +25,13 @@
             var filters = descriptor.GetFilters();
 
             // Assert
-            Assert.IsNotNull(filters);
-            Assert.AreEqual(4, filters.Count());
-            Assert.AreEqual(1, filters.OfType<IExceptionFilter>().Count());
-            Assert.AreEqual(3, filters.OfType<ICommandHandlerFilter>().Count());
+            Assert.NotNull(filters);
+            Assert.Equal(4, filters.Count());
+            Assert.Equal(1, filters.OfType<IExceptionFilter>().Count());
+            Assert.Equal(3, filters.OfType<ICommandHandlerFilter>().Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingFilterPipelineThenReturnsDistinctValues()
         {
             // Arrange
@@ -41,13 +41,13 @@
             var filters = descriptor.GetFilterPipeline();
 
             // Assert
-            Assert.IsNotNull(filters);
-            Assert.AreEqual(2, filters.Count());
-            Assert.AreEqual(1, filters.Select(f => f.Instance).OfType<IExceptionFilter>().Count());
-            Assert.AreEqual(1, filters.Select(f => f.Instance).OfType<ICommandHandlerFilter>().Count());
+            Assert.NotNull(filters);
+            Assert.Equal(2, filters.Count());
+            Assert.Equal(1, filters.Select(f => f.Instance).OfType<IExceptionFilter>().Count());
+            Assert.Equal(1, filters.Select(f => f.Instance).OfType<ICommandHandlerFilter>().Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerThenDelegateToActivator()
         {
             // Arrange
@@ -64,12 +64,12 @@
             var handler = descriptor.CreateHandler(request);
 
             // Assert
-            Assert.IsNotNull(handler);
-            Assert.AreSame(expectedHandler.Object, handler);
+            Assert.NotNull(handler);
+            Assert.Same(expectedHandler.Object, handler);
             activator.Verify(a => a.Create(It.IsAny<CommandHandlerRequest>(), It.IsAny<CommandHandlerDescriptor>()), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void Ctor_HandlerLifetime()
         {
             // Arrange
@@ -83,10 +83,10 @@
             CommandHandlerDescriptor singletonDescriptor = new CommandHandlerDescriptor(this.config, typeof(SimpleCommand), typeof(SingletonCommandHandler));
 
             // Assert
-            Assert.AreEqual(this.config.DefaultHandlerLifetime, defaultDescriptor.Lifetime);
-            Assert.AreEqual(HandlerLifetime.Transient, transcientDescriptor.Lifetime);
-            Assert.AreEqual(HandlerLifetime.PerRequest, perRequestDescriptor.Lifetime);
-            Assert.AreEqual(HandlerLifetime.Singleton, singletonDescriptor.Lifetime);
+            Assert.Equal(this.config.DefaultHandlerLifetime, defaultDescriptor.Lifetime);
+            Assert.Equal(HandlerLifetime.Transient, transcientDescriptor.Lifetime);
+            Assert.Equal(HandlerLifetime.PerRequest, perRequestDescriptor.Lifetime);
+            Assert.Equal(HandlerLifetime.Singleton, singletonDescriptor.Lifetime);
         }
 
         [SimpleExceptionFilter("filter1")]

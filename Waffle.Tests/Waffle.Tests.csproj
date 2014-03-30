@@ -50,7 +50,6 @@
     <Reference Include="Microsoft.Practices.Unity">
       <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
@@ -59,9 +58,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Transactions" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.extensions">
+      <HintPath>..\packages\xunit.extensions.1.9.2\lib\net20\xunit.extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Caching\CacheAttributeFixture.cs" />
     <Compile Include="HandlerContextExtensions.cs" />
     <Compile Include="MessageProcessorFixture.cs" />
     <Compile Include="Dependencies\DependencyResolverExtensionsResolverFixture.cs" />
@@ -84,6 +88,7 @@
     <Compile Include="Filters\HandlerExecutedContextFixture.cs" />
     <Compile Include="Queries\QueryServiceExtensionsFixture.cs" />
     <Compile Include="Queries\DefaultQueryServiceFixture.cs" />
+    <Compile Include="Queueing\InMemoryCommandQueueFixture.cs" />
     <Compile Include="Services\ServicesExtensionsFixture.cs" />
     <Compile Include="Services\HandlerServicesFixture.cs" />
     <Compile Include="Services\ServicesContainerFixture.cs" />

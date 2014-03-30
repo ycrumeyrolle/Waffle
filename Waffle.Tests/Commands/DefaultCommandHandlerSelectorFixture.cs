@@ -2,26 +2,26 @@
 {
     using System;
     using System.Collections.Generic;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Waffle;
     using Waffle.Commands;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
     using System.Threading.Tasks;
 
-    [TestClass]
+    
     public sealed class DefaultCommandHandlerSelectorFixture : IDisposable
     {
         private readonly ProcessorConfiguration config = new ProcessorConfiguration();
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingDefaultHandlerSelectorWithourConfigurationThenThrowsArgumentNullException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => new DefaultCommandHandlerSelector(null), "configuration");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenSelectingUnknownHandlerThenThrowsInvalidOperationException()
         {
             // Assign
@@ -33,7 +33,7 @@
             ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenSelectingDuplicateHandlerThenThrowsInvalidOperationException()
         {
             // Assign
@@ -45,7 +45,7 @@
             ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenSelectingHandlerThenReturnHandlerDesciptor()
         {
             // Assign
@@ -57,12 +57,12 @@
             var descriptor = resolver.SelectHandler(request);
             
             // Assert
-            Assert.IsNotNull(descriptor);
-            Assert.AreEqual(typeof(SimpleHandler1), descriptor.HandlerType);
-            Assert.AreEqual(typeof(SimpleCommand), descriptor.MessageType);
+            Assert.NotNull(descriptor);
+            Assert.Equal(typeof(SimpleHandler1), descriptor.HandlerType);
+            Assert.Equal(typeof(SimpleCommand), descriptor.MessageType);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenSelectingBadHandlerThenThrowsInvalidOperationException()
         {
             // Assign
@@ -73,7 +73,7 @@
             ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenSelectingHandlerWithNullParamterThenThrowsArgumentNullException()
         {
             // Assign
@@ -84,7 +84,7 @@
    
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenGettingHandlerMappingThenReturnsMapping()
         {
             // Assign
@@ -95,13 +95,13 @@
             var mapping = resolver.GetHandlerMapping();
             
             // Assert
-            Assert.IsNotNull(mapping);
-            Assert.AreEqual(2, mapping.Count);
-            Assert.IsTrue(mapping.ContainsKey(typeof(SimpleCommand)));
-            Assert.IsTrue(mapping.ContainsKey(typeof(SimpleCommand2)));
+            Assert.NotNull(mapping);
+            Assert.Equal(2, mapping.Count);
+            Assert.True(mapping.ContainsKey(typeof(SimpleCommand)));
+            Assert.True(mapping.ContainsKey(typeof(SimpleCommand2)));
 
-            Assert.AreEqual(mapping[typeof(SimpleCommand)].HandlerType, typeof(SimpleHandler1));
-            Assert.AreEqual(mapping[typeof(SimpleCommand2)].HandlerType, typeof(SimpleHandler3));
+            Assert.Equal(mapping[typeof(SimpleCommand)].HandlerType, typeof(SimpleHandler1));
+            Assert.Equal(mapping[typeof(SimpleCommand2)].HandlerType, typeof(SimpleHandler3));
         }
 
         private DefaultCommandHandlerSelector CreateTestableService()

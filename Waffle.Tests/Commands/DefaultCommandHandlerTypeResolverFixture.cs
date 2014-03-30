@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle;
     using Waffle.Commands;
@@ -12,19 +12,19 @@
     using Waffle.Tests.Helpers;
     using System.Threading.Tasks;
 
-    [TestClass]
+    
     public class DefaultCommandHandlerTypeResolverFixture
     {
         private readonly Mock<IAssembliesResolver> assembliesResolver = new Mock<IAssembliesResolver>(MockBehavior.Strict);
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerTypesWithoutPredicateThenThrowsArgumentNullException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => new DefaultCommandHandlerTypeResolver(null), "predicate");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingHandlerTypesThenReturnsCollection()
         {
             // Assign
@@ -35,12 +35,12 @@
             var result = resolver.GetCommandHandlerTypes(this.assembliesResolver.Object);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(typeof(SimpleCommandHandler), result.First());
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Count);
+            Assert.Equal(typeof(SimpleCommandHandler), result.First());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingHandlerTypesWithoutParametersThenThrowsArgumentNullException()
         {
             // Assign
@@ -50,7 +50,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => resolver.GetCommandHandlerTypes(null), "assembliesResolver");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingHandlerTypesFromDynamicAssemblyThenReturnsEmptyCollection()
         {
             // Assign
@@ -61,11 +61,11 @@
             var result = resolver.GetCommandHandlerTypes(this.assembliesResolver.Object);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count);
+            Assert.NotNull(result);
+            Assert.Equal(0, result.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingHandlerTypesFromNullAssemblyThenReturnsEmptyCollection()
         {
             // Assign
@@ -76,11 +76,11 @@
             var result = resolver.GetCommandHandlerTypes(this.assembliesResolver.Object);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count);
+            Assert.NotNull(result);
+            Assert.Equal(0, result.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingHandlerTypesThrowReflectionTypeLoadExceptionThenReturnsCollection()
         {
             // Assign
@@ -91,12 +91,12 @@
             var result = resolver.GetCommandHandlerTypes(this.assembliesResolver.Object);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(typeof(SimpleCommandHandler), result.First());
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Count);
+            Assert.Equal(typeof(SimpleCommandHandler), result.First());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingHandlerTypesThrowReflectionTypeLoadExceptionThenReturnsEmptyCollection()
         {
             // Assign
@@ -107,8 +107,8 @@
             var result = resolver.GetCommandHandlerTypes(this.assembliesResolver.Object);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count);
+            Assert.NotNull(result);
+            Assert.Equal(0, result.Count);
         }
 
         private static ICollection<Type> CreateTypeCollection()

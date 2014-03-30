@@ -3,15 +3,15 @@
     using System;
     using System.Runtime.ExceptionServices;
     using System.Threading;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class ExceptionFiltreAttributeFixture
     {
-        [TestMethod]
+        [Fact]
         public void WhenExecuteExceptionFilterAsyncThenReturnsCompletedTask()
         {
             // Arrange
@@ -27,12 +27,12 @@
             var task = filter.ExecuteExceptionFilterAsync(handlerExecutedContext, cancellationToken);
 
             // Assert
-            Assert.IsNotNull(task);
-            Assert.IsTrue(task.IsCompleted);
+            Assert.NotNull(task);
+            Assert.True(task.IsCompleted);
             spy.Verify(s => s.Spy("OnException"), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecuteExceptionFilterAsyncWithoutContextThenThrowsArgumentNullException()
         {
             // Arrange

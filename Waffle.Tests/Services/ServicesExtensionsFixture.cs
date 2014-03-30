@@ -1,16 +1,16 @@
 ﻿namespace Waffle.Tests.Services
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Waffle;
     using Waffle.Commands;
     using Waffle.Services;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class ServicesExtensionsFixture
     {
-        [TestMethod]
+        [Fact]
         public void WhenGettingOrThrowUnknowServiceThenThrowsInvalidOperationException()
         {
             ProcessorConfiguration config = new ProcessorConfiguration();

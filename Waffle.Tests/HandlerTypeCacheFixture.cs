@@ -4,14 +4,14 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle;
     using Waffle.Commands;
     using Waffle.Tests.Commands;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public sealed class HandlerTypeCacheFixture : IDisposable
     {
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
@@ -25,14 +25,14 @@
             this.disposableResources.Add(this.defaultConfig);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerTypeCacheWithoutConfigThenThrowArgumentNullException()
         {
             // Act & Assert
             ExceptionAssert.ThrowsArgumentNull(() => new CommandHandlerTypeCache(null), "configuration");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingHandlerTypeCacheThenCacheIsReady()
         {
             // Arrange
@@ -44,13 +44,13 @@
             CommandHandlerTypeCache cache = new CommandHandlerTypeCache(this.defaultConfig);
             
             // Assert
-            Assert.IsNotNull(cache.Cache);
-            Assert.AreEqual(typeof(SimpleCommand), cache.Cache.First().Key);
-            Assert.AreEqual(1, cache.Cache.First().Value[typeof(SimpleCommandHandler)].Count());
-            Assert.AreEqual(typeof(SimpleCommandHandler), cache.Cache.First().Value[typeof(SimpleCommandHandler)].First());
+            Assert.NotNull(cache.Cache);
+            Assert.Equal(typeof(SimpleCommand), cache.Cache.First().Key);
+            Assert.Equal(1, cache.Cache.First().Value[typeof(SimpleCommandHandler)].Count());
+            Assert.Equal(typeof(SimpleCommandHandler), cache.Cache.First().Value[typeof(SimpleCommandHandler)].First());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingHandlerTypeFromCacheThenReturnTypes()
         {
             // Arrange
@@ -63,11 +63,11 @@
             var result = cache.GetHandlerTypes(typeof(SimpleCommand));
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Count);
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingUnknowHandlerTypeFromCacheThenReturnEmptyCollection()
         {
             // Arrange
@@ -80,11 +80,11 @@
             var result = cache.GetHandlerTypes(typeof(ICommand));
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count);
+            Assert.NotNull(result);
+            Assert.Equal(0, result.Count);
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenGttingNullHandlerTypeFromCacheThenThrowsArgumentNullException()
         {
             // Arrange
@@ -119,7 +119,6 @@
             }
         }
         
-        [TestCleanup]
         public void Dispose()
         {
             this.defaultConfig.Dispose();

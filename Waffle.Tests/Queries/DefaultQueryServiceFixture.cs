@@ -1,17 +1,17 @@
 ﻿namespace Waffle.Tests.Queries
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Queries;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class DefaultQueryServiceFixture
     {
         private readonly Mock<IQueryContext> queryContext = new Mock<IQueryContext>(MockBehavior.Strict);
 
-        [TestMethod]
+        [Fact]
         public void WhenRegisteringNullTypeThenThrowsArgumentNullException()
         {
             // Arrange
@@ -21,7 +21,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => queryService.RegisterContextFactory(null, () => this.queryContext.Object), "contextType");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenRegisteringNullContextFactoryThenThrowsArgumentNullException()
         {
             // Arrange
@@ -31,7 +31,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => queryService.RegisterContextFactory<IQueryContext>(typeof(object), null), "queryContextFactory");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenRegisteringContextFactoryThenFactoryIsRegistered()
         {
             // Arrange
@@ -41,7 +41,7 @@
             queryService.RegisterContextFactory(this.queryContext.Object.GetType(), () => this.queryContext.Object);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingWitrhNullTypeThenThrowArgumentNullException()
         {
             // Arrange
@@ -51,7 +51,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => queryService.CreateContext(null), "contextType");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingUnknowContextThenThrowInvalidOperationException()
         {
             // Arrange
@@ -61,7 +61,7 @@
             ExceptionAssert.Throws<InvalidOperationException>(() => queryService.CreateContext(this.queryContext.Object.GetType()));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingContextReturnNullThenThrowInvalidOperationException()
         {
             // Arrange
@@ -72,7 +72,7 @@
             ExceptionAssert.Throws<InvalidOperationException>(() => queryService.CreateContext(this.queryContext.Object.GetType()));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingContextThenReturnsContext()
         {
             // Arrange
@@ -82,8 +82,8 @@
             // Act 
             IQueryContext result = queryService.CreateContext(this.queryContext.Object.GetType());
 
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, this.queryContext.Object.GetType());
+            Assert.NotNull(result);
+            Assert.IsType(this.queryContext.Object.GetType(), result);
         }
 
         private static DefaultQueryService CreateService()

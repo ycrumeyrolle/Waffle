@@ -1,19 +1,18 @@
 ﻿namespace Waffle.Events.MongoDb.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Threading;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization;
     using MongoDB.Driver;
     using Moq;
-
-    [TestClass]
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Threading;
+    using Xunit;
+        
     public class MongoEventStoreFixture
     {
-        [TestMethod]
+        [Fact]
         public void LoadAsync_ReturnsResults()
         {
             StubStore eventStore = new StubStore("mongodb://localhost:27017", "eventsTest");
@@ -27,11 +26,11 @@
 
             var task1 = eventStore.LoadAsync(Guid.Empty, default(CancellationToken));
             var result1 = task1.Result;
-            Assert.IsNotNull(result1);
-            Assert.AreEqual(2, result1.Count);
+            Assert.NotNull(result1);
+            Assert.Equal(2, result1.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public async void StoreAsync_InsertIntoCollection()
         {
             StubStore eventStore = new StubStore("mongodb://localhost:27017", "eventsTest");

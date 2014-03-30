@@ -4,13 +4,13 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using Waffle;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public sealed class HandlerRequestFixture : IDisposable
     {
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
@@ -22,7 +22,7 @@
             this.disposableResources.Add(this.defaultConfig);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingInstanceWithNullParametersThenThrowsArgumentNullException()
         {
             // Arrange
@@ -34,7 +34,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => new CommandHandlerRequest(null, null), "configuration");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingInstanceThenPropertiesAreDefined()
         {
             // Arrange
@@ -44,14 +44,14 @@
             CommandHandlerRequest request = new CommandHandlerRequest(this.defaultConfig, command.Object);
 
             // Assert
-            Assert.IsNull(request.ParentRequest);
-            Assert.AreSame(this.defaultConfig, request.Configuration);
-            Assert.AreSame(command.Object, request.Command);
-            Assert.AreEqual(command.Object.GetType(), request.MessageType);
-            Assert.AreNotEqual(Guid.Empty, request.Id);
+            Assert.Null(request.ParentRequest);
+            Assert.Same(this.defaultConfig, request.Configuration);
+            Assert.Same(command.Object, request.Command);
+            Assert.Equal(command.Object.GetType(), request.MessageType);
+            Assert.NotEqual(Guid.Empty, request.Id);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingDependencyScopeThenDelegatesToDependencyResolver()
         {
             // Arrange
@@ -73,12 +73,12 @@
             var scope2 = request.GetDependencyScope();
 
             // Assert
-            Assert.IsNotNull(scope1);
-            Assert.AreSame(scope1, scope2);
+            Assert.NotNull(scope1);
+            Assert.Same(scope1, scope2);
             resolver.Verify(r => r.BeginScope(), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingDependencyScopeFromDeepestRequestThenDelegatesToDeepestDependencyResolver()
         {
             // Arrange
@@ -101,17 +101,17 @@
             var scope4 = innerRequest.GetDependencyScope(false);
 
             // Assert
-            Assert.IsNotNull(scope1);
-            Assert.IsNotNull(scope2);
-            Assert.IsNotNull(scope3);
-            Assert.IsNotNull(scope4);
-            Assert.AreSame(scope1, scope2);
-            Assert.AreSame(scope1, scope3);
-            Assert.AreNotSame(scope1, scope4);
+            Assert.NotNull(scope1);
+            Assert.NotNull(scope2);
+            Assert.NotNull(scope3);
+            Assert.NotNull(scope4);
+            Assert.Same(scope1, scope2);
+            Assert.Same(scope1, scope3);
+            Assert.NotSame(scope1, scope4);
             resolver.Verify(r => r.BeginScope(), Times.Exactly(2));
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenDisposingThenScopeIsDisposed()
         {
             // Arrange
@@ -136,7 +136,7 @@
             scope.Verify(s => s.Dispose(), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenDisposingScopeFromDifferentsDeepsThenScopesAreDisposed()
         {
             // Arrange
@@ -157,14 +157,14 @@
             innerRequest.GetDependencyScope();
 
             // Act & Assert
-            Assert.AreEqual(0, disposedCount);
+            Assert.Equal(0, disposedCount);
             innerRequest.Dispose();
-            Assert.AreEqual(0, disposedCount);
+            Assert.Equal(0, disposedCount);
             request.Dispose();
-            Assert.AreEqual(1, disposedCount);
+            Assert.Equal(1, disposedCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenDisposingScopeFromDeepestRequestThenScopesAreDisposed()
         {
             // Arrange
@@ -185,14 +185,13 @@
             innerRequest.GetDependencyScope(false);
 
             // Act & Assert
-            Assert.AreEqual(0, disposedCount);
+            Assert.Equal(0, disposedCount);
             innerRequest.Dispose();
-            Assert.AreEqual(1, disposedCount);
+            Assert.Equal(1, disposedCount);
             request.Dispose();
-            Assert.AreEqual(2, disposedCount);
+            Assert.Equal(2, disposedCount);
         }
 
-        [TestCleanup]
         public void Dispose()
         {
             this.defaultConfig.Dispose();

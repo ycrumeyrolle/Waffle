@@ -1,11 +1,11 @@
 ﻿namespace Waffle.Tests.Interception
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Interception;
 
-    [TestClass]
+    
     public class ProxyBuilderFixture
     {
         private readonly Mock<IInterceptionProvider> interceptor;
@@ -15,7 +15,7 @@
             this.interceptor = new Mock<IInterceptionProvider>(MockBehavior.Loose);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenBuildingProxyThenReturnsProxyOfSameType()
         {
             // Assign
@@ -26,11 +26,11 @@
             var proxy = builder.Build(service, this.interceptor.Object);
 
             // Assert
-            Assert.IsNotNull(proxy);
-            Assert.IsInstanceOfType(proxy, typeof(SimpleService));
+            Assert.NotNull(proxy);
+            Assert.IsAssignableFrom(typeof(SimpleService), proxy);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenBuildingProxyMultipleTimesThenUseCache()
         {
             // Assign
@@ -43,11 +43,11 @@
 
             // Assert
             // TODO : How to validate the cache hit? Using a external object?
-            Assert.IsNotNull(proxy);
-            Assert.IsInstanceOfType(proxy, typeof(SimpleService));
+            Assert.NotNull(proxy);
+            Assert.IsAssignableFrom(typeof(SimpleService), proxy);
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenCallingParameterlessServiceThenInterceptorIsCalled()
         {
             // Assign
@@ -68,7 +68,7 @@
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCallingNonVirtualServiceThenInterceptorIsNotCalled()
         {
             // Assign
@@ -89,7 +89,7 @@
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenCallingWithValueTypeParameterThenInterceptorIsCalled()
         {
             // Assign
@@ -110,10 +110,10 @@
             this.interceptor.Verify(i => i.OnExecuted(), Times.Once());
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
 
-            Assert.AreEqual(value, proxy.ValueTypeValue);
+            Assert.Equal(value, proxy.ValueTypeValue);
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenCallingWithReferenceTypeParameterThenInterceptorIsCalled()
         {
             // Assign
@@ -135,7 +135,7 @@
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenCallingWithStringParameterThenInterceptorIsCalled()
         {
             // Assign
@@ -157,7 +157,7 @@
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenCallingWithEnumParameterThenInterceptorIsCalled()
         {
             // Assign
@@ -179,7 +179,7 @@
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCallingServiceReturningValueTypeThenInterceptorIsCalled()
         {
             // Assign
@@ -199,10 +199,10 @@
             this.interceptor.Verify(i => i.OnExecuted(), Times.Once());
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
 
-            Assert.AreEqual(service.ValueTypeValue, value1);
+            Assert.Equal(service.ValueTypeValue, value1);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCallingServiceReturningReferenceTypeThenInterceptorIsCalled()
         {
             // Assign
@@ -222,10 +222,10 @@
             this.interceptor.Verify(i => i.OnExecuted(), Times.Once());
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
 
-            Assert.AreEqual(service.ReferenceValue, value2);
+            Assert.Equal(service.ReferenceValue, value2);
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenCallingServiceReturningStringTypeThenInterceptorIsCalled()
         {
             // Assign
@@ -245,10 +245,10 @@
             this.interceptor.Verify(i => i.OnExecuted(), Times.Once());
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
 
-            Assert.AreEqual(service.StringValue, value3);
+            Assert.Equal(service.StringValue, value3);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCallingServiceReturningEnumTypeThenInterceptorIsCalled()
         {
             // Assign
@@ -268,10 +268,10 @@
             this.interceptor.Verify(i => i.OnExecuted(), Times.Once());
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
 
-            Assert.AreEqual(service.EnumValue, value4);
+            Assert.Equal(service.EnumValue, value4);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCallingServiceThrowingExceptionThenInterceptorIsCalled()
         {
             // Assign
@@ -298,10 +298,10 @@
             this.interceptor.Verify(i => i.OnExecuting(), Times.Once());
             this.interceptor.Verify(i => i.OnExecuted(), Times.Never());
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Once());
-            Assert.IsTrue(exceptionRaised);
+            Assert.True(exceptionRaised);
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenBuildingWithoutServiceThenThrowsArgumentNullException()
         {
             // Assign
@@ -326,10 +326,10 @@
             this.interceptor.Verify(i => i.OnExecuting(), Times.Never());
             this.interceptor.Verify(i => i.OnExecuted(), Times.Never());
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
-            Assert.IsTrue(exceptionRaised);
+            Assert.True(exceptionRaised);
         }
         
-        [TestMethod]
+        [Fact]
         public void WhenBuildingWithoutParameterlessCtorServiceThenThrowsNotSupportedException()
         {
             // Assign
@@ -355,7 +355,7 @@
             this.interceptor.Verify(i => i.OnExecuting(), Times.Never());
             this.interceptor.Verify(i => i.OnExecuted(), Times.Never());
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
-            Assert.IsTrue(exceptionRaised);
+            Assert.True(exceptionRaised);
         }
 
         private DefaultProxyBuilder CreateTestableBuilder()

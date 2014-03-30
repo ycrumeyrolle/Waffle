@@ -8,10 +8,10 @@ namespace Waffle.Tests.Metadata
 {
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Waffle.Metadata;
 
-    [TestClass]
+    
     public class DataAnnotationsModelMetadataProviderFixture
     {
         class ReadOnlyModel
@@ -49,7 +49,7 @@ namespace Waffle.Tests.Metadata
             public ReadOnlyModel Test { get; set; }
         }
         
-        [TestMethod]
+        [Fact]
         public void ReadOnlyTests()
         {
             // Arrange
@@ -59,7 +59,7 @@ namespace Waffle.Tests.Metadata
             var model = new DisplayModel();
             var result = test.Flatten(model, model.GetType(), provider, string.Empty);
 
-            Assert.IsNotNull(result);
+            Assert.NotNull(result);
         }
     }
 }

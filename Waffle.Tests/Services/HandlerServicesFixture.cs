@@ -3,7 +3,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle;
     using Waffle.Commands;
@@ -12,17 +12,17 @@
     using Waffle.Services;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class HandlerServicesFixture
     {
 
-        [TestMethod]
+        [Fact]
         public void Ctor_Guard()
         {
             ExceptionAssert.ThrowsArgumentNull(() => new HandlerServices(null), "parent");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingServiceWithoutOverrideThenReturnsSameAsOriginal()
         {
             ProcessorConfiguration config = new ProcessorConfiguration();
@@ -34,10 +34,10 @@
 
             // Assert
             // Local handler didn't override, should get same value as global case.
-            Assert.AreSame(localVal, globalVal);
+            Assert.Same(localVal, globalVal);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingServicesWithoutOverrideThenReturnsSameAsOriginals()
         {
             ProcessorConfiguration config = new ProcessorConfiguration();
@@ -49,10 +49,10 @@
 
             // Assert
             // Local handler didn't override, should get same value as global case.
-            CollectionAssert.AreEqual(localVal.ToArray(), globalVal.ToArray());
+            Assert.Equal(localVal.ToArray(), globalVal.ToArray());
         }
 
-       [TestMethod]
+       [Fact]
         public void WhenGettingServiceWithOverrideThenReturnsOverride()
        {
            ProcessorConfiguration config = new ProcessorConfiguration();
@@ -67,11 +67,11 @@
 
            // Assert
            // Local handler didn't override, should get same value as global case.
-           Assert.AreSame(localVal, newLocalService);
-           Assert.AreNotSame(localVal, globalVal);
+           Assert.Same(localVal, newLocalService);
+           Assert.NotSame(localVal, globalVal);
        }
 
-       [TestMethod]
+       [Fact]
        public void WhenGettingServiceWithDependencyInjectionThenReturnsFromDependencyInjection()
        {
            // Setting on Handler config overrides the DI container. 
@@ -93,11 +93,11 @@
 
            // Assert
            // Local handler didn't override, should get same value as global case.            
-           Assert.AreSame(newDiService, globalVal); // asking the config will give back the DI service
-           Assert.AreSame(newLocalService, localVal); // but asking locally will get back the local service.
+           Assert.Same(newDiService, globalVal); // asking the config will give back the DI service
+           Assert.Same(newLocalService, localVal); // but asking locally will get back the local service.
        }
 
-       [TestMethod]
+       [Fact]
        public void WhenAddingServiceToOverrideThenOriginalIsNotMutated()
        {
            // Handler Services has "copy on write" semantics for inherited list. 
@@ -116,12 +116,12 @@
            IEnumerable<object> original = global.GetServices(typeof(IFilterProvider));
            object[] modified = services.GetServices(typeof(IFilterProvider)).ToArray();
 
-           Assert.IsTrue(original.Count() > 1);
+           Assert.True(original.Count() > 1);
            object[] expected = original.Concat(new object[] { resolver }).ToArray();
-           CollectionAssert.AreEqual(expected, modified);
+           Assert.Equal(expected, modified);
        }
 
-       [TestMethod]
+       [Fact]
        public void WhenClearingOverridedServiceThenReturnsOriginal()
        {
            ProcessorConfiguration config = new ProcessorConfiguration();
@@ -138,10 +138,10 @@
            ICommandHandlerTypeResolver localVal = (ICommandHandlerTypeResolver)services.GetService(typeof(ICommandHandlerTypeResolver));
            ICommandHandlerTypeResolver globalVal = (ICommandHandlerTypeResolver)global.GetService(typeof(ICommandHandlerTypeResolver));
 
-           Assert.AreSame(globalVal, localVal);
+           Assert.Same(globalVal, localVal);
        }
 
-       [TestMethod]
+       [Fact]
        public void WhenSettingOverrideToNullThenReturnsNull()
        {
            ProcessorConfiguration config = new ProcessorConfiguration();
@@ -156,7 +156,7 @@
            // Assert
            ICommandHandlerTypeResolver localVal = (ICommandHandlerTypeResolver)services.GetService(typeof(ICommandHandlerTypeResolver));
 
-           Assert.IsNull(localVal);
+           Assert.Null(localVal);
        }
     }
 }

@@ -1,14 +1,14 @@
 ﻿namespace Waffle.Tests.Filters
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class FilterInfoFixture
     {
-        [TestMethod]
+        [Fact]
         public void WhenCreatingFilterInfoThenPropertiesAreDefined()
         {
             // Arrange
@@ -20,16 +20,16 @@
             FilterInfo filterInfo2 = new FilterInfo(filter2, FilterScope.Handler);
 
             // Assert
-            Assert.IsNotNull(filterInfo1);
-            Assert.AreEqual(FilterScope.Global, filterInfo1.Scope);
-            Assert.AreSame(filter1, filterInfo1.Instance);
+            Assert.NotNull(filterInfo1);
+            Assert.Equal(FilterScope.Global, filterInfo1.Scope);
+            Assert.Same(filter1, filterInfo1.Instance);
 
-            Assert.IsNotNull(filterInfo2);
-            Assert.AreEqual(FilterScope.Handler, filterInfo2.Scope);
-            Assert.AreSame(filter2, filterInfo2.Instance);
+            Assert.NotNull(filterInfo2);
+            Assert.Equal(FilterScope.Handler, filterInfo2.Scope);
+            Assert.Same(filter2, filterInfo2.Instance);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingFilterInfoWithNullParameterThenThrowsException()
         {   
             // Assert

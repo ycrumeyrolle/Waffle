@@ -1,43 +1,41 @@
 ﻿namespace Waffle.Unity.Tests
 {
+    using Microsoft.Practices.ObjectBuilder2;
+    using Microsoft.Practices.Unity;
+    using Moq;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Microsoft.Practices.ObjectBuilder2;
-    using Microsoft.Practices.Unity;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Moq;
     using Waffle.Commands;
     using Waffle.Events;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
     using Waffle.Validation;
-    using System.Threading.Tasks;
+    using Xunit;
 
-    [TestClass]
     public sealed class DependencyScopeFixture
     {
         private readonly Mock<IUnityContainer> container = new Mock<IUnityContainer>();
 
-        [TestMethod]
+        [Fact]
         public void Ctor_NullConfiguration_ThrowsArgumentNullException()
         {
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => new FakeDependencyScope(null), "container");
         }
 
-        [TestMethod]
+        [Fact]
         public void Ctor_ReturnsInstance()
         {
             // Arrange & act
             var scope = new FakeDependencyScope(this.container.Object);
 
             // Assert
-            Assert.IsNotNull(scope);
+            Assert.NotNull(scope);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetService_RegisteredService_ReturnsService()
         {
             // Arrange 
@@ -53,7 +51,7 @@
             object service = scope.GetService(typeof(object));
 
             // Assert
-            Assert.IsNotNull(service);
+            Assert.NotNull(service);
         }
 
         private static ContainerRegistration CreateContainerRegistration()
@@ -61,7 +59,7 @@
             return (ContainerRegistration)Activator.CreateInstance(typeof(ContainerRegistration), BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { typeof(object), null, new PolicyList() }, null);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetService_NotRegisteredService_ReturnsNull()
         {
             // Arrange 
@@ -82,14 +80,14 @@
             object service2 = scope.GetService(typeof(IAssembliesResolver));
 
             // Assert
-            Assert.IsNull(service1);
-            Assert.IsNull(service2);
+            Assert.Null(service1);
+            Assert.Null(service2);
 
             // Assert the resolution is done only once when it throw a ResolutionFailedException
             this.container.Verify(c => c.Resolve(It.IsAny<Type>(), It.IsAny<string>()), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetServices_RegisteredService_ReturnsServices()
         {
             // Arrange 
@@ -105,11 +103,11 @@
             IEnumerable<object> services = scope.GetServices(typeof(object));
 
             // Assert
-            Assert.IsNotNull(services);
-            Assert.AreEqual(1, services.Count());
+            Assert.NotNull(services);
+            Assert.Equal(1, services.Count());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetServices_NotRegisteredService_ReturnsEmptyArray()
         {
             // Arrange 
@@ -128,16 +126,16 @@
             IEnumerable<object> services2 = scope.GetServices(typeof(IAssembliesResolver));
 
             // Assert
-            Assert.IsNotNull(services1);
-            Assert.AreEqual(0, services1.Count());
-            Assert.IsNotNull(services2);
-            Assert.AreEqual(0, services2.Count());
+            Assert.NotNull(services1);
+            Assert.Equal(0, services1.Count());
+            Assert.NotNull(services2);
+            Assert.Equal(0, services2.Count());
 
             // Assert the resolution is done only once when it throw a ResolutionFailedException
             this.container.Verify(c => c.ResolveAll(It.IsAny<Type>()), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void RegisterHandlers_()
         {
             // Arrange

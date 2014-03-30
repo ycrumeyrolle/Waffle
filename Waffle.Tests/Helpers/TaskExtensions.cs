@@ -2,7 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
     public static class TaskExtensions
     {
@@ -31,8 +31,8 @@
         public static void RethrowFaultedTaskException(this Task task)
         {
             task.WaitUntilCompleted();
-            Assert.AreEqual(TaskStatus.Faulted, task.Status);
-            Assert.IsNotNull(task.Exception);
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
             throw task.Exception.GetBaseException();
         }
     }

@@ -2,20 +2,20 @@
 {
     using System;
     using Waffle;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Commands;
     using Waffle.Filters;
     using Waffle.Tests.Commands;
 
-    [TestClass]
+    
     public sealed class HandlerContextFixture : IDisposable
     {
         private readonly ProcessorConfiguration config = new ProcessorConfiguration();
 
         private readonly Mock<ICommand> command = new Mock<ICommand>();
         
-        [TestMethod]
+        [Fact]
         public void WhenCreatingInstanceWithDefaultCtorThenPropertiesAreDefined()
         {
             // Arrange
@@ -23,16 +23,16 @@
             CommandHandlerContext context = new CommandHandlerContext();
 
             // Assert
-            Assert.IsNull(context.Configuration);
-            Assert.IsNull(context.Request);
-            Assert.IsNull(context.Command);
-            Assert.IsNull(context.Descriptor);
-            Assert.IsNull(context.Request);
-            Assert.IsNotNull(context.Items);
-            Assert.AreEqual(0, context.Items.Count);
+            Assert.Null(context.Configuration);
+            Assert.Null(context.Request);
+            Assert.Null(context.Command);
+            Assert.Null(context.Descriptor);
+            Assert.Null(context.Request);
+            Assert.NotNull(context.Items);
+            Assert.Equal(0, context.Items.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingInstanceWithParameterCtorThenPropertiesAreDefined()
         {
             // Arrange
@@ -43,13 +43,13 @@
             CommandHandlerContext context = new CommandHandlerContext(request, descriptor);
 
             // Assert
-            Assert.AreSame(this.config, context.Configuration);
-            Assert.AreSame(request, context.Request);
-            Assert.AreSame(request.Command, context.Command);
-            Assert.AreSame(descriptor, context.Descriptor);
-            Assert.IsNotNull(context.Request);
-            Assert.IsNotNull(context.Items);
-            Assert.AreEqual(0, context.Items.Count);
+            Assert.Same(this.config, context.Configuration);
+            Assert.Same(request, context.Request);
+            Assert.Same(request.Command, context.Command);
+            Assert.Same(descriptor, context.Descriptor);
+            Assert.NotNull(context.Request);
+            Assert.NotNull(context.Items);
+            Assert.Equal(0, context.Items.Count);
         }
 
         public void Dispose()

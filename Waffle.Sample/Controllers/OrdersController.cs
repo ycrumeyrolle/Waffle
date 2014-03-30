@@ -13,12 +13,19 @@
     
     public class OrdersController : ApiController
     {
+        private readonly IMessageProcessor processor;
+
+        public OrdersController(IMessageProcessor processor)
+        {
+            this.processor = processor;
+        }
+
         // POST api/orders
         [ValidateModelState]
         [AcceptVerbs("GET", "HEAD")]
         public Task Post([FromUri]PlaceOrder placeOrderCommand)
         {
-            return GlobalProcessorConfiguration.DefaultProcessor.ProcessAsync(placeOrderCommand);
+            return this.processor.ProcessAsync(placeOrderCommand);
         }
 
         //// GET api/orders

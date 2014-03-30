@@ -1,13 +1,13 @@
 ﻿namespace Waffle.Tests.Filters
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Waffle.Filters;
 
-    [TestClass]
+    
     public class FilterAttributeFixture
     {
-        [TestMethod]
+        [Fact]
         public void WhenMultipleIsAllowedThenReturnsTrue()
         {
             // Arrange
@@ -17,10 +17,10 @@
             var allow = filter.AllowMultiple;
 
             // Assert
-            Assert.IsTrue(allow);
+            Assert.True(allow);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenMultipleIsDisallowedThenReturnsFalse()
         {
             // Arrange
@@ -30,10 +30,10 @@
             var allow = filter.AllowMultiple;
 
             // Assert
-            Assert.IsFalse(allow);
+            Assert.False(allow);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenMultipleIsUndefinedThenReturnsTrue()
         {
             // Arrange
@@ -43,7 +43,7 @@
             var allow = filter.AllowMultiple;
 
             // Assert
-            Assert.IsTrue(allow);
+            Assert.True(allow);
         }
 
         [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]

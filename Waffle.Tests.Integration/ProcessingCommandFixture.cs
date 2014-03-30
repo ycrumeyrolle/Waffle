@@ -1,14 +1,14 @@
 ﻿namespace Waffle.Tests.Integration
 {
     using Microsoft.Practices.Unity;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Tests.Integration.Orders;
 
-    [TestClass]
+    
     public class ProcessingCommandFixture
     {
-        [TestMethod]
+        [Fact]
         public async void PlaceOrder_EventsArePublished()
         {
             IUnityContainer container = new UnityContainer();

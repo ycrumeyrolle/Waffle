@@ -4,7 +4,7 @@
     using System.Runtime.Caching;
     using System.Runtime.ExceptionServices;
     using System.Security.Principal;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Caching;
     using Waffle.Commands;
@@ -12,7 +12,7 @@
     using Waffle.Tests.Commands;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public sealed class CacheAttributeFixture : IDisposable
     {
         private readonly Mock<ObjectCache> cache;
@@ -25,7 +25,7 @@
             this.config = new ProcessorConfiguration();
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutingFilterThenCacheIsChecked()
         {
             // Arrange
@@ -40,10 +40,10 @@
 
             // Assert
             this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
-            Assert.IsNull(context.Response);
+            Assert.Null(context.Response);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutingFilterWithResultInCacheThenCacheIsReturn()
         {
             // Arrange
@@ -60,11 +60,11 @@
 
             // Assert
             this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
-            Assert.IsNotNull(context.Response.Value);
-            Assert.AreEqual(cachedCommand, context.Response.Value);
+            Assert.NotNull(context.Response.Value);
+            Assert.Equal(cachedCommand, context.Response.Value);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutingFilterWithoutContextThenThrowsArgumentNullException()
         {
             // Arrange
@@ -74,7 +74,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => filter.OnCommandExecuting(null), "CommandHandlerContext");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutingFilterToIgnoreThenCacheIsIgnored()
         {
             // Arrange
@@ -91,10 +91,10 @@
 
             // Assert
             this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
-            Assert.IsNull(context.Response);
+            Assert.Null(context.Response);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterWithExceptionThenCacheIsNotUpdated()
         {
             // Arrange
@@ -112,10 +112,10 @@
 
             // Assert
             this.cache.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<DateTimeOffset>(), It.IsAny<string>()), Times.Never());
-            Assert.IsNull(context.Response);
+            Assert.Null(context.Response);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterWithoutContextThenThrowsArgumentNullException()
         {
             // Arrange
@@ -125,7 +125,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => filter.OnCommandExecuted(null), "handlerExecutedContext");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterToIgnoreThenCacheIsIgnored()
         {
             // Arrange
@@ -143,10 +143,10 @@
 
             // Assert
             this.cache.Verify(c => c.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
-            Assert.IsNull(context.Response);
+            Assert.Null(context.Response);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterWithoutKeyThenCacheIsNotUpdated()
         {
             // Arrange
@@ -165,7 +165,7 @@
             this.cache.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<DateTimeOffset>(), It.IsAny<string>()), Times.Never());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterWithKeyEmptyThenCacheIsNotUpdated()
         {
             // Arrange
@@ -185,7 +185,7 @@
             this.cache.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<DateTimeOffset>(), It.IsAny<string>()), Times.Never());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterWithKeyThenCacheIsUpdated()
         {
             // Arrange
@@ -205,7 +205,7 @@
             this.cache.Verify(c => c.Add(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<DateTimeOffset>(), It.IsAny<string>()), Times.Once());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterVaryByParamsThenCacheIsUpdated()
         {
             // Arrange
@@ -241,12 +241,12 @@
             filter.OnCommandExecuted(executedContext3);
 
             // Assert
-            Assert.AreEqual("result1", executedContext1.Response.Value);
-            Assert.AreEqual("result2", executedContext2.Response.Value);
-            Assert.AreEqual("result2", executedContext3.Response.Value);
+            Assert.Equal("result1", executedContext1.Response.Value);
+            Assert.Equal("result2", executedContext2.Response.Value);
+            Assert.Equal("result2", executedContext3.Response.Value);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterVaryByParamsSetToNoneThenCacheIsAlwaysUsed()
         {
             // Arrange
@@ -282,12 +282,12 @@
             filter.OnCommandExecuted(executedContext3);
 
             // Assert
-            Assert.AreEqual("result1", executedContext1.Response.Value);
-            Assert.AreEqual("result1", executedContext2.Response.Value);
-            Assert.AreEqual("result1", executedContext3.Response.Value);
+            Assert.Equal("result1", executedContext1.Response.Value);
+            Assert.Equal("result1", executedContext2.Response.Value);
+            Assert.Equal("result1", executedContext3.Response.Value);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterVaryByParamsSetIncorrectlyThenCacheIsAlwaysUsed()
         {
             // Arrange
@@ -323,12 +323,12 @@
             filter.OnCommandExecuted(executedContext3);
 
             // Assert
-            Assert.AreEqual("result1", executedContext1.Response.Value);
-            Assert.AreEqual("result1", executedContext2.Response.Value);
-            Assert.AreEqual("result1", executedContext3.Response.Value);
+            Assert.Equal("result1", executedContext1.Response.Value);
+            Assert.Equal("result1", executedContext2.Response.Value);
+            Assert.Equal("result1", executedContext3.Response.Value);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenSettingNullToVaryByParamsThenThrowsArgumentNullException()
         {
             // Arrange
@@ -338,7 +338,7 @@
             ExceptionAssert.Throws<ArgumentNullException>(() => filter.VaryByParams = null);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenExecutedFilterVaryByUserThenCacheIsUpdated()
         {
             // Arrange
@@ -378,9 +378,9 @@
             filter.OnCommandExecuted(executedContext3);
 
             // Assert
-            Assert.AreEqual("result1", executedContext1.Response.Value);
-            Assert.AreEqual("result2", executedContext2.Response.Value);
-            Assert.AreEqual("result1", executedContext3.Response.Value);
+            Assert.Equal("result1", executedContext1.Response.Value);
+            Assert.Equal("result2", executedContext2.Response.Value);
+            Assert.Equal("result1", executedContext3.Response.Value);
         }
 
         private CacheAttribute CreateAttribute(ObjectCache innerCache = null)

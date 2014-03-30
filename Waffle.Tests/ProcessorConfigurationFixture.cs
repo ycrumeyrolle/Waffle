@@ -4,11 +4,11 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using Waffle;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public sealed class ProcessorConfigurationFixture : IDisposable
     {
         private readonly ICollection<IDisposable> disposableResources = new Collection<IDisposable>();
@@ -20,7 +20,7 @@
             this.disposableResources.Add(this.defaultConfig);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingProcessorWithDefaultCtorThenPropertiesAreDefined()
         {
             // Act
@@ -28,15 +28,15 @@
             this.disposableResources.Add(config);
 
             // Assert
-            Assert.IsTrue(config.AbortOnInvalidCommand);
-            Assert.IsFalse(config.ServiceProxyCreationEnabled);
-            Assert.IsNotNull(config.DependencyResolver);
-            Assert.IsNotNull(config.Services);
-            Assert.IsNotNull(config.Initializer);
-            Assert.AreEqual(0, config.Filters.Count);
+            Assert.True(config.AbortOnInvalidCommand);
+            Assert.False(config.ServiceProxyCreationEnabled);
+            Assert.NotNull(config.DependencyResolver);
+            Assert.NotNull(config.Services);
+            Assert.NotNull(config.Initializer);
+            Assert.Equal(0, config.Filters.Count);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenSettingNullValuesThenThrowsArgumentNullException()
         {
             // Arrange
@@ -48,7 +48,7 @@
             ExceptionAssert.ThrowsArgumentNull(() => config.DependencyResolver = null, "value");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenRegisteringResourceToDisposeThenResouseIsDisposed()
         {
             // Arrange
@@ -64,7 +64,6 @@
             disposable.Verify(d => d.Dispose(), Times.Once());
         }
         
-        [TestCleanup]
         public void Dispose()
         {
             this.defaultConfig.Dispose();

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Waffle.Dependencies
+﻿namespace Waffle.Dependencies
 {
+    using System;
+    using System.Collections.Generic;
+
     public interface IDependencyContainer : IDisposable
     {
         object Resolve(Type type);

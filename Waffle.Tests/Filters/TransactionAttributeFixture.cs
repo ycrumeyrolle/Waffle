@@ -3,10 +3,10 @@
     using System;
     using System.Runtime.ExceptionServices;
     using System.Transactions;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Waffle.Filters;
 
-    [TestClass]
+    
     public class TransactionttributeFixture : IDisposable
     {
         private ProcessorConfiguration config;
@@ -16,19 +16,19 @@
             this.config = new ProcessorConfiguration();
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCreatingInstanceThenPropertiesAreDefined()
         {
             // Arrange & Act
             TransactionFilterAttribute filter = new TransactionFilterAttribute();
 
             // Assert
-            Assert.AreEqual(TransactionScopeOption.Required, filter.ScopeOption);
-            Assert.AreEqual(TransactionManager.DefaultTimeout, filter.Timeout);
-            Assert.AreEqual(IsolationLevel.Serializable, filter.IsolationLevel);
+            Assert.Equal(TransactionScopeOption.Required, filter.ScopeOption);
+            Assert.Equal(TransactionManager.DefaultTimeout, filter.Timeout);
+            Assert.Equal(IsolationLevel.Serializable, filter.IsolationLevel);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenInvokingFilterWithoutExceptionThenTransactionCompletes()
         {
             // Arrange
@@ -45,10 +45,10 @@
             filter.OnCommandExecuted(executedContext);
 
             // Assert 
-            Assert.AreEqual(TransactionStatus.Committed, transaction.TransactionInformation.Status);
+            Assert.Equal(TransactionStatus.Committed, transaction.TransactionInformation.Status);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenInvokingFilterWithExceptionThenTransactionRollbacks()
         {
             // Arrange
@@ -64,10 +64,10 @@
             filter.OnCommandExecuted(executedContext);
 
             // Assert
-            Assert.AreEqual(TransactionStatus.Aborted, transaction.TransactionInformation.Status);
+            Assert.Equal(TransactionStatus.Aborted, transaction.TransactionInformation.Status);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenInvokingFilterWithHandledExceptionThenTransactionCompletes()
         {
             // Arrange
@@ -84,7 +84,7 @@
             filter.OnCommandExecuted(executedContext);
 
             // Assert 
-            Assert.AreEqual(TransactionStatus.Committed, transaction.TransactionInformation.Status);
+            Assert.Equal(TransactionStatus.Committed, transaction.TransactionInformation.Status);
         }
 
         public void Dispose()

@@ -3,12 +3,12 @@
     using System.Collections.Generic;
     using System.Reflection;
     using Waffle;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
 
-    [TestClass]
+    
     public class DefaultAssembliesResolverFixture
     {
-        [TestMethod]
+        [Fact]
         public void WhenGettingAssembliesThenReturnsAssemblies()
         {
             // Assign
@@ -18,7 +18,7 @@
             ICollection<Assembly> assemblies = resolver.GetAssemblies();
 
             // Assert
-            Assert.IsNotNull(assemblies);
+            Assert.NotNull(assemblies);
         }
     }
 }

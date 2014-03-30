@@ -44,14 +44,14 @@ namespace Waffle.Metadata
                        : base.ComputeDescription();
         }
         
-        /// <summary>
-        /// Retrieves the description of the model.
-        /// </summary>
-        /// <returns>The description of the model.</returns>
-        protected override bool ComputeIgnoreCaching()
-        {
-            return this.PrototypeCache.IgnoreCaching != null || base.ComputeIgnoreCaching();
-        }
+        /////// <summary>
+        /////// Retrieves the description of the model.
+        /////// </summary>
+        /////// <returns>The description of the model.</returns>
+        ////protected override bool ComputeIgnoreCaching()
+        ////{
+        ////    return this.PrototypeCache.IgnoreCaching != null || base.ComputeIgnoreCaching();
+        ////}
 
         public override string GetDisplayName()
         {

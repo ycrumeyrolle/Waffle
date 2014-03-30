@@ -1,12 +1,12 @@
 ﻿namespace Waffle.Tests.Internal
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Waffle.Internal;
+    using Xunit;
 
-    [TestClass]
+
     public class ErrorTest
     {
-        [TestMethod]
+        [Fact]
         public void Format()
         {
             // Arrange
@@ -16,7 +16,7 @@
             string actual = Error.Format("The {0} message", "formatted");
 
             // Assert
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
     }
 }

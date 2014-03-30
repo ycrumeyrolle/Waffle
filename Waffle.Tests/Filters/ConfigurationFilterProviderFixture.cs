@@ -1,24 +1,24 @@
 ﻿namespace Waffle.Tests.Filters
 {
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class ConfigurationFilterProviderFixture
     {
         private readonly ConfigurationFilterProvider provider = new ConfigurationFilterProvider();
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingWithParameterNullThenThrowsException()
         {
             ExceptionAssert.ThrowsArgumentNull(() => this.provider.GetFilters(null, null), "configuration");
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenGettingFiltersThenReturnsFiltersFromConfiguration()
         {
             ProcessorConfiguration config = new ProcessorConfiguration();
@@ -27,9 +27,9 @@
 
             var result = this.provider.GetFilters(config, null);
 
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.All(f => f.Scope == FilterScope.Global));
-            Assert.AreSame(filter, result.ToArray()[0].Instance);
+            Assert.NotNull(result);
+            Assert.True(result.All(f => f.Scope == FilterScope.Global));
+            Assert.Same(filter, result.ToArray()[0].Instance);
         }
     }
 }

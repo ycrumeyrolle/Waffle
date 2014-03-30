@@ -2,11 +2,11 @@
 {
     using System;
     using Waffle;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Moq;
     using Waffle.Interception;
 
-    [TestClass]
+    
     public sealed class DefaultInterceptionProviderFixture : IDisposable
     {
         private readonly ProcessorConfiguration configuration;
@@ -25,7 +25,7 @@
             this.configuration.Services.Add(typeof(IInterceptor), this.interceptor.Object);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCallingExecutingMethodThenCallInterceptor()
         {
             // Assign
@@ -40,7 +40,7 @@
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCallingExecutedMethodThenCallInterceptor()
         {
             // Assign
@@ -55,7 +55,7 @@
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Never());
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenCallingExceptionMethodThenCallInterceptor()
         {
             // Assign
@@ -70,7 +70,6 @@
             this.interceptor.Verify(i => i.OnException(It.IsAny<Exception>()), Times.Once());
         }
 
-        [TestCleanup]
         public void Dispose()
         {
             this.configuration.Dispose();

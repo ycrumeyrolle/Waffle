@@ -2,7 +2,6 @@
 {
     using System.Diagnostics;
     using System.Threading.Tasks;
-    using Waffle.Caching;
     using Waffle.Commands;
     using Waffle.Filters;
     using Waffle.Tests.Commands;
@@ -26,17 +25,6 @@
             Trace.WriteLine("Property2 : " + command.Property2);
 
             return "RESULT";
-        }
-    }
-
-    [NoCache]
-    public class NotCachedCommandHandler : MessageHandler, ICommandHandler<NotCachedCommand>
-    {
-        public void Handle(NotCachedCommand command)
-        {
-            Trace.WriteLine("Property1 : " + command.Property1);
-
-            Trace.WriteLine("Property2 : " + command.Property2);
         }
     }
 }

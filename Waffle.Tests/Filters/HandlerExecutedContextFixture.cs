@@ -2,13 +2,13 @@
 {
     using System;
     using System.Runtime.ExceptionServices;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Waffle.Filters;
 
-    [TestClass]
+    
     public class HandlerExecutedContextFixture
     {
-        [TestMethod]
+        [Fact]
         public void WhenCreatingInstanceThenPropertiesAreDefined()
         {
             // Arrange
@@ -20,12 +20,12 @@
             CommandHandlerExecutedContext context = new CommandHandlerExecutedContext(preContext, exceptionInfo);
 
             // Assert
-            Assert.IsNull(context.Response);
-            Assert.IsNotNull(context.ExceptionInfo.SourceException);
-            Assert.AreSame(context.ExceptionInfo.SourceException, exception);
+            Assert.Null(context.Response);
+            Assert.NotNull(context.ExceptionInfo.SourceException);
+            Assert.Same(context.ExceptionInfo.SourceException, exception);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenSettingResultThenResultIsDefined()
         {
             // Arrange
@@ -39,7 +39,7 @@
             context.Response = context.Request.CreateResponse("test");
 
             // Assert
-            Assert.AreEqual(context.Response.Value, value);
+            Assert.Equal(context.Response.Value, value);
         }
     }
 }

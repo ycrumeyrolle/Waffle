@@ -8,13 +8,13 @@ namespace Waffle.Tests.Internal
 {
     using System.Collections.Generic;
     using Waffle.Internal;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Waffle.Tests.Helpers;
 
-    [TestClass]
+    
     public class ListWrapperCollectionTests
     {
-        [TestMethod]
+        [Fact]
         public void ListWrapperCollection_ItemsList_HasSameContents()
         {
             // Arrange
@@ -25,10 +25,10 @@ namespace Waffle.Tests.Internal
             listWrapper.Add(new object());
 
             // Assert
-            EnumerableAssert.AreEqual(listWrapper, listWrapper.ItemsList);
+            Assert.Equal(listWrapper, listWrapper.ItemsList);
         }
 
-        [TestMethod]
+        [Fact]
         public void ListWrapperCollection_ItemsList_IsPassedInList()
         {
             // Arrange
@@ -36,7 +36,7 @@ namespace Waffle.Tests.Internal
             ListWrapperCollection<object> listWrapper = new ListWrapperCollection<object>(list);
 
             // Act & Assert
-            Assert.AreSame(list, listWrapper.ItemsList);
+            Assert.Same(list, listWrapper.ItemsList);
         }
     }
 
