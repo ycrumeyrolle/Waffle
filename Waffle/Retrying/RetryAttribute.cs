@@ -58,8 +58,8 @@
         /// <param name="retryCount">The number of retry attempts.</param>
         /// <param name="initialInterval">The initial interval that will apply for the first retry. In milliseconds.</param>
         /// <param name="increment">The incremental time value that will be used to calculate the progressive delay between retries. In milliseconds.</param>
-        public RetryAttribute(int retryCount, double retryInterval, double increment) :
-            this(new TransientErrorCatchAllStrategy(), retryCount, retryInterval, increment)
+        public RetryAttribute(int retryCount, double initialInterval, double increment) :
+            this(new TransientErrorCatchAllStrategy(), retryCount, initialInterval, increment)
         {
         }
 

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+    using Waffle;
     using Waffle.Events;
     using Waffle.Tests.Integration.Payments;
     using Waffle.Tests.Integration.Reservations;

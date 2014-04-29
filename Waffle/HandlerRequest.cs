@@ -39,7 +39,7 @@
             if (parentRequest != null)
             {
                 this.Processor = parentRequest.Processor;
-                this.CancellationToken = parentRequest.CancellationToken;
+                this.CancellationTokenSource = parentRequest.CancellationTokenSource;
             }
         }
 
@@ -79,7 +79,7 @@
         /// <value>The message <see cref="System.Type"/>.</value>
         public Type MessageType { get; protected set; }
 
-        public CancellationToken CancellationToken { get; private set; }
+        public CancellationTokenSource CancellationTokenSource { get; private set; }
 
         public Dictionary<string, object> Properties { get; private set; }
 

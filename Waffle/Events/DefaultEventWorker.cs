@@ -71,7 +71,7 @@
             ServicesContainer servicesContainer = request.Configuration.Services;
             IEventHandlerResult result = new EventHandlerFilterResult(context, servicesContainer, filterGrouping.EventHandlerFilters);
 
-            return result.ExecuteAsync(request.CancellationToken);
+            return result.ExecuteAsync(request.CancellationTokenSource.Token);
         }
 
         private static CommandHandlerNotFoundException CreateHandlerNotFoundException(EventHandlerDescriptor descriptor)

@@ -100,19 +100,21 @@
         /// Process the command. 
         /// </summary>
         /// <param name="command">The command to process.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <returns>The result of the command.</returns>
-        public Task<HandlerResponse> ProcessAsync(ICommand command)
+        public Task<HandlerResponse> ProcessAsync(ICommand command, CancellationToken cancellationToken)
         {
-            return this.ProcessAsync(command, null);
+            return this.ProcessAsync(command, cancellationToken, null);
         }
 
         /// <summary>
         /// Process the command. 
         /// </summary>
         /// <param name="command">The command to process.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <param name="currentRequest">The current request. Pass null if there is not parent request.</param>
         /// <returns>The result of the command.</returns>
-        internal async Task<HandlerResponse> ProcessAsync(ICommand command, HandlerRequest currentRequest)
+        internal async Task<HandlerResponse> ProcessAsync(ICommand command, CancellationToken cancellationToken, HandlerRequest currentRequest)
         {
             if (command == null)
             {
@@ -153,8 +155,8 @@
                 }
 
                 ExceptionContext exceptionContext = new ExceptionContext(exceptionInfo, ExceptionCatchBlocks.MessageProcessor, request);
-                await this.ExceptionLogger.LogAsync(exceptionContext, request.CancellationToken);
-                HandlerResponse response = await this.ExceptionHandler.HandleAsync(exceptionContext, request.CancellationToken);
+                await this.ExceptionLogger.LogAsync(exceptionContext, request.CancellationTokenSource.Token);
+                HandlerResponse response = await this.ExceptionHandler.HandleAsync(exceptionContext, request.CancellationTokenSource.Token);
 
                 if (response == null)
                 {
@@ -169,19 +171,21 @@
         /// Publish the event. 
         /// </summary>
         /// <param name="event">The event to publish.</param>
-        /// <returns>The result of the event.</returns>
-        public Task PublishAsync(IEvent @event)
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+        /// /// <returns>The result of the event.</returns>
+        public Task PublishAsync(IEvent @event, CancellationToken cancellationToken)
         {
-            return this.PublishAsync(@event, null);
+            return this.PublishAsync(@event, cancellationToken, null);
         }
 
         /// <summary>
         /// Publish the event. 
         /// </summary>
         /// <param name="event">The event to publish.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <param name="currentRequest">The current request. Pass null if there is not parent request.</param>
         /// <returns>The result of the event.</returns>
-        internal async Task PublishAsync(IEvent @event, HandlerRequest currentRequest)
+        internal async Task PublishAsync(IEvent @event, CancellationToken cancellationToken, HandlerRequest currentRequest)
         {
             if (@event == null)
             {
@@ -200,7 +204,7 @@
 
             IEventStore eventStore = this.Configuration.Services.GetServiceOrThrow<IEventStore>();
 
-            await eventStore.StoreAsync(@event, currentRequest.CancellationToken);
+            await eventStore.StoreAsync(@event, currentRequest.CancellationTokenSource.Token);
 
             IEventWorker eventWorker = this.Configuration.Services.GetEventWorker();
 

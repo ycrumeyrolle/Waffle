@@ -30,7 +30,7 @@
             this.config.Services.Replace(typeof(ICommandHandlerTypeResolver), new EmptyCommandHandlerTypeResolver());
 
             // Act & assert
-            ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
+            Assert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
         [Fact]
@@ -42,7 +42,7 @@
             this.config.Services.Replace(typeof(ICommandHandlerTypeResolver), new DuplicateCommandHandlerTypeResolver());
 
             // Act & assert
-            ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
+            Assert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
         [Fact]
@@ -70,7 +70,7 @@
             CommandHandlerRequest request = new CommandHandlerRequest(this.config, new BadCommand());
 
             // Act & assert
-            ExceptionAssert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
+            Assert.Throws<InvalidOperationException>(() => resolver.SelectHandler(request));
         }
 
         [Fact]

@@ -9,7 +9,6 @@
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Filters;
-    using Xunit.Extensions;
 
     
     public class EmptyResolverFixture
@@ -28,8 +27,8 @@
         }
 
         [Theory]
-        [PropertyData("KnowTypes")]
-        [PropertyData("AnyTypes")]
+        [MemberData("KnowTypes")]
+        [MemberData("AnyTypes")]
         public void WhenGettingAnyServiceThenReturnsNull(Type serviceType)
         {
             // Assign
@@ -43,8 +42,8 @@
         }
 
         [Theory]
-        [PropertyData("KnowTypes")]
-        [PropertyData("AnyTypes")]
+        [MemberData("KnowTypes")]
+        [MemberData("AnyTypes")]
         public void WhenGettingAnyServiceThenReturnsEmptySequence(Type serviceType)
         {
             // Assign

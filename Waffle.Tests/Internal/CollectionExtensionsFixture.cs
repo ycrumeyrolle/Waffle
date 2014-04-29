@@ -157,7 +157,7 @@
                 throw new InvalidOperationException();
             };
 
-            ExceptionAssert.Throws<InvalidOperationException>(() => multiple.SingleDefaultOrError(errorAction, errorArgument));
+            Assert.Throws<InvalidOperationException>(() => multiple.SingleDefaultOrError(errorAction, errorArgument));
         }
 
         [Fact]
@@ -197,7 +197,7 @@
                 throw new InvalidOperationException();
             };
 
-            ExceptionAssert.Throws<InvalidOperationException>(() => multipleMatch.SingleOfTypeDefaultOrError<object, string, object>(errorAction, errorArgument));
+            Assert.Throws<InvalidOperationException>(() => multipleMatch.SingleOfTypeDefaultOrError<object, string, object>(errorAction, errorArgument));
         }
     }
 }

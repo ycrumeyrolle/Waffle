@@ -21,6 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Waffle.Unity")]
 [assembly: InternalsVisibleTo("Waffle.Events.MongoDb")]
 [assembly: InternalsVisibleTo("Waffle.Queries.Data")]
+[assembly: InternalsVisibleTo("Waffle.Queuing.MongoDb")]
 
 // Version information for an assembly consists of the following four values:
 //      Major Version

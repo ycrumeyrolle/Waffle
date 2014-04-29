@@ -37,7 +37,7 @@
         {
             return this.innerContext.Set<T>();
         }
-
+        /*
         /// <summary>
         /// Find the object.
         /// </summary>
@@ -49,7 +49,7 @@
         {
             return this.innerContext.Set<T>().Find(keyValues);
         }
-        /*
+        */
         /// <summary>
         /// Find the object.
         /// </summary>
@@ -59,9 +59,10 @@
         /// <returns>The object found, or null.</returns>
         public Task<T> FindAsync<T>(params object[] keyValues) where T : class
         {
-            return this.innerContext.Set<T>().FindAsync(keyValues);
+            var result = this.innerContext.Set<T>().Find(keyValues);
+            return Task.FromResult(result);
         }
-        */
+        
         /// <summary>
         ///  Calls the protected Dispose method.
         /// </summary>

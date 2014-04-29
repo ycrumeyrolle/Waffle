@@ -18,39 +18,39 @@
         /// <summary>
         /// Occurs before the handle method is invoked.
         /// </summary>
-        /// <param name="eventOccuringContext">The handler context.</param>
+        /// <param name="eventOccurringContext">The handler context.</param>
         /// <remarks>
         /// Overrides this method to add a behaviour before an event in a non-asynchronous way.
         /// </remarks>
-        public virtual void OnEventOccurring(EventHandlerContext eventOccuringContext)
+        public virtual void OnEventOccurring(EventHandlerContext eventOccurringContext)
         {
         }
         
         /// <summary>
         /// Occurs after the handle method is invoked.
         /// </summary>
-        /// <param name="eventOccuredContext">The handler executed context.</param>
+        /// <param name="eventOccurredContext">The handler executed context.</param>
         /// <remarks>
         /// Overrides this method to add a behaviour after an event in a non-asynchronous way.
         /// </remarks>
-        public virtual void OnEventOccurred(EventHandlerOccuredContext eventOccuredContext)
+        public virtual void OnEventOccurred(EventHandlerOccurredContext eventOccurredContext)
         {
         }
 
         /// <summary>
         /// Occurs before the handle method is invoked.
         /// </summary>
-        /// <param name="eventOccuringContext">The handler context.</param>
+        /// <param name="eventOccurringContext">The handler context.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <remarks>
         /// Overrides this method to add a behaviour before an event in a asynchronous way.
         /// </remarks>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "exception is flowed through the task")]
-        public virtual Task OnEventOccurringAsync(EventHandlerContext eventOccuringContext, CancellationToken cancellationToken)
+        public virtual Task OnEventOccurringAsync(EventHandlerContext eventOccurringContext, CancellationToken cancellationToken)
         {
             try
             {
-                this.OnEventOccurring(eventOccuringContext);
+                this.OnEventOccurring(eventOccurringContext);
             }
             catch (Exception ex)
             {
@@ -63,17 +63,17 @@
         /// <summary>
         /// Occurs after the handle method is invoked.
         /// </summary>
-        /// <param name="eventOccuredContext">The handler context.</param>
+        /// <param name="eventOccurredContext">The handler context.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <remarks>
         /// Overrides this method to add a behaviour after an event in a asynchronous way.
         /// </remarks>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "exception is flowed through the task")]
-        public virtual Task OnEventOccurredAsync(EventHandlerOccuredContext eventOccuredContext, CancellationToken cancellationToken)
+        public virtual Task OnEventOccurredAsync(EventHandlerOccurredContext eventOccurredContext, CancellationToken cancellationToken)
         {
             try
             {
-                this.OnEventOccurred(eventOccuredContext);
+                this.OnEventOccurred(eventOccurredContext);
             }
             catch (Exception ex)
             {
@@ -109,11 +109,11 @@
         {
             await this.OnEventOccurringAsync(handlerContext, cancellationToken);
 
-            await this.CallOnHandlerOccurededAsync(handlerContext, cancellationToken, continuation);
+            await this.CallOnHandlerOccurrededAsync(handlerContext, cancellationToken, continuation);
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We want to intercept all exceptions")]
-        private async Task CallOnHandlerOccurededAsync(EventHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task> continuation)
+        private async Task CallOnHandlerOccurrededAsync(EventHandlerContext handlerContext, CancellationToken cancellationToken, Func<Task> continuation)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -127,27 +127,27 @@
                 exceptionInfo = ExceptionDispatchInfo.Capture(e);
             }
 
-            EventHandlerOccuredContext occuredContext = new EventHandlerOccuredContext(handlerContext, exceptionInfo);
+            EventHandlerOccurredContext occurredContext = new EventHandlerOccurredContext(handlerContext, exceptionInfo);
 
-            await this.OnEventOccurredAsync(occuredContext, cancellationToken);
+            await this.OnEventOccurredAsync(occurredContext, cancellationToken);
 
-            if (occuredContext.ExceptionInfo != null)
+            if (occurredContext.ExceptionInfo != null)
             {
                 if (exceptionInfo == null)
                 {
-                    occuredContext.ExceptionInfo.Throw();
+                    occurredContext.ExceptionInfo.Throw();
                 }
                 else
                 {
                     Exception exception = exceptionInfo.SourceException;
-                    Exception newException = occuredContext.ExceptionInfo.SourceException;
+                    Exception newException = occurredContext.ExceptionInfo.SourceException;
                     if (newException == exception)
                     {
                         exceptionInfo.Throw();
                     }
                     else
                     {
-                        occuredContext.ExceptionInfo.Throw();
+                        occurredContext.ExceptionInfo.Throw();
                     }
                 }
             }

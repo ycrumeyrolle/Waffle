@@ -1,9 +1,10 @@
 ﻿namespace Waffle
 {
-    using System.Threading.Tasks;
-    using Waffle.Commands;
-    using Waffle.Dependencies;
-    using Waffle.Events;
+    using System.Threading;
+using System.Threading.Tasks;
+using Waffle.Commands;
+using Waffle.Dependencies;
+using Waffle.Events;
 
     internal class MessageProcessorWrapper : IMessageProcessor
     {
@@ -29,20 +30,23 @@
         /// <summary>
         /// Process the command. 
         /// </summary>
+        /// <param name="command">The command to process.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <returns>The result of the command.</returns>
-        public Task<HandlerResponse> ProcessAsync(ICommand command)
+        public Task<HandlerResponse> ProcessAsync(ICommand command, CancellationToken cancellationToken)
         {
-            return this.inner.ProcessAsync(command, this.request);
+            return this.inner.ProcessAsync(command, cancellationToken, this.request);
         }
 
         /// <summary>
         /// Publish the event. 
         /// </summary>
         /// <param name="event">The event to publish.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <returns>The <see cref="Task"/> of the event.</returns>
-        public Task PublishAsync(IEvent @event)
+        public Task PublishAsync(IEvent @event, CancellationToken cancellationToken)
         {
-            return this.inner.PublishAsync(@event, this.request);
+            return this.inner.PublishAsync(@event, cancellationToken, this.request);
         }
 
         /// <summary>

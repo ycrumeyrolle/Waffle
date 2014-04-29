@@ -18,7 +18,7 @@
             services.Replace(typeof(ICommandHandlerActivator), null);
 
             // Act & Assert
-            ExceptionAssert.Throws<InvalidOperationException>(() => services.GetServiceOrThrow<ICommandHandlerActivator>());
+            Assert.Throws<InvalidOperationException>(() => services.GetServiceOrThrow<ICommandHandlerActivator>());
         }
     }
 }

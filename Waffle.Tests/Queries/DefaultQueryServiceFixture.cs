@@ -58,7 +58,7 @@
             var queryService = CreateService();
 
             // Act & assert
-            ExceptionAssert.Throws<InvalidOperationException>(() => queryService.CreateContext(this.queryContext.Object.GetType()));
+            Assert.Throws<InvalidOperationException>(() => queryService.CreateContext(this.queryContext.Object.GetType()));
         }
 
         [Fact]
@@ -69,7 +69,7 @@
             queryService.RegisterContextFactory<IQueryContext>(this.queryContext.Object.GetType(), () => null);
 
             // Act & assert
-            ExceptionAssert.Throws<InvalidOperationException>(() => queryService.CreateContext(this.queryContext.Object.GetType()));
+            Assert.Throws<InvalidOperationException>(() => queryService.CreateContext(this.queryContext.Object.GetType()));
         }
 
         [Fact]

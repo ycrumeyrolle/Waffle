@@ -11,6 +11,6 @@
 
         void RegisterInstance(Type type, object instance);
 
-        void RegisteType(Type fromType, Type toType);
+        void RegisterType(Type fromType, Type toType);
     }
 }

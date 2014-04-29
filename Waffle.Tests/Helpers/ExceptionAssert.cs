@@ -5,37 +5,6 @@
 
     public static class ExceptionAssert
     {
-        public static void DoesNotThrow(Action action)
-        {
-            Exception exception = null;
-            try
-            {
-                action();
-            }
-            catch (Exception e)
-            {
-                exception = UnwrapException(e);
-            }
-
-            Assert.Null(exception);
-        }
-
-        public static TException Throws<TException>(Action action) where TException : Exception
-        {
-            TException exception = null;
-            try
-            {
-                action();
-            }
-            catch (Exception e)
-            {
-                exception = UnwrapException(e) as TException;
-            }
-
-            Assert.NotNull(exception);
-            return exception;
-        }
-
         private static Exception UnwrapException(Exception exception)
         {
             AggregateException aggEx;
@@ -50,13 +19,13 @@
 
         public static void ThrowsArgumentNull(Action action, string paramName)
         {
-            ArgumentNullException exception = Throws<ArgumentNullException>(action);
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(action);
             Assert.Equal(paramName, exception.ParamName);
         }
 
         public static void ThrowsArgument(Action action, string paramName)
         {
-            ArgumentException exception = Throws<ArgumentException>(action);
+            ArgumentException exception = Assert.Throws<ArgumentException>(action);
             Assert.Equal(paramName, exception.ParamName);
         }    
         
@@ -68,7 +37,7 @@
           /// <returns>The exception that was thrown, when successful</returns>
         public static ArgumentOutOfRangeException ThrowsArgumentOutOfRange(Action testCode, string paramName)
         {
-            var ex = Throws<ArgumentOutOfRangeException>(testCode);
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(testCode);
 
             if (paramName != null)
             {

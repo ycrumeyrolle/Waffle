@@ -61,7 +61,7 @@
                     const int maxIterations = 10000;
                     using (MessageProcessor processor = new MessageProcessor(config))
                     {
-                        processor.Process(new TestCommand());
+                        processor.ProcessAsync(new TestCommand());
                         SingleProcessing(processor);
                         ParallelProcessing(maxIterations, processor);
                         //   SequentialTaskProcessing(maxIterations, processor);
@@ -82,10 +82,10 @@
         private static void ParallelProcessing(int maxIterations, MessageProcessor processor)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            Parallel.For(0, maxIterations, (i) =>
+            Parallel.For(0, maxIterations, async (i) =>
             {
                 PlaceOrder command = new PlaceOrder(1);
-                processor.Process(command);
+                await processor.ProcessAsync(command);
             });
             stopwatch.Stop();
             System.Console.WriteLine("Parallel for, " + maxIterations + " iterations : " + stopwatch.ElapsedMilliseconds + " ms");

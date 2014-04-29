@@ -7,16 +7,16 @@
     /// <summary>
     /// Contains information for the executed handler.
     /// </summary>
-    public class EventHandlerOccuredContext
+    public class EventHandlerOccurredContext
     {
         private readonly EventHandlerContext handlerContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventHandlerOccuredContext"/> class.
+        /// Initializes a new instance of the <see cref="EventHandlerOccurredContext"/> class.
         /// </summary>
         /// <param name="handlerContext">Then handler context.</param>
         /// <param name="exceptionInfo">The <see cref="ExceptionDispatchInfo"/>. Optionnal.</param>
-        public EventHandlerOccuredContext(EventHandlerContext handlerContext, ExceptionDispatchInfo exceptionInfo)
+        public EventHandlerOccurredContext(EventHandlerContext handlerContext, ExceptionDispatchInfo exceptionInfo)
         {
             if (handlerContext == null)
             {

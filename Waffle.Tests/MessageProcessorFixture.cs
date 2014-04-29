@@ -76,7 +76,7 @@
         }
 
         [Fact]
-        public void WhenProcessingCommandWithoutResultThenCommandIsProcessed()
+        public async Task WhenProcessingCommandWithoutResultThenCommandIsProcessed()
         {
             // Arrange
             var handler = this.SetupHandler<ValidCommand, string>(null, "OK");
@@ -84,7 +84,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            processor.Process(command);
+            await processor.ProcessAsync(command);
 
             // Assert
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
@@ -130,7 +130,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            ExceptionAssert.Throws<Exception>(() => processor.Process(command));
+            Assert.ThrowsAsync<Exception>(async () => await processor.ProcessAsync(command));
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
 
@@ -146,7 +146,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            ExceptionAssert.Throws<Exception>(() => processor.Process(command));
+            Assert.ThrowsAsync<Exception>(async () => await processor.ProcessAsync(command));
             exceptionFilter.Verify(f => f.OnException(It.IsAny<CommandHandlerExecutedContext>()), Times.Once());
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
@@ -468,7 +468,7 @@
             MessageProcessor processor = this.CreatTestableProcessor();
 
             // Act
-            ExceptionAssert.Throws<CommandHandlerNotFoundException>(() => processor.Process(command));
+            Assert.ThrowsAsync<CommandHandlerNotFoundException>(async () => await processor.ProcessAsync(command));
 
             // Assert
             activator.Verify(a => a.Create(It.IsAny<CommandHandlerRequest>(), It.IsAny<CommandHandlerDescriptor>()), Times.Once());
@@ -476,7 +476,7 @@
         }
 
         [Fact]
-        public void WhenProcessingInvalidCommandThenAbortProcesssing()
+        public async Task WhenProcessingInvalidCommandThenAbortProcesssing()
         {
             // Arrange
             InvalidCommand command = new InvalidCommand();
@@ -486,7 +486,7 @@
             MessageProcessor processor = this.CreatTestableProcessor();
 
             // Act
-            var result = processor.Process(command);
+            var result = await processor.ProcessAsync(command);
 
             // Assert
             Assert.NotNull(result);
@@ -507,7 +507,7 @@
             RetryCommand command = new RetryCommand(10);
 
             // Act
-            ExceptionAssert.Throws<InvalidOperationException>(() => processor.Process(command));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await processor.ProcessAsync(command));
 
             // Assert
             spy.Verify(s => s.Spy("Trying"), Times.Exactly(6));
@@ -540,7 +540,7 @@
             MessageProcessor processor = this.CreatTestableProcessor();
 
             // Act & Assert
-            ExceptionAssert.Throws<InvalidOperationException>(() => processor.Use<ISimpleService>());
+            Assert.Throws<InvalidOperationException>(() => processor.Use<ISimpleService>());
         }
 
         [Fact]

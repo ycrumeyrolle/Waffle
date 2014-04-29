@@ -3,6 +3,7 @@
     using Effort;
     using System.Data.Common;
     using System.Linq;
+    using System.Threading.Tasks;
     using Waffle.Tests.Helpers;
     using Xunit;
     
@@ -29,14 +30,14 @@
         }
 
         [Fact]
-        public void WhenFindingItemThenRetunsEntity()
+        public async Task WhenFindingItemThenRetunsEntity()
         {
             // Arrange
             FakeDbContext context = CreateDbContext(10);
             DbQueryContext<FakeDbContext> queryContext = new DbQueryContext<FakeDbContext>(context);
 
             // Act
-            FakeEntity result = queryContext.Find<FakeEntity>("test3");
+            FakeEntity result = await queryContext.FindAsync<FakeEntity>("test3");
 
             // Assert
             Assert.NotNull(result);

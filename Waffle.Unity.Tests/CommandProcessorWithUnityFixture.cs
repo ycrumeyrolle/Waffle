@@ -6,6 +6,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
+    using System.Threading.Tasks;
     using Waffle;
     using Waffle.Commands;
     using Xunit;
@@ -43,7 +44,7 @@
         }
         
         [Fact]
-        public void WhenProcessingCommandWithoutResultThenCommandIsProcessed()
+        public async Task WhenProcessingCommandWithoutResultThenCommandIsProcessed()
         {
             // Arrange
             this.resolver
@@ -57,7 +58,7 @@
             ValidCommand command = new ValidCommand();
 
             // Act
-            processor.Process(command);
+            await processor.ProcessAsync(command);
 
             // Assert
             service.Verify(s => s.Execute(), Times.Once());

@@ -5,7 +5,6 @@
     using System.Collections.Generic;
     using Waffle.Filters;
     using Xunit;
-    using Xunit.Extensions;
 
     public class FilterInfoComparerFixture
     {
@@ -25,7 +24,7 @@
         }
 
         [Theory]
-        [PropertyData("FilterData")]
+        [MemberData("FilterData")]
         public void Compare(FilterInfo x, FilterInfo y, int expectedSign)
         {
             int result = FilterInfoComparer.Instance.Compare(x, y);

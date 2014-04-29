@@ -4,12 +4,13 @@
     using Xunit;
     using Moq;
     using Waffle.Tests.Integration.Orders;
+    using System.Threading.Tasks;
 
     
     public class ProcessingCommandFixture
     {
         [Fact]
-        public async void PlaceOrder_EventsArePublished()
+        public async Task PlaceOrder_EventsArePublished()
         {
             IUnityContainer container = new UnityContainer();
 

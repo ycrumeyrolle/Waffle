@@ -33,10 +33,10 @@
 
         internal Task<TResult> ExecuteAsync()
         {
-            return this.ExecuteAsyncImpl();
+            return this.ExecuteAsyncImpl(null);
         }
 
-        private Task<TResult> ExecuteAsyncImpl()
+        private Task<TResult> ExecuteAsyncImpl(Task ignore)
         {
             if (this.cancellationToken.IsCancellationRequested)
             {
@@ -98,25 +98,20 @@
                 return runningTask;
             }
 
-            if (time < TimeSpan.Zero)
+            TimeSpan zero = TimeSpan.Zero;
+            if (time < zero)
             {
-                time = TimeSpan.Zero;
+                time = zero;
             }
 
             this.onRetrying(this.retryCount, innerException, time);
             this.previousTask = runningTask;
-            if (time > TimeSpan.Zero && (this.retryCount > 1 || !this.fastFirstRetry))
+            if (zero > TimeSpan.Zero && (this.retryCount > 1 || !this.fastFirstRetry))
             {
-                return this.WaitAndExecuteAsync(time);
+                return Task.Delay(zero).ContinueWith<Task<TResult>>(new Func<Task, Task<TResult>>(this.ExecuteAsyncImpl), CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default).Unwrap<TResult>();
             }
 
-            return this.ExecuteAsyncImpl();
-        }
-
-        private async Task<TResult> WaitAndExecuteAsync(TimeSpan time)
-        {
-            await Task.Delay(time, this.cancellationToken);
-            return await this.ExecuteAsyncImpl();
+            return this.ExecuteAsyncImpl(null);
         }
     }
 }

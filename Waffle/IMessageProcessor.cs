@@ -1,6 +1,7 @@
 namespace Waffle
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Dependencies;
@@ -23,25 +24,17 @@ namespace Waffle
         /// Process the command. 
         /// </summary>
         /// <param name="command">The command to process.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <returns>The result of the command.</returns>
-        Task<HandlerResponse> ProcessAsync(ICommand command);
+        Task<HandlerResponse> ProcessAsync(ICommand command, CancellationToken cancellationToken);
 
         /// <summary>
         /// Publish the event. 
         /// </summary>
         /// <param name="event">The event to publish.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <returns>The <see cref="Task"/> of the event.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "event", Justification = "Reviewed")]
-        Task PublishAsync(IEvent @event);
-        
-        /// <summary>
-        /// Asks the the processor to supply a service.
-        /// The service will be created by the <see cref="IDependencyResolver"/>.
-        /// If the ServiceProxyCreationEnabled is <see langword="true"/>, the service will be a proxy.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service to supply.</typeparam>
-        /// <returns>The service.</returns>
-        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Using", Justification = "An other term could be found...")]
-        TService Use<TService>() where TService : class;
+        Task PublishAsync(IEvent @event, CancellationToken cancellationToken);
     }
 }

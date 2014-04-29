@@ -8,7 +8,13 @@
     {
         internal static readonly HandlerResponse Empty = new HandlerResponse();
 
-        private HandlerResponse()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// For testing purpose.
+        /// </remarks>
+        public HandlerResponse()
         {
         }
 

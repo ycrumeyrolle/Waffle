@@ -134,7 +134,7 @@
         /// <param name="handlerContext">
         /// The handler context.
         /// </param>
-        public override void OnEventOccurred(EventHandlerOccuredContext handlerContext)
+        public override void OnEventOccurred(EventHandlerOccurredContext handlerContext)
         {
             if (handlerContext == null)
             {

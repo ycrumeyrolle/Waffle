@@ -9,6 +9,7 @@
     using MongoDB.Driver;
     using MongoDB.Driver.Builders;
     using Waffle.Tasks;
+    using MongoDB.Driver.Linq;
 
     /// <summary>
     /// Represents a store with MongoDB.
@@ -84,9 +85,11 @@
             {
                 MongoCollection<EventWrapper> collection = this.GetCollection();
 
-                IMongoQuery query = Query.EQ("SourceId", sourceId);
-                MongoCursor<EventWrapper> cursor = collection.Find(query);
-                ReadOnlyCollection<IEvent> result = new ReadOnlyCollection<IEvent>(cursor.Select(e => e.Payload).ToList());
+                var events = collection.AsQueryable()
+                    .Where(e => e.SourceId == sourceId)
+                    .Select(e => e.Payload)
+                    .ToList();
+                ReadOnlyCollection<IEvent> result = new ReadOnlyCollection<IEvent>(events);
                 return Task.FromResult<ICollection<IEvent>>(result);
             }
             catch (Exception exception)
