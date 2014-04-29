@@ -155,8 +155,8 @@
                 }
 
                 ExceptionContext exceptionContext = new ExceptionContext(exceptionInfo, ExceptionCatchBlocks.MessageProcessor, request);
-                await this.ExceptionLogger.LogAsync(exceptionContext, request.CancellationTokenSource.Token);
-                HandlerResponse response = await this.ExceptionHandler.HandleAsync(exceptionContext, request.CancellationTokenSource.Token);
+                await this.ExceptionLogger.LogAsync(exceptionContext, request.CancellationToken);
+                HandlerResponse response = await this.ExceptionHandler.HandleAsync(exceptionContext, request.CancellationToken);
 
                 if (response == null)
                 {
@@ -204,7 +204,7 @@
 
             IEventStore eventStore = this.Configuration.Services.GetServiceOrThrow<IEventStore>();
 
-            await eventStore.StoreAsync(@event, currentRequest.CancellationTokenSource.Token);
+            await eventStore.StoreAsync(@event, currentRequest.CancellationToken);
 
             IEventWorker eventWorker = this.Configuration.Services.GetEventWorker();
 
