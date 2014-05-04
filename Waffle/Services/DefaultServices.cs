@@ -15,6 +15,7 @@
     using Waffle.Metadata;
     using Waffle.Properties;
     using Waffle.Queries;
+    using Waffle.Queuing;
     using Waffle.Tracing;
     using Waffle.Validation;
 
@@ -146,6 +147,10 @@
             // Exception handling
             this.SetSingle<IExceptionHandler>(null);
             this.SetMultiple<IExceptionLogger>();
+
+            // Queuing
+            this.SetSingle<ICommandReceiver>(null); 
+            this.SetSingle<ICommandSender>(null);
 
             this.serviceTypesSingle = new HashSet<Type>(this.defaultServicesSingle.Keys);
             this.serviceTypesMulti = new HashSet<Type>(this.defaultServicesMulti.Keys);

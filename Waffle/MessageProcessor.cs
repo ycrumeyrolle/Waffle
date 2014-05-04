@@ -145,6 +145,11 @@
                     ICommandWorker commandWorker = this.Configuration.Services.GetCommandWorker();
                     return await commandWorker.ExecuteAsync(request);
                 }
+                catch (OperationCanceledException)
+                {
+                    // Propogate the canceled task without calling exception loggers or handlers.   
+                    throw;
+                }
                 catch (HandlerResponseException exception)
                 {
                     return exception.Response;

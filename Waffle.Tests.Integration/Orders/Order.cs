@@ -35,8 +35,9 @@
         }
 
         [ExceptionHandler]
+        [Queuing.EnableQueuing]
         public Task HandleAsync(PlaceOrder command)
-        {            
+        {
             this.spy.Spy("PlaceOrder");
 
             if (command.Count > 100)

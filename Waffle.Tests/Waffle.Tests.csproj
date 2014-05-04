@@ -94,8 +94,8 @@
     <Compile Include="Filters\HandlerExecutedContextFixture.cs" />
     <Compile Include="Queries\QueryServiceExtensionsFixture.cs" />
     <Compile Include="Queries\DefaultQueryServiceFixture.cs" />
-    <Compile Include="Queueing\CommandBrokerFixture.cs" />
-    <Compile Include="Queueing\InMemoryCommandQueueFixture.cs" />
+    <Compile Include="Queuing\CommandBrokerFixture.cs" />
+    <Compile Include="Queuing\InMemoryCommandQueueFixture.cs" />
     <Compile Include="Services\ServicesExtensionsFixture.cs" />
     <Compile Include="Services\HandlerServicesFixture.cs" />
     <Compile Include="Services\ServicesContainerFixture.cs" />

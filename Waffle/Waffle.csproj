@@ -155,20 +155,38 @@
     <Compile Include="Events\IEventHandlerInvoker.cs" />
     <Compile Include="ExceptionHandling\ExceptionLoggerContext.cs" />
     <Compile Include="Filters\EventHandlerOccuredContext.cs" />
-    <Compile Include="HandlerRegistrationExtensions.cs" />
+    <Compile Include="HandlerRegistrationExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="HandlerResponse`1.cs" />
     <Compile Include="IAssembliesResolver.cs" />
-    <Compile Include="ICommandReceiver.cs" />
+    <Compile Include="ProcessorConfigurationOverride.cs" />
+    <Compile Include="Queuing\ICommandReceiver.cs" />
     <Compile Include="IHandlerLifetimeProvider.cs" />
     <Compile Include="IServiceProvider.cs" />
     <Compile Include="MessageQueueExtensions.cs" />
     <Compile Include="PerRequestHandlerAttribute.cs" />
     <Compile Include="ProcessorConfigurationErrorHandlingExtensions.cs" />
-    <Compile Include="Queuing\CommandQueueWorker.cs" />
+    <Compile Include="Queuing\CommandQueueWorker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Queuing\DisableQueuingAttribute .cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Queuing\EnableQueuingAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Queuing\ICommandQueueRunner.cs" />
     <Compile Include="Queuing\InMemoryCommandQueue.cs" />
     <Compile Include="Queuing\CommandBroker.cs" />
     <Compile Include="Queuing\CommandQueueRunner.cs" />
+    <Compile Include="Queuing\IQueuePolicyProvider.cs" />
+    <Compile Include="Queuing\NoQueueStrategy.cs" />
+    <Compile Include="Queuing\QueuePolicy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Queuing\QueueStrategy.cs" />
+    <Compile Include="Queuing\QueueStrategyBase.cs" />
     <Compile Include="Results\ICommandHandlerResult.cs" />
     <Compile Include="Results\ResponseMessageResult.cs" />
     <Compile Include="Results\RetryHandlerResult.cs">
@@ -229,7 +247,7 @@
     <Compile Include="Events\EventHandlerDescriptor.cs" />
     <Compile Include="Events\IEventHandlerSelector.cs" />
     <Compile Include="Filters\EventFilterGrouping.cs" />
-    <Compile Include="ICommandSender.cs" />
+    <Compile Include="Queuing\ICommandSender.cs" />
     <Compile Include="Events\IEventPublisher.cs" />
     <Compile Include="Events\IEventProcessor.cs" />
     <Compile Include="Events\IEvent.cs" />

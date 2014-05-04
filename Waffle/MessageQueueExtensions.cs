@@ -1,5 +1,6 @@
 ﻿namespace Waffle
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using Waffle.Commands;
     using Waffle.Internal;
@@ -7,22 +8,74 @@
 
     public static class MessageQueueExtensions
     {
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This has to be made by the caller.")]
-        public static CommandBroker EnableMessageQueuing(this ProcessorConfiguration configuration, int runnerCount)
+        /// <summary>
+        ///  Enables in-memory message queuing.
+        /// </summary>
+        /// <param name="configuration">The <see cref="ProcessorConfiguration"/>.</param>
+        /// <remarks>        
+        /// The runner count is <see cref="Environment.ProcessorsCount"/>.
+        /// </remarks>
+        public static void EnableInMemoryMessageQueuing(this ProcessorConfiguration configuration)
+        {
+            int runnerCount = Environment.ProcessorCount;
+            configuration.EnableInMemoryMessageQueuing(runnerCount);
+        }
+
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose is made later by ProcessorConfiguration.RegisterForDispose().")]
+        public static void EnableInMemoryMessageQueuing(this ProcessorConfiguration configuration, int runnerCount)
         {
             if (configuration == null)
             {
                 throw Error.ArgumentNull("configuration");
             }
 
-            configuration.Services.Replace(typeof(ICommandWorker), new CommandQueueWorker());
+            var innerWorker = configuration.Services.GetCommandWorker();
+            configuration.Services.Replace(typeof(ICommandWorker), new CommandQueueWorker(innerWorker));
 
-            var processor = configuration.Services.GetProcessor();
-            var receiver = configuration.Services.GetCommandReceiver();
-            CommandBroker broker = new CommandBroker(processor, receiver, runnerCount);
-            configuration.RegisterForDispose(broker);
+            InMemoryCommandQueue inMemoryQueue = null;
+            try
+            {
+                inMemoryQueue = new InMemoryCommandQueue();
+                configuration.Services.Replace(typeof(ICommandSender), inMemoryQueue);
+                configuration.Services.Replace(typeof(ICommandReceiver), inMemoryQueue);
+                configuration.RegisterForDispose(inMemoryQueue);
+                inMemoryQueue = null;
+            }
+            finally
+            {
+                if (inMemoryQueue != null)
+                {
+                    inMemoryQueue.Dispose();
+                }
+            }
 
-            return broker;
+            Action<ProcessorConfiguration> defaultInitializer = configuration.Initializer;
+
+            configuration.Initializer = originalConfig =>
+            {
+                MessageProcessor processor = null;
+                try
+                {
+                    CommandHandlerSettings settings = new CommandHandlerSettings(originalConfig);
+                    settings.Services.Replace(typeof(ICommandWorker), innerWorker);
+                    var config = ProcessorConfiguration.ApplyHandlerSettings(settings, originalConfig);
+                    config.Initializer = defaultInitializer;
+                    processor = new MessageProcessor(config);
+                    var receiver = originalConfig.Services.GetCommandReceiver();
+                    originalConfig.CommandBroker = new CommandBroker(processor, receiver, runnerCount);
+                    originalConfig.RegisterForDispose(processor);
+                    processor = null;
+                }
+                finally
+                {
+                    if (processor != null)
+                    {
+                        processor.Dispose();
+                    }
+                }
+
+                defaultInitializer(originalConfig);
+            };
         }
     }
 }

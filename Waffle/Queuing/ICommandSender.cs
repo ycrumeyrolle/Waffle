@@ -1,4 +1,4 @@
-﻿namespace Waffle
+﻿namespace Waffle.Queuing
 {
     using System.Threading;
     using System.Threading.Tasks;

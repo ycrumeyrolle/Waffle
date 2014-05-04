@@ -49,11 +49,16 @@
 
             // This code path only runs if the task is faulted with an exception
             Exception exception = exceptionInfo.SourceException;
+            bool isCancellationException = exception is OperationCanceledException;
 
             ExceptionContext exceptionContext = new ExceptionContext(exceptionInfo, ExceptionCatchBlocks.ExceptionFilter, this.context);
 
-            await this.exceptionLogger.LogAsync(exceptionContext, cancellationToken);
-
+            if (!isCancellationException)   
+            {   
+                // We don't log cancellation exceptions because it doesn't represent an error.   
+                await this.exceptionLogger.LogAsync(exceptionContext, cancellationToken);   
+            }  
+            
             CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(this.context, exceptionInfo);
 
             // Note: exception filters need to be scheduled in the reverse order so that
@@ -64,8 +69,9 @@
                 await exceptionFilter.ExecuteExceptionFilterAsync(executedContext, cancellationToken);
             }
 
-            if (executedContext.Response == null)
+            if (executedContext.Response == null && !isCancellationException)
             {
+                // We don't log cancellation exceptions because it doesn't represent an error. 
                 executedContext.Response = await this.exceptionHandler.HandleAsync(exceptionContext, cancellationToken);
             }
 

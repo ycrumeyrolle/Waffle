@@ -1,4 +1,4 @@
-﻿namespace Waffle.Tests.Queueing
+﻿namespace Waffle.Tests.Queuing
 {
     using Moq;
     using System.Collections.Concurrent;
@@ -14,7 +14,7 @@
         public async Task RunAsync_RequestsAreConsumed()
         {
             // Arrange
-            const int CommandCount = 150000;
+            const int CommandCount = 100;
             var collection = new ConcurrentQueue<ICommand>();
             for (int i = 0; i < CommandCount; i++)
             {
@@ -30,9 +30,9 @@
                 .Returns(Task.FromResult(new HandlerResponse()));
 
             CommandBroker broker = new CommandBroker(processor.Object, queue, 8);
-            broker.Complete();
 
             // Act
+            cancellation.CancelAfter(1000);
             await broker.RunAsync(cancellation.Token);
 
             // Assert

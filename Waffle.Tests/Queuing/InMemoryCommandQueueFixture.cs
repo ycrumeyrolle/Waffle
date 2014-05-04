@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
-using Waffle.Commands;
-using Waffle.Queuing;
-using Xunit;
-
-namespace Waffle.Tests.Queueing
+﻿namespace Waffle.Tests.Queuing
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Waffle.Commands;
+    using Waffle.Queuing;
+    using Xunit;
+
     public class InMemoryCommandQueueFixture
     {
         [Fact]

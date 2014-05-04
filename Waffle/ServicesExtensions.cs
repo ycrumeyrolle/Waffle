@@ -14,6 +14,7 @@
     using Waffle.Internal;
     using Waffle.Metadata;
     using Waffle.Properties;
+    using Waffle.Queuing;
     using Waffle.Services;
     using Waffle.Tracing;
     using Waffle.Validation;
@@ -252,7 +253,7 @@
         {
             Contract.Requires(services != null);
 
-            return services.GetServiceOrThrow<IMessageProcessor>();
+            return services.GetService<IMessageProcessor>();
         }
 
         /// <summary>

@@ -11,6 +11,8 @@
     using Waffle.Validation;
     using System.Diagnostics;
     using Waffle.Filters;
+    using Waffle.Queuing;
+    using System.Threading;
 
     public static class Program
     {
@@ -32,6 +34,8 @@
 
                 using (ProcessorConfiguration config = new ProcessorConfiguration())
                 {
+                    config.DefaultHandlerLifetime = HandlerLifetime.Transient;
+
                     config.RegisterCommandHandler<TestCommand>(async (command) =>
                     {
                         await Task.FromResult(0);
@@ -41,8 +45,6 @@
                     {
                         return await Task.FromResult("test");
                     });
-
-                    config.DefaultHandlerLifetime = HandlerLifetime.Transient;
 
                     //  config.RegisterContainer(container);
                     // config.Services.Replace(typeof(ICommandValidator), new NullValidator());
@@ -58,7 +60,8 @@
 
                     //    config.EnableGlobalExceptionHandler();
 
-                    const int maxIterations = 10000;
+                    const int maxIterations = 1;
+                    config.EnableInMemoryMessageQueuing();
                     using (MessageProcessor processor = new MessageProcessor(config))
                     {
                         processor.ProcessAsync(new TestCommand());
@@ -66,13 +69,26 @@
                         ParallelProcessing(maxIterations, processor);
                         //   SequentialTaskProcessing(maxIterations, processor);
                         //   SequentialTaskProcessingV2(maxIterations, processor);
-                        //  SequentialTaskProcessingV3(maxIterations, processor);                 
+                        //  SequentialTaskProcessingV3(maxIterations, processor);
+
+                        RunCommandBroker(config.CommandBroker);
                     }
+
                 }
 
             //    Console.ReadLine();
             }
         }
+
+        private static void RunCommandBroker(CommandBroker broker)
+        {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            var task = broker.RunAsync(cts.Token);
+            Console.WriteLine("Press any key to stop...");
+            Console.Read();
+            cts.Cancel();
+        }
+
         private static async void SingleProcessing(MessageProcessor processor)
         {
             PlaceOrder command = new PlaceOrder(10);

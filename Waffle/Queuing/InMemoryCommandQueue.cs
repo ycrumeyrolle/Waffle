@@ -21,7 +21,7 @@
             : this(new ConcurrentQueue<ICommand>())
         {
         }
-        
+
         public bool IsCompleted
         {
             get { return this.queue.IsCompleted; }
@@ -35,13 +35,15 @@
 
         public Task<ICommand> ReceiveAsync(CancellationToken cancellationToken)
         {
-            ICommand command;
-            if (this.queue.TryTake(out command, -1, cancellationToken))
+            try
             {
+                ICommand command = this.queue.Take(cancellationToken);
                 return Task.FromResult(command);
             }
-
-            return Task.FromResult<ICommand>(null);
+            catch (OperationCanceledException)
+            {
+                return Task.FromResult<ICommand>(null);
+            }
         }
 
         public void Complete()

@@ -48,7 +48,7 @@
 
         public ModelStateDictionary ModelState
         {
-            get { return this.Request.ModelState; }
+            get { return this.Request != null ? this.Request.ModelState : null; }
         }
 
         /// <summary>

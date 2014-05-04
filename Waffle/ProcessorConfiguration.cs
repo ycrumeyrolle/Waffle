@@ -1,12 +1,14 @@
 ﻿namespace Waffle
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Filters;
     using Waffle.Internal;
+    using Waffle.Queuing;
     using Waffle.Services;
     using Waffle.Tracing;
 
@@ -16,11 +18,11 @@
     public sealed class ProcessorConfiguration : IDisposable
     {
         private readonly HashSet<IDisposable> resourcesToDispose = new HashSet<IDisposable>();
-        
+
         private readonly HandlerFilterCollection filters = new HandlerFilterCollection();
 
         private bool disposed;
-        
+
         private bool initialized;
 
         private Action<ProcessorConfiguration> initializer = DefaultInitializer;
@@ -35,6 +37,8 @@
             this.Services = new DefaultServices(this);
             this.AbortOnInvalidCommand = true;
             this.DefaultHandlerLifetime = HandlerLifetime.Transient;
+            this.DefaultQueuePolicy = QueuePolicy.NoQueue;
+            this.Properties = new ConcurrentDictionary<object, object>();            
         }
 
         private ProcessorConfiguration(ProcessorConfiguration configuration, CommandHandlerSettings settings)
@@ -42,6 +46,8 @@
             this.filters = configuration.Filters;
             this.dependencyResolver = configuration.DependencyResolver;
             this.DefaultHandlerLifetime = configuration.DefaultHandlerLifetime;
+            this.Properties = configuration.Properties;
+            this.CommandBroker = configuration.CommandBroker;
 
             // per-handler settings
             this.Services = settings.Services;
@@ -58,14 +64,14 @@
         /// </summary>
         /// <value><see langword="true"/> if the command should be aborted on invalid command;  false otherwise.</value>
         public bool AbortOnInvalidCommand { get; set; }
-     
+
         /// <summary>
         /// Gets or sets whether the services created with the Use method of the <see cref="MessageProcessor"/> 
         /// shoud be a proxy.
         /// </summary>
         /// <value><see langword="true"/> if the service should be a proxy ; false otherwise.</value>
         public bool ServiceProxyCreationEnabled { get; set; }
-              
+
         /// <summary>
         /// Gets the global <see cref="HandlerFilterCollection"/>.
         /// </summary>
@@ -105,7 +111,7 @@
         /// </summary>
         /// <value>The <see cref="ServicesContainer"/>.</value>
         public ServicesContainer Services { get; private set; }
-        
+
         /// <summary>
         /// Gets or sets the action that will perform final initialization 
         /// of the <see cref="ProcessorConfiguration"/> instance before it is used 
@@ -149,6 +155,21 @@
         /// This value is <see cref="HandlerLifetime.Transient"/> per default.
         /// </remarks>
         public HandlerLifetime DefaultHandlerLifetime { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the default queue policy.
+        /// </summary>
+        /// <remarks>
+        /// This value is <see cref="QueuingPolicy.NoQueue"/> per default.
+        /// </remarks>
+        public QueuePolicy DefaultQueuePolicy { get; set; }
+
+        /// <summary>
+        /// Gets the properties associated with this configuration.
+        /// </summary>
+        public ConcurrentDictionary<object, object> Properties { get; private set; }
+
+        public CommandBroker CommandBroker { get; set; }
 
         /// <summary>Invoke the Intializer hook. It is considered immutable from this point forward. It's safe to call this multiple times.</summary>
         public void EnsureInitialized()
@@ -173,6 +194,11 @@
                 this.Services.Dispose();
                 this.DependencyResolver.Dispose();
 
+                if (this.CommandBroker != null)
+                {
+                    this.CommandBroker.Dispose();
+                }
+
                 foreach (IDisposable resource in this.resourcesToDispose)
                 {
                     resource.Dispose();
@@ -192,7 +218,7 @@
 
             return new ProcessorConfiguration(configuration, settings);
         }
-        
+
         /// <summary>
         /// Adds the given <paramref name="resource"/> to a list of resources that will be disposed once the configuration is disposed.
         /// </summary>

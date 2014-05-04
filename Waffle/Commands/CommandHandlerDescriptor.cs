@@ -12,6 +12,7 @@
     using Waffle.Filters;
     using Waffle.Internal;
     using Waffle.Properties;
+    using Waffle.Queuing;
     using Waffle.Results;
     using Waffle.Tasks;
 
@@ -54,6 +55,7 @@
             this.AddAttributesToCache(handleMethod.GetCustomAttributes(true));
             this.actionExecutor = new Lazy<ActionExecutor>(() => InitializeActionExecutor(handleMethod, commandType));
             this.handlerActivator = this.Configuration.Services.GetHandlerActivator();
+            this.QueuePolicy = this.GetQueuePolicy();
 
             this.Initialize();
         }   
@@ -72,9 +74,16 @@
             this.AddAttributesToCache(handleMethod.GetCustomAttributes(true));
             this.actionExecutor = new Lazy<ActionExecutor>(() => InitializeActionExecutor(handleMethod, commandType));
             this.handlerActivator = this.Configuration.Services.GetHandlerActivator();
+            this.QueuePolicy = this.GetQueuePolicy();
 
             this.Initialize();
         }
+
+        /// <summary>
+        /// Gets the <see cref="QueuePolicy"/>.
+        /// </summary>
+        /// <value>The <see cref="QueuePolicy"/>.</value
+        public QueuePolicy QueuePolicy { get; private set; }
 
         /// <summary>
         /// Gets the handler result type.
@@ -107,6 +116,23 @@
 
                 return this.converter;
             }
+        }
+
+        private QueuePolicy GetQueuePolicy()
+        {
+            var attributesCached = this.AttributesCached.AsArray();
+            int length = attributesCached.Length;
+            for (int i = 0; i < length; i++)
+            {
+                IQueuePolicyProvider queueAttribute = attributesCached[i] as IQueuePolicyProvider;
+                if (queueAttribute != null)
+                {
+                    return queueAttribute.QueuePolicy;
+                }
+            }
+
+            // No attribute were found. Default queuing policy is used
+            return this.Configuration.DefaultQueuePolicy;
         }
 
         internal static Type GetReturnType(MethodInfo methodInfo)
@@ -142,7 +168,7 @@
 
             try
             {
-                return this.actionExecutor.Value.Execute(context);
+                return this.actionExecutor.Value.ExecuteAsync(context);
             }
             catch (Exception e)
             {
@@ -268,7 +294,7 @@
                 this.executor = GetExecutor(methodInfo, commandType);
             }
 
-            public Task<object> Execute(CommandHandlerContext context)
+            public Task<object> ExecuteAsync(CommandHandlerContext context)
             {
                 Contract.Requires(context != null);
 
