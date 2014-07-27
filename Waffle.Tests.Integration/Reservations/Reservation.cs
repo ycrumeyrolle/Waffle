@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Events;
-    using Waffle.Filters;
     using Waffle.Tests.Integration.Orders;
 
     public class Reservation : MessageHandler,

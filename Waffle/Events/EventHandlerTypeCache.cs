@@ -45,7 +45,7 @@
         {
             IAssembliesResolver assembliesResolver = this.configuration.Services.GetAssembliesResolver();
             IEventHandlerTypeResolver eventHandlerTypeResolver = this.configuration.Services.GetEventHandlerTypeResolver();
-            ICollection<Type> handlerTypes = eventHandlerTypeResolver.GetEventHandlerTypes(assembliesResolver);
+            IEnumerable<Type> handlerTypes = eventHandlerTypeResolver.GetEventHandlerTypes(assembliesResolver);
             
             var source = handlerTypes
                 .SelectMany(GetEventHandlerType)

@@ -233,8 +233,8 @@
     {
         private static readonly ConcurrentDictionary<Type, ConcurrentQueue<IStoreable>> Store = new ConcurrentDictionary<Type, ConcurrentQueue<IStoreable>>();
 
-        private readonly IList<IRecipe> recipes = new List<IRecipe>() 
-        {
+        private readonly IList<IRecipe> recipes = new List<IRecipe>
+                                                  {
             new BreadRecipe()
         };
 

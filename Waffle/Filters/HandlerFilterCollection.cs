@@ -54,7 +54,7 @@
         /// <returns>true if the collection contains the specified item; otherwise, false.  </returns>
         public bool Contains(IFilter filter)
         {
-            return this.filters.Any(f => f.Instance == filter);
+            return this.filters.Any(f => f.Instance.Equals(filter));
         }
 
         /// <summary>
@@ -81,7 +81,7 @@
         /// <param name="filter">The item to remove in the collection.</param>
         public void Remove(IFilter filter)
         {
-            this.filters.RemoveAll(f => f.Instance == filter);
+            this.filters.RemoveAll(f => f.Instance.Equals(filter));
         }
 
         private void AddInternal(FilterInfo filter)

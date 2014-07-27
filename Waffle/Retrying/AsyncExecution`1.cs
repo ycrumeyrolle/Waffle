@@ -108,7 +108,7 @@
             this.previousTask = runningTask;
             if (zero > TimeSpan.Zero && (this.retryCount > 1 || !this.fastFirstRetry))
             {
-                return Task.Delay(zero).ContinueWith<Task<TResult>>(new Func<Task, Task<TResult>>(this.ExecuteAsyncImpl), CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default).Unwrap<TResult>();
+                return Task.Delay(zero).ContinueWith<Task<TResult>>(this.ExecuteAsyncImpl, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default).Unwrap<TResult>();
             }
 
             return this.ExecuteAsyncImpl(null);

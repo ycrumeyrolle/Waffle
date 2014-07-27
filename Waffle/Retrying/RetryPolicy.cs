@@ -165,7 +165,7 @@
                 throw Error.ArgumentNull("taskAction");
             }
 
-            return new AsyncExecution(taskAction, this.RetryStrategy.GetShouldRetry(), new Func<Exception, bool>(this.ErrorDetectionStrategy.IsTransient), new Action<int, Exception, TimeSpan>(this.OnRetrying), this.RetryStrategy.FastFirstRetry, cancellationToken).ExecuteAsync();
+            return new AsyncExecution(taskAction, this.RetryStrategy.GetShouldRetry(), this.ErrorDetectionStrategy.IsTransient, this.OnRetrying, this.RetryStrategy.FastFirstRetry, cancellationToken).ExecuteAsync();
         }
 
         /// <summary>

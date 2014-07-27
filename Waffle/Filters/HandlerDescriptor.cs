@@ -9,7 +9,6 @@
     using System.Linq;
     using Waffle.Internal;
     using Waffle.Metadata;
-    using Waffle.Queuing;
     using Waffle.Retrying;
 
     /// <summary>
@@ -77,7 +76,7 @@
         /// Gets the attributes of the handler.
         /// </summary>
         /// <value>The attributes of the handler.</value>
-        protected ICollection<object> AttributesCached
+        protected IEnumerable<object> AttributesCached
         {
             get
             {

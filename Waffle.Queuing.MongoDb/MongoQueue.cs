@@ -16,8 +16,10 @@
 
         private readonly Func<MongoClient> clientFactory;
 
+        private object collectionInitialized;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoEventStore"/> class.
+        /// Initializes a new instance of the <see cref="MongoQueue"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="databaseName">The database name.</param>
@@ -28,7 +30,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoEventStore"/> class.
+        /// Initializes a new instance of the <see cref="MongoQueue"/> class.
         /// </summary>
         /// <param name="clientSettings">The <see cref="MongoClientSettings"/>.</param>
         /// <param name="databaseName">The database name.</param>
@@ -39,7 +41,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoEventStore"/> class.
+        /// Initializes a new instance of the <see cref="MongoQueue"/> class.
         /// </summary>
         /// <param name="url">The MongoURL.</param>
         /// <param name="databaseName">The database name.</param>
@@ -54,7 +56,6 @@
             this.clientFactory = clientFactory;
             this.databaseName = databaseName;
             this.collectionName = collectionName;
-            this.EnsureCollection();
         }
 
         /// <summary>
@@ -63,13 +64,14 @@
         /// <returns>The <see cref="MongoCollection"/>.</returns>
         protected virtual MongoCollection<CommandWrapper> GetCollection()
         {
+            LazyInitializer.EnsureInitialized(ref collectionInitialized, this.EnsureCollection);
             MongoDatabase database = GetDatabase();
 
             MongoCollection<CommandWrapper> collection = database.GetCollection<CommandWrapper>(this.collectionName);
             return collection;
         }
 
-        private void EnsureCollection()
+        private object EnsureCollection()
         {
             MongoDatabase database = GetDatabase();
 
@@ -82,6 +84,8 @@
 
                 database.CreateCollection(this.collectionName, options);
             }
+
+            return new object();
         }
 
         private MongoDatabase GetDatabase()
@@ -95,7 +99,7 @@
         public Task SendAsync(ICommand command, CancellationToken cancellationToken)
         {
             var collection = this.GetCollection();
-            var result = collection.Insert(new CommandWrapper(command));
+            collection.Insert(new CommandWrapper(command));
             return Task.FromResult(0);
         }
 
@@ -107,7 +111,7 @@
                 .FindAs<CommandWrapper>(Query.Null)
                 .SetFlags(QueryFlags.AwaitData | QueryFlags.TailableCursor)
                 .Select(w => w.Payload)
-                .First();
+                .FirstOrDefault();
 
             return Task.FromResult(result);
         }

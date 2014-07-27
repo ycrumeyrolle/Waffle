@@ -33,7 +33,6 @@
             if (context != null)
             {
                 ExceptionContext exceptionContext = context.ExceptionContext;
-                Contract.Assert(exceptionContext != null);
 
                 ExceptionContextCatchBlock catchBlock = exceptionContext.CatchBlock;
 

@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Practices.Unity;
-using Microsoft.Practices.Unity.Configuration;
 using Waffle.Queries;
 
 namespace Waffle.Sample.App_Start
@@ -10,8 +9,7 @@ namespace Waffle.Sample.App_Start
     /// </summary>
     public class UnityConfig
     {
-        #region Unity Container
-        private static Lazy<IUnityContainer> container = new Lazy<IUnityContainer>(() =>
+        private static readonly Lazy<IUnityContainer> container = new Lazy<IUnityContainer>(() =>
         {
             var container = new UnityContainer();
             RegisterTypes(container);
@@ -25,7 +23,6 @@ namespace Waffle.Sample.App_Start
         {
             return container.Value;
         }
-        #endregion
 
         /// <summary>Registers the type mappings with the Unity container.</summary>
         /// <param name="container">The unity container to configure.</param>

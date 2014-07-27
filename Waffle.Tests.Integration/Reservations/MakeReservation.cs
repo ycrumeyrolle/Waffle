@@ -5,7 +5,7 @@
     public class MakeReservation : ICommand
     {
         public MakeReservation()
-        {;
+        {
         }
     }
 }

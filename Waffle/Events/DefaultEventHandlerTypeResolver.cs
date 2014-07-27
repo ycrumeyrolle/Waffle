@@ -38,7 +38,7 @@
         /// <returns>
         /// An <see cref="ICollection{Type}"/> of handlers.
         /// </returns>
-        public ICollection<Type> GetEventHandlerTypes(IAssembliesResolver assembliesResolver)
+        public IEnumerable<Type> GetEventHandlerTypes(IAssembliesResolver assembliesResolver)
         {
             if (assembliesResolver == null)
             {

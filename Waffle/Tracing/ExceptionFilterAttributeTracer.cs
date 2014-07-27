@@ -149,7 +149,7 @@
                 execute: () => this.innerFilter.OnException(handlerExecutedContext), 
                 endTrace: tr =>
                     {
-                        if (handlerExecutedContext.ExceptionInfo != null)
+                        if (handlerExecutedContext.ExceptionInfo == null)
                         {
                             tr.Level = TraceLevel.Info;
                             tr.Exception = null;

@@ -50,7 +50,7 @@
         /// <value>
         /// The inner filter.
         /// </value>
-        public IFilter InnerFilter { get; set; }
+        public IFilter InnerFilter { get; private set; }
 
         /// <summary>
         /// Gets or sets the trace writer.
@@ -58,7 +58,7 @@
         /// <value>
         /// The trace writer.
         /// </value>
-        public ITraceWriter TraceWriter { get; set; }
+        public ITraceWriter TraceWriter { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether allow multiple.

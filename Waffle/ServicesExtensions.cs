@@ -265,7 +265,7 @@
         {
             Contract.Requires(services != null);
 
-            return services.GetService<ITraceManager>();
+            return services.GetServiceOrThrow<ITraceManager>();
         }
 
         /// <summary>

@@ -8,8 +8,8 @@
     using System.Threading.Tasks;
     using MongoDB.Driver;
     using MongoDB.Driver.Builders;
-    using Waffle.Tasks;
     using MongoDB.Driver.Linq;
+    using Waffle.Tasks;
 
     /// <summary>
     /// Represents a store with MongoDB.
@@ -26,9 +26,8 @@
         /// <param name="connectionString">The connection string.</param>
         /// <param name="databaseName">The database name.</param>
         public MongoEventStore(string connectionString, string databaseName)
+            : this(() => new MongoClient(connectionString), databaseName)
         {
-            this.clientFactory = () => new MongoClient(connectionString);
-            this.databaseName = databaseName;
         }
 
         /// <summary>
@@ -37,9 +36,8 @@
         /// <param name="clientSettings">The <see cref="MongoClientSettings"/>.</param>
         /// <param name="databaseName">The database name.</param>
         public MongoEventStore(MongoClientSettings clientSettings, string databaseName)
+            : this(() => new MongoClient(clientSettings), databaseName)
         {
-            this.clientFactory = () => new MongoClient(clientSettings);
-            this.databaseName = databaseName;
         }
 
         /// <summary>
@@ -51,6 +49,13 @@
             : this(MongoClientSettings.FromUrl(url), databaseName)
         {
         }
+
+        public MongoEventStore(Func<MongoClient> clientFactory, string databaseName)
+        {
+            this.clientFactory = clientFactory;
+            this.databaseName = databaseName;
+        }
+
 
         /// <summary>
         /// Stores an event.

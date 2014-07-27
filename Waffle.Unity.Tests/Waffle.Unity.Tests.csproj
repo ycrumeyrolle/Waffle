@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\xunit.core.2.0.0-beta-build2650\build\portable-net45+win+wpa81+wp80\xunit.core.props" Condition="Exists('..\packages\xunit.core.2.0.0-beta-build2650\build\portable-net45+win+wpa81+wp80\xunit.core.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -12,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Waffle.Unity.Tests</RootNamespace>
     <AssemblyName>Waffle.Unity.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SccProjectName>SAK</SccProjectName>
@@ -22,7 +21,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>97a55d96</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>04e0e44f</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,7 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\Waffle.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Waffle.Tests.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -63,13 +62,14 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="xunit.abstractions">
-      <HintPath>..\packages\xunit.abstractions.2.0.0-beta-build2650\lib\net35\xunit.abstractions.dll</HintPath>
+      <HintPath>..\packages\xunit.abstractions.2.0.0-beta-build2700\lib\net35\xunit.abstractions.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="xunit.assert">
-      <HintPath>..\packages\xunit.assert.2.0.0-beta-build2650\lib\portable-net45+win+wpa81+wp80\xunit.assert.dll</HintPath>
+      <HintPath>..\packages\xunit.assert.2.0.0-beta-build2700\lib\portable-net45+win+wpa81+wp80+monoandroid+monotouch10\xunit.assert.dll</HintPath>
     </Reference>
     <Reference Include="xunit.core">
-      <HintPath>..\packages\xunit.core.2.0.0-beta-build2650\lib\portable-net45+win+wpa81+wp80\xunit.core.dll</HintPath>
+      <HintPath>..\packages\xunit.core.2.0.0-beta-build2700\lib\portable-net45+win+wpa81+wp80+monotouch+monoandroid\xunit.core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -78,9 +78,9 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandProcessorWithUnityFixture.cs" />
-    <Compile Include="ConfigurationExtensionsFixture.cs" />
-    <Compile Include="DependencyScopeFixture.cs" />
+    <Compile Include="CommandProcessorWithUnityTests.cs" />
+    <Compile Include="ConfigurationExtensionsTests.cs" />
+    <Compile Include="DependencyScopeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -105,12 +105,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\xunit.core.2.0.0-beta-build2650\build\portable-net45+win+wpa81+wp80\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.0.0-beta-build2650\build\portable-net45+win+wpa81+wp80\xunit.core.props'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

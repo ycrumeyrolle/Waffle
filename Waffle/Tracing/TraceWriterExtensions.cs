@@ -708,7 +708,7 @@
                 request,
                 category,
                 level,
-                (TraceRecord traceRecord) =>
+                traceRecord =>
                 {
                     traceRecord.Kind = TraceKind.Begin;
                     traceRecord.Operator = operatorName;
@@ -748,7 +748,7 @@
                     request,
                     category,
                     level,
-                    (TraceRecord traceRecord) =>
+                    traceRecord =>
                     {
                         traceRecord.Kind = TraceKind.End;
                         traceRecord.Operator = operatorName;
@@ -768,7 +768,7 @@
                         request,
                         category,
                         TraceLevel.Warn,
-                        (TraceRecord traceRecord) =>
+                        traceRecord =>
                         {
                             traceRecord.Kind = TraceKind.End;
                             traceRecord.Operator = operatorName;
@@ -850,7 +850,7 @@
             request,
             category,
             level,
-            (TraceRecord traceRecord) =>
+            traceRecord =>
             {
                 traceRecord.Kind = TraceKind.Begin;
                 traceRecord.Operator = operatorName;
@@ -890,7 +890,7 @@
                         request,
                         category,
                         level,
-                        (TraceRecord traceRecord) =>
+                        traceRecord =>
                         {
                             traceRecord.Kind = TraceKind.End;
                             traceRecord.Operator = operatorName;
@@ -908,7 +908,7 @@
                         request,
                         category,
                         TraceLevel.Warn,
-                        (TraceRecord traceRecord) =>
+                        traceRecord =>
                         {
                             traceRecord.Kind = TraceKind.End;
                             traceRecord.Operator = operatorName;

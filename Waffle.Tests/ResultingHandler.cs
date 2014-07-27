@@ -1,9 +1,7 @@
 ﻿namespace Waffle.Tests
 {
     using System.Diagnostics;
-    using System.Threading.Tasks;
     using Waffle.Commands;
-    using Waffle.Filters;
     using Waffle.Tests.Commands;
 
     public class ResultingCommandHandler : MessageHandler, ICommandHandler<ResultingCommand, string>

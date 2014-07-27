@@ -16,8 +16,8 @@
         /// The <see cref="IAssembliesResolver"/>.
         /// </param>
         /// <returns>
-        /// An <see cref="ICollection{Type}"/> of handlers.
+        /// An <see cref="IEnumerable{Type}"/> of handlers.
         /// </returns>
-        ICollection<Type> GetEventHandlerTypes(IAssembliesResolver assembliesResolver);
+        IEnumerable<Type> GetEventHandlerTypes(IAssembliesResolver assembliesResolver);
     }
 }

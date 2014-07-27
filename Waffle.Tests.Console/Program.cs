@@ -1,18 +1,17 @@
 ﻿namespace Waffle.Tests.Console
 {
     using System;
+    using System.Diagnostics;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Practices.Unity;
-    using Moq;
     using Waffle;
     using Waffle.Commands;
+    using Waffle.Filters;
+    using Waffle.Queuing;
     using Waffle.Tests.Integration;
     using Waffle.Tests.Integration.Orders;
     using Waffle.Validation;
-    using System.Diagnostics;
-    using Waffle.Filters;
-    using Waffle.Queuing;
-    using System.Threading;
 
     public static class Program
     {
@@ -36,7 +35,7 @@
                 {
                     config.DefaultHandlerLifetime = HandlerLifetime.Transient;
 
-                    config.RegisterCommandHandler<TestCommand>(async (command) =>
+                    config.RegisterCommandHandler<TestCommand>(async command =>
                     {
                         await Task.FromResult(0);
                     });
@@ -98,7 +97,7 @@
         private static void ParallelProcessing(int maxIterations, MessageProcessor processor)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            Parallel.For(0, maxIterations, async (i) =>
+            Parallel.For(0, maxIterations, async i =>
             {
                 PlaceOrder command = new PlaceOrder(1);
                 await processor.ProcessAsync(command);

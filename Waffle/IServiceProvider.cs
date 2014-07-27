@@ -1,6 +1,7 @@
 ﻿namespace Waffle
 {
     using System.Diagnostics.CodeAnalysis;
+    using Waffle.Dependencies;
 
     public interface IServiceProvider
     {

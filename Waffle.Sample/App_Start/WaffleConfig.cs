@@ -1,13 +1,8 @@
-﻿using Effort;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Waffle.Queries;
-using Waffle.Sample.Controllers;
-
-namespace Waffle.Sample
+﻿namespace Waffle.Sample
 {
+    using Effort;
+    using Waffle.Sample.Controllers;
+
     public static class WaffleConfig
     {
         public static void Register(ProcessorConfiguration config)

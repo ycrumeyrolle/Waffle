@@ -2,14 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Microsoft.Practices.Unity;
-    using Waffle.Commands;
     using Waffle.Dependencies;
-    using Waffle.Events;
-    using Waffle.Filters;
     using Waffle.Internal;
 
     /// <summary>
@@ -142,25 +137,6 @@
         protected static DependencyScope CreateScope(IUnityContainer container)
         {
             return new DependencyScope(container);
-        }
-
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The object is return to caller.")]
-        private static LifetimeManager GetLifetimeManager(HandlerLifetime handlerLifetime)
-        {
-            switch (handlerLifetime)
-            {
-                case HandlerLifetime.Transient:
-                    return new TransientLifetimeManager();
-
-                case HandlerLifetime.PerRequest:
-                    return new HierarchicalLifetimeManager();
-
-                case HandlerLifetime.Singleton:
-                    return new ContainerControlledLifetimeManager();
-                    
-                default:
-                    throw new InvalidEnumArgumentException("handlerLifetime", (int)handlerLifetime, typeof(HandlerLifetime));
-            }
         }
     }
 }

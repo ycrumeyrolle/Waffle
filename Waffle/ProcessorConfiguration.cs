@@ -247,7 +247,7 @@
             // further changes.  As a default service, we know it
             // must be present.
             ITraceManager traceManager = configuration.Services.GetTraceManager();
-            Contract.Assert(traceManager != null);
+            
             traceManager.Initialize(configuration);
         }
     }

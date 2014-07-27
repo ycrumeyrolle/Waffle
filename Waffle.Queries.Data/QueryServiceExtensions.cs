@@ -1,9 +1,9 @@
-﻿namespace Waffle.Queries
+﻿namespace Waffle
 {
     using System;
     using System.Data.Entity;
     using Waffle.Internal;
-    using Waffle;
+    using Waffle.Queries;
     using Waffle.Queries.Data;
 
     /// <summary>
