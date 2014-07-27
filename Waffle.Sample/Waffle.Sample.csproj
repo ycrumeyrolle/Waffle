@@ -71,6 +71,7 @@
     <Reference Include="Microsoft.Practices.Unity.WebApi">
       <HintPath>..\packages\Unity.AspNet.WebApi.3.0.1304.0\lib\Net45\Microsoft.Practices.Unity.WebApi.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NMemory, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6a46696d54971e6d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NMemory.1.0.0-beta9\lib\net45\NMemory.dll</HintPath>
@@ -89,6 +90,7 @@
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -166,6 +168,16 @@
     <Compile Include="App_Start\WaffleConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Crafts\CraftsAreaRegistration.cs" />
+    <Compile Include="Areas\Crafts\Domain\BakerReady.cs" />
+    <Compile Include="Areas\Crafts\Domain\Bread.cs" />
+    <Compile Include="Areas\Crafts\Domain\Bucket.cs" />
+    <Compile Include="Areas\Crafts\Domain\Cereal.cs" />
+    <Compile Include="Areas\Crafts\Domain\Field.cs" />
+    <Compile Include="Areas\Crafts\Domain\Flour.cs" />
+    <Compile Include="Areas\Crafts\Domain\ProduceCommand.cs" />
+    <Compile Include="Areas\Crafts\Domain\Seed.cs" />
+    <Compile Include="Areas\Crafts\Domain\Well.cs" />
+    <Compile Include="Areas\Crafts\Domain\Wheat.cs" />
     <Compile Include="Areas\Crafts\Models\Class1.cs" />
     <Compile Include="Controllers\ConferenceDbContext.cs" />
     <Compile Include="Controllers\ConferenceEntity.cs" />
