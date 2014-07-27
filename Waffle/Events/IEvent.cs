@@ -7,6 +7,10 @@
     /// </summary>
     public interface IEvent
     {
+    }
+
+    public interface ISourceable
+    {
         /// <summary>
         /// Gets the identifier of the source originating the event.
         /// </summary>

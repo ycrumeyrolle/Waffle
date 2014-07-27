@@ -135,6 +135,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CollectionExtensions.cs" />
+    <Compile Include="EventHandler.cs" />
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Commands\CommandHandlerDescriptor.cs" />
     <Compile Include="Commands\CommandHandlerDescriptor`1.cs" />

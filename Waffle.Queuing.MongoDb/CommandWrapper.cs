@@ -1,17 +1,18 @@
-﻿namespace Waffle.Events.MongoDb
+﻿namespace Waffle.Queuing.MongoDb
 {
     using System;
+    using Waffle.Commands;
 
     /// <summary>
-    /// Represents a wrapper to store an event in MongoDB.
+    /// Represents a wrapper to store a command in MongoDB.
     /// </summary>
-    public class EventWrapper
+    public class CommandWrapper
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EventWrapper"/> class.
         /// </summary>
         /// <param name="payload">The payload to wrap.</param>
-        public EventWrapper(IEvent payload)
+        public CommandWrapper(ICommand payload)
         {
             if (payload == null)
             {
@@ -20,16 +21,6 @@
 
             this.Id = Guid.NewGuid();
             this.CreationDate = DateTime.Now;
-            ISourceable sourceable = payload as ISourceable;
-            if (sourceable != null)
-            {
-                this.SourceId = sourceable.SourceId;
-            }
-            else
-            {
-                this.SourceId = Guid.NewGuid();
-            }
-            
             this.Payload = payload;
         }
 
@@ -37,12 +28,7 @@
         /// Gets or sets the event id.
         /// </summary>
         public Guid Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the source id.
-        /// </summary>
-        public Guid SourceId { get; set; }
-        
+                
         /// <summary>
         /// Gets or sets the creation date.
         /// </summary>
@@ -51,6 +37,6 @@
         /// <summary>
         /// Gets or sets the payload.
         /// </summary>
-        public IEvent Payload { get; set; }
+        public ICommand Payload { get; set; }
     }
 }
