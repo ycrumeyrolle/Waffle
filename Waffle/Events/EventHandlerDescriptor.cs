@@ -125,6 +125,7 @@
         private static ActionExecutor InitializeActionExecutor(MethodInfo methodInfo, Type eventType)
         {
             Contract.Requires(methodInfo != null);
+            Contract.Requires(eventType != null);
 
             if (methodInfo.ContainsGenericParameters)
             {

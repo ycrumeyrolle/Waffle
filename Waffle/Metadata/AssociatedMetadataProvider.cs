@@ -126,6 +126,7 @@ namespace Waffle.Metadata
 
         private PropertyInformation CreatePropertyInformation(Type containerType, PropertyDescriptor property)
         {
+            Contract.Requires(containerType != null);
             Contract.Requires(property != null);
 
             PropertyInformation info = new PropertyInformation();

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using Waffle.Dependencies;
     using Waffle.ExceptionHandling;
@@ -36,6 +37,7 @@
         /// </summary>
         /// <param name="serviceType">The service type.</param>
         /// <returns>The first instance of the service, or null if the service is not found.</returns>
+        [Pure]
         public abstract object GetService(Type serviceType);
 
         /// <summary>
@@ -44,6 +46,7 @@
         /// <param name="serviceType">The service type.</param>
         /// <returns>The list of service instances of the given type. Returns an empty enumeration if the
         /// service is not found. </returns>
+        [Pure]
         public abstract IEnumerable<object> GetServices(Type serviceType);
 
         /// <summary>
@@ -55,6 +58,7 @@
         /// <returns>
         /// True if the service is singular. 
         /// </returns>
+        [Pure]
         public abstract bool IsSingleService(Type serviceType);
 
         /// <summary>
@@ -109,6 +113,7 @@
         /// <param name="match">The delegate that defines the conditions of the element
         /// to search for. </param>
         /// <returns>The zero-based index of the first occurrence, if found; otherwise, -1.</returns>
+        [Pure]
         public int FindIndex(Type serviceType, Predicate<object> match)
         {
             if (serviceType == null)
@@ -342,6 +347,7 @@
         /// <param name="serviceType">The service type.</param>
         /// <returns>The list of service instances of the given type. </returns>
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "expose for mutation")]
+        [Pure]
         protected abstract List<object> GetServiceInstances(Type serviceType);
 
         /// <summary>

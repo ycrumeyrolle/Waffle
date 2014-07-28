@@ -43,6 +43,9 @@
 
         private ProcessorConfiguration(ProcessorConfiguration configuration, CommandHandlerSettings settings)
         {
+            Contract.Requires(configuration != null);
+            Contract.Requires(settings != null);
+            
             this.filters = configuration.Filters;
             this.dependencyResolver = configuration.DependencyResolver;
             this.DefaultHandlerLifetime = configuration.DefaultHandlerLifetime;
@@ -246,6 +249,7 @@
             // because it alters the configuration and expects no
             // further changes.  As a default service, we know it
             // must be present.
+            Contract.Requires(configuration != null);
             ITraceManager traceManager = configuration.Services.GetTraceManager();
             
             traceManager.Initialize(configuration);

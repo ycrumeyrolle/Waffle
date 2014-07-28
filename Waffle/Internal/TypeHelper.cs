@@ -22,6 +22,7 @@
         internal static Type GetTaskInnerTypeOrNull(Type type)
         {
             Contract.Requires(type != null);
+
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
             {
                 Type genericTypeDefinition = type.GetGenericTypeDefinition();

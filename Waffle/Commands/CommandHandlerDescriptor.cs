@@ -179,6 +179,7 @@
         private static ActionExecutor InitializeActionExecutor(MethodInfo methodInfo, Type commandType)
         {
             Contract.Requires(methodInfo != null);
+            Contract.Requires(commandType != null);
 
             if (methodInfo.ContainsGenericParameters)
             {

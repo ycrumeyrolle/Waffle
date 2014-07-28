@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using Waffle.Internal;
 
@@ -30,6 +31,8 @@
 
         private static bool AllowsMultiple(Type attributeType)
         {
+            Contract.Requires(attributeType != null);
+
             return FilterAttribute.AttributeUsageCache.GetOrAdd(attributeType, type => type.GetCustomAttributes<AttributeUsageAttribute>(true).First().AllowMultiple);
         }
     }

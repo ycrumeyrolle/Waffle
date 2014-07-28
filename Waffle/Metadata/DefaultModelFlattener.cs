@@ -164,9 +164,9 @@ namespace Waffle.Metadata
         // Visits a single node (not including children)
         private static void ShallowVisit(ModelMetadata metadata, VisitContext visitContext)
         {
+            Contract.Requires(metadata != null);
+            Contract.Requires(visitContext != null);
             Contract.Requires(visitContext.KeyBuilders != null);
-
-            Contract.Requires(visitContext != null); 
             
             string key = visitContext.RootPrefix;
             foreach (IKeyBuilder keyBuilder in visitContext.KeyBuilders.Reverse())

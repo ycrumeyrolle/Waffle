@@ -26,6 +26,9 @@
 
         private static void CreateAllTracers(ProcessorConfiguration configuration, ITraceWriter traceWriter)
         {
+            Contract.Requires(configuration != null);
+            Contract.Requires(traceWriter != null);
+
             CreateCommandHandlerSelectorTracer(configuration, traceWriter);
             CreateCommandHandlerActivatorTracer(configuration, traceWriter);
             CreateHandlerValidatorTracer(configuration, traceWriter);

@@ -57,6 +57,7 @@
         private bool ValidateNodeAndChildren(ModelMetadata metadata, ValidationContext validationContext, object container)
         {
             Contract.Requires(metadata != null);
+            Contract.Requires(validationContext != null);
 
             object model;
             try

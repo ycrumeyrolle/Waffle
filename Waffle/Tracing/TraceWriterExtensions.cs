@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
     using Waffle.Properties;
 
@@ -1003,6 +1004,7 @@
 
         private static void TraceError(this ITraceWriter traceWriter, Exception exception, HandlerRequest request, string category, string operatorName, string operationName, Action<TraceRecord> errorTrace)
         {
+            Contract.Requires(traceWriter != null);
             traceWriter.Trace(
                 request,
                 category,
