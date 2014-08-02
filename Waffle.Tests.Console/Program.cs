@@ -40,9 +40,9 @@
                         await Task.FromResult(0);
                     });
 
-                    config.RegisterCommandHandler<TestCommand2, string>(async command =>
+                    config.RegisterCommandHandler<TestCommand2>(async command =>
                     {
-                        return await Task.FromResult("test");
+                        await Task.FromResult(0);
                     });
 
                     //  config.RegisterContainer(container);

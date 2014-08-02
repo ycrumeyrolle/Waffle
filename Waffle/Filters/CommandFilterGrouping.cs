@@ -39,10 +39,18 @@
             }
         }
 
-        private static IEnumerable<T> SelectAvailable<T>(IEnumerable<FilterInfo> filters)
+        private static IEnumerable<T> SelectAvailable<T>(IList<FilterInfo> filters) where T : class
         {
             Contract.Requires(filters != null);
-            return filters.Where(f => (f.Instance is T)).Select(f => (T)f.Instance);
+            for (int index = 0; index < filters.Count; index++)
+            {
+                FilterInfo f = filters[index];
+                T instance = f.Instance as T;
+                if (instance != null)
+                {
+                    yield return instance;
+                }
+            }
         }
     }
 }
