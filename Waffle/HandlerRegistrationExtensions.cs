@@ -35,6 +35,7 @@ namespace Waffle
             RegisterCommandHandlerCore(config, handler);
         }
 
+#if LOOSE_CQRS
         /// <summary>
         /// Registers a dynamic command handler.
         /// </summary>
@@ -57,6 +58,7 @@ namespace Waffle
 
             RegisterCommandHandlerCore(config, handler);
         }
+#endif
 
         private static void RegisterCommandHandlerCore<TCommand>(ProcessorConfiguration config, Func<TCommand, Task> handler) where TCommand : ICommand
         {

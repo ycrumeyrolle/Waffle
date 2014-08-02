@@ -11,7 +11,6 @@
         /// <summary>
         /// Creates an <see cref="HandlerResponse"/>.
         /// </summary>
-        /// <typeparam name="TResult">The value result type.</typeparam>
         /// <param name="request">The command request.</param>
         /// <returns>An <see cref="HandlerResponse"/> </returns>
         public static HandlerResponse CreateResponse(this CommandHandlerRequest request)

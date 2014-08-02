@@ -67,75 +67,7 @@
             return new HandlerResponse<TResult>(response);
         }
 #endif
-
-        ///////// <summary>
-        ///////// Process the command. 
-        ///////// </summary>
-        ///////// <param name="processor">The message processor.</param>
-        ///////// <param name="command">The command to process.</param>
-        ///////// <returns>The result of the command.</returns>
-        //////public static HandlerResponse<TResult> Process<TResult>(this IMessageProcessor processor, ICommand command)
-        //////{
-        //////    if (processor == null)
-        //////    {
-        //////        throw Error.ArgumentNull("processor");
-        //////    }
-
-        //////    return processor.Process<TResult>(command, default(CancellationToken));
-        //////}
-
-        ///////// <summary>
-        ///////// Process the command. 
-        ///////// </summary>
-        ///////// <param name="processor">The message processor.</param>
-        ///////// <param name="command">The command to process.</param>
-        ///////// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
-        ///////// <returns>The result of the command.</returns>
-        //////public static HandlerResponse<TResult> Process<TResult>(this IMessageProcessor processor, ICommand command, CancellationToken cancellationToken)
-        //////{
-        //////    if (processor == null)
-        //////    {
-        //////        throw Error.ArgumentNull("processor");
-        //////    }
-
-        //////    Task<HandlerResponse<TResult>> task = processor.ProcessAsync<TResult>(command, cancellationToken);
-        //////    return task.Result;
-        //////}
-
-        ///////// <summary>
-        ///////// Process the command. 
-        ///////// </summary>
-        ///////// <param name="processor">The message processor.</param>
-        ///////// <param name="command">The command to process.</param>
-        ///////// <returns>The result of the command.</returns>
-        //////public static HandlerResponse Process(this IMessageProcessor processor, ICommand command)
-        //////{
-        //////    if (processor == null)
-        //////    {
-        //////        throw Error.ArgumentNull("processor");
-        //////    }
-
-        //////    return processor.Process(command, default(CancellationToken));
-        //////}
-
-        ///////// <summary>
-        ///////// Process the command. 
-        ///////// </summary>
-        ///////// <param name="processor">The message processor.</param>
-        ///////// <param name="command">The command to process.</param>
-        ///////// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
-        ///////// <returns>The result of the command.</returns>
-        //////public static HandlerResponse Process(this IMessageProcessor processor, ICommand command, CancellationToken cancellationToken)
-        //////{
-        //////    if (processor == null)
-        //////    {
-        //////        throw Error.ArgumentNull("processor");
-        //////    }
-
-        //////    Task<HandlerResponse> task = processor.ProcessAsync(command, cancellationToken);
-        //////    return task.Result;
-        //////}
-
+        
         /// <summary>
         /// Publish the event. 
         /// </summary>
