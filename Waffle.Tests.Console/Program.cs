@@ -79,10 +79,10 @@
             }
         }
 
-        private static void RunCommandBroker(CommandBroker broker)
+        private static void RunCommandBroker(CommandRunner broker)
         {
             CancellationTokenSource cts = new CancellationTokenSource();
-            var task = broker.RunAsync(cts.Token);
+            var task = broker.StartAsync(cts.Token);
             Console.WriteLine("Press any key to stop...");
             Console.Read();
             cts.Cancel();

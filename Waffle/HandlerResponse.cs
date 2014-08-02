@@ -4,48 +4,77 @@
     using Waffle.Commands;
     using Waffle.Validation;
 
+    /// <summary>
+    /// Represents the response of a <see cref="ICommandHandler{TCommand}"/>.
+    /// </summary>
     public class HandlerResponse
     {
-        internal static readonly HandlerResponse Empty = new HandlerResponse();
+        /// <summary>
+        /// Represents an empty response. This field is readonly.
+        /// </summary>
+        public static readonly HandlerResponse Empty = new HandlerResponse();
 
         /// <summary>
-        /// 
+        /// Initializes a new instance of the <see cref="HandlerResponse"/> class. 
         /// </summary>
-        /// <remarks>
-        /// For testing purpose.
-        /// </remarks>
-        public HandlerResponse()
+        private HandlerResponse()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerResponse"/> class. 
+        /// </summary>
+        /// <param name="request">The request.</param>
         public HandlerResponse(CommandHandlerRequest request)
             : this(request, null, null)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerResponse"/> class. 
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="value">The response value.</param>
         public HandlerResponse(CommandHandlerRequest request, object value)
             : this(request, null, value)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerResponse"/> class representing an exception. 
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="exception">The response exception.</param>
         public HandlerResponse(CommandHandlerRequest request, Exception exception)
             : this(request, exception, null)
         {
         }
 
-        public HandlerResponse(CommandHandlerRequest request, Exception exception, object value)
+        private HandlerResponse(CommandHandlerRequest request, Exception exception, object value)
         {
             this.Request = request;
             this.Exception = exception;
             this.Value = value;
         }
 
-        public CommandHandlerRequest Request { get; protected set; }
+        /// <summary>
+        /// Gets the request.
+        /// </summary>
+        public CommandHandlerRequest Request { get; private set; }
 
-        public Exception Exception { get; protected set; }
+        /// <summary>
+        /// Gets the exception. Can be null.
+        /// </summary>
+        public Exception Exception { get; private set; }
 
-        public object Value { get; set; }
+        /// <summary>
+        /// Gets the response value.
+        /// </summary>
+        public object Value { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="ModelStateDictionary"/> of the corresponding command.
+        /// </summary>
         public ModelStateDictionary ModelState
         {
             get { return this.Request != null ? this.Request.ModelState : null; }

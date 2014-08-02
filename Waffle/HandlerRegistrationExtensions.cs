@@ -9,8 +9,17 @@ namespace Waffle
     using Waffle.Events;
     using Waffle.Internal;
 
+    /// <summary>
+    /// Provides extension methods for the handlers.
+    /// </summary>
     public static class HandlerRegistrationExtensions
     {
+        /// <summary>
+        /// Registers a dynamic command handler.
+        /// </summary>
+        /// <typeparam name="TCommand">The type of the <see cref="ICommand"/>.</typeparam>
+        /// <param name="config">The configuration.</param>
+        /// <param name="handler">The <see cref="Func{TCommand, Task}"/> delegate.</param>
         public static void RegisterCommandHandler<TCommand>(this ProcessorConfiguration config, Func<TCommand, Task> handler) where TCommand : ICommand
         {
             if (config == null)
@@ -26,6 +35,13 @@ namespace Waffle
             RegisterCommandHandlerCore(config, handler);
         }
 
+        /// <summary>
+        /// Registers a dynamic command handler.
+        /// </summary>
+        /// <typeparam name="TCommand">The type of the <see cref="ICommand"/>.</typeparam>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="config">The configuration.</param>
+        /// <param name="handler">The <see cref="Func{TCommand, Task}"/> delegate.</param>
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Required for Task<TResult> pattern.")]
         public static void RegisterCommandHandler<TCommand, TResult>(this ProcessorConfiguration config, Func<TCommand, Task<TResult>> handler) where TCommand : ICommand
         {
@@ -51,6 +67,12 @@ namespace Waffle
             mapping.Add(typeof(TCommand), new CommandHandlerDescriptor<TCommand>(config, typeof(TCommand), handler));
         }
 
+        /// <summary>
+        /// Registers a dynamic event handler.
+        /// </summary>
+        /// <typeparam name="TEvent">The type of the <see cref="IEvent"/>.</typeparam>
+        /// <param name="config">The configuration.</param>
+        /// <param name="handler">The <see cref="Func{TEvent, Task}"/> delegate.</param>
         public static void RegisterEventHandler<TEvent>(this ProcessorConfiguration config, Func<TEvent, Task> handler) where TEvent : IEvent
         {
             if (config == null)

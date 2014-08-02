@@ -9,7 +9,10 @@
     {
     }
 
-    public interface ISourceable
+    /// <summary>
+    /// Represents a sourceable event message. 
+    /// </summary>
+    public interface ISourceableEvent
     {
         /// <summary>
         /// Gets the identifier of the source originating the event.

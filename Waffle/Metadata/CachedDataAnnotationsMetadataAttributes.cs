@@ -28,6 +28,10 @@ namespace Waffle.Metadata
         /// <value>The metadata display attribute.</value>
         public DisplayAttribute Display { get; protected set; }
 
+        /// <summary>
+        /// Gets or sets the metadata display name attribute. 
+        /// </summary>
+        /// <value>The metadata display name attribute.</value>
         public DisplayNameAttribute DisplayName { get; protected set; }
 
         private void CacheAttributes(IEnumerable<Attribute> attributes)

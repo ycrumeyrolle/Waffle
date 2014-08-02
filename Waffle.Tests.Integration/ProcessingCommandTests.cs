@@ -68,7 +68,7 @@
                     await processor.ProcessAsync(command);
 
                     CancellationTokenSource cts = new CancellationTokenSource(5);
-                    await config.CommandBroker.RunAsync(cts.Token);
+                    await config.CommandBroker.StartAsync(cts.Token);
 
                     // commands assertions
                     spy.Verify(s => s.Spy("PlaceOrder"), Times.Once());

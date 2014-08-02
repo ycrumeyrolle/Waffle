@@ -6,6 +6,9 @@
     using Waffle.Internal;
     using Waffle.Queuing;
 
+    /// <summary>
+    /// Provides extension methods for message queueing.
+    /// </summary>
     public static class MessageQueueExtensions
     {
         /// <summary>
@@ -13,7 +16,7 @@
         /// </summary>
         /// <param name="configuration">The <see cref="ProcessorConfiguration"/>.</param>
         /// <remarks>        
-        /// The runner count is <see cref="Environment.ProcessorsCount"/>.
+        /// The runner count is <see cref="M:Environment.ProcessorsCount"/>.
         /// </remarks>
         public static void EnableInMemoryMessageQueuing(this ProcessorConfiguration configuration)
         {
@@ -62,7 +65,7 @@
                     config.Initializer = defaultInitializer;
                     processor = new MessageProcessor(config);
                     var receiver = originalConfig.Services.GetCommandReceiver();
-                    originalConfig.CommandBroker = new CommandBroker(processor, receiver, runnerCount);
+                    originalConfig.CommandBroker = new CommandRunner(processor, receiver, runnerCount);
                     originalConfig.RegisterForDispose(processor);
                     processor = null;
                 }

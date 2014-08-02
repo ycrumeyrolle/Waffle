@@ -64,7 +64,7 @@
         /// <returns>The <see cref="MongoCollection"/>.</returns>
         protected virtual MongoCollection<CommandWrapper> GetCollection()
         {
-            LazyInitializer.EnsureInitialized(ref collectionInitialized, this.EnsureCollection);
+            LazyInitializer.EnsureInitialized(ref this.collectionInitialized, this.EnsureCollection);
             MongoDatabase database = GetDatabase();
 
             MongoCollection<CommandWrapper> collection = database.GetCollection<CommandWrapper>(this.collectionName);

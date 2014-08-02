@@ -8,6 +8,9 @@
     [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "This interface is similar to the EventHandler from .Net.")]
     public interface IEventHandler
     {
+        /// <summary>
+        /// Gets the <see cref="EventHandlerContext"/>.
+        /// </summary>
         EventHandlerContext EventContext { get; set; }
     }
 

@@ -20,7 +20,7 @@
 
             this.Id = Guid.NewGuid();
             this.CreationDate = DateTime.Now;
-            ISourceable sourceable = payload as ISourceable;
+            ISourceableEvent sourceable = payload as ISourceableEvent;
             if (sourceable != null)
             {
                 this.SourceId = sourceable.SourceId;

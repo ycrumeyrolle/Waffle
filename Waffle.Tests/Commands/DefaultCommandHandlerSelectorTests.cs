@@ -141,10 +141,10 @@
                 throw new NotImplementedException();
             }
         }
-
-        private class BadCommandHandler : MessageHandler, ICommandHandler<BadCommand, string>
+        
+        private class BadCommandHandler : MessageHandler, ICommandHandler<BadCommand>
         {
-            public string Handle(BadCommand command)
+            public void Handle(BadCommand command)
             {
                 throw new NotImplementedException();
             }

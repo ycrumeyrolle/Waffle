@@ -4,9 +4,13 @@
     using System.Threading.Tasks;
     using Waffle.Commands;
 
-    public sealed class QueueStrategy : QueueStrategyBase
+    /// <summary>
+    /// Represents a strategy that enqueue the requests.
+    /// </summary>
+    public sealed class QueueStrategy : IQueueStrategy
     {
-        public override async Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request, CancellationToken cancellationToken)
+        /// <inheritdocs />
+        public async Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request, CancellationToken cancellationToken)
         {
             ICommandSender sender = request.Configuration.Services.GetCommandSender();
             await sender.SendAsync(request.Command, cancellationToken);

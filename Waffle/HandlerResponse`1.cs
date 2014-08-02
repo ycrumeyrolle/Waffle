@@ -1,14 +1,21 @@
 ﻿namespace Waffle
 {
     using System;
+    using Waffle.Commands;
     using Waffle.Internal;
 
+    /// <summary>
+    /// Represents the response of a <see cref="ICommandHandler{TCommand}"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class HandlerResponse<T>
     {
         private readonly HandlerResponse response;
-
-        internal static readonly HandlerResponse<T> Empty = new HandlerResponse<T>(HandlerResponse.Empty);
-
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerResponse"/> class. 
+        /// </summary>
+        /// <param name="response">The inner <see cref="HandlerResponse"/>.</param>
         public HandlerResponse(HandlerResponse response)
         {
             if (response == null)
@@ -19,6 +26,9 @@
             this.response = response;
         }
 
+        /// <summary>
+        /// Gets the request.
+        /// </summary>
         public HandlerRequest Request
         {
             get
@@ -27,6 +37,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the raised exception if any.
+        /// </summary>
         public Exception Exception
         {
             get
@@ -35,6 +48,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the response value.
+        /// </summary>
         public T Value
         {
             get

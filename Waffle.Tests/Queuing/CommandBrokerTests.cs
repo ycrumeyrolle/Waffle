@@ -27,13 +27,13 @@
             CancellationTokenSource cancellation = new CancellationTokenSource();
             processor
                 .Setup(p => p.ProcessAsync(It.IsAny<CommandToQueue>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(new HandlerResponse()));
+                .Returns(Task.FromResult(HandlerResponse.Empty));
 
-            CommandBroker broker = new CommandBroker(processor.Object, queue, 8);
+            CommandRunner broker = new CommandRunner(processor.Object, queue, 8);
 
             // Act
             cancellation.CancelAfter(1000);
-            await broker.RunAsync(cancellation.Token);
+            await broker.StartAsync(cancellation.Token);
 
             // Assert
             processor.Verify(p => p.ProcessAsync(It.IsAny<CommandToQueue>(), It.IsAny<CancellationToken>()), Times.Exactly(CommandCount));

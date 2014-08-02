@@ -7,7 +7,7 @@ namespace Waffle.Commands
     /// <summary>
     /// A converter for creating a response from actions that do not return a value.
     /// </summary>
-    public class VoidResultConverter : IHandlerResultConverter
+    internal class VoidResultConverter : IHandlerResultConverter
     {
         public HandlerResponse Convert(CommandHandlerContext context, object handlerResult)
         {

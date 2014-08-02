@@ -79,8 +79,14 @@
         /// <value>The message <see cref="System.Type"/>.</value>
         public Type MessageType { get; protected set; }
 
+        /// <summary>
+        /// Gets the <see cref="CancellationToken"/>.
+        /// </summary>
         public CancellationToken CancellationToken { get; private set; }
 
+        /// <summary>
+        /// Gets the properties associated to the request.
+        /// </summary>
         public Dictionary<string, object> Properties { get; private set; }
 
         /// <summary>

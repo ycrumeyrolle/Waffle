@@ -11,6 +11,9 @@
 
         private static Lazy<MessageProcessor> defaultProcessor = GlobalProcessorConfiguration.CreateDefaultProcessor();
 
+        /// <summary>
+        /// Gets the default <see cref="ProcessorConfiguration"/>.
+        /// </summary>
         public static ProcessorConfiguration Configuration
         {
             get

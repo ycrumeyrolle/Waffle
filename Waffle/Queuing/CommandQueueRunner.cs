@@ -6,7 +6,7 @@
     using Waffle.Commands;
     using Waffle.Internal;
 
-    public class CommandQueueRunner
+    internal class CommandQueueRunner
     {
         private readonly ICommandReceiver receiver;
 

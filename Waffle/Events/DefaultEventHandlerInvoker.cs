@@ -5,8 +5,12 @@
     using System.Threading.Tasks;
     using Waffle.Internal;
 
+    /// <summary>
+    /// Default implementation of the <see cref="IEventHandlerInvoker"/> interface.
+    /// </summary>
     public class DefaultEventHandlerInvoker : IEventHandlerInvoker
     {
+        /// <inheritdocs />
         public virtual Task InvokeHandlerAsync(EventHandlerContext context, CancellationToken cancellationToken)
         {
             if (context == null)

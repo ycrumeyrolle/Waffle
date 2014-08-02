@@ -172,7 +172,7 @@
         /// </summary>
         public ConcurrentDictionary<object, object> Properties { get; private set; }
 
-        public CommandBroker CommandBroker { get; set; }
+        public CommandRunner CommandBroker { get; set; }
 
         /// <summary>Invoke the Intializer hook. It is considered immutable from this point forward. It's safe to call this multiple times.</summary>
         public void EnsureInitialized()

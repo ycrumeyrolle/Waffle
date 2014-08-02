@@ -9,8 +9,10 @@
     /// </summary>
     public abstract class MessageHandler : ICommandHandler, IEventHandler
     {
+        /// <inheritdocs />
         public CommandHandlerContext CommandContext { get; set; }
 
+        /// <inheritdocs />
         public EventHandlerContext EventContext { get; set; }
     }
 }

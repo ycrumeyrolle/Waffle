@@ -16,7 +16,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandQueueWorker"/> class.
         /// </summary>
-        /// <param name="configuration"></param>
+        /// <param name="inner">The inner worker.</param>
         public CommandQueueWorker(ICommandWorker inner)
         {
             this.inner = inner;

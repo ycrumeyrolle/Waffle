@@ -122,10 +122,6 @@
     <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -167,7 +163,6 @@
     <Compile Include="ProcessorConfigurationOverride.cs" />
     <Compile Include="Queuing\ICommandReceiver.cs" />
     <Compile Include="IHandlerLifetimeProvider.cs" />
-    <Compile Include="IServiceProvider.cs" />
     <Compile Include="MessageQueueExtensions.cs" />
     <Compile Include="PerRequestHandlerAttribute.cs" />
     <Compile Include="ProcessorConfigurationErrorHandlingExtensions.cs" />
@@ -180,9 +175,9 @@
     <Compile Include="Queuing\EnableQueuingAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Queuing\ICommandQueueRunner.cs" />
+    <Compile Include="Queuing\ICommandRunner.cs" />
     <Compile Include="Queuing\InMemoryCommandQueue.cs" />
-    <Compile Include="Queuing\CommandBroker.cs" />
+    <Compile Include="Queuing\CommandRunner.cs" />
     <Compile Include="Queuing\CommandQueueRunner.cs" />
     <Compile Include="Queuing\IQueuePolicyProvider.cs" />
     <Compile Include="Queuing\NoQueueStrategy.cs" />
@@ -190,7 +185,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Queuing\QueueStrategy.cs" />
-    <Compile Include="Queuing\QueueStrategyBase.cs" />
+    <Compile Include="Queuing\IQueueStrategy.cs" />
     <Compile Include="Results\ICommandHandlerResult.cs" />
     <Compile Include="Results\ResponseMessageResult.cs" />
     <Compile Include="Results\RetryHandlerResult.cs">
@@ -428,6 +423,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
   </ItemGroup>
@@ -441,7 +437,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <StyleCopMSBuildTargetsFile>..\packages\StyleCop.MSBuild.4.7.44.1\tools\StyleCop.targets</StyleCopMSBuildTargetsFile>
+    <StyleCopMSBuildTargetsFile>..\packages\StyleCop.MSBuild.4.7.49.0\build\StyleCop.MSBuild.Targets</StyleCopMSBuildTargetsFile>
   </PropertyGroup>
   <Import Condition="Exists('$(StyleCopMSBuildTargetsFile)')" Project="$(StyleCopMSBuildTargetsFile)" />
   <PropertyGroup>

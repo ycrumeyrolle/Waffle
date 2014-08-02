@@ -3,10 +3,14 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Commands;
-    
-    public sealed class NoQueueStrategy : QueueStrategyBase
+   
+    /// <summary>
+    /// Represents a strategy that do not enqueue the requests.
+    /// </summary>
+    public sealed class NoQueueStrategy : IQueueStrategy
     {
-        public override Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request, CancellationToken cancellationToken)
+        /// <inheritdocs />
+        public Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request, CancellationToken cancellationToken)
         {
             return Task.FromResult<HandlerResponse>(null);
         }

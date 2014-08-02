@@ -7,7 +7,7 @@ namespace Waffle.Commands
     /// A converter for creating responses from actions that return an arbitrary T value.
     /// </summary>
     /// <typeparam name="T">The declared return type of an action.</typeparam>
-    public class ValueResultConverter<T> : IHandlerResultConverter
+    internal class ValueResultConverter<T> : IHandlerResultConverter
     {
         public HandlerResponse Convert(CommandHandlerContext context, object handlerResult)
         {

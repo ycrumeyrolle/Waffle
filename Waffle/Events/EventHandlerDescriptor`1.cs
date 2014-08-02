@@ -4,6 +4,9 @@
     using System.Reflection;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Provides information about the event handler method.
+    /// </summary>
     public class EventHandlerDescriptor<TEvent> : EventHandlerDescriptor where TEvent : IEvent
     {
         /// <summary>

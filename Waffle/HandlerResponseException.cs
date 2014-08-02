@@ -5,6 +5,10 @@
     using Waffle.Internal;
     using Waffle.Properties;
 
+    /// <summary>
+    /// Represents error that occur during command execution.
+    /// Raise this exception to abort the execution flow and returns a specific <see cref="HandlerResponse"/>.
+    /// </summary>
     [SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable", Justification = "This type is not meant to be serialized")]
     [SuppressMessage("Microsoft.Usage", "CA2240:Implement ISerializable correctly", Justification = "This type has no serializable state")]
     [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors", Justification = "HandlerResponseException is not a real exception and is just an easy way to return HandlerResponse")]

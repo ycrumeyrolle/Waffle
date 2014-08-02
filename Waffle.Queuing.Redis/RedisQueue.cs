@@ -23,6 +23,15 @@
             //   this.connection = ConnectionMultiplexer.Connect("localhost");
         }
 
+        public bool IsCompleted
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public void Complete()
+        {
+            throw new NotImplementedException();
+        }
 
         public Task SendAsync(ICommand command, CancellationToken cancellationToken)
         {
@@ -42,16 +51,6 @@
         public void Dispose()
         {
             this.client.Dispose();
-        }
-
-        public bool IsCompleted
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public void Complete()
-        {
-            throw new NotImplementedException();
         }
     }
 }

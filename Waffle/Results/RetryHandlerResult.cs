@@ -24,6 +24,7 @@
             this.innerResult = innerResult;
         }
 
+        /// <inheritdocs />
         public Task<HandlerResponse> ExecuteAsync(CancellationToken cancellationToken)
         {
             return this.retryPolicy.ExecuteAsync(() => this.innerResult.ExecuteAsync(cancellationToken), cancellationToken);
