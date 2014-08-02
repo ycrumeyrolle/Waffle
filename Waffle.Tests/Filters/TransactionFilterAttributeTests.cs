@@ -35,8 +35,8 @@
             HandlerRequest request = new HandlerRequest(this.config, null);
             CommandHandlerContext executingContext = new CommandHandlerContext();
 
-            executingContext.SetResponse("OK");
             CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(executingContext, null);
+            executingContext.Response = new HandlerResponse(null);
 
             // Act
             filter.OnCommandExecuting(executingContext);
@@ -75,7 +75,7 @@
             Exception exception = new Exception();
             ExceptionDispatchInfo exceptionInfo = ExceptionDispatchInfo.Capture(exception);
             CommandHandlerExecutedContext executedContext = new CommandHandlerExecutedContext(executingContext, exceptionInfo);
-            executingContext.SetResponse("Exception handled");
+            executingContext.Response = new HandlerResponse(null);
 
             // Act
             filter.OnCommandExecuting(executingContext);

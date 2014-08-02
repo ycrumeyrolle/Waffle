@@ -1,9 +1,10 @@
-﻿namespace Waffle
+﻿#if LOOSE_CQRS
+namespace Waffle
 {
     using System;
     using Waffle.Commands;
     using Waffle.Internal;
-
+    
     /// <summary>
     /// Represents the response of a <see cref="ICommandHandler{TCommand}"/>.
     /// </summary>
@@ -60,3 +61,4 @@
         }
     }
 }
+#endif

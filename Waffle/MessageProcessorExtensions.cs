@@ -28,6 +28,7 @@
             return processor.ProcessAsync(command, default(CancellationToken));
         }
 
+#if LOOSE_CQRS
         /// <summary>
         /// Process the command. 
         /// </summary>
@@ -44,7 +45,9 @@
 
             return processor.ProcessAsync<TResult>(command, default(CancellationToken));
         }
-        
+#endif
+
+#if LOOSE_CQRS
         /// <summary>
         /// Process the command. 
         /// </summary>
@@ -63,6 +66,7 @@
             var response = await processor.ProcessAsync(command, cancellationToken);
             return new HandlerResponse<TResult>(response);
         }
+#endif
 
         ///////// <summary>
         ///////// Process the command. 

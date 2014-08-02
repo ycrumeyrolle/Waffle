@@ -7,7 +7,19 @@
     /// Contains extension methods for the handler request.
     /// </summary>
     public static class HandlerRequestExtensions
-    {
+    {    
+        /// <summary>
+        /// Creates an <see cref="HandlerResponse"/>.
+        /// </summary>
+        /// <typeparam name="TResult">The value result type.</typeparam>
+        /// <param name="request">The command request.</param>
+        /// <returns>An <see cref="HandlerResponse"/> </returns>
+        public static HandlerResponse CreateResponse(this CommandHandlerRequest request)
+        {
+            return new HandlerResponse(request);
+        }
+
+#if LOOSE_CQRS
         /// <summary>
         /// Creates an <see cref="HandlerResponse"/>.
         /// </summary>
@@ -19,6 +31,7 @@
         {
             return new HandlerResponse(request, value);
         }
+#endif
 
         /// <summary>
         /// Create an error <see cref="HandlerResponse"/>.

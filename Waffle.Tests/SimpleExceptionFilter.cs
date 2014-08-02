@@ -27,7 +27,7 @@ namespace Waffle.Tests
             base.OnException(handlerExecutedContext);
             if (this.handle)
             {
-                handlerExecutedContext.Response = handlerExecutedContext.Request.CreateResponse(true);
+                handlerExecutedContext.Response = handlerExecutedContext.Request.CreateResponse();
                 Trace.WriteLine("Exception handled by  " + this.name);
             }
         }

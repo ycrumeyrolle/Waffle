@@ -24,6 +24,7 @@
             Assert.Same(context.ExceptionInfo.SourceException, exception);
         }
 
+#if LOOSE_CQRS
         [Fact]
         public void WhenSettingResultThenResultIsDefined()
         {
@@ -40,5 +41,6 @@
             // Assert
             Assert.Equal(context.Response.Value, value);
         }
+#endif
     }
 }

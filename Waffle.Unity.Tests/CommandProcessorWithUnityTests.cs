@@ -30,26 +30,26 @@
                 .Returns(new[] { typeof(ValidCommandHandler) });
             this.configuration.Services.Replace(typeof(ICommandHandlerTypeResolver), this.resolver.Object);
             var service = new Mock<ISimpleService>();
-            
+
             this.container.RegisterInstance(service.Object);
             MessageProcessor processor = this.CreateTestableProcessor();
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = await processor.ProcessAsync<string>(command);
+            await processor.ProcessAsync(command);
 
             // Assert
-            Assert.Equal("OK", result.Value);
             service.Verify(s => s.Execute(), Times.Once());
         }
         
+#if LOOSE_CQRS
         [Fact]
         public async Task WhenProcessingCommandWithoutResultThenCommandIsProcessed()
         {
             // Arrange
             this.resolver
                 .Setup(r => r.GetCommandHandlerTypes(It.IsAny<IAssembliesResolver>()))
-                .Returns(new[] { typeof(ValidCommandHandlerWithoutResult) });
+                .Returns(new[] { typeof(ValidCommandHandlerWithResult) });
             this.configuration.Services.Replace(typeof(ICommandHandlerTypeResolver), this.resolver.Object);
             var service = new Mock<ISimpleService>();
 
@@ -63,6 +63,7 @@
             // Assert
             service.Verify(s => s.Execute(), Times.Once());
         }
+#endif
         
         private MessageProcessor CreateTestableProcessor(ProcessorConfiguration config = null)
         {
@@ -101,9 +102,10 @@
             public string Property { get; set; }
         }
 
-        public class ValidCommandHandler : CommandHandler, ICommandHandler<ValidCommand, string>
+#if LOOSE_CQRS
+        public class ValidCommandHandlerWithResult : CommandHandler, ICommandHandler<ValidCommand, string>
         {
-            public ValidCommandHandler(ISimpleService service)
+            public ValidCommandHandlerWithResult(ISimpleService service)
             {
                 this.Service = service;
             }
@@ -116,10 +118,11 @@
                 return "OK";
             }
         }
+#endif
 
-        public class ValidCommandHandlerWithoutResult : CommandHandler, ICommandHandler<ValidCommand>
+        public class ValidCommandHandler : CommandHandler, ICommandHandler<ValidCommand>
         {
-            public ValidCommandHandlerWithoutResult(ISimpleService service)
+            public ValidCommandHandler(ISimpleService service)
             {
                 this.Service = service;
             }

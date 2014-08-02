@@ -1,3 +1,4 @@
+//#if LOOSE_CQRS
 namespace Waffle.Commands
 {
     using Waffle.Filters;
@@ -24,7 +25,8 @@ namespace Waffle.Commands
             }
 
             T value = (T)handlerResult;
-            return context.Request.CreateResponse(value);
+            return context.Request.CreateResponse(/*value*/);
         }
     }
 }
+//#endif

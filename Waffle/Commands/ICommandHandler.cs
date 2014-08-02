@@ -18,6 +18,7 @@
         void Handle(TCommand command);
     }
 
+#if LOOSE_CQRS
     /// <summary>
     /// Represents a command handler. 
     /// </summary>
@@ -33,6 +34,7 @@
         /// <returns>The result object.</returns>
         TResult Handle(TCommand command);
     }
+#endif
 
     /// <summary>
     /// Represents a command handler. 
@@ -44,7 +46,8 @@
         /// </summary>
         CommandHandlerContext CommandContext { get; set; }
     }
-
+    
+#if LOOSE_CQRS
     /// <summary>
     /// Represents a command handler. 
     /// </summary>
@@ -58,4 +61,5 @@
         /// <returns>The result object.</returns>
         Task<TResult> HandleAsync(TCommand command);
     }
+#endif
 }

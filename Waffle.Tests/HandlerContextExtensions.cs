@@ -1,4 +1,5 @@
-﻿namespace Waffle.Tests
+﻿#if LOOSE_CQRS
+namespace Waffle.Tests
 {
     using Waffle.Filters;
 
@@ -14,3 +15,4 @@
         }
     }
 }
+#endif

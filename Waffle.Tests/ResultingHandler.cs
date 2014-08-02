@@ -3,7 +3,8 @@
     using System.Diagnostics;
     using Waffle.Commands;
     using Waffle.Tests.Commands;
-
+    
+#if LOOSE_CQRS
     public class ResultingCommandHandler : MessageHandler, ICommandHandler<ResultingCommand, string>
     {
         public  string Handle(ResultingCommand command)
@@ -15,4 +16,5 @@
             return command.Property1 + " - " + command.Property2;
         }
     }
+#endif
 }

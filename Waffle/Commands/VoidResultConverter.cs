@@ -17,7 +17,7 @@ namespace Waffle.Commands
             }
 
             Contract.Assert(handlerResult == null);
-            return context.Request.CreateResponse(default(VoidResult));
+            return context.Request.CreateResponse();
         }
     }
 }

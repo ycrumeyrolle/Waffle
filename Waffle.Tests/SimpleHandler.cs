@@ -13,6 +13,8 @@
         }
     }
 
+    
+#if LOOSE_CQRS
     public class SimpleCommandHandler2 : MessageHandler, ICommandHandler<SimpleCommand2, string>
     {
         public string Handle(SimpleCommand2 command)
@@ -24,4 +26,5 @@
             return "RESULT";
         }
     }
+#endif
 }

@@ -61,15 +61,14 @@
         public async Task WhenProcessingValidCommandThenCommandIsProcessed()
         {
             // Arrange
-            var handler = this.SetupHandler<ValidCommand, string>(null, "OK");
+            var handler = this.SetupHandler<ValidCommand>();
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = await processor.ProcessAsync<string>(command);
+            var result = await processor.ProcessAsync(command);
 
             // Assert
-            Assert.Equal("OK", result.Value);
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
 
@@ -77,7 +76,7 @@
         public async Task WhenProcessingCommandWithoutResultThenCommandIsProcessed()
         {
             // Arrange
-            var handler = this.SetupHandler<ValidCommand, string>(null, "OK");
+            var handler = this.SetupHandler<ValidCommand>();
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
@@ -96,25 +95,24 @@
             spy.Setup(s => s.Spy("MultipleCommand1"));
             spy.Setup(s => s.Spy("MultipleCommand2"));
             MultipleCommandCommandHandler commandCommandHandler = new MultipleCommandCommandHandler(spy.Object);
-            this.SetupHandler<MultipleCommand1, string>(commandCommandHandler);
+            this.SetupHandler<MultipleCommand1>(commandCommandHandler);
             MessageProcessor processor = this.CreatTestableProcessor();
             MultipleCommand1 command1 = new MultipleCommand1();
             MultipleCommand2 command2 = new MultipleCommand2();
-            MultipleCommand2 command3 = new MultipleCommand2();
 
             // Act & assert
-            await processor.ProcessAsync<string>(command1);
+            await processor.ProcessAsync(command1);
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Never());
 
             // Handler must be configured now to avoid incorrect descriptor creation
-            this.SetupHandler<MultipleCommand2, string>(commandCommandHandler);
-            await processor.ProcessAsync<string>(command2);
+            this.SetupHandler<MultipleCommand2>(commandCommandHandler);
+            await processor.ProcessAsync(command2);
 
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Once());
 
-            await processor.ProcessAsync<string>(command2);
+            await processor.ProcessAsync(command2);
             spy.Verify(h => h.Spy("MultipleCommand1"), Times.Once());
             spy.Verify(h => h.Spy("MultipleCommand2"), Times.Exactly(2));
         }
@@ -123,7 +121,7 @@
         public void WhenProcessingThrowExceptionWithoutFilterThenThrowsException()
         {
             // Arrange
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>();
+            var handler = this.SetupThrowingHandler<ValidCommand, Exception>();
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
@@ -139,7 +137,7 @@
             Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter.Setup(f => f.OnException(It.IsAny<CommandHandlerExecutedContext>()));
             this.configuration.Filters.Add(exceptionFilter.Object);
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>();
+            var handler = this.SetupThrowingHandler<ValidCommand, Exception>();
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
@@ -156,21 +154,19 @@
             Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter
                 .Setup(f => f.OnException(It.IsAny<CommandHandlerExecutedContext>()))
-                .Callback<CommandHandlerExecutedContext>(c => c.Response = c.Request.CreateResponse("Exception !!"));
+                .Callback<CommandHandlerExecutedContext>(c => c.Response = c.Request.CreateResponse());
             ProcessorConfiguration config = new ProcessorConfiguration();
             config.Filters.Add(exceptionFilter.Object);
 
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>(config);
+            var handler = this.SetupThrowingHandler<ValidCommand, Exception>(config);
 
             MessageProcessor processor = this.CreatTestableProcessor(config);
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = await processor.ProcessAsync<string>(command);
+            await processor.ProcessAsync(command);
 
             exceptionFilter.Verify(f => f.OnException(It.IsAny<CommandHandlerExecutedContext>()), Times.Once());
-            Assert.Equal("Exception !!", result.Value);
-
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
 
@@ -181,17 +177,16 @@
             Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter
                 .Setup(f => f.OnException(It.IsAny<CommandHandlerExecutedContext>()))
-                .Callback<CommandHandlerExecutedContext>(c => c.Response = c.Request.CreateResponse("Exception !!"));
+                .Callback<CommandHandlerExecutedContext>(c => c.Response = c.Request.CreateResponse());
             this.configuration.Filters.Add(exceptionFilter.Object);
 
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>();
+            var handler = this.SetupThrowingHandler<ValidCommand, Exception>();
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = await processor.ProcessAsync<string>(command);
+            await processor.ProcessAsync(command);
 
-            Assert.Equal("Exception !!", result.Value);
             exceptionFilter.Verify(f => f.OnException(It.IsAny<CommandHandlerExecutedContext>()), Times.Once());
 
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
@@ -201,20 +196,17 @@
         public async Task WhenProcessingWithFiltersThenReturnsValueTransformedByFilters()
         {
             // Arrange
-            var filter1 = this.SetupFilter("X");
-            var filter2 = this.SetupFilter("Y");
+            var filter1 = this.SetupFilter();
+            var filter2 = this.SetupFilter();
 
-            var handler = this.SetupHandler<ValidCommand, string>(null, "OK");
+            var handler = this.SetupHandler<ValidCommand>();
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = await processor.ProcessAsync<string>(command);
+            var result = await processor.ProcessAsync(command);
 
-            Assert.NotNull(result.Value);
-            Assert.True(result.Value.Contains("OK"));
-            Assert.True(result.Value.Contains("X"));
-            Assert.True(result.Value.Contains("Y"));
+            Assert.NotNull(result);
 
             filter1.Verify(f => f.OnCommandExecutingAsync(It.IsAny<CommandHandlerContext>(), It.IsAny<CancellationToken>()), Times.Once());
             filter1.Verify(f => f.OnCommandExecutedAsync(It.IsAny<CommandHandlerExecutedContext>(), It.IsAny<CancellationToken>()), Times.Once());
@@ -229,20 +221,19 @@
         public async Task WhenProcessingWithFilterSettingValueThenReturnsValueFromFilter()
         {
             // Arrange
-            var filter1 = this.SetupFilter("X", (c, t) => 
+            var filter1 = this.SetupFilter((c, t) => 
             {
-                c.Response = c.Request.CreateResponse("OK from filter");
+                c.Response = c.Request.CreateResponse();
                 return TaskHelpers.Completed();
             });
 
-            var handler = this.SetupHandler<ValidCommand, string>(null, "OK");
+            var handler = this.SetupHandler<ValidCommand>();
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = await processor.ProcessAsync<string>(command);
+            await processor.ProcessAsync(command);
 
-            Assert.Equal("OK from filter", result.Value);
             filter1.Verify(f => f.OnCommandExecutingAsync(It.IsAny<CommandHandlerContext>(), It.IsAny<CancellationToken>()), Times.Once());
             filter1.Verify(f => f.OnCommandExecutedAsync(It.IsAny<CommandHandlerExecutedContext>(), It.IsAny<CancellationToken>()), Times.Never());
 
@@ -257,21 +248,21 @@
             Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter
                 .Setup(f => f.OnException(It.IsAny<CommandHandlerExecutedContext>()))
-                .Callback<CommandHandlerExecutedContext>(c => c.Response = c.Request.CreateResponse("Exception !!"));
+                .Callback<CommandHandlerExecutedContext>(c => c.Response = c.Request.CreateResponse());
             this.configuration.Filters.Add(exceptionFilter.Object);
 
-            var filter1 = this.SetupFilter("X");
-            var filter2 = this.SetupFilter("Y");
+            var filter1 = this.SetupFilter();
+            var filter2 = this.SetupFilter();
 
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>();
+            var handler = this.SetupThrowingHandler<ValidCommand, Exception>();
 
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = await processor.ProcessAsync<string>(command);
+            var result = await processor.ProcessAsync(command);
 
-            Assert.Equal("Exception !!", result.Value);
+            Assert.NotNull(result);
             filter1.Verify(f => f.OnCommandExecutingAsync(It.IsAny<CommandHandlerContext>(), It.IsAny<CancellationToken>()), Times.Once());
             filter1.Verify(f => f.OnCommandExecutedAsync(It.IsAny<CommandHandlerExecutedContext>(), It.IsAny<CancellationToken>()), Times.Once());
 
@@ -288,24 +279,23 @@
             Mock<ExceptionFilterAttribute> exceptionFilter = new Mock<ExceptionFilterAttribute>(MockBehavior.Strict);
             exceptionFilter
                 .Setup(f => f.OnException(It.IsAny<CommandHandlerExecutedContext>()))
-                .Callback<CommandHandlerExecutedContext>(c => c.Response = c.Request.CreateResponse("Exception !!"));
+                .Callback<CommandHandlerExecutedContext>(c => c.Response = c.Request.CreateResponse());
             this.configuration.Filters.Add(exceptionFilter.Object);
 
-            var filter1 = this.SetupFilter("X");
-            var filter2 = this.SetupFilter("Y");
-            var filter3 = this.SetupFilter("Z");
+            var filter1 = this.SetupFilter();
+            var filter2 = this.SetupFilter();
+            var filter3 = this.SetupFilter();
 
 
-            var handler = this.SetupThrowingHandler<ValidCommand, string, Exception>();
+            var handler = this.SetupThrowingHandler<ValidCommand, Exception>();
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
 
             // Act
-            var result = await processor.ProcessAsync<string>(command);
+            var result = await processor.ProcessAsync(command);
 
             // Assert
-            // Exception filter overrides result of handler filters
-            Assert.Equal("Exception !!", result.Value);
+            Assert.NotNull(result);
             filter1.Verify(f => f.OnCommandExecutingAsync(It.IsAny<CommandHandlerContext>(), It.IsAny<CancellationToken>()), Times.Once());
             filter1.Verify(f => f.OnCommandExecutedAsync(It.IsAny<CommandHandlerExecutedContext>(), It.IsAny<CancellationToken>()), Times.Once());
 
@@ -318,7 +308,7 @@
             handler.Verify(h => h.Handle(It.IsAny<ValidCommand>()), Times.Once());
         }
 
-        private Mock<CommandHandlerFilterAttribute> SetupFilter(string value, Func<CommandHandlerContext, CancellationToken, Task> executingCallback = null, Func<CommandHandlerExecutedContext, CancellationToken, Task> executedCallback = null)
+        private Mock<CommandHandlerFilterAttribute> SetupFilter(Func<CommandHandlerContext, CancellationToken, Task> executingCallback = null, Func<CommandHandlerExecutedContext, CancellationToken, Task> executedCallback = null)
         {
             executingCallback = executingCallback ?? ((_, t) => TaskHelpers.Completed());
             executedCallback = executedCallback ?? ((_, t) => TaskHelpers.Completed());
@@ -333,8 +323,7 @@
                 {
                     if (c.ExceptionInfo == null)
                     {
-                        var previous = c.Response != null ? c.Response.Value : string.Empty;
-                        c.Response = new HandlerResponse(c.Request, previous + value);
+                        c.Response = new HandlerResponse(c.Request);
                     }
 
                     return executedCallback(c, t);
@@ -342,11 +331,11 @@
             this.configuration.Filters.Add(filter.Object);
             return filter;
         }
-
-        private Mock<ICommandHandler<TCommand, TResult>> SetupHandlerImpl<TCommand, TResult>(ProcessorConfiguration config = null) where TCommand : ICommand
+        
+        private Mock<ICommandHandler<TCommand>> SetupHandlerImpl<TCommand>(ProcessorConfiguration config = null) where TCommand : ICommand
         {
             config = config ?? this.configuration;
-            Mock<ICommandHandler<TCommand, TResult>> handler = new Mock<ICommandHandler<TCommand, TResult>>(MockBehavior.Strict);
+            Mock<ICommandHandler<TCommand>> handler = new Mock<ICommandHandler<TCommand>>(MockBehavior.Strict);
             Mock<ICommandHandlerActivator> activator = new Mock<ICommandHandlerActivator>(MockBehavior.Strict);
             activator
                 .Setup(a => a.Create(It.IsAny<CommandHandlerRequest>(), It.IsAny<CommandHandlerDescriptor>()))
@@ -360,12 +349,11 @@
                 .Returns(descriptor);
 
             config.Services.Replace(typeof(ICommandHandlerSelector), selector.Object);
-
-
+            
             return handler;
         }
 
-        private MessageHandler SetupHandlerImpl<TCommand, TResult>(MessageHandler commandHandler) where TCommand : ICommand
+        private MessageHandler SetupHandlerImpl<TCommand>(MessageHandler commandHandler) where TCommand : ICommand
         {
             ProcessorConfiguration config = this.configuration;
             Mock<ICommandHandlerActivator> activator = new Mock<ICommandHandlerActivator>(MockBehavior.Strict);
@@ -385,66 +373,40 @@
             return commandHandler;
         }
 
-        private Mock<ICommandHandler<TCommand, object>> SetupThrowingHandler<TCommand, TException>(ProcessorConfiguration config = null)
+        private Mock<ICommandHandler<TCommand>> SetupThrowingHandler<TCommand, TException>(ProcessorConfiguration config = null)
             where TCommand : ICommand
             where TException : Exception, new()
         {
-            Mock<ICommandHandler<TCommand, object>> handler = this.SetupHandlerImpl<TCommand, object>(config);
-            handler
-                .Setup(h => h.Handle(It.IsAny<TCommand>()))
-                .Throws<TException>();
-            return handler;
-        }
-
-        private Mock<ICommandHandler<TCommand, TResult>> SetupThrowingHandler<TCommand, TResult, TException>(ProcessorConfiguration config = null)
-            where TCommand : ICommand
-            where TException : Exception, new()
-            where TResult : class
-        {
-            Mock<ICommandHandler<TCommand, TResult>> handler = this.SetupHandlerImpl<TCommand, TResult>(config);
+            Mock<ICommandHandler<TCommand>> handler = this.SetupHandlerImpl<TCommand>(config);
             handler
                 .Setup(h => h.Handle(It.IsAny<TCommand>()))
                 .Throws<TException>();
             handler.SetupAllProperties();
             return handler;
         }
-
-        private Mock<ICommandHandler<TCommand, TResult>> SetupHandler<TCommand, TResult>(ProcessorConfiguration config = null, TResult result = null)
+        
+        private Mock<ICommandHandler<TCommand>> SetupHandler<TCommand>(ProcessorConfiguration config = null)
             where TCommand : ICommand
-            where TResult : class
         {
-            Mock<ICommandHandler<TCommand, TResult>> handler = this.SetupHandlerImpl<TCommand, TResult>(config);
+            Mock<ICommandHandler<TCommand>> handler = this.SetupHandlerImpl<TCommand>(config);
             handler
-                .Setup(h => h.Handle(It.IsAny<TCommand>()))
-                .Returns(result);
+                .Setup(h => h.Handle(It.IsAny<TCommand>()));
             handler.SetupAllProperties();
             return handler;
         }
-
-        private Mock<ICommandHandler<TCommand, TResult>> SetupHandler<TCommand, TResult>(ProcessorConfiguration config = null, Func<TResult> funcResult = null)
-            where TCommand : ICommand
-            where TResult : class
-        {
-            Mock<ICommandHandler<TCommand, TResult>> handler = this.SetupHandlerImpl<TCommand, TResult>(config);
-            handler
-                .Setup(h => h.Handle(It.IsAny<TCommand>()))
-                .Returns(funcResult());
-            handler.SetupAllProperties();
-            return handler;
-        }
-
-        private Mock<ICommandHandler<TCommand, VoidResult>> SetupHandler<TCommand>(ProcessorConfiguration config = null)
-            where TCommand : ICommand
-        {
-            Mock<ICommandHandler<TCommand, VoidResult>> handler = this.SetupHandlerImpl<TCommand, VoidResult>(config);
-            handler.Setup(h => h.Handle(It.IsAny<TCommand>()));
-            return handler;
-        }
-
+        
+#if LOOSE_CQRS
         private MessageHandler SetupHandler<TCommand, TResult>(MessageHandler commandHandler)
             where TCommand : ICommand
         {
             return this.SetupHandlerImpl<TCommand, TResult>(commandHandler);
+        }
+#endif
+
+        private MessageHandler SetupHandler<TCommand>(MessageHandler commandHandler)
+            where TCommand : ICommand
+        {
+            return this.SetupHandlerImpl<TCommand>(commandHandler);
         }
 
         [Fact]
@@ -479,7 +441,7 @@
             // Arrange
             InvalidCommand command = new InvalidCommand();
 
-            var handler = this.SetupHandler<InvalidCommand, string>(null, "OK");
+            var handler = this.SetupHandler<InvalidCommand>();
 
             MessageProcessor processor = this.CreatTestableProcessor();
 
@@ -499,7 +461,7 @@
             Mock<ISpy> spy = new Mock<ISpy>(MockBehavior.Strict);
             spy.Setup(s => s.Spy("Trying"));
             RetryHandler commandCommandHandler = new RetryHandler(spy.Object);
-            this.SetupHandler<RetryCommand, object>(commandCommandHandler);
+            this.SetupHandler<RetryCommand>(commandCommandHandler);
 
             MessageProcessor processor = this.CreatTestableProcessor();
             RetryCommand command = new RetryCommand(10);
@@ -512,22 +474,21 @@
         }
 
         [Fact]
-        public async Task WhenProcessingRetringCommandThenReturnResult()
+        public async Task WhenProcessingRetringCommandThenRetry()
         {
             // Arrange
             Mock<ISpy> spy = new Mock<ISpy>(MockBehavior.Strict);
             spy.Setup(s => s.Spy("Trying"));
             RetryHandler commandCommandHandler = new RetryHandler(spy.Object);
-            this.SetupHandler<RetryCommand, string>(commandCommandHandler);
+            this.SetupHandler<RetryCommand>(commandCommandHandler);
 
             MessageProcessor processor = this.CreatTestableProcessor();
             RetryCommand command = new RetryCommand(2);
 
             // Act
-            var result = await processor.ProcessAsync<string>(command);
+            var result = await processor.ProcessAsync(command);
 
             // Assert
-            Assert.Equal("OK", result.Value);
             spy.Verify(s => s.Spy("Trying"), Times.Exactly(3));
         }
 
@@ -618,15 +579,17 @@
             public string Property { get; set; }
         }
 
-        public class ValidCommandHandler : MessageHandler, ICommandHandler<ValidCommand, string>
+#if LOOSE_CQRS
+        public class ValidCommandHandlerWithResult : MessageHandler, ICommandHandler<ValidCommand, string>
         {
             public string Handle(ValidCommand command)
             {
                 return command.Property;
             }
         }
+#endif
 
-        public class ValidCommandHandlerWithoutResult : MessageHandler, ICommandHandler<ValidCommand>
+        public class ValidCommandHandler: MessageHandler, ICommandHandler<ValidCommand>
         {
             public void Handle(ValidCommand command)
             {
@@ -725,7 +688,7 @@
 
         }
 
-        public class MultipleCommandCommandHandler : MessageHandler, ICommandHandler<MultipleCommand1, string>, ICommandHandler<MultipleCommand2, string>
+        public class MultipleCommandCommandHandler : MessageHandler, ICommandHandler<MultipleCommand1>, ICommandHandler<MultipleCommand2>
         {
             private readonly ISpy spy;
 
@@ -734,16 +697,14 @@
                 this.spy = spy;
             }
 
-            public string Handle(MultipleCommand1 command)
+            public void Handle(MultipleCommand1 command)
             {
                 this.spy.Spy("MultipleCommand1");
-                return string.Empty;
             }
 
-            public string Handle(MultipleCommand2 command)
+            public void Handle(MultipleCommand2 command)
             {
                 this.spy.Spy("MultipleCommand2");
-                return string.Empty;
             }
         }
 
@@ -758,7 +719,7 @@
         }
 
         [Retry(5, 10.0)]
-        public class RetryHandler : MessageHandler, ICommandHandler<RetryCommand, string>
+        public class RetryHandler : MessageHandler, ICommandHandler<RetryCommand>
         {
             private readonly ISpy spy;
 
@@ -767,15 +728,13 @@
                 this.spy = spy;
             }
 
-            public string Handle(RetryCommand command)
+            public void Handle(RetryCommand command)
             {
                 this.spy.Spy("Trying");
                 if (command.RetryCount-- > 0)
                 {
                     throw new InvalidOperationException("Try again !");
                 }
-
-                return "OK";
             }
         }
 
