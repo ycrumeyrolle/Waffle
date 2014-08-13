@@ -119,6 +119,10 @@
       <Project>{AE6E76B2-4DFD-467B-B296-B388270ECB25}</Project>
       <Name>Waffle.MiniProfiler</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Waffle.Queuing.Redis\Waffle.Queuing.Redis.csproj">
+      <Project>{96f223e6-f92e-4043-a17c-cdda9749bbde}</Project>
+      <Name>Waffle.Queuing.Redis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Waffle.Tests.Integration\Waffle.Tests.Integration.csproj">
       <Project>{6412e848-713f-4f3b-bb83-179d7bc6818f}</Project>
       <Name>Waffle.Tests.Integration</Name>

@@ -8,7 +8,6 @@
     [AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = false)]
     public sealed class EnableQueuingAttribute : Attribute, IQueuePolicyProvider
     {
-      
         /// <inheritdocs />
         public QueuePolicy QueuePolicy
         {

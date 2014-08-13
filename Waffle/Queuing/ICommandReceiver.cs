@@ -10,7 +10,7 @@
     public interface ICommandReceiver
     {
         /// <summary>
-        /// Gets whether the receiver is completed.
+        /// Gets whether this <see cref="ICommandReceiver"/> has been marked as complete for adding and is empty. 
         /// </summary>
         bool IsCompleted { get; }
 
@@ -22,7 +22,7 @@
         Task<ICommand> ReceiveAsync(CancellationToken cancellationToken);
 
         /// <summary>
-        /// Completes the receiver. 
+        /// Marks the <see cref="ICommandReceiver"/> instances as not accepting any more additions.
         /// </summary>
         void Complete();
     }

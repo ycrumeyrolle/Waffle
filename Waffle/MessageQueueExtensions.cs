@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="configuration">The <see cref="ProcessorConfiguration"/>.</param>
         /// <remarks>        
-        /// The runner count is <see cref="M:Environment.ProcessorsCount"/>.
+        /// The maximum degree of parallelism is <see cref="M:Environment.ProcessorsCount"/>.
         /// </remarks>
         public static void EnableInMemoryMessageQueuing(this ProcessorConfiguration configuration)
         {
@@ -24,8 +24,43 @@
             configuration.EnableInMemoryMessageQueuing(runnerCount);
         }
 
+        /// <summary>
+        ///  Enables in-memory message queuing.
+        /// </summary>
+        /// <param name="configuration">The <see cref="ProcessorConfiguration"/>.</param>
+        /// <param name="degreeOfParallelism">The maximum degree of parallelism.</param>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose is made later by ProcessorConfiguration.RegisterForDispose().")]
-        public static void EnableInMemoryMessageQueuing(this ProcessorConfiguration configuration, int runnerCount)
+        public static void EnableInMemoryMessageQueuing(this ProcessorConfiguration configuration, int degreeOfParallelism)
+        {
+            if (configuration == null)
+            {
+                throw Error.ArgumentNull("configuration");
+            }
+
+            InMemoryCommandQueue inMemoryQueue = null;
+            try
+            {
+                inMemoryQueue = new InMemoryCommandQueue();
+                configuration.EnableMessageQueuing(degreeOfParallelism, inMemoryQueue, inMemoryQueue);
+                inMemoryQueue = null;
+            }
+            finally
+            {
+                if (inMemoryQueue != null)
+                {
+                    inMemoryQueue.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        ///  Enables message queuing.
+        /// </summary>
+        /// <param name="configuration">The <see cref="ProcessorConfiguration"/>.</param>
+        /// <param name="degreeOfParallelism">The maximum degree of parallelism.</param>
+        /// <param name="sender">The <see cref="ICommandSender"/> used to send commands.</param>
+        /// <param name="receiver">The <see cref="ICommandReceiver"/> used to receive commands.</param>
+        public static void EnableMessageQueuing(this ProcessorConfiguration configuration, int degreeOfParallelism, ICommandSender sender, ICommandReceiver receiver)
         {
             if (configuration == null)
             {
@@ -35,21 +70,12 @@
             var innerWorker = configuration.Services.GetCommandWorker();
             configuration.Services.Replace(typeof(ICommandWorker), new CommandQueueWorker(innerWorker));
 
-            InMemoryCommandQueue inMemoryQueue = null;
-            try
+            configuration.Services.Replace(typeof(ICommandSender), sender);
+            configuration.Services.Replace(typeof(ICommandReceiver), receiver);
+            configuration.RegisterForDispose(sender as IDisposable);
+            if (!object.ReferenceEquals(sender, receiver))
             {
-                inMemoryQueue = new InMemoryCommandQueue();
-                configuration.Services.Replace(typeof(ICommandSender), inMemoryQueue);
-                configuration.Services.Replace(typeof(ICommandReceiver), inMemoryQueue);
-                configuration.RegisterForDispose(inMemoryQueue);
-                inMemoryQueue = null;
-            }
-            finally
-            {
-                if (inMemoryQueue != null)
-                {
-                    inMemoryQueue.Dispose();
-                }
+                configuration.RegisterForDispose(receiver as IDisposable);
             }
 
             Action<ProcessorConfiguration> defaultInitializer = configuration.Initializer;
@@ -64,8 +90,8 @@
                     var config = ProcessorConfiguration.ApplyHandlerSettings(settings, originalConfig);
                     config.Initializer = defaultInitializer;
                     processor = new MessageProcessor(config);
-                    var receiver = originalConfig.Services.GetCommandReceiver();
-                    originalConfig.CommandBroker = new CommandRunner(processor, receiver, runnerCount);
+                    var commandReceiver = originalConfig.Services.GetCommandReceiver();
+                    originalConfig.CommandBroker = new CommandRunner(processor, commandReceiver, degreeOfParallelism);
                     originalConfig.RegisterForDispose(processor);
                     processor = null;
                 }

@@ -13,8 +13,6 @@
     {
         private readonly CommandQueueRunner[] runners;
 
-        private readonly IMessageProcessor processor;
-
         private readonly ICommandReceiver receiver;
 
         private bool started;
@@ -43,8 +41,12 @@
             }
 
             this.runners = new CommandQueueRunner[degreeOfParallelism];
-            this.processor = processor;
             this.receiver = receiver;
+            for (int i = 0; i < this.runners.Length; i++)
+            {
+                var runner = new CommandQueueRunner(processor, receiver);
+                this.runners[i] = runner;
+            }
         }
 
         /// <inheritdocs />
@@ -62,9 +64,7 @@
             {
                 for (int i = 0; i < this.runners.Length; i++)
                 {
-                    var runner = new CommandQueueRunner(this.processor, this.receiver);
-                    this.runners[i] = runner;
-                    tasks[i] = runner.RunAsync(cancellationToken);
+                    tasks[i] = this.runners[i].RunAsync(cancellationToken);
                 }
             }
             finally
@@ -84,6 +84,9 @@
             this.receiver.Complete();
         }
 
+        /// <summary>
+        /// Release unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             this.Stop();

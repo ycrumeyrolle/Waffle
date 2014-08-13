@@ -99,8 +99,14 @@ namespace Waffle.Filters
         /// <value>The <see cref="ICommandHandler"/>.</value>
         public ICommandHandler Handler { get; internal set; }
 
+        /// <summary>
+        /// Gets the <see cref="CancellationToken"/> used to abort the request.
+        /// </summary>
         public CancellationToken CancellationToken { get; internal set; }
 
+        /// <summary>
+        /// Gets the <see cref="ModelStateDictionary"/> of the current context.
+        /// </summary>
         public ModelStateDictionary ModelState
         {
             get { return this.Request.ModelState; }

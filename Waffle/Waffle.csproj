@@ -160,7 +160,6 @@
     </Compile>
     <Compile Include="HandlerResponse`1.cs" />
     <Compile Include="IAssembliesResolver.cs" />
-    <Compile Include="ProcessorConfigurationOverride.cs" />
     <Compile Include="Queuing\ICommandReceiver.cs" />
     <Compile Include="IHandlerLifetimeProvider.cs" />
     <Compile Include="MessageQueueExtensions.cs" />
@@ -423,7 +422,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
   </ItemGroup>

@@ -9,7 +9,7 @@
     public class CommandWrapper
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventWrapper"/> class.
+        /// Initializes a new instance of the <see cref="CommandWrapper"/> class.
         /// </summary>
         /// <param name="payload">The payload to wrap.</param>
         public CommandWrapper(ICommand payload)
@@ -20,7 +20,7 @@
             }
 
             this.Id = Guid.NewGuid();
-            this.CreationDate = DateTime.Now;
+            this.CreationDate = DateTimeOffset.Now;
             this.Payload = payload;
         }
 
@@ -32,7 +32,7 @@
         /// <summary>
         /// Gets or sets the creation date.
         /// </summary>
-        public DateTime CreationDate { get; set; }
+        public DateTimeOffset CreationDate { get; set; }
 
         /// <summary>
         /// Gets or sets the payload.

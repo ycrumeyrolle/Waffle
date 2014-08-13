@@ -22,6 +22,7 @@
             this.inner = inner;
         }
 
+        /// <inheritsdoc />
         public async Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request)
         {
             QueuePolicy policy = GetQueuePolicy(request);

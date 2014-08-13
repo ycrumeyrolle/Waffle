@@ -226,7 +226,7 @@
         /// Adds the given <paramref name="resource"/> to a list of resources that will be disposed once the configuration is disposed.
         /// </summary>
         /// <param name="resource">The resource to dispose. Can be <c>null</c>.</param>
-        internal void RegisterForDispose(IDisposable resource)
+        public void RegisterForDispose(IDisposable resource)
         {
             if (resource != null)
             {
@@ -234,7 +234,7 @@
             }
         }
 
-        internal void UnregisterForDispose(IDisposable resource)
+        public void UnregisterForDispose(IDisposable resource)
         {
             if (resource != null)
             {

@@ -59,8 +59,8 @@
 
                     //    config.EnableGlobalExceptionHandler();
 
-                    const int maxIterations = 1;
-                    config.EnableInMemoryMessageQueuing();
+                    const int maxIterations = 100000;
+                    config.EnableRedisMessageQueuing("localhost");
                     using (MessageProcessor processor = new MessageProcessor(config))
                     {
                         processor.ProcessAsync(new TestCommand());

@@ -115,8 +115,7 @@
 
             return Task.FromResult(result);
         }
-
-
+        
         public bool IsCompleted
         {
             get

@@ -99,6 +99,12 @@
             return this.filterGrouping;
         }
 
+        /// <summary>
+        /// Executes the event handler.
+        /// </summary>
+        /// <param name="context">The event context.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+        /// <returns>A continuation task.</returns>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Exception is flowed through the task.")]
         public virtual Task ExecuteAsync(EventHandlerContext context, CancellationToken cancellationToken)
         {

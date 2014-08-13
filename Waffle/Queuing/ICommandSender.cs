@@ -9,10 +9,10 @@
     /// </summary>
     public interface ICommandSender
     {
-        /////// <summary>
-        /////// Gets whether the sender is completed.
-        /////// </summary>
-        ////bool IsCompleted { get; }
+        /// <summary>
+        /// Gets whether this <see cref="ICommandSender"/> has been marked as complete for adding and is empty. 
+        /// </summary>
+        bool IsCompleted { get; }
 
         /// <summary>
         /// Sends a command.
@@ -21,7 +21,10 @@
         /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <returns>A completion task.</returns>
         Task SendAsync(ICommand command, CancellationToken cancellationToken);
-
-        ////void Complete();
+        
+        /// <summary>
+        /// Marks the <see cref="ICommandSender"/> instances as not accepting any more additions.
+        /// </summary>
+        void Complete();
     }
 }

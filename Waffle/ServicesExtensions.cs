@@ -352,7 +352,7 @@
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
         /// <returns>The <see cref="ICommandHandlerInvoker"/> service.</returns>
         /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerInvoker"/> service is not registered.</exception>
-        internal static ICommandSender GetCommandSender(this ServicesContainer services)
+        public static ICommandSender GetCommandSender(this ServicesContainer services)
         {
             Contract.Requires(services != null);
 
@@ -365,7 +365,7 @@
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
         /// <returns>The <see cref="ICommandReceiver"/> service.</returns>
         /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerInvoker"/> service is not registered.</exception>
-        internal static ICommandReceiver GetCommandReceiver(this ServicesContainer services)
+        public static ICommandReceiver GetCommandReceiver(this ServicesContainer services)
         {
             Contract.Requires(services != null);
 
@@ -378,7 +378,7 @@
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
         /// <returns>The <see cref="ICommandHandlerInvoker"/> service.</returns>
         /// <exception cref="InvalidOperationException">The <see cref="ICommandHandlerInvoker"/> service is not registered.</exception>
-        internal static ICommandHandlerInvoker GetCommandHandlerInvoker(this ServicesContainer services)
+        public static ICommandHandlerInvoker GetCommandHandlerInvoker(this ServicesContainer services)
         {
             Contract.Requires(services != null);
 
@@ -391,7 +391,7 @@
         /// <param name="services">The <see cref="ServicesContainer"/>.</param>
         /// <returns>The <see cref="IEventHandlerInvoker"/> services.</returns>
         /// <exception cref="InvalidOperationException">The <see cref="IEventHandlerInvoker"/> service is not registered.</exception>
-        internal static IEventHandlerInvoker GetEventHandlerInvoker(this ServicesContainer services)
+        public static IEventHandlerInvoker GetEventHandlerInvoker(this ServicesContainer services)
         {
             Contract.Requires(services != null);
 

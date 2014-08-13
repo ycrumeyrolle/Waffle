@@ -82,7 +82,7 @@
         /// <summary>
         /// Gets the <see cref="QueuePolicy"/>.
         /// </summary>
-        /// <value>The <see cref="QueuePolicy"/>.</value
+        /// <value>The <see cref="QueuePolicy"/>.</value>
         public QueuePolicy QueuePolicy { get; private set; }
 
         /// <summary>

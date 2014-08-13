@@ -219,6 +219,18 @@
         /// Creates an <see cref="InvalidOperationException"/>.
         /// </summary>
         /// <param name="messageFormat">A composite format string explaining the reason for the exception.</param>
+        /// <returns>The logged <see cref="Exception"/>.</returns>
+        internal static InvalidOperationException InvalidOperation(string messageFormat)
+        {
+            Contract.Requires(messageFormat != null);
+
+            return new InvalidOperationException(messageFormat);
+        }
+
+        /// <summary>
+        /// Creates an <see cref="InvalidOperationException"/>.
+        /// </summary>
+        /// <param name="messageFormat">A composite format string explaining the reason for the exception.</param>
         /// <param name="messageArgs">An object array that contains zero or more objects to format.</param>
         /// <returns>The logged <see cref="Exception"/>.</returns>
         internal static InvalidOperationException InvalidOperation(string messageFormat, params object[] messageArgs)

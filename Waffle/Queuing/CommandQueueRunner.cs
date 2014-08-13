@@ -12,6 +12,8 @@
 
         private readonly IMessageProcessor processor;
 
+        private bool stopped;
+
         public CommandQueueRunner(IMessageProcessor processor, ICommandReceiver receiver)
         {
             if (processor == null)
@@ -39,9 +41,14 @@
             return task;
         }
 
+        public void Stop()
+        {
+            this.stopped = true;
+        }
+
         private async Task RunCoreAsync(CancellationToken cancellationToken)
         {
-            while (!this.receiver.IsCompleted && !cancellationToken.IsCancellationRequested)
+            while (!this.receiver.IsCompleted && !cancellationToken.IsCancellationRequested && !this.stopped)
             {
                 await this.ProcessCommandAsync(cancellationToken).ConfigureAwait(true);
             }

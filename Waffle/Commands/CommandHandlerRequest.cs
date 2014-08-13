@@ -49,7 +49,7 @@
         public ICommand Command { get; private set; }
 
         /// <summary>
-        /// Gets or sets the ModelState.
+        /// Gets or sets the <see cref="ModelStateDictionary"/> of the current request.
         /// </summary>
         /// <value>
         /// The ModelState.
