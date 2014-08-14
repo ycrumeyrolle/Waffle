@@ -280,4 +280,10 @@ The request for '{0}' has found the following matching handlers : {1}</value>
   <data name="UnreachableCode" xml:space="preserve">
     <value>Unreachable code !</value>
   </data>
+  <data name="CommandHandlerNotFoundException_ReturnsType" xml:space="preserve">
+    <value>Command handler not found for command type: {0}, and command result type: {1}.</value>
+  </data>
+  <data name="CommandHandlerNotFoundException_VoidType" xml:space="preserve">
+    <value>Command handler not found for command type: {0}.</value>
+  </data>
 </root>

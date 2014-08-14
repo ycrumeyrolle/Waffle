@@ -9,10 +9,7 @@
     /// </summary>
     public class HandlerResponse
     {
-        /// <summary>
-        /// Represents an empty response. This field is readonly.
-        /// </summary>
-        public static readonly HandlerResponse Empty = new HandlerResponse();
+        private static readonly HandlerResponse EmptyInstance = new HandlerResponse();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HandlerResponse"/> class. 
@@ -103,6 +100,17 @@
         public ModelStateDictionary ModelState
         {
             get { return this.Request != null ? this.Request.ModelState : null; }
+        }
+
+        /// <summary>
+        /// Represents an empty response. This field is readonly.
+        /// </summary>
+        public static HandlerResponse Empty
+        {
+            get
+            {
+                return EmptyInstance;
+            }
         }
 
         /// <summary>

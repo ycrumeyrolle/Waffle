@@ -2,8 +2,9 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-    using System.Globalization;
     using System.Runtime.Serialization;
+    using Waffle.Internal;
+    using Waffle.Properties;
 
     /// <summary>
     /// Represents an error that occur when no handler is found.
@@ -17,7 +18,7 @@
         /// </summary>
         /// <param name="type"></param>
         public CommandHandlerNotFoundException(Type type)
-            : this(string.Format(CultureInfo.InvariantCulture, "Command handler not found for command type: {0}", type))
+            : this(Error.Format(Resources.CommandHandlerNotFoundException_VoidType, type))
         {
         }
 
@@ -27,7 +28,7 @@
         /// <param name="commandType">The type of the command.</param>
         /// <param name="commandResult">The type of the command result.</param>
         public CommandHandlerNotFoundException(Type commandType, Type commandResult)
-            : this(string.Format(CultureInfo.InvariantCulture, "Command handler not found for command type: {0}, and command result type: {1}", commandType, commandResult))
+            : this(Error.Format(Resources.CommandHandlerNotFoundException_ReturnsType, commandType, commandResult))
         {
         }
 

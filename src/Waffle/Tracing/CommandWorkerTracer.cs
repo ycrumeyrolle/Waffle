@@ -1,6 +1,7 @@
 ﻿namespace Waffle.Tracing
 {
     using System.Diagnostics.Contracts;
+    using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Commands;
 
@@ -36,7 +37,7 @@
             }
         }
 
-        public Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request)
+        public Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request, CancellationToken cancellationToken)
         {
             return this.TraceWriter.TraceBeginEnd(
                request,
@@ -45,7 +46,7 @@
                this.Inner.GetType().Name,
                ExecuteMethodName,
                beginTrace: null,
-               execute: () => this.Inner.ExecuteAsync(request),
+               execute: () => this.Inner.ExecuteAsync(request, cancellationToken),
                endTrace: null,
                errorTrace: null);
         }

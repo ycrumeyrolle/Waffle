@@ -1,6 +1,7 @@
 ﻿namespace Waffle.Commands
 {
     using System.Diagnostics.Contracts;
+    using System.Threading;
     using System.Threading.Tasks;
     using Waffle.ExceptionHandling;
     using Waffle.Filters;
@@ -33,14 +34,16 @@
         /// Execute the request via the worker. 
         /// </summary>
         /// <param name="request">The <see cref="HandlerRequest"/> to execute.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> to cancel the execution.</param>
         /// <returns>The result of the command, if any.</returns>
-        public Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request)
+        public Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request, CancellationToken cancellationToken)
         {
             if (request == null)
             {
                 throw Error.ArgumentNull("request");
-            }            
+            }
 
+            cancellationToken.ThrowIfCancellationRequested();
             ServicesContainer servicesContainer = request.Configuration.Services;
             ICommandHandlerSelector handlerSelector = servicesContainer.GetHandlerSelector();
             CommandHandlerDescriptor descriptor = handlerSelector.SelectHandler(request);
@@ -73,7 +76,7 @@
                 result = new ExceptionFilterResult(context, commandFilterGrouping.ExceptionFilters, exceptionLogger, exceptionHandler, result);
             }
 
-            return result.ExecuteAsync(context.CancellationToken);
+            return result.ExecuteAsync(cancellationToken);
         }
 
         private static CommandHandlerNotFoundException CreateHandlerNotFoundException(CommandHandlerDescriptor descriptor)

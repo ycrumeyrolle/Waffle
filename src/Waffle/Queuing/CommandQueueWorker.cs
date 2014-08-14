@@ -23,15 +23,15 @@
         }
 
         /// <inheritsdoc />
-        public async Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request)
+        public async Task<HandlerResponse> ExecuteAsync(CommandHandlerRequest request, CancellationToken cancellationToken)
         {
             QueuePolicy policy = GetQueuePolicy(request);
             if (policy == QueuePolicy.NoQueue)
             {
-                return await this.inner.ExecuteAsync(request);
+                return await this.inner.ExecuteAsync(request, cancellationToken);
             }
 
-            return await policy.ExecuteAsync(request, CancellationToken.None);     
+            return await policy.ExecuteAsync(request, cancellationToken);     
         }
 
         private static QueuePolicy GetQueuePolicy(CommandHandlerRequest request)

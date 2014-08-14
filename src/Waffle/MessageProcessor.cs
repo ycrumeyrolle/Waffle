@@ -125,7 +125,7 @@
             {
                 throw new ObjectDisposedException(this.GetType().FullName);
             }
-
+            
             this.EnsureInitialized();
 
             using (CommandHandlerRequest request = new CommandHandlerRequest(this.Configuration, command, currentRequest))
@@ -143,7 +143,7 @@
                     }
 
                     ICommandWorker commandWorker = this.Configuration.Services.GetCommandWorker();
-                    return await commandWorker.ExecuteAsync(request);
+                    return await commandWorker.ExecuteAsync(request, cancellationToken);
                 }
                 catch (OperationCanceledException)
                 {

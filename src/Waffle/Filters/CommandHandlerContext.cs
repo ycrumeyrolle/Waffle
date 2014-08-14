@@ -2,7 +2,6 @@ namespace Waffle.Filters
 {
     using System.Collections.Generic;
     using System.Security.Principal;
-    using System.Threading;
     using Waffle.Commands;
     using Waffle.Internal;
     using Waffle.Validation;
@@ -43,7 +42,6 @@ namespace Waffle.Filters
             this.Command = request.Command;
             this.Descriptor = descriptor;
             this.User = this.Configuration.Services.GetPrincipalProvider().Principal;
-            this.CancellationToken = new CancellationToken();
         }
 
         /// <summary>
@@ -98,11 +96,6 @@ namespace Waffle.Filters
         /// </summary>
         /// <value>The <see cref="ICommandHandler"/>.</value>
         public ICommandHandler Handler { get; internal set; }
-
-        /// <summary>
-        /// Gets the <see cref="CancellationToken"/> used to abort the request.
-        /// </summary>
-        public CancellationToken CancellationToken { get; internal set; }
 
         /// <summary>
         /// Gets the <see cref="ModelStateDictionary"/> of the current context.
