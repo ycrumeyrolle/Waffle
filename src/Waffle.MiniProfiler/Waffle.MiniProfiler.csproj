@@ -77,7 +77,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\Waffle.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\Waffle.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Release\Waffle.MiniProfiler.xml</DocumentationFile>
     <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>

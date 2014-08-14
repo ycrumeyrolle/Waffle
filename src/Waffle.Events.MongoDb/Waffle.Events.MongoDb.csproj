@@ -40,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Waffle.Events.MongoDb.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>..\Waffle.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\Waffle.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MongoDB.Bson">

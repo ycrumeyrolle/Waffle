@@ -1,10 +1,10 @@
 ﻿namespace Waffle
 {
     using System.Threading;
-using System.Threading.Tasks;
-using Waffle.Commands;
-using Waffle.Dependencies;
-using Waffle.Events;
+    using System.Threading.Tasks;
+    using Waffle.Commands;
+    using Waffle.Dependencies;
+    using Waffle.Events;
 
     internal class MessageProcessorWrapper : IMessageProcessor
     {
