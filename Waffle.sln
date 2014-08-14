@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle", "Waffle\Waffle.csproj", "{289D3B8B-D8A2-44AF-931C-9B3DF7E319B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle", "src\Waffle\Waffle.csproj", "{289D3B8B-D8A2-44AF-931C-9B3DF7E319B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Tests", "Waffle.Tests\Waffle.Tests.csproj", "{302CA73F-4D47-4DEC-BE2C-803B210A8B46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Tests", "test\Waffle.Tests\Waffle.Tests.csproj", "{302CA73F-4D47-4DEC-BE2C-803B210A8B46}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FEE80DA0-B76B-4976-A5B6-D9C01CCA9AA3}"
 	ProjectSection(SolutionItems) = preProject
@@ -27,35 +27,35 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5A6855
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Unity", "Waffle.Unity\Waffle.Unity.csproj", "{82D3A967-2E21-421C-A340-1A8A1CD683C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Unity", "src\Waffle.Unity\Waffle.Unity.csproj", "{82D3A967-2E21-421C-A340-1A8A1CD683C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Unity.Tests", "Waffle.Unity.Tests\Waffle.Unity.Tests.csproj", "{09400EB8-573D-46A5-94E1-1E2F8CC52B0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Unity.Tests", "test\Waffle.Unity.Tests\Waffle.Unity.Tests.csproj", "{09400EB8-573D-46A5-94E1-1E2F8CC52B0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.MiniProfiler", "Waffle.MiniProfiler\Waffle.MiniProfiler.csproj", "{AE6E76B2-4DFD-467B-B296-B388270ECB25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.MiniProfiler", "src\Waffle.MiniProfiler\Waffle.MiniProfiler.csproj", "{AE6E76B2-4DFD-467B-B296-B388270ECB25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Tests.Console", "Waffle.Tests.Console\Waffle.Tests.Console.csproj", "{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Tests.Console", "samples\Waffle.Tests.Console\Waffle.Tests.Console.csproj", "{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queries.Data", "Waffle.Queries.Data\Waffle.Queries.Data.csproj", "{FD0232B8-CBC3-4430-B047-7DB04419671C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queries.Data", "src\Waffle.Queries.Data\Waffle.Queries.Data.csproj", "{FD0232B8-CBC3-4430-B047-7DB04419671C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queries.Data.Tests", "Waffle.Queries.Data.Tests\Waffle.Queries.Data.Tests.csproj", "{A326A020-8334-4F28-A42E-738081314F2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queries.Data.Tests", "test\Waffle.Queries.Data.Tests\Waffle.Queries.Data.Tests.csproj", "{A326A020-8334-4F28-A42E-738081314F2C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{102D2E98-A089-4D17-93D7-328A22EDDDA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Events.MongoDb", "Waffle.Events.MongoDb\Waffle.Events.MongoDb.csproj", "{B0940B52-5C33-4ABC-B01C-CC25E66BF9A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Events.MongoDb", "src\Waffle.Events.MongoDb\Waffle.Events.MongoDb.csproj", "{B0940B52-5C33-4ABC-B01C-CC25E66BF9A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Events.MongoDb.Tests", "Waffle.Events.MongoDb.Tests\Waffle.Events.MongoDb.Tests.csproj", "{5EA50D94-B520-41CA-AA72-7AC533DC9A6F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Events.MongoDb.Tests", "test\Waffle.Events.MongoDb.Tests\Waffle.Events.MongoDb.Tests.csproj", "{5EA50D94-B520-41CA-AA72-7AC533DC9A6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Tests.Integration", "Waffle.Tests.Integration\Waffle.Tests.Integration.csproj", "{6412E848-713F-4F3B-BB83-179D7BC6818F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Tests.Integration", "test\Waffle.Tests.Integration\Waffle.Tests.Integration.csproj", "{6412E848-713F-4F3B-BB83-179D7BC6818F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Sample", "Waffle.Sample\Waffle.Sample.csproj", "{AAE77B4D-5668-42DD-8128-5C64B2F0606B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Sample", "samples\Waffle.Sample\Waffle.Sample.csproj", "{AAE77B4D-5668-42DD-8128-5C64B2F0606B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queuing.MongoDb", "Waffle.Queuing.MongoDb\Waffle.Queuing.MongoDb.csproj", "{1EF04A5F-468A-4F8E-A7CC-71FF887B8B8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queuing.MongoDb", "src\Waffle.Queuing.MongoDb\Waffle.Queuing.MongoDb.csproj", "{1EF04A5F-468A-4F8E-A7CC-71FF887B8B8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queries.MongoDb", "Waffle.Queries.MongoDb\Waffle.Queries.MongoDb.csproj", "{E9D53C66-40D0-44F3-987F-38761FD6B9B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queries.MongoDb", "src\Waffle.Queries.MongoDb\Waffle.Queries.MongoDb.csproj", "{E9D53C66-40D0-44F3-987F-38761FD6B9B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queuing.MongoDb.Tests", "Waffle.Queuing.MongoDb.Tests\Waffle.Queuing.MongoDb.Tests.csproj", "{269ADCF4-9A17-4107-83F9-51955CBD06EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queuing.MongoDb.Tests", "test\Waffle.Queuing.MongoDb.Tests\Waffle.Queuing.MongoDb.Tests.csproj", "{269ADCF4-9A17-4107-83F9-51955CBD06EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queuing.Redis", "Waffle.Queuing.Redis\Waffle.Queuing.Redis.csproj", "{96F223E6-F92E-4043-A17C-CDDA9749BBDE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queuing.Redis", "src\Waffle.Queuing.Redis\Waffle.Queuing.Redis.csproj", "{96F223E6-F92E-4043-A17C-CDDA9749BBDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
