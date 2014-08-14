@@ -8,7 +8,7 @@
     using MongoDB.Driver.Builders;
     using Waffle.Commands;
 
-    public class MongoQueue : ICommandSender, ICommandReceiver
+    public class MongoCommandQueue : ICommandSender, ICommandReceiver
     {
         private readonly string databaseName;
 
@@ -19,39 +19,39 @@
         private object collectionInitialized;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoQueue"/> class.
+        /// Initializes a new instance of the <see cref="MongoCommandQueue"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="databaseName">The database name.</param>
         /// <param name="collectionName">The collection name.</param>
-        public MongoQueue(string connectionString, string databaseName, string collectionName)
+        public MongoCommandQueue(string connectionString, string databaseName, string collectionName)
             : this(() => new MongoClient(connectionString), databaseName, collectionName)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoQueue"/> class.
+        /// Initializes a new instance of the <see cref="MongoCommandQueue"/> class.
         /// </summary>
         /// <param name="clientSettings">The <see cref="MongoClientSettings"/>.</param>
         /// <param name="databaseName">The database name.</param>
         /// <param name="collectionName">The collection name.</param>
-        public MongoQueue(MongoClientSettings clientSettings, string databaseName, string collectionName)
+        public MongoCommandQueue(MongoClientSettings clientSettings, string databaseName, string collectionName)
             : this(() => new MongoClient(clientSettings), databaseName, collectionName)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoQueue"/> class.
+        /// Initializes a new instance of the <see cref="MongoCommandQueue"/> class.
         /// </summary>
         /// <param name="url">The MongoURL.</param>
         /// <param name="databaseName">The database name.</param>
         /// <param name="collectionName">The collection name.</param>
-        public MongoQueue(MongoUrl url, string databaseName, string collectionName)
+        public MongoCommandQueue(MongoUrl url, string databaseName, string collectionName)
             : this(MongoClientSettings.FromUrl(url), databaseName, collectionName)
         {
         }
 
-        public MongoQueue(Func<MongoClient> clientFactory, string databaseName, string collectionName)
+        public MongoCommandQueue(Func<MongoClient> clientFactory, string databaseName, string collectionName)
         {
             this.clientFactory = clientFactory;
             this.databaseName = databaseName;
@@ -59,7 +59,7 @@
         }
 
         /// <summary>
-        /// Retrives the <see cref="MongoCollection"/>.
+        /// Retrieves the <see cref="MongoCollection"/>.
         /// </summary>
         /// <returns>The <see cref="MongoCollection"/>.</returns>
         protected virtual MongoCollection<CommandWrapper> GetCollection()

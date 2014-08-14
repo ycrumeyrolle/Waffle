@@ -96,7 +96,7 @@
             public DateTime DateTimeValue { get; set; }
         }
 
-        private class StubQueue : MongoQueue
+        private class StubQueue : MongoCommandQueue
         {
             public StubQueue(string connectionString, string databaseName, string collectionName)
                 : base(connectionString, databaseName, collectionName)
