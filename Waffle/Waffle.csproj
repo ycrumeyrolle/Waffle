@@ -148,7 +148,6 @@
     <Compile Include="Commands\ValueResultConverter.cs" />
     <Compile Include="Commands\VoidResultConverter.cs" />
     <Compile Include="DefaultAssembliesResolver.cs" />
-    <Compile Include="Dependencies\IDependencyContainer.cs" />
     <Compile Include="Events\EventHandlerDescriptor`1.cs" />
     <Compile Include="Events\FuncEventHandler.cs" />
     <Compile Include="Events\IAsyncEventHandler.cs" />
