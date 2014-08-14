@@ -58,6 +58,14 @@
             this.collectionName = collectionName;
         }
 
+        public bool IsCompleted
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         /// <summary>
         /// Retrieves the <see cref="MongoCollection"/>.
         /// </summary>
@@ -65,7 +73,7 @@
         protected virtual MongoCollection<CommandWrapper> GetCollection()
         {
             LazyInitializer.EnsureInitialized(ref this.collectionInitialized, this.EnsureCollection);
-            MongoDatabase database = GetDatabase();
+            MongoDatabase database = this.GetDatabase();
 
             MongoCollection<CommandWrapper> collection = database.GetCollection<CommandWrapper>(this.collectionName);
             return collection;
@@ -73,7 +81,7 @@
 
         private object EnsureCollection()
         {
-            MongoDatabase database = GetDatabase();
+            MongoDatabase database = this.GetDatabase();
 
             if (!database.CollectionExists(this.collectionName))
             {
@@ -116,15 +124,6 @@
             return Task.FromResult(result);
         }
         
-        public bool IsCompleted
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-
         public void Complete()
         {
             throw new NotImplementedException();    

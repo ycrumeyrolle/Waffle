@@ -7,7 +7,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MongoDB.Driver;
-    using MongoDB.Driver.Builders;
     using MongoDB.Driver.Linq;
     using Waffle.Tasks;
 
@@ -50,6 +49,11 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoEventStore"/> class.
+        /// </summary>
+        /// <param name="clientFactory">The <see cref="Func{MongoClient}"/> used to create a <see cref="MongoClient"/>.</param>
+        /// <param name="databaseName">The database name.</param>
         public MongoEventStore(Func<MongoClient> clientFactory, string databaseName)
         {
             this.clientFactory = clientFactory;

@@ -446,6 +446,12 @@
             return service;
         }
 
+        /// <summary>
+        /// Try to get a service of the given type.
+        /// </summary>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <param name="services">The services container.</param>
+        /// <returns>The first instance of the service, or null if the service is not found.</returns>
         public static TService GetService<TService>(this ServicesContainer services)
         {
             if (services == null)

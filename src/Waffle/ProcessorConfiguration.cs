@@ -163,7 +163,7 @@
         /// Gets or sets the default queue policy.
         /// </summary>
         /// <remarks>
-        /// This value is <see cref="QueuingPolicy.NoQueue"/> per default.
+        /// This value is <see cref="QueuePolicy.NoQueue"/> per default.
         /// </remarks>
         public QueuePolicy DefaultQueuePolicy { get; set; }
 
@@ -172,6 +172,9 @@
         /// </summary>
         public ConcurrentDictionary<object, object> Properties { get; private set; }
 
+        /// <summary>
+        /// Gets the default Command broker.
+        /// </summary>
         public CommandRunner CommandBroker { get; set; }
 
         /// <summary>Invoke the Intializer hook. It is considered immutable from this point forward. It's safe to call this multiple times.</summary>
@@ -234,6 +237,10 @@
             }
         }
 
+        /// <summary>
+        /// Unregister a resource to be disposed once the configuration is disposed.
+        /// </summary>
+        /// <param name="resource"></param>
         public void UnregisterForDispose(IDisposable resource)
         {
             if (resource != null)

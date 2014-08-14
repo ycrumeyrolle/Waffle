@@ -153,6 +153,12 @@
             return result;
         }
 
+        /// <summary>
+        /// Executes the command handler.
+        /// </summary>
+        /// <param name="context">The command context.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+        /// <returns>A continuation task.</returns>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Exception is flowed through the task.")]
         public virtual Task<object> ExecuteAsync(CommandHandlerContext context, CancellationToken cancellationToken)
         {
