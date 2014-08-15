@@ -67,7 +67,7 @@ Usage
       From = "address@email.com",
       To = "to_address@email.com",
       Subject = "Hello !",
-      Message = "Hello World !"
+      Body = "Hello World !"
     };
     
     // processor should be a singleton for better performance
