@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
-    <metadata>
-        <id>Waffle.Queries.Data</id>
-        <version>1.0.0</version>
-        <title>Queries with Entity Frameword for Waffle</title>
-        <authors>Yann Crumeyrolle</authors>
-        <owners>Yann Crumeyrolle</owners>
-        <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
-        <projectUrl>https://github.com/ycrumeyrolle/Waffle</projectUrl>
-        <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Entity Framework implementation for Queries with Waffle.</description>
-        <summary />
-        <copyright />
-        <tags>command event pattern processor processing CQRS Entity Framework EF query</tags>
-        <dependencies>
-            <dependency id="Waffle" />
-            <dependency id="EntityFramework" version="5.0.0" />
-        </dependencies>
-    </metadata>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>https://github.com/ycrumeyrolle/Waffle</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Entity Framework implementation for Queries with Waffle.</description>
+    <summary />
+    <copyright />
+    <tags>command event pattern processor processing CQRS Entity Framework EF query</tags>
+    <dependencies>
+      <dependency id="Waffle" version="$version$" />
+      <dependency id="EntityFramework" version="5.0.0" />
+    </dependencies>
+  </metadata>
 </package>

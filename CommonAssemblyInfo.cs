@@ -7,7 +7,7 @@ using System.Resources;
 // associated with an assembly.
 [assembly: AssemblyCompany("ycrumeyrolle")]
 [assembly: AssemblyCopyright("Copyright © 2014")]
-[assembly: AssemblyTrademark("ycrumeyrolle")]
+[assembly: AssemblyTrademark("")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
 [assembly: CLSCompliant(true)]
