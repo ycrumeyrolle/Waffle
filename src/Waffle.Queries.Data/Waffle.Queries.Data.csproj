@@ -64,6 +64,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Waffle.Queries.Data.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Waffle\Waffle.csproj">

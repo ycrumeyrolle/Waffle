@@ -7,7 +7,7 @@
         <authors>Yann Crumeyrolle</authors>
         <owners>Yann Crumeyrolle</owners>
         <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
-        <projectUrl>https://github.com/Murk59/Waffle</projectUrl>
+        <projectUrl>https://github.com/ycrumeyrolle/Waffle</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>An extensible commands and events processor pattern implementation.</description>
         <summary />
@@ -18,8 +18,4 @@
             <frameworkAssembly assemblyName="System.Transactions" />
         </frameworkAssemblies>
     </metadata>
-    <files>
-        <file src="Waffle\bin\Release\Waffle.dll" target="lib\net40\Waffle.dll" />
-        <file src="Waffle\bin\Release\Waffle.XML" target="lib\net40\Waffle.XML" />
-    </files>
 </package>

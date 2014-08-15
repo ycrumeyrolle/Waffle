@@ -7,7 +7,7 @@
         <authors>Yann Crumeyrolle</authors>
         <owners>Yann Crumeyrolle</owners>
         <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
-        <projectUrl>https://github.com/Murk59/Waffle</projectUrl>
+        <projectUrl>https://github.com/ycrumeyrolle/Waffle</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Unity implementation for the Waffle.</description>
         <summary />
@@ -18,8 +18,4 @@
             <dependency id="Unity" version="2.1.505.2" />
         </dependencies>
     </metadata>
-    <files>
-        <file src="Waffle.Unity\bin\Release\Waffle.Unity.dll" target="lib\net40\Waffle.Unity.dll" />
-        <file src="Waffle.Unity\bin\Release\Waffle.Unity.XML" target="lib\net40\Waffle.Unity.XML" />
-    </files>
 </package>

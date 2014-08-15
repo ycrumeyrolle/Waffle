@@ -7,7 +7,7 @@
         <authors>Yann Crumeyrolle</authors>
         <owners>Yann Crumeyrolle</owners>
         <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
-        <projectUrl>https://github.com/Murk59/Waffle</projectUrl>
+        <projectUrl>https://github.com/ycrumeyrolle/Waffle</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>MongoDB implementation for event sourcing with Waffle.</description>
         <summary />
@@ -18,8 +18,4 @@
             <dependency id="mongocsharpdriver" version="1.8.1" />
         </dependencies>
     </metadata>
-    <files>
-        <file src="Waffle.Events.MongoDb\bin\Release\Waffle.Events.MongoDb.dll" target="lib\net40\Waffle.Events.MongoDb.dll" />
-        <file src="Waffle.Events.MongoDb\bin\Release\Waffle.Events.MongoDb.XML" target="lib\net40\Waffle.Events.MongoDb.XML" />
-    </files>
 </package>

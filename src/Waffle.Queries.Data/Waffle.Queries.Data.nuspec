@@ -7,7 +7,7 @@
         <authors>Yann Crumeyrolle</authors>
         <owners>Yann Crumeyrolle</owners>
         <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
-        <projectUrl>https://github.com/Murk59/Waffle</projectUrl>
+        <projectUrl>https://github.com/ycrumeyrolle/Waffle</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Entity Framework implementation for Queries with Waffle.</description>
         <summary />
@@ -18,8 +18,4 @@
             <dependency id="EntityFramework" version="5.0.0" />
         </dependencies>
     </metadata>
-    <files>
-        <file src="Waffle.Queries.Data\bin\Release\Waffle.Queries.Data.dll" target="lib\net40\Waffle.Queries.Data.dll" />
-        <file src="Waffle.Queries.Data\bin\Release\Waffle.Queries.Data.XML" target="lib\net40\Waffle.Queries.Data.XML" />
-    </files>
 </package>
