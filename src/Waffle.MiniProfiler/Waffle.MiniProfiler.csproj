@@ -20,7 +20,7 @@
     <RestorePackages>true</RestorePackages>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>9a3f3b11</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>1abc6941</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
