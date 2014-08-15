@@ -39,7 +39,6 @@
             if (parentRequest != null)
             {
                 this.Processor = parentRequest.Processor;
-                this.CancellationToken = parentRequest.CancellationToken;
             }
         }
 
@@ -78,12 +77,7 @@
         /// </summary>
         /// <value>The message <see cref="System.Type"/>.</value>
         public Type MessageType { get; protected set; }
-
-        /// <summary>
-        /// Gets the <see cref="CancellationToken"/>.
-        /// </summary>
-        public CancellationToken CancellationToken { get; private set; }
-
+        
         /// <summary>
         /// Gets the properties associated to the request.
         /// </summary>

@@ -5,6 +5,7 @@
     using Waffle.Commands;
     using Waffle.Events;
     using Waffle.Filters;
+    using Waffle.Queuing;
 
     public class Order : MessageHandler,
         IAsyncCommandHandler<PlaceOrder>,
@@ -25,17 +26,17 @@
         }
 
         public Guid Id { get; set; }
+
         private class ExceptionHandlerAttribute : ExceptionFilterAttribute
         {
             public override void OnException(CommandHandlerExecutedContext handlerExecutedContext)
             {
                 base.OnException(handlerExecutedContext);
-
             }
         }
 
         [ExceptionHandler]
-        [Queuing.EnableQueuing]
+        [EnableQueuing]
         public Task HandleAsync(PlaceOrder command)
         {
             this.spy.Spy("PlaceOrder");

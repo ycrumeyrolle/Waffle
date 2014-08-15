@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
 		Local.testsettings = Local.testsettings
+		README.md = README.md
 		Settings.StyleCop = Settings.StyleCop
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 		Waffle.nuspec = Waffle.nuspec
@@ -56,6 +57,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queuing.MongoDb.Tests", "test\Waffle.Queuing.MongoDb.Tests\Waffle.Queuing.MongoDb.Tests.csproj", "{269ADCF4-9A17-4107-83F9-51955CBD06EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waffle.Queuing.Redis", "src\Waffle.Queuing.Redis\Waffle.Queuing.Redis.csproj", "{96F223E6-F92E-4043-A17C-CDDA9749BBDE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{2FA45B97-D8B0-44B1-B3DC-A11204A2D373}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -234,10 +237,11 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{302CA73F-4D47-4DEC-BE2C-803B210A8B46} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
 		{09400EB8-573D-46A5-94E1-1E2F8CC52B0C} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
-		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
+		{09BA76EA-F5DE-4D74-ADCF-231B25DB7EC3} = {2FA45B97-D8B0-44B1-B3DC-A11204A2D373}
 		{A326A020-8334-4F28-A42E-738081314F2C} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
 		{5EA50D94-B520-41CA-AA72-7AC533DC9A6F} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
 		{6412E848-713F-4F3B-BB83-179D7BC6818F} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
+		{AAE77B4D-5668-42DD-8128-5C64B2F0606B} = {2FA45B97-D8B0-44B1-B3DC-A11204A2D373}
 		{269ADCF4-9A17-4107-83F9-51955CBD06EB} = {102D2E98-A089-4D17-93D7-328A22EDDDA2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

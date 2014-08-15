@@ -1,6 +1,7 @@
 ﻿namespace Waffle.Events
 {
     using System.Diagnostics.Contracts;
+    using System.Threading;
     using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Filters;
@@ -32,8 +33,9 @@
         /// Execute the request via the worker. 
         /// </summary>
         /// <param name="request">The <see cref="EventHandlerRequest"/> to execute.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> to cancel the execution.</param>
         /// <returns>The <see cref="Task"/> of the event.</returns>
-        public async Task PublishAsync(EventHandlerRequest request)
+        public async Task PublishAsync(EventHandlerRequest request, CancellationToken cancellationToken)
         {
             if (request == null)
             {
@@ -47,11 +49,11 @@
             var descriptors = eventDescriptor.EventHandlerDescriptors;
             for (int i = 0; i < descriptors.Count; i++)
             {
-                await InvokeHandlerAsync(descriptors[i], request);
+                await InvokeHandlerAsync(descriptors[i], request, cancellationToken);
             }
         }
 
-        private static Task InvokeHandlerAsync(EventHandlerDescriptor descriptor, EventHandlerRequest request)
+        private static Task InvokeHandlerAsync(EventHandlerDescriptor descriptor, EventHandlerRequest request, CancellationToken cancellationToken)
         {
             Contract.Requires(descriptor != null);
             Contract.Requires(request != null);
@@ -71,7 +73,7 @@
             ServicesContainer servicesContainer = request.Configuration.Services;
             IEventHandlerResult result = new EventHandlerFilterResult(context, servicesContainer, filterGrouping.EventHandlerFilters);
 
-            return result.ExecuteAsync(request.CancellationToken);
+            return result.ExecuteAsync(cancellationToken);
         }
 
         private static CommandHandlerNotFoundException CreateHandlerNotFoundException(EventHandlerDescriptor descriptor)

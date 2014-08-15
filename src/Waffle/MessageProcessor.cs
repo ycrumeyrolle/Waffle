@@ -160,8 +160,8 @@
                 }
 
                 ExceptionContext exceptionContext = new ExceptionContext(exceptionInfo, ExceptionCatchBlocks.MessageProcessor, request);
-                await this.ExceptionLogger.LogAsync(exceptionContext, request.CancellationToken);
-                HandlerResponse response = await this.ExceptionHandler.HandleAsync(exceptionContext, request.CancellationToken);
+                await this.ExceptionLogger.LogAsync(exceptionContext, cancellationToken);
+                HandlerResponse response = await this.ExceptionHandler.HandleAsync(exceptionContext, cancellationToken);
 
                 if (response == null)
                 {
@@ -209,14 +209,14 @@
 
             IEventStore eventStore = this.Configuration.Services.GetServiceOrThrow<IEventStore>();
 
-            await eventStore.StoreAsync(@event, currentRequest.CancellationToken);
+            await eventStore.StoreAsync(@event, cancellationToken);
 
             IEventWorker eventWorker = this.Configuration.Services.GetEventWorker();
 
             using (EventHandlerRequest request = new EventHandlerRequest(this.Configuration, @event, currentRequest))
             {
                 request.Processor = new MessageProcessorWrapper(this, request);
-                await eventWorker.PublishAsync(request);
+                await eventWorker.PublishAsync(request, cancellationToken);
             }
         }
 
