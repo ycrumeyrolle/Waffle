@@ -1,11 +1,11 @@
 ﻿namespace Waffle.Tests.Filters
 {
     using System.Linq;
-    using Xunit;
     using Moq;
     using Waffle;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
+    using Xunit;
     
     public class ConfigurationFilterProviderTests
     {

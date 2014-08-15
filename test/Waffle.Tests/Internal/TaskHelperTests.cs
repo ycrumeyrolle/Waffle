@@ -8,9 +8,6 @@
     
     public class TaskHelperTests
     {
-        // -----------------------------------------------------------------
-        //  TaskHelpers.Canceled
-
         [Fact]
         public void Canceled_ReturnsCanceledTask()
         {
@@ -19,9 +16,6 @@
             Assert.NotNull(result);
             Assert.True(result.IsCanceled);
         }
-
-        // -----------------------------------------------------------------
-        //  TaskHelpers.Canceled<T>
 
         [Fact]
         public void Canceled_Generic_ReturnsCanceledTask()
@@ -32,9 +26,6 @@
             Assert.True(result.IsCanceled);
         }
 
-        // -----------------------------------------------------------------
-        //  TaskHelpers.Completed
-
         [Fact]
         public void Completed_ReturnsCompletedTask()
         {
@@ -43,9 +34,6 @@
             Assert.NotNull(result);
             Assert.Equal(TaskStatus.RanToCompletion, result.Status);
         }
-
-        // -----------------------------------------------------------------
-        //  TaskHelpers.FromError
 
         [Fact]
         public void FromError_ReturnsFaultedTaskWithGivenException()
@@ -59,9 +47,6 @@
             Assert.Same(exception, result.Exception.InnerException);
         }
 
-        // -----------------------------------------------------------------
-        //  TaskHelpers.FromError<T>
-
         [Fact]
         public void FromError_Generic_ReturnsFaultedTaskWithGivenException()
         {
@@ -73,9 +58,6 @@
             Assert.True(result.IsFaulted);
             Assert.Same(exception, result.Exception.InnerException);
         }
-
-        // -----------------------------------------------------------------
-        //  Task.FromResult<T>
 
         [Fact]
         public void FromResult_ReturnsCompletedTaskWithGivenResult()
@@ -89,9 +71,6 @@
             Assert.Same(s, result.Result);
         }
    
-        // ----------------------------------------------------------------
-        //   Task<object> Task<T>.CastToObject()
-
         [Fact]
         public void ConvertFromTaskOfStringShouldSucceed()
         {
@@ -158,9 +137,6 @@
                     Assert.Equal(TaskStatus.Canceled, task.Status);
                 });
         }
-
-        // ----------------------------------------------------------------
-        //   Task<object> Task.CastToObject()
 
         [Fact]
         public void ConvertFromTaskShouldSucceed()

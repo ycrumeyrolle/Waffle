@@ -3,10 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using Waffle;
-    using Xunit;
     using Moq;
+    using Waffle;
     using Waffle.Tests.Helpers;
+    using Xunit;
     
     public sealed class ProcessorConfigurationTests : IDisposable
     {

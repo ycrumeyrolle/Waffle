@@ -1,9 +1,9 @@
 ﻿namespace Waffle.Tests.Filters
 {
-    using Xunit;
     using Moq;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
+    using Xunit;
 
     public class FilterGroupingTests
     {

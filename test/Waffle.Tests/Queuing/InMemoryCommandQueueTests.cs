@@ -18,7 +18,6 @@
             InMemoryCommandQueue queue = new InMemoryCommandQueue(collection);
             var command = new CommandToQueue();
 
-
             // Act
             await queue.SendAsync(command, default(CancellationToken));
 

@@ -2,9 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Waffle;
-    using Xunit;
     using Moq;
+    using Waffle;
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Filters;
@@ -12,6 +11,7 @@
     using Waffle.Services;
     using Waffle.Tests.Helpers;
     using Waffle.Validation;
+    using Xunit;
     
     public class DefaultServicesTests
     {

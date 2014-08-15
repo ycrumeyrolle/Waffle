@@ -78,7 +78,6 @@
 
             // Act & assert
             ExceptionAssert.ThrowsArgumentNull(() => resolver.SelectHandler(null), "request");
-   
         }
         
         [Fact]

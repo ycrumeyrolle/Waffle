@@ -3,7 +3,6 @@
     using Waffle.Internal;
     using Xunit;
 
-
     public class ErrorTests
     {
         [Fact]

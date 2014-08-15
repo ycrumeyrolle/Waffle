@@ -1,9 +1,9 @@
 ﻿namespace Waffle.Tests.Interception
 {
     using System;
-    using Xunit;
     using Moq;
     using Waffle.Interception;
+    using Xunit;
 
     public class ProxyBuilderTests
     {

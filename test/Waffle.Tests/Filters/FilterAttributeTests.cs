@@ -1,8 +1,8 @@
 ﻿namespace Waffle.Tests.Filters
 {
     using System;
-    using Xunit;
     using Waffle.Filters;
+    using Xunit;
     
     public class FilterAttributeTests
     {

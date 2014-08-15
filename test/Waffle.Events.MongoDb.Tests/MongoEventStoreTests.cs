@@ -1,13 +1,13 @@
 ﻿namespace Waffle.Events.MongoDb.Tests
 {
-    using MongoDB.Bson;
-    using MongoDB.Bson.Serialization;
-    using MongoDB.Driver;
-    using Moq;
     using System;
     using System.Collections.Generic;
     using System.Text;
     using System.Threading;
+    using MongoDB.Bson;
+    using MongoDB.Bson.Serialization;
+    using MongoDB.Driver;
+    using Moq;
     using Xunit;
 
     public class MongoEventStoreTests
@@ -73,19 +73,29 @@
                 this.InitializeCollection();
             }
 
+            public Mock<MongoCollection<EventWrapper>> MoqCollection { get; private set; }
+
             protected override MongoCollection<EventWrapper> GetCollection()
             {
                 return this.MoqCollection.Object;
             }
-
-            public Mock<MongoCollection<EventWrapper>> MoqCollection { get; private set; }
-
+            
             private void InitializeCollection()
             {
                 var server = CreateServer();
                 var database = CreateDatabase(server);
 
                 this.MoqCollection = CreateCollection<EventWrapper>(database.Object);
+            }
+
+            private static Mock<MongoCollection<T>> CreateCollection<T>(MongoDatabase database)
+            {
+                var collectionSettings = new MongoCollectionSettings();
+                var collection = new Mock<MongoCollection<T>>(MockBehavior.Strict, database, typeof(T).Name, collectionSettings);
+                collection.SetupAllProperties();
+                collection.SetupGet(x => x.Database).Returns(database);
+                collection.SetupGet(x => x.Settings).Returns(collectionSettings);
+                return collection;
             }
         }
 
@@ -123,16 +133,6 @@
             server.Setup(s => s.Settings).Returns(serverSettings);
             server.Setup(s => s.IsDatabaseNameValid(It.IsAny<string>(), out message)).Returns(true);
             return server;
-        }
-
-        private static Mock<MongoCollection<T>> CreateCollection<T>(MongoDatabase database)
-        {
-            var collectionSettings = new MongoCollectionSettings();
-            var collection = new Mock<MongoCollection<T>>(MockBehavior.Strict, database, typeof(T).Name, collectionSettings);
-            collection.SetupAllProperties();
-            collection.SetupGet(x => x.Database).Returns(database);
-            collection.SetupGet(x => x.Settings).Returns(collectionSettings);
-            return collection;
         }
 
         private static MongoCursor<T> CreateCursor<T>(MongoCollection<T> collection, IEnumerable<T> obj)

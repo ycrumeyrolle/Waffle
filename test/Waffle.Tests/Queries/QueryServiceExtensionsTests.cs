@@ -1,10 +1,10 @@
 ﻿namespace Waffle.Tests.Queries
 {
     using System;
-    using Xunit;
     using Moq;
     using Waffle.Queries;
     using Waffle.Tests.Helpers;
+    using Xunit;
     
     public class QueryServiceExtensionsTests
     {

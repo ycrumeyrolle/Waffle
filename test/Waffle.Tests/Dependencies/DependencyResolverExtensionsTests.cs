@@ -1,14 +1,14 @@
 ﻿namespace Waffle.Tests.Dependencies
 {
     using System.Linq;
-    using Xunit;
     using Moq;
     using Waffle.Dependencies;
     using Waffle.Tests.Helpers;
+    using Xunit;
 
     public class DependencyResolverExtensionsTests
     {
-        readonly private Mock<IDependencyScope> resolver = new Mock<IDependencyScope>();
+        private readonly Mock<IDependencyScope> resolver = new Mock<IDependencyScope>();
 
         [Fact]
         public void WhenGettingServiceWithoutResolverThenThrowsArgumentNullException()

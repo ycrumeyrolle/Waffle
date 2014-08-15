@@ -27,12 +27,6 @@
         {
             return this.processor.ProcessAsync(placeOrderCommand);
         }
-
-        //// GET api/orders
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
     }
 
     /// <summary>
@@ -49,11 +43,6 @@
             }
             
             base.OnActionExecuting(actionContext);
-        }
-
-        public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
-        {
-            base.OnActionExecuted(actionExecutedContext);
         }
     }
 }

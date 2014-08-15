@@ -6,7 +6,6 @@
     using Waffle.Tests.Helpers;
     using Xunit;
 
-    
     public class HandlerFilterCollectionTests
     {
         private readonly IFilter filter = new Mock<IFilter>().Object;

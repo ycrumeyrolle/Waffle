@@ -43,7 +43,7 @@
         [Fact]
         public void AsCollection_Enumerable_Copies()
         {
-            IEnumerable<object> enumerable = new LinkedList<object>(new [] { new object(), new object() });
+            IEnumerable<object> enumerable = new LinkedList<object>(new[] { new object(), new object() });
 
             Collection<object> enumerableAsCollection = enumerable.AsCollection();
             Assert.Equal(enumerable, enumerableAsCollection);

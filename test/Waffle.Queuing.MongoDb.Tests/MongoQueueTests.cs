@@ -77,7 +77,6 @@
             Assert.Equal(command.IntValue, resultCommand.IntValue);
             Assert.Equal(command.StringValue, resultCommand.StringValue);
             Assert.Equal(command.DateTimeValue, resultCommand.DateTimeValue);
-
         }
         
         private class CommandToQueue : ICommand
@@ -123,6 +122,16 @@
 
                 this.MoqCollection = CreateCollection<CommandWrapper>(database.Object);
             }
+
+            private static Mock<MongoCollection<T>> CreateCollection<T>(MongoDatabase database)
+            {
+                var collectionSettings = new MongoCollectionSettings();
+                var collection = new Mock<MongoCollection<T>>(MockBehavior.Strict, database, typeof(T).Name, collectionSettings);
+                collection.SetupAllProperties();
+                collection.SetupGet(x => x.Database).Returns(database);
+                collection.SetupGet(x => x.Settings).Returns(collectionSettings);
+                return collection;
+            }
         }
 
         private static Mock<MongoDatabase> CreateDatabase(Mock<MongoServer> server)
@@ -162,17 +171,7 @@
             server.Setup(s => s.IsDatabaseNameValid(It.IsAny<string>(), out message)).Returns(true);
             return server;
         }
-
-        private static Mock<MongoCollection<T>> CreateCollection<T>(MongoDatabase database)
-        {
-            var collectionSettings = new MongoCollectionSettings();
-            var collection = new Mock<MongoCollection<T>>(MockBehavior.Strict, database, typeof(T).Name, collectionSettings);
-            collection.SetupAllProperties();
-            collection.SetupGet(x => x.Database).Returns(database);
-            collection.SetupGet(x => x.Settings).Returns(collectionSettings);
-            return collection;
-        }
-
+        
         private static MongoCursor<T> CreateCursor<T>(MongoCollection<T> collection, IEnumerable<T> obj)
         {
             var cursor = new Mock<MongoCursor<T>>(MockBehavior.Strict, collection, new Mock<IMongoQuery>().Object, ReadPreference.Primary, new Mock<IBsonSerializer>().Object, new Mock<IBsonSerializationOptions>().Object);

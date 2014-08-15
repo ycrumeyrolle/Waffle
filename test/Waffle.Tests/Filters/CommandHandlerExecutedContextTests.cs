@@ -2,8 +2,8 @@
 {
     using System;
     using System.Runtime.ExceptionServices;
-    using Xunit;
     using Waffle.Filters;
+    using Xunit;
 
     public class CommandHandlerExecutedContextTests
     {

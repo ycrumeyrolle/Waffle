@@ -1,12 +1,11 @@
 ﻿namespace Waffle.Unity.Tests
 {
-    using Microsoft.Practices.Unity;
-    using Moq;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
-    using System.Threading.Tasks;
+    using Microsoft.Practices.Unity;
+    using Moq;
     using Waffle;
     using Waffle.Commands;
     using Xunit;

@@ -5,9 +5,9 @@
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using Waffle;
-    using Xunit;
     using Waffle.Commands;
     using Waffle.Validation;
+    using Xunit;
 
     public sealed class DefaultCommandValidatorTests : IDisposable
     {

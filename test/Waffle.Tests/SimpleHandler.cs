@@ -12,7 +12,6 @@
             Trace.WriteLine("Property2 : " + command.Property2);
         }
     }
-
     
 #if LOOSE_CQRS
     public class SimpleCommandHandler2 : MessageHandler, ICommandHandler<SimpleCommand2, string>

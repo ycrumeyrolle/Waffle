@@ -9,6 +9,7 @@
         {
             this.SourceId = sourceId;
         }
+
         public Guid SourceId { get; private set; }
     }
 }

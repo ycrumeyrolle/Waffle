@@ -4,11 +4,11 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using Xunit;
     using Waffle;
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Filters;
+    using Xunit;
     
     public class EmptyResolverTests
     {

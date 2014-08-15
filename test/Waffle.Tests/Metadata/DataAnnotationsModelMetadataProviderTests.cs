@@ -2,12 +2,12 @@
 {
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
-    using Xunit;
     using Waffle.Metadata;
+    using Xunit;
     
     public class DataAnnotationsModelMetadataProviderTests
     {
-        class ReadOnlyModel
+        private class ReadOnlyModel
         {
             public int NoAttributes { get; set; }
 
@@ -20,11 +20,9 @@
             [ReadOnly(true)]
             [Editable(true)]
             public int BothAttributes { get; set; }
-
-            // Editable trumps ReadOnly
         }
 
-        class DisplayModel
+        private class DisplayModel
         {
             public DisplayModel()
             {

@@ -127,7 +127,6 @@
             }
         }
 
-
         [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
         public class SimpleCommandHandlerFilter : CommandHandlerFilterAttribute
         {

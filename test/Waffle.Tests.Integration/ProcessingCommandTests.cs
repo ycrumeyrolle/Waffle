@@ -1,11 +1,11 @@
 ﻿namespace Waffle.Tests.Integration
 {
+    using System.Threading;
+    using System.Threading.Tasks;
     using Microsoft.Practices.Unity;
-    using Xunit;
     using Moq;
     using Waffle.Tests.Integration.Orders;
-    using System.Threading.Tasks;
-    using System.Threading;
+    using Xunit;
     
     public class ProcessingCommandTests
     {
@@ -48,7 +48,6 @@
                }
             }
         }
-
 
         [Fact]
         public async Task PlaceOrder_WithMessageQueuing_EventsArePublished()

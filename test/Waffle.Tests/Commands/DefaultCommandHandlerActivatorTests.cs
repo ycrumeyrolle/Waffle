@@ -1,13 +1,13 @@
 ﻿namespace Waffle.Tests.Commands
 {
     using System;
-    using Xunit;
     using Moq;
     using Waffle;
     using Waffle.Commands;
     using Waffle.Dependencies;
-    using Waffle.Tests.Helpers;
     using Waffle.Filters;
+    using Waffle.Tests.Helpers;
+    using Xunit;
     
     public sealed class DefaultCommandHandlerActivatorTests : IDisposable
     {
@@ -202,7 +202,6 @@
             // Assert
             Assert.True(exceptionRaised);
         }
-
 
         [Fact]
         public void CreateSingletonHandler_InstancianteOnce()

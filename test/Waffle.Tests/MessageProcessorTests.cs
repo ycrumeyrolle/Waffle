@@ -286,7 +286,6 @@
             var filter2 = this.SetupFilter();
             var filter3 = this.SetupFilter();
 
-
             var handler = this.SetupThrowingHandler<ValidCommand, Exception>();
             MessageProcessor processor = this.CreatTestableProcessor();
             ValidCommand command = new ValidCommand();
@@ -545,7 +544,6 @@
             try
             {
                 config = config ?? this.configuration;
-                //   config.EnableDefaultTracing();
                 this.dependencyResolver.Setup(r => r.BeginScope()).Returns(this.dependencyResolver.Object);
                 config.DependencyResolver = this.dependencyResolver.Object;
                 MessageProcessor processor = new MessageProcessor(config);
@@ -589,7 +587,7 @@
         }
 #endif
 
-        public class ValidCommandHandler: MessageHandler, ICommandHandler<ValidCommand>
+        public class ValidCommandHandler : MessageHandler, ICommandHandler<ValidCommand>
         {
             public void Handle(ValidCommand command)
             {
@@ -673,7 +671,6 @@
             }
         }
 
-
         public interface ISpy
         {
             void Spy(string category);
@@ -685,7 +682,6 @@
 
         public class MultipleCommand2 : ICommand
         {
-
         }
 
         public class MultipleCommandCommandHandler : MessageHandler, ICommandHandler<MultipleCommand1>, ICommandHandler<MultipleCommand2>

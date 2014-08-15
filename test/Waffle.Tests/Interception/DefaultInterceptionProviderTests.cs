@@ -1,10 +1,10 @@
 ﻿namespace Waffle.Tests.Interception
 {
     using System;
-    using Waffle;
-    using Xunit;
     using Moq;
+    using Waffle;
     using Waffle.Interception;
+    using Xunit;
 
     public sealed class DefaultInterceptionProviderTests : IDisposable
     {

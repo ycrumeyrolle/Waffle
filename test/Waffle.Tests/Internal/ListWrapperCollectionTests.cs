@@ -31,5 +31,4 @@
             Assert.Same(list, listWrapper.ItemsList);
         }
     }
-
 }

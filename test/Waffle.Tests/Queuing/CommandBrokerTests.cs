@@ -1,9 +1,9 @@
 ﻿namespace Waffle.Tests.Queuing
 {
-    using Moq;
     using System.Collections.Concurrent;
     using System.Threading;
     using System.Threading.Tasks;
+    using Moq;
     using Waffle.Commands;
     using Waffle.Queuing;
     using Xunit;

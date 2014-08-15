@@ -3,12 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using Waffle;
-    using Xunit;
     using Moq;
+    using Waffle;
     using Waffle.Commands;
     using Waffle.Dependencies;
     using Waffle.Tests.Helpers;
+    using Xunit;
     
     public sealed class HandlerRequestTests : IDisposable
     {

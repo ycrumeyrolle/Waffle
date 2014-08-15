@@ -1,9 +1,9 @@
 ﻿namespace Waffle.Unity.Tests
 {
-    using Microsoft.Practices.Unity;
-    using Moq;
     using System;
     using System.Collections.Generic;
+    using Microsoft.Practices.Unity;
+    using Moq;
     using Waffle;
     using Waffle.Commands;
     using Waffle.Events;

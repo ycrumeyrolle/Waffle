@@ -17,15 +17,17 @@
                 throw new ArgumentNullException("task");
             }
 
-            task.ContinueWith(prev =>
+            task.ContinueWith(
+                prev =>
                 {
-                if (prev.IsFaulted)
-                {
-                    // Observe the exception in the faulted case to avoid an unobserved exception leaking and
-                    // killing the thread finalizer.
-                    var e = prev.Exception;
-                }
-            }, TaskContinuationOptions.ExecuteSynchronously).Wait();
+                    if (prev.IsFaulted)
+                    {
+                        // Observe the exception in the faulted case to avoid an unobserved exception leaking and
+                        // killing the thread finalizer.
+                        var e = prev.Exception;
+                    }
+                },
+            TaskContinuationOptions.ExecuteSynchronously).Wait();
         }
 
         public static void RethrowFaultedTaskException(this Task task)

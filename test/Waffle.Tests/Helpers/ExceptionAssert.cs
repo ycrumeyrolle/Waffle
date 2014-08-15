@@ -16,7 +16,6 @@
             return exception;
         }
 
-
         public static void ThrowsArgumentNull(Action action, string paramName)
         {
             ArgumentNullException exception = Assert.Throws<ArgumentNullException>(action);

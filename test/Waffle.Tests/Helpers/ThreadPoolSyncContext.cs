@@ -11,13 +11,15 @@
     {
         public override void Post(SendOrPostCallback d, object state)
         {
-            ThreadPool.QueueUserWorkItem(_ =>
-            {
-                SynchronizationContext oldContext = SynchronizationContext.Current;
-                SynchronizationContext.SetSynchronizationContext(this);
-                d.Invoke(state);
-                SynchronizationContext.SetSynchronizationContext(oldContext);
-            }, null);
+            ThreadPool.QueueUserWorkItem(
+                _ =>
+                {
+                    SynchronizationContext oldContext = SynchronizationContext.Current;
+                    SynchronizationContext.SetSynchronizationContext(this);
+                    d.Invoke(state);
+                    SynchronizationContext.SetSynchronizationContext(oldContext);
+                },
+            state: null);
         }
 
         public override void Send(SendOrPostCallback d, object state)

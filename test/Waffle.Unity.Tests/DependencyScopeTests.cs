@@ -168,7 +168,7 @@
             DependencyScope scope = this.CreateDependencyScope();
 
             // Act
-            config.RegisterHandlers(container.Object);
+            config.RegisterHandlers(this.container.Object);
         }
 
         private DependencyScope CreateDependencyScope()

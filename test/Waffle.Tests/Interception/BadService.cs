@@ -2,11 +2,11 @@
 {
     public class BadService
     {
-        public string Value { get; set; }
-
         public BadService(string value)
         {
             this.Value = value;
         }
+        
+        public string Value { get; set; }
     }
 }

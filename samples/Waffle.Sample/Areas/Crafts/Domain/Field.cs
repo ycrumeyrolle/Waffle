@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class  Field
+    public class Field
     {
         public Seed Seed { get; set; }
 

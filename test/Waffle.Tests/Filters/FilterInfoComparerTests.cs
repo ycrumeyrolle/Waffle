@@ -1,8 +1,8 @@
 ﻿namespace Waffle.Tests.Filters
 {
-    using Moq;
     using System;
     using System.Collections.Generic;
+    using Moq;
     using Waffle.Filters;
     using Xunit;
 

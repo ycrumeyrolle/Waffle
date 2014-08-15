@@ -15,16 +15,6 @@
 
     public static class Program
     {
-        private class TestCommand : ICommand
-        {
-
-        }
-        private class TestCommand2 : ICommand
-        {
-
-        }
-
-
         public static void Main()
         {
             using (IUnityContainer container = new UnityContainer())
@@ -45,9 +35,9 @@
                         await Task.FromResult(0);
                     });
 
-                    //  config.RegisterContainer(container);
-                    // config.Services.Replace(typeof(ICommandValidator), new NullValidator());
-                    //  config.EnableDefaultTracing();
+                    ////  config.RegisterContainer(container);
+                    //// config.Services.Replace(typeof(ICommandValidator), new NullValidator());
+                    ////  config.EnableDefaultTracing();
 
                     ////  PerformanceTracer traceWriter = new PerformanceTracer();
 
@@ -57,25 +47,23 @@
 
                     ////   long initialMemory = GC.GetTotalMemory(false);
 
-                    //    config.EnableGlobalExceptionHandler();
+                    ////    config.EnableGlobalExceptionHandler();
 
-                    const int maxIterations = 100000;
+                    const int MaxIterations = 100000;
                     config.EnableRedisMessageQueuing("localhost");
                     using (MessageProcessor processor = new MessageProcessor(config))
                     {
                         processor.ProcessAsync(new TestCommand());
                         SingleProcessing(processor);
-                        ParallelProcessing(maxIterations, processor);
-                        //   SequentialTaskProcessing(maxIterations, processor);
-                        //   SequentialTaskProcessingV2(maxIterations, processor);
-                        //  SequentialTaskProcessingV3(maxIterations, processor);
+                        ParallelProcessing(MaxIterations, processor);
+                        ////   SequentialTaskProcessing(maxIterations, processor);
+                        ////   SequentialTaskProcessingV2(maxIterations, processor);
+                        ////  SequentialTaskProcessingV3(maxIterations, processor);
 
                         RunCommandBroker(config.CommandBroker);
                     }
-
                 }
-
-            //    Console.ReadLine();
+            ////    Console.ReadLine();
             }
         }
 
@@ -97,7 +85,10 @@
         private static void ParallelProcessing(int maxIterations, MessageProcessor processor)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            Parallel.For(0, maxIterations, async i =>
+            Parallel.For(
+                0, 
+                maxIterations, 
+                async i =>
             {
                 PlaceOrder command = new PlaceOrder(1);
                 await processor.ProcessAsync(command);
@@ -118,9 +109,9 @@
 
             Task.WaitAll(tasks);
             stopwatch.Stop();
-            System.Console.WriteLine("Sequential Tasks, " + maxIterations + " iterations : " + stopwatch.ElapsedMilliseconds + " ms");
+            Console.WriteLine("Sequential Tasks, " + maxIterations + " iterations : " + stopwatch.ElapsedMilliseconds + " ms");
         }
-
+        
         private static async void SequentialTaskProcessingV2(int maxIterations, MessageProcessor processor)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -131,7 +122,7 @@
             }
 
             stopwatch.Stop();
-            System.Console.WriteLine("Sequential Tasks v2, " + maxIterations + " iterations : " + stopwatch.ElapsedMilliseconds + " ms");
+            Console.WriteLine("Sequential Tasks v2, " + maxIterations + " iterations : " + stopwatch.ElapsedMilliseconds + " ms");
         }
 
         private static async void SequentialTaskProcessingV3(int maxIterations, MessageProcessor processor)
@@ -148,7 +139,7 @@
 
             await task;
             stopwatch.Stop();
-            System.Console.WriteLine("Sequential Tasks v3, " + maxIterations + " iterations : " + stopwatch.ElapsedMilliseconds + " ms");
+            Console.WriteLine("Sequential Tasks v3, " + maxIterations + " iterations : " + stopwatch.ElapsedMilliseconds + " ms");
         }
 
         private class NullValidator : ICommandValidator
@@ -169,6 +160,14 @@
             public void Spy(string name)
             {
             }
+        }
+
+        private class TestCommand : ICommand
+        {
+        }
+
+        private class TestCommand2 : ICommand
+        {
         }
     }
 }

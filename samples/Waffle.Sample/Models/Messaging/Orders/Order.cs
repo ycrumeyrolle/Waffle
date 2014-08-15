@@ -1,11 +1,9 @@
-﻿using Waffle.Sample.Messaging.Orders;
-namespace Waffle.Sample.Orders
+﻿namespace Waffle.Sample.Orders
 {
     using System;
     using System.Threading.Tasks;
     using Waffle.Commands;
     using Waffle.Events;
-    using Waffle.Filters;
 
     public class Order : MessageHandler,
         IAsyncCommandHandler<PlaceOrder>,

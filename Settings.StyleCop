@@ -8,12 +8,7 @@
   </Parsers>
   <Analyzers>
     <Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
-      <Rules>      
-        <Rule Name="PropertyDocumentationMustHaveValue">
-          <RuleSettings>
-            <BooleanProperty Name="Enabled">False</BooleanProperty>
-          </RuleSettings>
-        </Rule>
+      <Rules>
         <Rule Name="FileMustHaveHeader">
           <RuleSettings>
             <BooleanProperty Name="Enabled">False</BooleanProperty>
@@ -252,14 +247,16 @@
             <BooleanProperty Name="Enabled">False</BooleanProperty>
           </RuleSettings>
         </Rule>
-        <Rule Name="PropertyDocumentationMustHaveValue">
-          <RuleSettings>
-            <BooleanProperty Name="Enabled">False</BooleanProperty>
-          </RuleSettings>
-        </Rule>
       </Rules>
       <AnalyzerSettings>
         <BooleanProperty Name="GeneratedCodeElementOrder">False</BooleanProperty>
+      </AnalyzerSettings>
+    </Analyzer>
+    <Analyzer AnalyzerId="StyleCop.CSharp.NamingRules">
+      <AnalyzerSettings>
+        <CollectionProperty Name="Hungarian">
+          <Value>db</Value>
+        </CollectionProperty>
       </AnalyzerSettings>
     </Analyzer>
   </Analyzers>

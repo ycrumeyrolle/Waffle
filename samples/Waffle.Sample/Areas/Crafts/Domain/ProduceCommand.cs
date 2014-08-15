@@ -35,6 +35,7 @@
             get { return this.Bucket; }
         }
     }
+
     public class SowField : ICommand
     {
         public SowField(Field field, Seed seed)
@@ -324,6 +325,7 @@
             var processor = context.Configuration.Services.GetProcessor();
             return processor.PublishAsync(@event);
         }
+
         public static Task ProcessAsync(this EventHandlerContext context, ICommand command)
         {
             var processor = context.Configuration.Services.GetProcessor();

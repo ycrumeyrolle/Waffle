@@ -3,10 +3,10 @@
     using System;
     using System.Runtime.ExceptionServices;
     using System.Threading;
-    using Xunit;
     using Moq;
     using Waffle.Filters;
     using Waffle.Tests.Helpers;
+    using Xunit;
     
     public class ExceptionFilterAttributeTests
     {
