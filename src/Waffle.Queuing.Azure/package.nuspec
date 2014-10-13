@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>https://github.com/ycrumeyrolle/Waffle</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Queuing with Azure service bus for Waffle.</description>
+    <summary />
+    <copyright />
+    <tags>Waffle Azure service bus queuing</tags>
+    <dependencies>
+      <dependency id="Waffle" version="$version$" />
+      <dependency id="Microsoft.WindowsAzure.ConfigurationManager" version="2.0.3" />
+      <dependency id="WindowsAzure.ServiceBus" version="2.4.4.0" />
+      <dependency id="Newtonsoft.Json" version="6.0.3" />
+    </dependencies>
+  </metadata>
+</package>

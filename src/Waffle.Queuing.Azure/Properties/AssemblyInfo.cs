@@ -4,10 +4,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Queuing with REDIS for Waffle")]
+[assembly: AssemblyTitle("Queuing with Azure service bus for Waffle")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("Waffle.Queuing.Redis")]
+[assembly: AssemblyProduct("Waffle.Queuing.Azure")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4186e16b-a487-4101-ac61-8fe701fd89b6")]
+[assembly: Guid("b7161630-544b-4383-9141-555b96b8eb7c")]
